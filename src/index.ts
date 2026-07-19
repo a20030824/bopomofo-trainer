@@ -8,3 +8,4 @@ export * from "./catalog/csv.js";
 export * from "./catalog/compile-catalog.js";
 export * from "./catalog/provenance.js";
 export * from "./catalog/coverage.js";
+export * from "./practice/interaction-session.js";
