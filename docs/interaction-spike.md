@@ -15,7 +15,7 @@ npm run dev
 
 The `predev` hook compiles ten provisional catalog entries into the ignored file `src/app/generated/catalog.ts` before Vite starts.
 
-Use an English keyboard mode. The physical layout is Taiwan Standard Bopomofo, and Space represents the explicit first-tone token.
+Use an English keyboard mode. The physical layout is Taiwan Standard Bopomofo, and Space represents the explicit first-tone token. The expected physical key hint is off by default and can be toggled during comparison runs; its state is included in downloaded JSON.
 
 ## Current interaction semantics
 
@@ -51,14 +51,17 @@ The page displays the latest 100 rows and can download the full exercise and tra
 - Ignored browser events must remain distinguishable from motor errors; a nullable `correct` field and explicit `outcome` avoid mixing them.
 - Error recovery cannot be represented by a single per-token latency without a policy decision. The spike therefore retains the full attempt sequence and flags the successful recovery event.
 - Browser keyboard normalization belongs outside the headless session reducer. The reducer only receives normalized semantic input and event flags.
+- Always showing a physical key hint could change the task from memory retrieval to visual copying, so the spike defaults it off and records whether it was enabled.
 
 ## Manual observation protocol
 
 Run at least three short passes:
 
-1. normal English-mode input;
+1. normal English-mode input with physical hints off;
 2. intentional mapped errors, unmapped keys, and held keys;
 3. IME enabled long enough to trigger composition detection.
+
+Optionally repeat the first pass with physical hints enabled.
 
 For each pass, note:
 
