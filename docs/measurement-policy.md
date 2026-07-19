@@ -24,7 +24,8 @@ The first key of an exercise or entry includes reading and orientation latency. 
 - Incorrect mapped input in a motor-eligible context produces a binding error and expected-to-actual confusion observation.
 - A correct key after a mapped error is retained as a binding completion, marked as recovery, and excluded from timing.
 - Unmapped keys are interaction noise. They do not create a binding or confusion observation and do not start recovery.
-- Repeats, modifier shortcuts, and composition events are interaction diagnostics only.
+- Repeats, modifier shortcuts, and composition events are also interaction noise rather than motor errors.
+- Any interaction noise between two successful advances invalidates the later timing interval. The later correct binding remains recorded, but its timing and transition are excluded as `interaction-noise`.
 - Transitions require a previous token and a nonzero token index. They therefore cannot cross exercise, entry, or syllable boundaries.
 
 Every raw trace receives an explicit included or excluded decision for the binding, confusion, and transition channels. Exclusions retain a machine-readable reason.
@@ -48,7 +49,7 @@ Binding aggregates currently retain:
 - eligible timing sample count;
 - current provisional time-to-type;
 - best eligible time-to-type;
-- counts of timing exclusions caused by syllable starts, incorrect input, and recovery.
+- counts of timing exclusions caused by syllable starts, incorrect input, recovery, and interaction noise.
 
 Confusions count expected-to-actual occurrences. Transitions retain eligible sample count, current provisional timing, and best timing.
 
@@ -61,6 +62,8 @@ new = previous + alpha × (sample - previous)
 `alpha` is currently `0.25`, is validated, and is deliberately configurable. The first eligible sample initializes the estimate. Values are rounded to three decimal places for stable serialized output.
 
 This is smoothing, not confidence. Minimum samples, outlier treatment, confidence normalization, and curriculum eligibility remain Phase 4 decisions.
+
+Aggregate keys are sorted with direct code-unit comparison rather than locale-sensitive collation so serialized output remains stable across environments.
 
 ## Replaying exported traces
 
