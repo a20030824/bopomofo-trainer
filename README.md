@@ -1,18 +1,21 @@
 # Bopomofo Trainer
 
-A lightweight, local-first experiment for adaptive Bopomofo practice.
+A lightweight, local-first experiment for guided and adaptive Bopomofo keyboard practice.
 
-The project uses Chinese words as prompts, represents the expected answer as semantic Bopomofo and tone tokens, and maps physical keyboard input through a selectable layout. The first target is Taiwan Standard Bopomofo, but the core model is intentionally independent of UI frameworks and physical key layouts.
+The first product shows Traditional Chinese context together with the complete Bopomofo and tone sequence, then measures how fluently the learner maps those visible semantic tokens to Taiwan Standard Bopomofo physical keys. Reading recall is treated as a separate future practice mode rather than being mixed into motor timing.
 
 ## Current status
 
-Architecture baseline only. There is no practice UI yet.
+Architecture baseline only. There is no product practice UI yet.
 
 ## Principles
 
 - Semantic Bopomofo tokens are not physical keys.
 - Every syllable ends with an explicit tone token, including first tone.
-- Curriculum logic, input sessions, metrics, datasets, and UI remain separate.
+- V1 is guided practice: Chinese context and complete Bopomofo are visible.
+- Motor skill statistics are scoped by practice mode, layout, and token.
+- Catalog entries are content units; exercises may contain several entries.
+- Curriculum logic, sessions, measurement, datasets, and UI remain separate.
 - Start with a small modular TypeScript core; add infrastructure only when needed.
 - Learn from Keybr's focused-token loop without copying its code or product scale.
 
@@ -27,9 +30,12 @@ Architecture baseline only. There is no practice UI yet.
 
 ## Proposed first executable milestone
 
-A headless curriculum simulator that can:
+A disposable human-operated interaction spike that can:
 
-1. load a small reviewed word catalog;
-2. select a focused weak token from a synthetic learner profile;
-3. sample common words containing that token;
-4. report coverage, repetition, and frequency-band balance.
+1. show Chinese context and complete visible Bopomofo readings;
+2. accept Taiwan Standard Bopomofo physical keys in English keyboard mode;
+3. handle all five tones, including first-tone Space;
+4. run several catalog entries as one continuous exercise;
+5. expose raw timing and error traces without prematurely assigning permanent progress scores.
+
+A deterministic curriculum simulator follows after the interaction spike establishes credible measurement semantics.
