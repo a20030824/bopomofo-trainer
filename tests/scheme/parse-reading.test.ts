@@ -29,17 +29,19 @@ describe("parseReading", () => {
     ["ㄉㄣ4", "ㄋㄨㄣ2", "ㄌㄛ5", "ㄌㄩㄢ2"].forEach(expectValid);
   });
 
-  it("rejects missing and invalid tones", () => {
-    const missing = parseReading("ㄓㄨㄥ");
-    expect(missing.ok).toBe(false);
-    if (!missing.ok) {
-      expect(missing.errors[0]?.code).toBe("missing-tone");
-    }
+  it("rejects missing, unsupported, and repeated tone digits", () => {
+    const cases = [
+      ["ㄓㄨㄥ", "missing-tone"],
+      ["ㄓㄨㄥ9", "invalid-tone"],
+      ["ㄓ14", "invalid-tone"],
+    ] as const;
 
-    const invalid = parseReading("ㄓㄨㄥ9");
-    expect(invalid.ok).toBe(false);
-    if (!invalid.ok) {
-      expect(invalid.errors[0]?.code).toBe("invalid-tone");
+    for (const [reading, expectedCode] of cases) {
+      const result = parseReading(reading);
+      expect(result.ok, reading).toBe(false);
+      if (!result.ok) {
+        expect(result.errors[0]?.code).toBe(expectedCode);
+      }
     }
   });
 
