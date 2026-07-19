@@ -28,10 +28,21 @@ function issue(
 }
 
 function splitList(value: string): string[] {
+  return [...new Set(
+    value
+      .split(";")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0),
+  )];
+}
+
+function normalizeReading(value: string): string {
   return value
-    .split(";")
-    .map((item) => item.trim())
-    .filter((item) => item.length > 0);
+    .normalize("NFC")
+    .trim()
+    .split(/\s+/u)
+    .filter((part) => part.length > 0)
+    .join(" ");
 }
 
 function parseSourceRow(
@@ -41,7 +52,7 @@ function parseSourceRow(
   | { readonly ok: true; readonly row: CatalogSourceRow }
   | { readonly ok: false; readonly errors: readonly CatalogValidationError[] } {
   const errors: CatalogValidationError[] = [];
-  const text = record.values.text ?? "";
+  const text = (record.values.text ?? "").normalize("NFC");
 
   for (const field of REQUIRED_FIELDS) {
     if ((record.values[field] ?? "").length === 0) {
@@ -65,8 +76,9 @@ function parseSourceRow(
     ));
   }
 
-  const frequency = Number(record.values.frequency_band);
-  if (![1, 2, 3].includes(frequency)) {
+  const frequencySource = record.values.frequency_band ?? "";
+  const frequency = Number(frequencySource);
+  if (!/^[123]$/u.test(frequencySource)) {
     errors.push(issue(
       "invalid-frequency-band",
       "frequency_band 必須是 1、2 或 3",
@@ -84,6 +96,17 @@ function parseSourceRow(
       record.rowNumber,
       text || null,
       "status",
+    ));
+  }
+
+  const tags = splitList(record.values.tags ?? "");
+  if ((record.values.tags ?? "").length > 0 && tags.length === 0) {
+    errors.push(issue(
+      "missing-field",
+      "tags 至少需要一個非空標籤",
+      record.rowNumber,
+      text || null,
+      "tags",
     ));
   }
 
@@ -118,9 +141,9 @@ function parseSourceRow(
     ok: true,
     row: {
       text,
-      reading: record.values.reading ?? "",
+      reading: normalizeReading(record.values.reading ?? ""),
       frequencyBand: frequency as FrequencyBand,
-      tags: splitList(record.values.tags ?? ""),
+      tags,
       status,
       provenanceIds,
       rowNumber: record.rowNumber,
