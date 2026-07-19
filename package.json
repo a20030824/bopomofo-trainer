@@ -4,9 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "catalog:validate": "tsx scripts/validate-catalog.ts",
+    "catalog:build": "tsx scripts/compile-catalog.ts",
+    "check": "npm run typecheck && npm test && npm run catalog:validate"
   },
   "devDependencies": {
-    "typescript": "^5.9.0"
+    "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
   }
 }

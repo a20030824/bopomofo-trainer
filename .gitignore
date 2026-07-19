@@ -1,6 +1,8 @@
 node_modules/
 dist/
 coverage/
+data/generated/catalog.json
+data/generated/coverage.json
 *.log
 .DS_Store
 .env
