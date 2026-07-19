@@ -83,25 +83,64 @@ function sortedRecord<T>(map: ReadonlyMap<string, T>): Readonly<Record<string, T
   );
 }
 
+function seedBindingMap(
+  previous: MeasurementSummary | null,
+): Map<string, BindingAggregate> {
+  const map = new Map<string, BindingAggregate>();
+  if (previous === null) return map;
+  for (const aggregate of Object.values(previous.bindings)) {
+    map.set(bindingScopeKey(aggregate.scope), aggregate);
+  }
+  return map;
+}
+
+function seedConfusionMap(
+  previous: MeasurementSummary | null,
+): Map<string, ConfusionAggregate> {
+  const map = new Map<string, ConfusionAggregate>();
+  if (previous === null) return map;
+  for (const aggregate of Object.values(previous.confusions)) {
+    map.set(confusionScopeKey(aggregate.scope), aggregate);
+  }
+  return map;
+}
+
+function seedTransitionMap(
+  previous: MeasurementSummary | null,
+): Map<string, TransitionAggregate> {
+  const map = new Map<string, TransitionAggregate>();
+  if (previous === null) return map;
+  for (const aggregate of Object.values(previous.transitions)) {
+    map.set(transitionScopeKey(aggregate.scope), aggregate);
+  }
+  return map;
+}
+
 export function aggregateMeasurements(
   decisions: readonly TraceMeasurementDecision[],
   policy: MeasurementPolicy,
+  previous: MeasurementSummary | null = null,
 ): MeasurementSummary {
   validateMeasurementPolicy(policy);
+  if (previous !== null && previous.policyVersion !== policy.version) {
+    throw new Error(
+      `cannot append ${policy.version} observations to ${previous.policyVersion} measurements`,
+    );
+  }
 
-  const bindings = new Map<string, BindingAggregate>();
-  const confusions = new Map<string, ConfusionAggregate>();
-  const transitions = new Map<string, TransitionAggregate>();
-  let bindingObservationCount = 0;
-  let confusionObservationCount = 0;
-  let transitionObservationCount = 0;
+  const bindings = seedBindingMap(previous);
+  const confusions = seedConfusionMap(previous);
+  const transitions = seedTransitionMap(previous);
+  let bindingObservationCount = previous?.bindingObservationCount ?? 0;
+  let confusionObservationCount = previous?.confusionObservationCount ?? 0;
+  let transitionObservationCount = previous?.transitionObservationCount ?? 0;
 
   for (const decision of decisions) {
     if (decision.binding.included) {
       bindingObservationCount += 1;
       const observation = decision.binding.observation;
       const key = bindingScopeKey(observation.scope);
-      const previous = bindings.get(key) ?? {
+      const prior = bindings.get(key) ?? {
         scope: observation.scope,
         attempts: 0,
         errors: 0,
@@ -111,30 +150,30 @@ export function aggregateMeasurements(
         timingExclusions: emptyTimingExclusions(),
       };
 
-      const timingSamples = previous.timingSamples
+      const timingSamples = prior.timingSamples
         + (observation.timingMs === null ? 0 : 1);
       const currentTimeToTypeMs = observation.timingMs === null
-        ? previous.currentTimeToTypeMs
+        ? prior.currentTimeToTypeMs
         : smoothTiming(
-            previous.currentTimeToTypeMs,
+            prior.currentTimeToTypeMs,
             observation.timingMs,
             policy.smoothingAlpha,
           );
       const bestTimeToTypeMs = observation.timingMs === null
-        ? previous.bestTimeToTypeMs
-        : previous.bestTimeToTypeMs === null
+        ? prior.bestTimeToTypeMs
+        : prior.bestTimeToTypeMs === null
           ? observation.timingMs
-          : Math.min(previous.bestTimeToTypeMs, observation.timingMs);
+          : Math.min(prior.bestTimeToTypeMs, observation.timingMs);
 
       bindings.set(key, {
-        scope: previous.scope,
-        attempts: previous.attempts + 1,
-        errors: previous.errors + (observation.correct ? 0 : 1),
+        scope: prior.scope,
+        attempts: prior.attempts + 1,
+        errors: prior.errors + (observation.correct ? 0 : 1),
         timingSamples,
         currentTimeToTypeMs,
         bestTimeToTypeMs,
         timingExclusions: incrementTimingExclusion(
-          previous.timingExclusions,
+          prior.timingExclusions,
           observation.timingExclusionReason,
         ),
       });
@@ -144,10 +183,10 @@ export function aggregateMeasurements(
       confusionObservationCount += 1;
       const observation = decision.confusion.observation;
       const key = confusionScopeKey(observation.scope);
-      const previous = confusions.get(key);
+      const prior = confusions.get(key);
       confusions.set(key, {
         scope: observation.scope,
-        occurrences: (previous?.occurrences ?? 0) + 1,
+        occurrences: (prior?.occurrences ?? 0) + 1,
       });
     }
 
@@ -155,25 +194,25 @@ export function aggregateMeasurements(
       transitionObservationCount += 1;
       const observation = decision.transition.observation;
       const key = transitionScopeKey(observation.scope);
-      const previous = transitions.get(key);
+      const prior = transitions.get(key);
       transitions.set(key, {
         scope: observation.scope,
-        timingSamples: (previous?.timingSamples ?? 0) + 1,
+        timingSamples: (prior?.timingSamples ?? 0) + 1,
         currentTimeToTypeMs: smoothTiming(
-          previous?.currentTimeToTypeMs ?? null,
+          prior?.currentTimeToTypeMs ?? null,
           observation.timingMs,
           policy.smoothingAlpha,
         ),
-        bestTimeToTypeMs: previous === undefined
+        bestTimeToTypeMs: prior === undefined
           ? observation.timingMs
-          : Math.min(previous.bestTimeToTypeMs, observation.timingMs),
+          : Math.min(prior.bestTimeToTypeMs, observation.timingMs),
       });
     }
   }
 
   return {
     policyVersion: policy.version,
-    traceCount: decisions.length,
+    traceCount: (previous?.traceCount ?? 0) + decisions.length,
     bindingObservationCount,
     confusionObservationCount,
     transitionObservationCount,
