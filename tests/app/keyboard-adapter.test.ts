@@ -31,13 +31,23 @@ describe("keyboardEventToInput", () => {
     });
   });
 
-  it("maps Space to the explicit first-tone token", () => {
-    expect(keyboardEventToInput(
-      event({ code: "Space", key: " " }),
-      STANDARD_BOPOMOFO_LAYOUT,
-      42,
-      false,
-    ).actualToken).toBe("tone:1");
+  it("maps all five tone keys, including Space for explicit first tone", () => {
+    const cases = [
+      ["Space", " ", "tone:1"],
+      ["Digit6", "6", "tone:2"],
+      ["Digit3", "3", "tone:3"],
+      ["Digit4", "4", "tone:4"],
+      ["Digit7", "7", "tone:5"],
+    ] as const;
+
+    for (const [code, key, tokenId] of cases) {
+      expect(keyboardEventToInput(
+        event({ code, key }),
+        STANDARD_BOPOMOFO_LAYOUT,
+        42,
+        false,
+      ).actualToken).toBe(tokenId);
+    }
   });
 
   it("detects composition and shortcut modifiers", () => {
