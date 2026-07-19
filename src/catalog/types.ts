@@ -18,6 +18,7 @@ export type CatalogErrorCode =
   | "invalid-frequency-band"
   | "invalid-status"
   | "missing-provenance"
+  | "unknown-provenance"
   | "reading-error"
   | "syllable-count-mismatch"
   | "duplicate-entry";
