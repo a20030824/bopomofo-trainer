@@ -1,0 +1,3 @@
+id,kind,title,license,notes
+local:sample-v1,manual,Bopomofo Trainer provisional sample,not-applicable,Hand-authored only for parser and interaction experiments; not authoritative pronunciation or frequency data.
+moe:phonetic-symbols-manual,reference,國語注音符號手冊,CC BY-ND 3.0 TW,Official Ministry of Education reference used to define the syllable-table validation approach; no table content is redistributed verbatim.
