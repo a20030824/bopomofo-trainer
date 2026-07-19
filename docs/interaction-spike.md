@@ -13,9 +13,11 @@ npm install
 npm run dev
 ```
 
-The `predev` hook compiles ten provisional catalog entries into the ignored file `src/app/generated/catalog.ts` before Vite starts.
+The `predev` hook compiles ten provisional catalog entries into the ignored file `src/app/generated/catalog.ts` before Vite starts. The selected entries must contain at least two words and all five explicit tones or generation fails.
 
 Use an English keyboard mode. The physical layout is Taiwan Standard Bopomofo, and Space represents the explicit first-tone token. The expected physical key hint is off by default and can be toggled during comparison runs; its state is included in downloaded JSON.
+
+A persistent, visually hidden textarea remains focused as the browser input target. This allows English keydown, Space, and real IME composition events to be observed through the same target without making the visible exercise editable. Its transient value is cleared and never stored.
 
 ## Current interaction semantics
 
@@ -24,7 +26,7 @@ Use an English keyboard mode. The physical layout is Taiwan Standard Bopomofo, a
 - Held-key repeats are traced as `ignored-repeat` and do not count as errors.
 - Modifier-only keys and Ctrl/Alt/Meta shortcuts are traced as `ignored-modifier` and do not count as errors.
 - Composition events and `Process` key events are traced as `composition`, show an IME warning, and do not advance.
-- Space is prevented from scrolling when it maps to first tone.
+- The focused capture target absorbs Space, so first-tone input does not scroll the page.
 - Timing uses monotonic `performance.now()` timestamps.
 - `elapsedSinceAdvanceMs` is measured from the previous successful advance. Errors do not reset that clock, so a later successful correction includes the entire recovery interval and is marked `recovery: true`.
 - The first target uses the interval from exercise creation or reset and is classified as `exercise-start`.
@@ -52,10 +54,11 @@ The page displays the latest 100 rows and can download the full exercise and tra
 - Error recovery cannot be represented by a single per-token latency without a policy decision. The spike therefore retains the full attempt sequence and flags the successful recovery event.
 - Browser keyboard normalization belongs outside the headless session reducer. The reducer only receives normalized semantic input and event flags.
 - Always showing a physical key hint could change the task from memory retrieval to visual copying, so the spike defaults it off and records whether it was enabled.
+- Composition detection is more credible with a persistent editable capture target than with document-level key listeners on a non-editable page.
 
 ## Manual observation protocol
 
-Run at least three short passes:
+Run at least three short passes. Click **開始／重新計時** immediately before each pass:
 
 1. normal English-mode input with physical hints off;
 2. intentional mapped errors, unmapped keys, and held keys;
