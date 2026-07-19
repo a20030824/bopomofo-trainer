@@ -46,6 +46,17 @@ export function createProductEnvironment(
   if (catalogs.practice.length === 0 || catalogs.evaluation.length === 0) {
     throw new Error("product requires both practice and evaluation catalog entries");
   }
+  const practiceIds = new Set(catalogs.practice.map((entry) => entry.id));
+  const evaluationIds = new Set(catalogs.evaluation.map((entry) => entry.id));
+  if (practiceIds.size !== catalogs.practice.length) {
+    throw new Error("practice catalog contains duplicate entry IDs");
+  }
+  if (evaluationIds.size !== catalogs.evaluation.length) {
+    throw new Error("evaluation catalog contains duplicate entry IDs");
+  }
+  if ([...evaluationIds].some((entryId) => practiceIds.has(entryId))) {
+    throw new Error("practice and evaluation catalogs must be disjoint");
+  }
   return {
     catalogs,
     practiceSupport: createCatalogSupportIndex(catalogs.practice),
