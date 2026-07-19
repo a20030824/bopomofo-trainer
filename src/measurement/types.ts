@@ -11,10 +11,15 @@ export type ObservationExclusionReason =
   | "not-incorrect"
   | "not-correct"
   | "recovery"
+  | "interaction-noise"
   | "no-previous-token"
   | "cross-boundary";
 
-export type TimingExclusionReason = "syllable-start" | "incorrect" | "recovery";
+export type TimingExclusionReason =
+  | "syllable-start"
+  | "incorrect"
+  | "recovery"
+  | "interaction-noise";
 
 export type ObservationDecision<T> =
   | { readonly included: true; readonly observation: T }
@@ -77,6 +82,7 @@ export interface TimingExclusionCounts {
   readonly syllableStart: number;
   readonly incorrect: number;
   readonly recovery: number;
+  readonly interactionNoise: number;
 }
 
 export interface BindingAggregate {
