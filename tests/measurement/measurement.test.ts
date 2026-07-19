@@ -116,6 +116,17 @@ describe("measurement decisions", () => {
       included: false,
       reason: "non-motor-context",
     });
+    expect(decisions[7]?.binding).toMatchObject({
+      included: true,
+      observation: {
+        timingMs: null,
+        timingExclusionReason: "interaction-noise",
+      },
+    });
+    expect(decisions[7]?.transition).toEqual({
+      included: false,
+      reason: "interaction-noise",
+    });
     expect(decisions[8]?.binding).toEqual({
       included: false,
       reason: "entry-start",
@@ -124,14 +135,21 @@ describe("measurement decisions", () => {
       included: false,
       reason: "composition",
     });
+    expect(decisions[10]?.binding).toMatchObject({
+      included: true,
+      observation: { timingExclusionReason: "interaction-noise" },
+    });
     expect(decisions[11]?.binding).toEqual({
       included: false,
       reason: "unmapped",
     });
-    expect(decisions[12]?.transition.included).toBe(true);
+    expect(decisions[12]?.transition).toEqual({
+      included: false,
+      reason: "interaction-noise",
+    });
   });
 
-  it("keeps unmapped interaction noise out of recovery state", () => {
+  it("keeps unmapped noise out of recovery while excluding the contaminated timing", () => {
     let state = createInteractionSession(exercise, 0);
     state = applyInteractionInput(state, input(100, "zhuyin:A"));
     state = applyInteractionInput(state, input(120, null, {
@@ -141,6 +159,20 @@ describe("measurement decisions", () => {
     expect(state.hadErrorSinceAdvance).toBe(false);
     state = applyInteractionInput(state, input(180, "zhuyin:B"));
     expect(state.traces.at(-1)?.recovery).toBe(false);
+
+    const decisions = deriveMeasurementDecisions(
+      exercise,
+      state.traces,
+      PHASE_3_MEASUREMENT_POLICY,
+    );
+    expect(decisions.at(-1)?.binding).toMatchObject({
+      included: true,
+      observation: {
+        correct: true,
+        timingMs: null,
+        timingExclusionReason: "interaction-noise",
+      },
+    });
   });
 
   it("aggregates deterministic layout- and mode-scoped statistics", () => {
@@ -160,7 +192,7 @@ describe("measurement decisions", () => {
       traceCount: 13,
       bindingObservationCount: 8,
       confusionObservationCount: 1,
-      transitionObservationCount: 5,
+      transitionObservationCount: 2,
     });
 
     const tone3Key = bindingScopeKey({
@@ -171,9 +203,10 @@ describe("measurement decisions", () => {
     expect(summary.bindings[tone3Key]).toMatchObject({
       attempts: 1,
       errors: 0,
-      timingSamples: 1,
-      currentTimeToTypeMs: 80,
-      bestTimeToTypeMs: 80,
+      timingSamples: 0,
+      currentTimeToTypeMs: null,
+      bestTimeToTypeMs: null,
+      timingExclusions: { interactionNoise: 1 },
     });
   });
 
