@@ -18,6 +18,7 @@ Before importing a larger source, record:
 
 - `local:sample-v1`: manually authored provisional words used only by this repository's tests and spike.
 - `moe:phonetic-symbols-manual`: Ministry of Education *國語注音符號手冊*, used as the reference for the syllable-table validation approach. The project implements an independent program representation and does not redistribute the manual's tables.
+- `moe:revised-dictionary`: Ministry of Education *重編國語辭典修訂本*, used as a reference-only audit for uncommon standalone syllables. Dictionary definitions are not copied into runtime catalog data.
 
 See `docs/syllable-validation.md` for the parser boundary and known limitations.
 
