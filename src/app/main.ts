@@ -9,13 +9,14 @@ import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
 import { SPIKE_CATALOG } from "./generated/catalog.js";
 import { keyboardEventToInput } from "./keyboard-adapter.js";
 
-function requireAppRoot(): HTMLDivElement {
-  const element = document.querySelector<HTMLDivElement>("#app");
-  if (element === null) throw new Error("Missing #app root");
+function requireElement<T extends Element>(selector: string): T {
+  const element = document.querySelector<T>(selector);
+  if (element === null) throw new Error(`Missing required element: ${selector}`);
   return element;
 }
 
-const root = requireAppRoot();
+const root = requireElement<HTMLDivElement>("#app");
+const capture = requireElement<HTMLTextAreaElement>("#keyboard-capture");
 const exercise: Exercise = {
   id: "guided-spike-01",
   mode: "guided",
@@ -52,6 +53,10 @@ function escapeHtml(value: string): string {
     '"': "&quot;",
     "'": "&#39;",
   }[character] ?? character));
+}
+
+function focusCapture(): void {
+  capture.focus({ preventScroll: true });
 }
 
 function renderExercise(): string {
@@ -119,7 +124,7 @@ function render(): void {
       <section class="exercise" aria-label="guided exercise">${renderExercise()}</section>
 
       <div class="actions">
-        <button id="reset" type="button">重新開始</button>
+        <button id="reset" type="button">開始／重新計時</button>
         <button id="toggle-hint" type="button">${showPhysicalHint ? "隱藏" : "顯示"}實體鍵提示</button>
         <button id="download" type="button">下載 JSON</button>
         <button id="clear-warning" type="button">清除 IME 警告</button>
@@ -152,11 +157,14 @@ function render(): void {
     imeWarning = false;
     render();
   });
+
+  focusCapture();
 }
 
 function reset(): void {
   session = createInteractionSession(exercise, performance.now());
   imeWarning = false;
+  capture.value = "";
   render();
 }
 
@@ -178,17 +186,24 @@ function downloadTrace(): void {
   URL.revokeObjectURL(url);
 }
 
-document.addEventListener("compositionstart", () => {
+capture.addEventListener("compositionstart", () => {
   compositionActive = true;
   imeWarning = true;
   render();
 });
 
-document.addEventListener("compositionend", () => {
+capture.addEventListener("compositionend", () => {
   compositionActive = false;
+  capture.value = "";
 });
 
-document.addEventListener("keydown", (event) => {
+capture.addEventListener("input", (event) => {
+  if (!(event instanceof InputEvent) || !event.isComposing) {
+    capture.value = "";
+  }
+});
+
+capture.addEventListener("keydown", (event) => {
   if (session.completed) return;
 
   const input = keyboardEventToInput(
@@ -199,9 +214,12 @@ document.addEventListener("keydown", (event) => {
   );
 
   if (input.composing) imeWarning = true;
-  if (input.actualToken !== null || input.composing) event.preventDefault();
+  if (event.code === "Tab" && !input.composing) event.preventDefault();
   session = applyInteractionInput(session, input);
   render();
 });
+
+document.addEventListener("click", focusCapture);
+window.addEventListener("focus", focusCapture);
 
 render();
