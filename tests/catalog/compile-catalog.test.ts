@@ -19,6 +19,19 @@ describe("compileCatalog", () => {
     expect(result.entries[0]?.provenanceIds).toEqual(["local:sample-v1"]);
   });
 
+  it("normalizes reading whitespace before duplicate and ID checks", () => {
+    const csv = parseCsv([
+      header,
+      "中文,ㄓㄨㄥ1 ㄨㄣ2,1,general,provisional,local:sample-v1",
+      "中文,ㄓㄨㄥ1   ㄨㄣ2,1,general,provisional,local:sample-v1",
+    ].join("\n"));
+    const result = compileCatalog(csv.records, knownProvenanceIds);
+
+    expect(result.entries).toHaveLength(1);
+    expect(result.entries[0]?.id).toBe("word:中文:ㄓㄨㄥ1-ㄨㄣ2");
+    expect(result.errors.map((error) => error.code)).toEqual(["duplicate-entry"]);
+  });
+
   it("rejects provenance IDs that are not registered", () => {
     const csv = parseCsv(`${header}\n中文,ㄓㄨㄥ1 ㄨㄣ2,1,general,provisional,local:typo\n`);
     const result = compileCatalog(csv.records, knownProvenanceIds);
@@ -43,6 +56,20 @@ describe("compileCatalog", () => {
       "syllable-count-mismatch",
       "invalid-frequency-band",
       "duplicate-entry",
+    ]);
+  });
+
+  it("rejects non-canonical frequency bands and empty list values", () => {
+    const csv = parseCsv([
+      header,
+      "中文,ㄓㄨㄥ1 ㄨㄣ2,01,;,provisional,local:sample-v1",
+    ].join("\n"));
+    const result = compileCatalog(csv.records, knownProvenanceIds);
+
+    expect(result.entries).toEqual([]);
+    expect(result.errors.map((error) => error.code)).toEqual([
+      "invalid-frequency-band",
+      "missing-field",
     ]);
   });
 
