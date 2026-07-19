@@ -48,7 +48,12 @@ export function smoothTiming(
 }
 
 function emptyTimingExclusions(): TimingExclusionCounts {
-  return { syllableStart: 0, incorrect: 0, recovery: 0 };
+  return {
+    syllableStart: 0,
+    incorrect: 0,
+    recovery: 0,
+    interactionNoise: 0,
+  };
 }
 
 function incrementTimingExclusion(
@@ -62,12 +67,19 @@ function incrementTimingExclusion(
   if (reason === "incorrect") {
     return { ...counts, incorrect: counts.incorrect + 1 };
   }
-  return { ...counts, recovery: counts.recovery + 1 };
+  if (reason === "recovery") {
+    return { ...counts, recovery: counts.recovery + 1 };
+  }
+  return { ...counts, interactionNoise: counts.interactionNoise + 1 };
+}
+
+function compareKeys(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
 }
 
 function sortedRecord<T>(map: ReadonlyMap<string, T>): Readonly<Record<string, T>> {
   return Object.fromEntries(
-    [...map.entries()].sort(([left], [right]) => left.localeCompare(right)),
+    [...map.entries()].sort(([left], [right]) => compareKeys(left, right)),
   );
 }
 
