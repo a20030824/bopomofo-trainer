@@ -68,13 +68,15 @@ Deliverables:
 - exercise/session state machine;
 - entry and syllable boundary handling;
 - expected-versus-actual input behavior;
-- reviewed timing-context inclusion policy;
-- binding, confusion, and transition observations;
+- versioned timing-context inclusion policy;
+- explicit binding, confusion, and transition observation decisions;
+- exclusion of boundary, recovery, and interaction-noise intervals from motor timing;
 - layout- and practice-mode-scoped skill identities;
-- aggregation and provisional smoothing;
+- deterministic aggregation and provisional smoothing;
+- replay CLI for exported spike traces;
 - deterministic scripted tests.
 
-Exit condition: scripted and recorded input sequences produce stable, explainable statistics without mixing reading recall, entry-start latency, and within-syllable motor timing.
+Exit condition: scripted and recorded input sequences produce stable, explainable statistics without mixing reading recall, boundary latency, recovery, interaction noise, and within-syllable motor timing.
 
 ## Phase 4 — Curriculum simulator
 
