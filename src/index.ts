@@ -9,3 +9,7 @@ export * from "./catalog/compile-catalog.js";
 export * from "./catalog/provenance.js";
 export * from "./catalog/coverage.js";
 export * from "./practice/interaction-session.js";
+export * from "./measurement/types.js";
+export * from "./measurement/policy.js";
+export * from "./measurement/derive-observations.js";
+export * from "./measurement/aggregate.js";
