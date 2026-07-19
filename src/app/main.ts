@@ -26,6 +26,7 @@ const exercise: Exercise = {
 let session: InteractionSessionState = createInteractionSession(exercise, performance.now());
 let compositionActive = false;
 let imeWarning = false;
+let showPhysicalHint = false;
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -95,11 +96,16 @@ function render(): void {
   const expectedCode = current === undefined
     ? "—"
     : reverseBindings.get(current.tokenId) ?? "unmapped";
+  const expectedDescription = current === undefined
+    ? "—"
+    : showPhysicalHint
+      ? `${tokenLabel(current.tokenId)} · 實體鍵 ${expectedCode}`
+      : tokenLabel(current.tokenId);
   const status = imeWarning
     ? "偵測到輸入法組字。請切換成英文鍵盤後再繼續。"
     : session.completed
       ? "Exercise complete. 可下載 trace 或重新開始。"
-      : `預期 ${current ? tokenLabel(current.tokenId) : "—"} · 實體鍵 ${expectedCode}`;
+      : `預期 ${expectedDescription}`;
 
   root.innerHTML = `
     <main class="shell">
@@ -114,6 +120,7 @@ function render(): void {
 
       <div class="actions">
         <button id="reset" type="button">重新開始</button>
+        <button id="toggle-hint" type="button">${showPhysicalHint ? "隱藏" : "顯示"}實體鍵提示</button>
         <button id="download" type="button">下載 JSON</button>
         <button id="clear-warning" type="button">清除 IME 警告</button>
       </div>
@@ -136,6 +143,10 @@ function render(): void {
     </main>`;
 
   document.querySelector<HTMLButtonElement>("#reset")?.addEventListener("click", reset);
+  document.querySelector<HTMLButtonElement>("#toggle-hint")?.addEventListener("click", () => {
+    showPhysicalHint = !showPhysicalHint;
+    render();
+  });
   document.querySelector<HTMLButtonElement>("#download")?.addEventListener("click", downloadTrace);
   document.querySelector<HTMLButtonElement>("#clear-warning")?.addEventListener("click", () => {
     imeWarning = false;
@@ -153,6 +164,7 @@ function downloadTrace(): void {
   const payload = {
     exportedAt: new Date().toISOString(),
     exercise,
+    traceOptions: { showPhysicalHint },
     traces: session.traces,
   };
   const url = URL.createObjectURL(new Blob(
