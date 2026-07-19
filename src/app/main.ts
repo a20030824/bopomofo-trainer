@@ -1,5 +1,13 @@
 import "./style.css";
 import type { TokenId } from "../core/model.js";
+import { createPilotExport } from "../product/pilot-export.js";
+import {
+  appendPilotRoundRecord,
+  createPilotRoundRecord,
+  migratePilotHistory,
+  type PilotHistory,
+  type PilotRoundRecord,
+} from "../product/pilot-history.js";
 import {
   applyProductInput,
   createFreshProgressForEnvironment,
@@ -14,6 +22,11 @@ import {
   PRACTICE_CATALOG,
 } from "./generated/catalog.js";
 import { keyboardEventToInput } from "./keyboard-adapter.js";
+import {
+  clearLocalPilotHistory,
+  loadLocalPilotHistory,
+  saveLocalPilotHistory,
+} from "./pilot-history.js";
 import {
   clearLocalProductProgress,
   loadLocalProductProgress,
@@ -59,6 +72,16 @@ const initialProgress = loadedProgress ?? createFreshProgressForEnvironment(
   "guided",
   STANDARD_BOPOMOFO_LAYOUT.id,
 );
+let pilotHistory: PilotHistory = migratePilotHistory(initialProgress);
+let recoveredPilotHistory = false;
+try {
+  const loaded = loadLocalPilotHistory(localStorage, initialProgress, environment);
+  pilotHistory = loaded.history;
+  recoveredPilotHistory = loaded.recoveredFromInvalidState;
+} catch {
+  storageWarning = "瀏覽器無法讀取完整本機資料；練習仍可使用，但 Pilot 歷史可能無法保存。";
+}
+
 let product: ProductState = createProductState(
   environment,
   initialProgress,
@@ -180,7 +203,7 @@ function statusMessage(): string {
   if (product.summary !== null) {
     return product.round.kind === "evaluation"
       ? "保留詞檢查完成；結果已獨立保存，不會改變下一輪弱點選擇。"
-      : "本輪完成；量測與課程狀態已保存到這台瀏覽器。";
+      : "本輪完成；量測、課程狀態與 Pilot 歷史已保存到這台瀏覽器。";
   }
   const inputMessage = latestInputMessage();
   if (inputMessage !== null) return inputMessage;
@@ -202,6 +225,12 @@ function renderSummary(): string {
   const accuracy = summary.attempts === 0
     ? "—"
     : `${Math.round(((summary.attempts - summary.errors) / summary.attempts) * 100)}%`;
+  const latestPilot = pilotHistory.records.at(-1);
+  const median = latestPilot?.roundNumber
+      === product.progress.practiceRoundsCompleted + product.progress.evaluationRoundsCompleted
+    && latestPilot.cleanLatencyMedianMs !== null
+    ? `${Math.round(latestPilot.cleanLatencyMedianMs)} ms`
+    : "—";
   return `<section class="completion-card" aria-labelledby="completion-title">
     <div>
       <p class="eyebrow">Round complete</p>
@@ -212,10 +241,75 @@ function renderSummary(): string {
     </div>
     <div class="summary-metrics">
       ${metric("正確率", accuracy, `${summary.errors} 次錯誤`)}
-      ${metric("有效嘗試", String(summary.attempts), "排除起始與瀏覽器雜訊")}
-      ${metric("乾淨時間", String(summary.timingSamples), "within-syllable 與 tone")}
+      ${metric("有效嘗試", String(summary.attempts), "所有已映射按鍵；排除瀏覽器雜訊")}
+      ${metric("乾淨中位時間", median, `${summary.timingSamples} 個合格樣本`)}
     </div>
     <button id="next-round" class="primary" type="button">開始下一輪</button>
+  </section>`;
+}
+
+function historyPhaseLabel(record: PilotRoundRecord): string {
+  if (record.phase === "evaluation") return "保留詞";
+  return record.phase === "coverage" ? "基礎覆蓋" : "弱點聚焦";
+}
+
+function historyFocusLabel(record: PilotRoundRecord): string {
+  if (record.focusTokenId === null) return "—";
+  const evidence = record.focusEvidence === "timed" ? "時間＋正確" : "正確率";
+  return `${tokenLabel(record.focusTokenId)} · ${evidence}`;
+}
+
+function historyAccuracy(record: PilotRoundRecord): string {
+  if (record.attempts === 0) return "—";
+  return `${Math.round(((record.attempts - record.errors) / record.attempts) * 100)}%`;
+}
+
+function historyCompletedAt(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleString("zh-TW", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+}
+
+function renderPilotHistory(): string {
+  const rows = [...pilotHistory.records].reverse().map((record) => {
+    const latency = record.cleanLatencyMedianMs === null
+      ? "—"
+      : `${Math.round(record.cleanLatencyMedianMs)} ms`;
+    return `<tr>
+      <td>${record.roundNumber}</td>
+      <td>${record.kind === "evaluation" ? "評估" : "練習"}</td>
+      <td>${historyPhaseLabel(record)}</td>
+      <td>${escapeHtml(historyFocusLabel(record))}</td>
+      <td>${historyAccuracy(record)}</td>
+      <td>${record.errors} / ${record.attempts}</td>
+      <td>${record.timingSamples}</td>
+      <td>${latency}</td>
+      <td>${escapeHtml(historyCompletedAt(record.completedAt))}</td>
+      <td class="history-entries">${escapeHtml(record.entryIds.join(" · "))}</td>
+    </tr>`;
+  }).join("");
+  return `<section class="pilot-panel" aria-labelledby="pilot-history-title">
+    <div class="pilot-heading">
+      <div>
+        <p class="eyebrow">Local pilot evidence</p>
+        <h2 id="pilot-history-title">最近 ${pilotHistory.records.length} 輪</h2>
+        <p>只呈現觀察證據，不宣稱熟練度或學習成效。舊 Phase 5 紀錄缺少單輪 latency 時會顯示「—」。</p>
+      </div>
+      <button id="download-pilot" type="button">下載 Pilot JSON</button>
+    </div>
+    <div class="table-wrap pilot-table">
+      <table>
+        <thead><tr><th>輪</th><th>類型</th><th>階段</th><th>重點</th><th>正確率</th><th>錯誤 / 嘗試</th><th>乾淨樣本</th><th>中位時間</th><th>完成</th><th>詞目</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="10">完成第一輪後會開始累積本機 Pilot 歷史。</td></tr>'}</tbody>
+      </table>
+    </div>
   </section>`;
 }
 
@@ -234,10 +328,38 @@ function traceRows(): string {
 function persistProgress(): void {
   try {
     saveLocalProductProgress(localStorage, product.progress);
+    saveLocalPilotHistory(localStorage, pilotHistory);
     storageWarning = "";
   } catch {
     storageWarning = "無法寫入 localStorage；請勿關閉頁面，否則本輪進度可能遺失。";
   }
+}
+
+function downloadJson(filename: string, source: string): void {
+  const url = URL.createObjectURL(new Blob([source], { type: "application/json" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadRoundDiagnostics(): void {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    round: product.round,
+    exercise: product.round.exercise,
+    summary: product.summary,
+    traces: product.session.traces,
+  };
+  downloadJson(`bopomofo-round-${Date.now()}.json`, JSON.stringify(payload, null, 2));
+}
+
+function downloadPilotExport(): void {
+  downloadJson(
+    "bopomofo-pilot.json",
+    createPilotExport(environment, product.progress, pilotHistory),
+  );
 }
 
 function render(): void {
@@ -261,7 +383,8 @@ function render(): void {
         </div>
       </header>
 
-      ${recoveredFromInvalidState ? `<div class="notice">舊的本機資料格式無法安全讀取，已從乾淨進度重新開始。</div>` : ""}
+      ${recoveredFromInvalidState ? '<div class="notice">舊的本機進度無法安全讀取，已從乾淨狀態重新開始。</div>' : ""}
+      ${recoveredPilotHistory ? '<div class="notice">Pilot 歷史格式無法讀取，已從有效的完成摘要重建；舊輪次 latency 會顯示為未知。</div>' : ""}
       ${storageWarning ? `<div class="notice warning">${escapeHtml(storageWarning)}</div>` : ""}
 
       <section class="round-strip" aria-label="本輪資訊">
@@ -285,10 +408,12 @@ function render(): void {
 
       <div class="actions">
         <button id="toggle-hint" type="button">${showPhysicalHint ? "隱藏" : "顯示"}實體鍵提示</button>
-        <button id="download" type="button">下載本輪診斷</button>
+        <button id="download-round" type="button">下載本輪診斷</button>
         ${imeWarning ? '<button id="clear-warning" type="button">清除 IME 警告</button>' : ""}
         <button id="reset-progress" class="danger" type="button">清除本機進度</button>
       </div>
+
+      ${renderPilotHistory()}
 
       <details class="diagnostics">
         <summary>開發診斷 · raw trace</summary>
@@ -312,7 +437,8 @@ function render(): void {
     showPhysicalHint = !showPhysicalHint;
     render();
   });
-  document.querySelector<HTMLButtonElement>("#download")?.addEventListener("click", downloadDiagnostics);
+  document.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
+  document.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
   document.querySelector<HTMLButtonElement>("#clear-warning")?.addEventListener("click", () => {
     imeWarning = false;
     render();
@@ -321,33 +447,15 @@ function render(): void {
   focusCapture();
 }
 
-function downloadDiagnostics(): void {
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    round: product.round,
-    exercise: product.round.exercise,
-    summary: product.summary,
-    traces: product.session.traces,
-  };
-  const url = URL.createObjectURL(new Blob(
-    [JSON.stringify(payload, null, 2)],
-    { type: "application/json" },
-  ));
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = `bopomofo-round-${Date.now()}.json`;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
-
 function resetProgress(): void {
   const confirmed = window.confirm(
-    "這會清除這台瀏覽器中的所有練習與評估進度，確定繼續嗎？",
+    "這會清除這台瀏覽器中的所有練習、評估與 Pilot 歷史，確定繼續嗎？",
   );
   if (!confirmed) return;
   let canPersist = true;
   try {
     clearLocalProductProgress(localStorage);
+    clearLocalPilotHistory(localStorage);
     storageWarning = "";
   } catch {
     canPersist = false;
@@ -360,7 +468,9 @@ function resetProgress(): void {
     STANDARD_BOPOMOFO_LAYOUT.id,
   );
   product = createProductState(environment, progress, performance.now());
+  pilotHistory = migratePilotHistory(progress);
   recoveredFromInvalidState = false;
+  recoveredPilotHistory = false;
   if (canPersist) persistProgress();
   imeWarning = false;
   capture.value = "";
@@ -401,7 +511,21 @@ capture.addEventListener("keydown", (event) => {
     input,
     new Date().toISOString(),
   );
-  if (before === null && product.summary !== null) persistProgress();
+  if (before === null && product.summary !== null) {
+    const roundNumber = product.progress.practiceRoundsCompleted
+      + product.progress.evaluationRoundsCompleted;
+    pilotHistory = appendPilotRoundRecord(
+      pilotHistory,
+      createPilotRoundRecord(
+        roundNumber,
+        product.round,
+        product.summary,
+        product.session.traces,
+        environment.measurementPolicy,
+      ),
+    );
+    persistProgress();
+  }
   render();
 });
 
