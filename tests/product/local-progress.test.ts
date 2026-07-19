@@ -39,6 +39,34 @@ describe("local progress adapter", () => {
     expect(storage.getItem(LOCAL_PROGRESS_KEY)).toBeNull();
   });
 
+  it("rejects summaries that reference unknown entries", () => {
+    const storage = new MemoryStorage();
+    const progress = createFreshProgressForEnvironment(
+      environment,
+      "seed",
+      "guided",
+      "standard",
+    );
+    const stored = JSON.parse(JSON.stringify(progress)) as Record<string, unknown>;
+    stored.recentSummaries = [{
+      kind: "practice",
+      exerciseId: "practice-1",
+      completedAt: "2026-07-20T00:00:00.000Z",
+      entryIds: ["unknown"],
+      phase: "coverage",
+      focusTokenId: "zhuyin:ㄇ",
+      focusEvidence: "correctness-only",
+      attempts: 1,
+      errors: 0,
+      timingSamples: 0,
+    }];
+    storage.setItem(LOCAL_PROGRESS_KEY, JSON.stringify(stored));
+    expect(loadLocalProductProgress(storage, environment, "guided", "standard")).toEqual({
+      progress: null,
+      recoveredFromInvalidState: true,
+    });
+  });
+
   it("reports invalid stored state without partially loading it", () => {
     const storage = new MemoryStorage();
     storage.setItem(LOCAL_PROGRESS_KEY, "{broken");
