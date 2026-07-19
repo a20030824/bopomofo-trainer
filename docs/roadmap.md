@@ -98,19 +98,22 @@ Exit condition: simulations show increased exposure for eligible weak bindings w
 
 ## Phase 5 — Thin product prototype
 
-Goal: combine validated interaction, measurement, and curriculum behavior into a small usable product.
+Goal: combine validated interaction, measurement, and curriculum behavior into a small usable local-first product.
 
 Deliverables:
 
-- framework choice based on actual UI complexity;
-- guided exercise display;
-- IME-mode warning;
-- adaptive exercises;
-- local progress persistence;
-- simple session summary;
-- held-out evaluation items for checking transfer beyond repeated vocabulary.
+- retain Vanilla TypeScript + Vite based on the actual one-page UI complexity;
+- curriculum-generated guided exercise display;
+- IME-mode warning and explicit first-tone Space behavior;
+- cumulative measurement appended only after completed practice rounds;
+- schema-versioned, guided/layout-scoped local progress persistence;
+- deterministic reload and next-round construction;
+- simple completion summary without a confidence/mastery claim;
+- deterministic practice/held-out catalog partition;
+- periodic held-out evaluation that never updates adaptive training aggregates;
+- malformed/stale local state rejection and explicit local reset.
 
-Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, and measurable improvement on held-out entries.
+Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, adaptive exercise selection, and separate transfer checks on held-out entries.
 
 ## Later experiments
 
