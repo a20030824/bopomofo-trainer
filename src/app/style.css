@@ -63,12 +63,13 @@ button { font: inherit; }
 }
 
 h1 {
-  max-width: 760px;
+  max-width: none;
   margin: 0;
-  font-size: clamp(38px, 6.5vw, 76px);
+  font-size: clamp(38px, 5.4vw, 64px);
   font-weight: 850;
   letter-spacing: -.045em;
   line-height: .96;
+  white-space: nowrap;
 }
 
 h2 {
@@ -349,7 +350,7 @@ th { position: sticky; top: 0; background: #ebe6db; color: var(--ink); }
 
 @media (max-width: 560px) {
   .shell { width: min(100% - 20px, 1120px); padding-top: 26px; }
-  h1 { font-size: 43px; }
+  h1 { max-width: 8em; font-size: clamp(36px, 10vw, 43px); line-height: 1.02; white-space: normal; }
   .practice-panel { padding: 13px; }
   .exercise { grid-template-columns: 1fr; }
   .entry { min-height: 112px; }
