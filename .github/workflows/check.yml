@@ -3,7 +3,9 @@ name: check
 on:
   pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "agent/**"
 
 permissions:
   contents: read
@@ -16,5 +18,23 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      - run: npm install --include=dev --ignore-scripts
-      - run: npm run check
+      - name: Install dependencies
+        run: npm install --include=dev --ignore-scripts
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Tests
+        id: tests
+        shell: bash
+        run: |
+          set -o pipefail
+          npm test -- --reporter=verbose 2>&1 | tee vitest.log
+      - name: Upload Vitest failure log
+        if: failure() && steps.tests.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-failure-log
+          path: vitest.log
+      - name: Validate catalog
+        run: npm run catalog:validate
+      - name: Production build
+        run: npm run build
