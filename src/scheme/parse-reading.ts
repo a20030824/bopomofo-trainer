@@ -1,13 +1,13 @@
 import type { Syllable } from "../core/model.js";
 import { BOPOMOFO_SYMBOLS, TONES, toneToken, zhuyinToken, type Tone } from "./tokens.js";
-import { isLegalSyllableBody } from "./syllable-grammar.js";
+import { isSupportedCatalogSyllableBody } from "./syllable-grammar.js";
 
 export type ReadingErrorCode =
   | "empty-reading"
   | "missing-tone"
   | "invalid-tone"
   | "unknown-symbol"
-  | "illegal-syllable";
+  | "unsupported-syllable";
 
 export interface ReadingParseError {
   readonly code: ReadingErrorCode;
@@ -55,7 +55,7 @@ function parseSyllable(source: string, syllableIndex: number): Syllable | Readin
   const bodySymbols = symbols.slice(0, -1);
   if (bodySymbols.length === 0) {
     return error(
-      "illegal-syllable",
+      "unsupported-syllable",
       `音節「${source}」缺少注音符號`,
       source,
       syllableIndex,
@@ -73,10 +73,10 @@ function parseSyllable(source: string, syllableIndex: number): Syllable | Readin
   }
 
   const body = bodySymbols.join("");
-  if (!isLegalSyllableBody(body)) {
+  if (!isSupportedCatalogSyllableBody(body)) {
     return error(
-      "illegal-syllable",
-      `音節「${source}」不是合法的國語注音組合`,
+      "unsupported-syllable",
+      `音節「${source}」不在第一階段詞庫支援的國語音節表中`,
       source,
       syllableIndex,
     );
