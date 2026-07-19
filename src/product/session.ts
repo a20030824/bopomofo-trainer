@@ -1,4 +1,7 @@
-import type { InteractionInput } from "../practice/interaction-session.js";
+import type {
+  InteractionInput,
+  InteractionTrace,
+} from "../practice/interaction-session.js";
 import {
   applyInteractionInput,
   createInteractionSession,
@@ -167,19 +170,31 @@ export function createProductState(
   };
 }
 
-function sumSessionMetrics(measurements: ReturnType<typeof aggregateMeasurements>): {
+function sumSessionMetrics(
+  traces: readonly InteractionTrace[],
+  measurements: ReturnType<typeof aggregateMeasurements>,
+): {
   readonly attempts: number;
   readonly errors: number;
   readonly timingSamples: number;
 } {
-  return Object.values(measurements.bindings).reduce(
-    (totals, aggregate) => ({
-      attempts: totals.attempts + aggregate.attempts,
-      errors: totals.errors + aggregate.errors,
-      timingSamples: totals.timingSamples + aggregate.timingSamples,
-    }),
-    { attempts: 0, errors: 0, timingSamples: 0 },
+  const interaction = traces.reduce(
+    (totals, trace) => {
+      if (trace.outcome !== "correct" && trace.outcome !== "incorrect") {
+        return totals;
+      }
+      return {
+        attempts: totals.attempts + 1,
+        errors: totals.errors + (trace.outcome === "incorrect" ? 1 : 0),
+      };
+    },
+    { attempts: 0, errors: 0 },
   );
+  const timingSamples = Object.values(measurements.bindings).reduce(
+    (total, aggregate) => total + aggregate.timingSamples,
+    0,
+  );
+  return { ...interaction, timingSamples };
 }
 
 function updateCurriculumAfterPractice(
@@ -229,7 +244,7 @@ function finalizeRound(
     decisions,
     environment.measurementPolicy,
   );
-  const metrics = sumSessionMetrics(sessionMeasurements);
+  const metrics = sumSessionMetrics(state.session.traces, sessionMeasurements);
   const summary: ProductRoundSummary = {
     kind: state.round.kind,
     exerciseId: state.round.exercise.id,
