@@ -115,8 +115,26 @@ Deliverables:
 
 Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, adaptive exercise selection, and separate transfer checks on held-out entries.
 
+## Phase 6A — Pilot history and validation instrumentation
+
+Goal: collect enough local, per-round evidence for a real 10–20 round pilot before changing curriculum thresholds or redesigning the full UI.
+
+Deliverables:
+
+- a separate schema-versioned pilot-history store that does not rewrite valid Phase 5 progress;
+- migration from existing compact round summaries, with unavailable historical latency represented as `null`;
+- retention of at least 20 completed practice/evaluation rounds;
+- mapped-key attempts, errors, accuracy, phase, focus, evidence route, timing-sample count, and median clean latency per round;
+- reconciliation when progress and pilot-history localStorage writes are temporarily out of sync;
+- a restrained, inspectable history table;
+- deterministic local JSON export containing policy versions, history, curriculum cooldown metadata, cumulative measurements, and catalog partition IDs;
+- no telemetry, account identifier, browser identifier, or learning-effectiveness claim.
+
+Exit condition: a 10–20 round human pilot can inspect coverage-to-focus behavior, cooldown, repetition, and held-out evaluation without altering the adaptive policy or conflating observation with validated learning effect.
+
 ## Later experiments
 
+- Phase 6B full UI refinement informed by pilot friction;
 - recall practice mode with separate statistics;
 - transition-aware curriculum;
 - beginner progression by syllable families;
