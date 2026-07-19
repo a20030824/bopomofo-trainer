@@ -1,7 +1,9 @@
 export type TokenId = string;
 export type FrequencyBand = 1 | 2 | 3;
+export type PracticeMode = "guided" | "recall";
 export type TimingContext =
-  | "prompt-start"
+  | "exercise-start"
+  | "entry-start"
   | "syllable-start"
   | "within-syllable"
   | "tone";
@@ -9,7 +11,7 @@ export type TimingContext =
 export interface TokenDefinition {
   readonly id: TokenId;
   readonly label: string;
-  readonly kind: "initial" | "medial" | "final" | "tone";
+  readonly kind: "bopomofo" | "tone";
 }
 
 export interface Prompt {
@@ -21,12 +23,20 @@ export interface Syllable {
   readonly tokens: readonly TokenId[];
 }
 
-export interface TrainingItem {
+export interface CatalogEntry {
   readonly id: string;
   readonly prompt: Prompt;
   readonly syllables: readonly Syllable[];
   readonly frequencyBand: FrequencyBand;
   readonly tags: readonly string[];
+  readonly provenanceIds: readonly string[];
+}
+
+export interface Exercise {
+  readonly id: string;
+  readonly mode: PracticeMode;
+  readonly layoutId: string;
+  readonly entries: readonly CatalogEntry[];
 }
 
 export interface InputLayout {
@@ -36,7 +46,9 @@ export interface InputLayout {
 }
 
 export interface InputObservation {
-  readonly itemId: string;
+  readonly exerciseId: string;
+  readonly entryId: string;
+  readonly mode: PracticeMode;
   readonly layoutId: string;
   readonly expectedToken: TokenId;
   readonly actualToken: TokenId | null;
@@ -48,7 +60,13 @@ export interface InputObservation {
   readonly context: TimingContext;
 }
 
-export interface TokenStats {
+export interface BindingSkillScope {
+  readonly mode: PracticeMode;
+  readonly layoutId: string;
+  readonly tokenId: TokenId;
+}
+
+export interface SkillStats {
   readonly attempts: number;
   readonly errors: number;
   readonly currentTimeToTypeMs: number | null;
@@ -64,7 +82,7 @@ export interface TransitionStats {
 }
 
 export interface LearnerProfile {
-  readonly tokenStats: Readonly<Record<TokenId, TokenStats>>;
+  readonly bindingStats: Readonly<Record<string, SkillStats>>;
   readonly transitionStats: Readonly<Record<string, TransitionStats>>;
   readonly confusionStats: Readonly<Record<string, number>>;
 }
