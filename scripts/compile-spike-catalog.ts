@@ -19,6 +19,20 @@ if (result.errors.length > 0) {
 }
 
 const selectedEntries = result.entries.slice(0, 10);
+if (selectedEntries.length < 2) {
+  throw new Error("The interaction spike requires at least two catalog entries");
+}
+
+const selectedTokens = new Set(
+  selectedEntries.flatMap((entry) => entry.syllables.flatMap((syllable) => syllable.tokens)),
+);
+const missingTones = [1, 2, 3, 4, 5]
+  .map((tone) => `tone:${tone}`)
+  .filter((tokenId) => !selectedTokens.has(tokenId));
+if (missingTones.length > 0) {
+  throw new Error(`The interaction spike selection is missing tones: ${missingTones.join(", ")}`);
+}
+
 const outputUrl = new URL("../src/app/generated/", import.meta.url);
 await mkdir(outputUrl, { recursive: true });
 
