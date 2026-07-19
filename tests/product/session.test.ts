@@ -54,6 +54,52 @@ describe("thin product session loop", () => {
     })).toThrow(/duplicate/);
   });
 
+  it("reports interaction accuracy across boundaries without counting browser noise", () => {
+    const progress = createFreshProgressForEnvironment(
+      environment,
+      "accuracy-seed",
+      "guided",
+      "standard",
+    );
+    const initial = createProductState(environment, progress, 0);
+    const targetCount = initial.session.targets.length;
+    const expected = initial.session.targets[0]!.tokenId;
+    const wrongToken = expected === "tone:1" ? "tone:2" : "tone:1";
+
+    let current = applyProductInput(environment, initial, {
+      timestampMs: 10,
+      physicalCode: "WrongMappedKey",
+      actualToken: wrongToken,
+      repeat: false,
+      composing: false,
+      modifierOnly: false,
+    }, "2026-07-20T00:00:00.000Z");
+    current = applyProductInput(environment, current, {
+      timestampMs: 20,
+      physicalCode: "ArrowLeft",
+      actualToken: null,
+      repeat: false,
+      composing: false,
+      modifierOnly: false,
+    }, "2026-07-20T00:00:00.000Z");
+    current = applyProductInput(environment, current, {
+      timestampMs: 30,
+      physicalCode: "HeldKey",
+      actualToken: expected,
+      repeat: true,
+      composing: false,
+      modifierOnly: false,
+    }, "2026-07-20T00:00:00.000Z");
+
+    const completed = complete(current);
+    expect(completed.summary).not.toBeNull();
+    expect(completed.summary!.attempts).toBe(targetCount + 1);
+    expect(completed.summary!.errors).toBe(1);
+    expect(completed.progress.measurements.bindingObservationCount).toBeLessThan(
+      completed.summary!.attempts,
+    );
+  });
+
   it("updates practice measurement and curriculum exactly once", () => {
     const progress = createFreshProgressForEnvironment(
       environment,
