@@ -13,7 +13,8 @@ npm run catalog:build
 Observed results:
 
 - TypeScript strict typecheck passed.
-- 2 Vitest files and 9 tests passed.
+- 2 Vitest files and 11 tests passed.
+- The provenance registry and all catalog references validated successfully.
 - The provisional catalog compiled successfully.
 - 50 entries produced 102 syllables.
 - Coverage included all 37 Bopomofo symbols and all 5 explicit tone tokens.
