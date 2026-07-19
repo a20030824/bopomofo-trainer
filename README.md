@@ -66,4 +66,4 @@ The disposable browser spike can:
 5. distinguish errors, recovery, unmapped keys, repeats, modifiers, and composition;
 6. expose raw timing traces without prematurely assigning permanent progress scores.
 
-The Phase 3 measurement model keeps boundary, recovery, and interaction noise separate from eligible within-syllable motor timing. A deterministic curriculum simulator follows after this policy is validated and merged.
+The Phase 3 measurement model keeps boundary, recovery, and interaction-noise intervals separate from eligible within-syllable motor timing. A deterministic curriculum simulator follows after this policy is validated and merged.
