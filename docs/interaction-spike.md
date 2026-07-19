@@ -22,14 +22,17 @@ A persistent, visually hidden textarea remains focused as the browser input targ
 ## Current interaction semantics
 
 - Correct mapped input advances exactly one semantic token.
-- Incorrect mapped input and ordinary unmapped keys are traced as errors and do not advance.
-- Held-key repeats are traced as `ignored-repeat` and do not count as errors.
-- Modifier-only keys and Ctrl/Alt/Meta shortcuts are traced as `ignored-modifier` and do not count as errors.
+- Incorrect mapped input and ordinary unmapped keys are traced and do not advance.
+- Held-key repeats are traced as `ignored-repeat`.
+- Modifier-only keys and Ctrl/Alt/Meta shortcuts are traced as `ignored-modifier`.
 - Composition events and `Process` key events are traced as `composition`, show an IME warning, and do not advance.
 - The focused capture target absorbs Space, so first-tone input does not scroll the page.
 - Timing uses monotonic `performance.now()` timestamps.
-- `elapsedSinceAdvanceMs` is measured from the previous successful advance. Errors do not reset that clock, so a later successful correction includes the entire recovery interval and is marked `recovery: true`.
+- `elapsedSinceAdvanceMs` is measured from the previous successful advance.
+- Only an incorrect mapped Bopomofo key starts recovery; unmapped and ignored browser events remain interaction noise.
 - The first target uses the interval from exercise creation or reset and is classified as `exercise-start`.
+
+Phase 3 decides which of these raw intervals are analytically eligible. See `docs/measurement-policy.md`: boundary, recovery, and interaction-noise-contaminated intervals are retained but excluded from provisional motor timing.
 
 ## Trace fields
 
@@ -75,14 +78,20 @@ For each pass, note:
 - whether recovery duration should update later motor statistics;
 - whether showing the expected physical code changes user behaviour too much.
 
-## Unresolved measurement questions
+## Measurement follow-up
 
-- Should `exercise-start` ever update a motor skill model, or remain diagnostic only?
-- Should `entry-start` and `syllable-start` be modeled separately after more observations?
-- Should a correct recovery attempt retain the full elapsed interval, exclude error-handling time, or produce two derived values?
-- Should ordinary unmapped keys count as motor errors, interaction noise, or a separate class?
-- Should shortcut-modified mapped keys be completely absent from analytical traces?
-- How long should one continuous exercise be before fatigue or reading layout dominates the measurement?
-- Does exposing the expected physical key create visual dependence and distort the intended training task?
+The Phase 3 policy now provisionally answers the spike's first measurement questions:
 
-No answer is committed in this phase. The exported raw trace exists so those policies can be decided from observed sessions rather than architecture speculation.
+- exercise and entry starts remain diagnostic only;
+- syllable-start correctness is retained but its timing is excluded;
+- mapped errors create recovery and confusion observations;
+- unmapped, repeat, modifier, and composition events do not count as motor errors, but invalidate the following timing interval;
+- clean within-syllable and tone intervals are eligible for provisional timing.
+
+Re-run an exported session with:
+
+```bash
+npm run measurement:analyze -- path/to/bopomofo-spike.json
+```
+
+The policy remains versioned and replaceable. It does not yet define confidence, minimum samples, outlier rejection, or curriculum eligibility.

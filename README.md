@@ -6,7 +6,7 @@ The first product shows Traditional Chinese context together with the complete B
 
 ## Current status
 
-The architecture baseline and Phase 1 catalog compiler are complete. A disposable guided interaction spike is available to validate browser keyboard handling and raw timing semantics before permanent metrics are designed.
+The architecture baseline, catalog compiler, and guided interaction spike are complete. Phase 3 now derives explicit binding, confusion, and transition observations from raw traces using a versioned measurement policy. It still does not create a final confidence score or persistent learner profile.
 
 ## Run the spike
 
@@ -27,6 +27,12 @@ npm run preview
 
 The spike keeps traces in memory only. It can display or download JSON but does not create learner confidence or persistent progress.
 
+Analyze a downloaded trace with the Phase 3 policy:
+
+```bash
+npm run measurement:analyze -- path/to/bopomofo-spike.json
+```
+
 ## Principles
 
 - Semantic Bopomofo tokens are not physical keys.
@@ -46,9 +52,10 @@ The spike keeps traces in memory only. It can display or download JSON but does 
 - [Keybr reference](docs/keybr-reference.md)
 - [Roadmap](docs/roadmap.md)
 - [Interaction spike](docs/interaction-spike.md)
+- [Measurement policy](docs/measurement-policy.md)
 - [Architecture decisions](docs/decisions/)
 
-## Interaction milestone
+## Validated interaction milestone
 
 The disposable browser spike can:
 
@@ -59,4 +66,4 @@ The disposable browser spike can:
 5. distinguish errors, recovery, unmapped keys, repeats, modifiers, and composition;
 6. expose raw timing traces without prematurely assigning permanent progress scores.
 
-A deterministic curriculum simulator follows after manual sessions establish credible measurement semantics.
+The Phase 3 measurement model keeps boundary, recovery, and interaction-noise intervals separate from eligible within-syllable motor timing. A deterministic curriculum simulator follows after this policy is validated and merged.

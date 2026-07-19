@@ -81,7 +81,7 @@ describe("interaction session", () => {
     });
   });
 
-  it("does not advance on errors and marks the next correct attempt as recovery", () => {
+  it("does not advance on mapped errors and marks the next correct attempt as recovery", () => {
     let state = createInteractionSession(exercise, 100);
     state = applyInteractionInput(state, input(150, "KeyJ", "zhuyin:ㄨ"));
     expect(state.position).toBe(0);
@@ -93,15 +93,17 @@ describe("interaction session", () => {
     expect(state.traces[1]?.elapsedSinceAdvanceMs).toBe(120);
   });
 
-  it("treats unmapped keys as errors without advancing", () => {
-    const state = applyInteractionInput(
-      createInteractionSession(exercise, 100),
-      input(125, "ArrowDown", null),
-    );
+  it("treats unmapped keys as interaction noise without starting recovery", () => {
+    let state = createInteractionSession(exercise, 100);
+    state = applyInteractionInput(state, input(125, "ArrowDown", null));
 
     expect(state.position).toBe(0);
-    expect(state.hadErrorSinceAdvance).toBe(true);
+    expect(state.hadErrorSinceAdvance).toBe(false);
     expect(state.traces[0]).toMatchObject({ outcome: "unmapped", correct: false });
+
+    state = applyInteractionInput(state, input(175, "Digit5", "zhuyin:ㄓ"));
+    expect(state.position).toBe(1);
+    expect(state.traces[1]?.recovery).toBe(false);
   });
 
   it("traces repeats, modifiers, and composition without advancing or creating an error", () => {

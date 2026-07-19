@@ -10,6 +10,7 @@
     "catalog:validate": "tsx scripts/validate-catalog.ts",
     "catalog:build": "tsx scripts/compile-catalog.ts",
     "spike:catalog": "tsx scripts/compile-spike-catalog.ts",
+    "measurement:analyze": "tsx scripts/analyze-trace.ts",
     "predev": "npm run spike:catalog",
     "dev": "vite",
     "prebuild": "npm run spike:catalog",
