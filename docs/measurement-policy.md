@@ -73,7 +73,7 @@ The interaction spike's downloaded JSON can be analyzed without opening the brow
 npm run measurement:analyze -- path/to/bopomofo-spike.json
 ```
 
-The command prints the policy, every per-trace decision, and the aggregate summary as JSON.
+The command prints the policy, every per-trace decision, and the aggregate summary as JSON. A trace can therefore remain useful even when a later policy version changes which intervals are eligible.
 
 ## What this model can claim
 
