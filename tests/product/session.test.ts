@@ -43,6 +43,17 @@ function complete(state: ReturnType<typeof createProductState>) {
 }
 
 describe("thin product session loop", () => {
+  it("requires unique disjoint practice and evaluation catalogs", () => {
+    expect(() => createProductEnvironment({
+      practice: PRACTICE,
+      evaluation: [PRACTICE[0]!, ...EVALUATION],
+    })).toThrow(/disjoint/);
+    expect(() => createProductEnvironment({
+      practice: [PRACTICE[0]!, PRACTICE[0]!, ...PRACTICE.slice(1)],
+      evaluation: EVALUATION,
+    })).toThrow(/duplicate/);
+  });
+
   it("updates practice measurement and curriculum exactly once", () => {
     const progress = createFreshProgressForEnvironment(
       environment,
