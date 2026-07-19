@@ -325,6 +325,7 @@ function downloadDiagnostics(): void {
   const payload = {
     exportedAt: new Date().toISOString(),
     round: product.round,
+    exercise: product.round.exercise,
     summary: product.summary,
     traces: product.session.traces,
   };
