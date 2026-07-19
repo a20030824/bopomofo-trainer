@@ -39,8 +39,8 @@ export function validateCurriculumPolicy(policy: CurriculumPolicy): void {
   if (!Number.isFinite(policy.focusedEntryBoost) || policy.focusedEntryBoost < 1) {
     throw new RangeError("focusedEntryBoost must be finite and at least 1");
   }
-  if (policy.errorWeight < 0 || policy.timingWeight < 0 || policy.errorWeight + policy.timingWeight <= 0) {
-    throw new RangeError("focus weights must be non-negative with a positive total");
+  if (policy.errorWeight <= 0 || policy.timingWeight < 0) {
+    throw new RangeError("errorWeight must be positive and timingWeight must be non-negative");
   }
   if (policy.recentEntryPenalty <= 0 || policy.recentEntryPenalty > 1) {
     throw new RangeError("recentEntryPenalty must be greater than 0 and at most 1");

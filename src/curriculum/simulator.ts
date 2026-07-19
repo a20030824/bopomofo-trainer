@@ -1,7 +1,8 @@
+import type { CatalogEntry, TokenId } from "../core/model.js";
 import type { BindingAggregate } from "../measurement/types.js";
 import { buildCurriculumExercise } from "./exercise-builder.js";
-import { validateCurriculumPolicy } from "./policy.js";
 import { selectCurriculumFocus } from "./focus.js";
+import { validateCurriculumPolicy } from "./policy.js";
 import { createSeededRandom } from "./random.js";
 import { classifyBindingStates } from "./state.js";
 import { entryTokenSet } from "./support.js";
@@ -27,6 +28,12 @@ export interface SimulationScenario {
   readonly performance: Readonly<Record<string, SyntheticPerformance>>;
 }
 
+interface SyntheticOccurrence {
+  readonly tokenId: TokenId;
+  readonly bindingEligible: boolean;
+  readonly motorEligible: boolean;
+}
+
 function emptyExclusions() {
   return { syllableStart: 0, incorrect: 0, recovery: 0, interactionNoise: 0 } as const;
 }
@@ -36,10 +43,12 @@ function updateAggregate(
   record: CurriculumBindingRecord,
   performance: SyntheticPerformance,
   randomValue: number,
+  motorEligible: boolean,
 ): BindingAggregate {
   const error = randomValue < performance.errorRate;
+  const cleanTiming = motorEligible && !error;
   const previousTiming = previous?.currentTimeToTypeMs ?? null;
-  const timing = error
+  const timing = !cleanTiming
     ? previousTiming
     : previousTiming === null
       ? performance.timingMs
@@ -48,9 +57,9 @@ function updateAggregate(
     scope: record.scope,
     attempts: (previous?.attempts ?? 0) + 1,
     errors: (previous?.errors ?? 0) + (error ? 1 : 0),
-    timingSamples: (previous?.timingSamples ?? 0) + (error ? 0 : 1),
+    timingSamples: (previous?.timingSamples ?? 0) + (cleanTiming ? 1 : 0),
     currentTimeToTypeMs: timing === null ? null : Math.round(timing * 1000) / 1000,
-    bestTimeToTypeMs: error
+    bestTimeToTypeMs: !cleanTiming
       ? previous?.bestTimeToTypeMs ?? null
       : previous?.bestTimeToTypeMs === null || previous?.bestTimeToTypeMs === undefined
         ? performance.timingMs
@@ -59,18 +68,31 @@ function updateAggregate(
   };
 }
 
-function countExposure(
-  entries: readonly {
-    readonly syllables: readonly { readonly tokens: readonly string[] }[];
-  }[],
-): Record<string, number> {
-  const counts: Record<string, number> = {};
+function exerciseOccurrences(entries: readonly CatalogEntry[]): SyntheticOccurrence[] {
+  const occurrences: SyntheticOccurrence[] = [];
   for (const entry of entries) {
-    for (const syllable of entry.syllables) {
-      for (const tokenId of syllable.tokens) {
-        counts[tokenId] = (counts[tokenId] ?? 0) + 1;
+    for (let syllableIndex = 0; syllableIndex < entry.syllables.length; syllableIndex += 1) {
+      const syllable = entry.syllables[syllableIndex]!;
+      for (let tokenIndex = 0; tokenIndex < syllable.tokens.length; tokenIndex += 1) {
+        occurrences.push({
+          tokenId: syllable.tokens[tokenIndex]!,
+          bindingEligible: !(syllableIndex === 0 && tokenIndex === 0),
+          motorEligible: tokenIndex > 0,
+        });
       }
     }
+  }
+  return occurrences;
+}
+
+function countOccurrences(
+  occurrences: readonly SyntheticOccurrence[],
+  predicate: (occurrence: SyntheticOccurrence) => boolean,
+): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const occurrence of occurrences) {
+    if (!predicate(occurrence)) continue;
+    counts[occurrence.tokenId] = (counts[occurrence.tokenId] ?? 0) + 1;
   }
   return counts;
 }
@@ -115,14 +137,30 @@ export function runCurriculumSimulation(
   for (let roundIndex = 0; roundIndex < scenario.rounds; roundIndex += 1) {
     const focus = selectCurriculumFocus(profile, support, policy);
     const states = classifyBindingStates(profile, support, policy, focus.tokenId);
-    const built = buildCurriculumExercise(support, profile, focus.tokenId, policy, random);
+    const built = buildCurriculumExercise(
+      support,
+      profile,
+      focus.tokenId,
+      focus.evidence,
+      policy,
+      random,
+    );
     const stateTransitions = states.flatMap((state) => {
       const from = previousStates.get(state.tokenId) ?? null;
       return from === state.state
         ? []
         : [{ tokenId: state.tokenId, from, to: state.state, reason: state.reason }];
     });
-    const tokenExposure = countExposure(built.exercise.entries);
+    const occurrences = exerciseOccurrences(built.exercise.entries);
+    const tokenExposure = countOccurrences(occurrences, () => true);
+    const bindingObservationExposure = countOccurrences(
+      occurrences,
+      (occurrence) => occurrence.bindingEligible,
+    );
+    const motorTimingExposure = countOccurrences(
+      occurrences,
+      (occurrence) => occurrence.motorEligible,
+    );
     const frequencyBands = { "1": 0, "2": 0, "3": 0 };
     for (const entry of built.exercise.entries) {
       frequencyBands[String(entry.frequencyBand) as "1" | "2" | "3"] += 1;
@@ -139,6 +177,8 @@ export function runCurriculumSimulation(
       stateTransitions,
       exerciseEntryIds: built.exercise.entries.map((entry) => entry.id),
       tokenExposure,
+      bindingObservationExposure,
+      motorTimingExposure,
       frequencyBands,
       repeatedEntryCount,
       fallbackReasons: built.fallbackReasons,
@@ -147,16 +187,22 @@ export function runCurriculumSimulation(
     previousStates = new Map(states.map((state) => [state.tokenId, state.state]));
 
     const bindings: Record<string, CurriculumBindingRecord> = { ...profile.bindings };
-    for (const [tokenId, exposure] of Object.entries(tokenExposure)) {
-      const record = bindings[tokenId];
+    for (const occurrence of occurrences) {
+      if (!occurrence.bindingEligible) continue;
+      const record = bindings[occurrence.tokenId];
       if (record === undefined) continue;
-      let aggregate = record.aggregate;
-      const performance = scenario.performance[tokenId]
+      const performance = scenario.performance[occurrence.tokenId]
         ?? { timingMs: 180, errorRate: 0.03 };
-      for (let index = 0; index < exposure; index += 1) {
-        aggregate = updateAggregate(aggregate, record, performance, random.next());
-      }
-      bindings[tokenId] = { ...record, aggregate };
+      bindings[occurrence.tokenId] = {
+        ...record,
+        aggregate: updateAggregate(
+          record.aggregate,
+          record,
+          performance,
+          random.next(),
+          occurrence.motorEligible,
+        ),
+      };
     }
     if (focus.tokenId !== null) {
       const record = bindings[focus.tokenId];

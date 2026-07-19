@@ -7,22 +7,23 @@ import { runCurriculumSimulation } from "../../src/curriculum/simulator.js";
 import { eligibleProfile, support } from "./fixtures.js";
 
 describe("exercise builder and simulator", () => {
-  it("raises focused exposure without duplicate entries and exposes weighted choices", () => {
+  it("raises correctness-only focused exposure without duplicate entries", () => {
     const profile = eligibleProfile({
-      "token:A": { timingMs: 460, errorRate: 0.4 },
+      "token:A": { timingMs: null, errorRate: 0.4 },
     });
     const result = buildCurriculumExercise(
       support,
       profile,
       "token:A",
+      "correctness-only",
       PHASE_4_CURRICULUM_POLICY,
       createSeededRandom("exercise"),
     );
     const ids = result.exercise.entries.map((item) => item.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(
-      result.exercise.entries.filter(
-        (item) => item.syllables[0]!.tokens.includes("token:A"),
+      result.exercise.entries.filter((item) =>
+        item.syllables.slice(1).some((syllable) => syllable.tokens[0] === "token:A"),
       ).length,
     ).toBeGreaterThanOrEqual(
       Math.ceil(
@@ -34,9 +35,9 @@ describe("exercise builder and simulator", () => {
     expect(result.picks.every((pick) => pick.candidates.length > 0)).toBe(true);
   });
 
-  it("produces byte-for-byte identical reports for identical seeds", () => {
+  it("produces byte-for-byte identical reports and distinct exposure channels", () => {
     const profile = eligibleProfile({
-      "token:A": { timingMs: 460, errorRate: 0.4 },
+      "token:A": { timingMs: null, errorRate: 0.4 },
     });
     const scenario = {
       name: "determinism",
@@ -62,6 +63,9 @@ describe("exercise builder and simulator", () => {
     expect(
       first.rounds.some((round) => round.stateTransitions.length > 0),
     ).toBe(true);
+    expect(first.rounds[0]?.bindingObservationExposure["token:A"]).toBeGreaterThan(0);
+    expect(first.rounds[0]?.motorTimingExposure["token:A"] ?? 0).toBe(0);
+    expect(first.rounds[0]?.motorTimingExposure["token:B"]).toBeGreaterThan(0);
   });
 
   it("provides the required standard synthetic scenarios", () => {
@@ -78,5 +82,11 @@ describe("exercise builder and simulator", () => {
       "competing-weak-bindings",
       "cooldown-prevents-refocus",
     ]);
+  });
+
+  it("keeps numeric zero as a valid deterministic seed", () => {
+    const zero = createSeededRandom(0);
+    const other = createSeededRandom(0x6d2b79f5);
+    expect(zero.next()).not.toBe(other.next());
   });
 });

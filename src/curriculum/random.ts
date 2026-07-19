@@ -11,10 +11,9 @@ function hashSeed(seed: string): number {
 
 export function createSeededRandom(seed: number | string): RandomSource {
   let state = typeof seed === "number" ? seed >>> 0 : hashSeed(seed);
-  if (state === 0) state = 0x6d2b79f5;
   return {
     next(): number {
-      state += 0x6d2b79f5;
+      state = (state + 0x6d2b79f5) >>> 0;
       let value = state;
       value = Math.imul(value ^ (value >>> 15), value | 1);
       value ^= value + Math.imul(value ^ (value >>> 7), value | 61);

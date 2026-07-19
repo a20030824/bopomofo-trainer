@@ -3,6 +3,7 @@ import type {
   BindingStateDecision,
   CatalogSupportIndex,
   CurriculumBindingRecord,
+  CurriculumEvidence,
   CurriculumPolicy,
   CurriculumProfile,
 } from "./types.js";
@@ -20,6 +21,15 @@ function recordFor(profile: CurriculumProfile, tokenId: TokenId): CurriculumBind
   return record;
 }
 
+function availableEvidence(
+  motorSupportCount: number,
+  policy: CurriculumPolicy,
+): CurriculumEvidence {
+  return motorSupportCount >= policy.minimumCatalogEntries
+    ? "timed"
+    : "correctness-only";
+}
+
 export function classifyBindingStates(
   profile: CurriculumProfile,
   support: CatalogSupportIndex,
@@ -28,34 +38,63 @@ export function classifyBindingStates(
 ): readonly BindingStateDecision[] {
   return Object.keys(support.byToken).sort(codeUnitCompare).map((tokenId) => {
     const tokenSupport = support.byToken[tokenId]!;
+    const evidence = availableEvidence(tokenSupport.motorEntryCount, policy);
+    const supportCount = evidence === "timed"
+      ? tokenSupport.motorEntryCount
+      : tokenSupport.bindingEntryCount;
     const record = recordFor(profile, tokenId);
     const aggregate = record?.aggregate ?? null;
     const attempts = aggregate?.attempts ?? 0;
     const timingSamples = aggregate?.timingSamples ?? 0;
+    const base = {
+      tokenId,
+      evidence,
+      supportCount,
+      bindingSupportCount: tokenSupport.bindingEntryCount,
+      motorSupportCount: tokenSupport.motorEntryCount,
+      attempts,
+      timingSamples,
+    } as const;
 
     if (focusedTokenId === tokenId) {
-      return { tokenId, state: "focused", reason: "selected-for-current-round", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+      return { ...base, state: "focused", reason: "selected-for-current-round" };
     }
     if (record?.lastFocusedRound !== null && record?.lastFocusedRound !== undefined
       && profile.round - record.lastFocusedRound <= policy.cooldownRounds) {
-      return { tokenId, state: "cooldown", reason: "recently-focused", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+      return { ...base, state: "cooldown", reason: "recently-focused" };
     }
     if (attempts === 0) {
-      return { tokenId, state: "unobserved", reason: "no-binding-observations", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+      return { ...base, state: "unobserved", reason: "no-binding-observations" };
     }
     if (attempts < policy.minimumAttempts) {
-      return { tokenId, state: "sampling", reason: "insufficient-attempts", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+      return { ...base, state: "sampling", reason: "insufficient-attempts" };
     }
-    if (timingSamples < policy.minimumTimingSamples) {
-      return { tokenId, state: "sampling", reason: "insufficient-clean-timing", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+    if (tokenSupport.bindingEntryCount < policy.minimumCatalogEntries) {
+      return { ...base, state: "sampling", reason: "insufficient-binding-catalog-support" };
     }
-    if (tokenSupport.entryCount < policy.minimumCatalogEntries) {
-      return { tokenId, state: "sampling", reason: "insufficient-catalog-support", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+    if (evidence === "timed") {
+      if (timingSamples < policy.minimumTimingSamples) {
+        return { ...base, state: "sampling", reason: "insufficient-clean-timing" };
+      }
+      if (aggregate?.currentTimeToTypeMs === null
+        || aggregate?.currentTimeToTypeMs === undefined
+        || !Number.isFinite(aggregate.currentTimeToTypeMs)
+        || aggregate.currentTimeToTypeMs < 0) {
+        return { ...base, state: "sampling", reason: "missing-valid-current-timing" };
+      }
     }
-    return { tokenId, state: "eligible", reason: "measurement-and-catalog-thresholds-met", supportCount: tokenSupport.entryCount, attempts, timingSamples };
+    return {
+      ...base,
+      state: "eligible",
+      reason: evidence === "timed"
+        ? "timed-measurement-and-catalog-thresholds-met"
+        : "correctness-measurement-and-catalog-thresholds-met",
+    };
   });
 }
 
 export function coverageTargetForToken(tokenId: TokenId, policy: CurriculumPolicy): number {
-  return tokenId.startsWith("tone:") ? policy.toneCoverageTargetAttempts : policy.coverageTargetAttempts;
+  return tokenId.startsWith("tone:")
+    ? policy.toneCoverageTargetAttempts
+    : policy.coverageTargetAttempts;
 }

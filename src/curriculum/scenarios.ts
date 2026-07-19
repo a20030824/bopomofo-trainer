@@ -19,6 +19,8 @@ function codeUnitCompare(left: string, right: string): number {
 }
 
 function aggregateFor(
+  support: CatalogSupportIndex,
+  policy: CurriculumPolicy,
   profile: CurriculumProfile,
   tokenId: string,
   timingMs: number,
@@ -27,15 +29,16 @@ function aggregateFor(
 ): BindingAggregate {
   const record = profile.bindings[tokenId];
   if (record === undefined) throw new Error(`unknown scenario token: ${tokenId}`);
+  const timed = support.byToken[tokenId]!.motorEntryCount >= policy.minimumCatalogEntries;
   return {
     scope: record.scope,
     attempts,
     errors: Math.round(attempts * errorRate),
-    timingSamples: attempts,
-    currentTimeToTypeMs: timingMs,
-    bestTimeToTypeMs: Math.max(1, timingMs * 0.8),
+    timingSamples: timed ? attempts : 0,
+    currentTimeToTypeMs: timed ? timingMs : null,
+    bestTimeToTypeMs: timed ? Math.max(1, timingMs * 0.8) : null,
     timingExclusions: {
-      syllableStart: 0,
+      syllableStart: timed ? 0 : attempts,
       incorrect: 0,
       recovery: 0,
       interactionNoise: 0,
@@ -43,10 +46,16 @@ function aggregateFor(
   };
 }
 
-function baselineAggregates(profile: CurriculumProfile): BindingAggregate[] {
+function baselineAggregates(
+  support: CatalogSupportIndex,
+  policy: CurriculumPolicy,
+  profile: CurriculumProfile,
+): BindingAggregate[] {
   return Object.keys(profile.bindings)
     .sort(codeUnitCompare)
-    .map((tokenId) => aggregateFor(profile, tokenId, 180, 0.03));
+    .map((tokenId) =>
+      aggregateFor(support, policy, profile, tokenId, 180, 0.03),
+    );
 }
 
 function performanceMap(
@@ -60,14 +69,14 @@ function performanceMap(
   return result;
 }
 
-function commonTokens(
+function supportedTokens(
   support: CatalogSupportIndex,
-  minimumCatalogEntries: number,
+  policy: CurriculumPolicy,
 ): string[] {
   return Object.values(support.byToken)
-    .filter((item) => item.entryCount >= minimumCatalogEntries)
+    .filter((item) => item.bindingEntryCount >= policy.minimumCatalogEntries)
     .sort(
-      (left, right) => right.entryCount - left.entryCount
+      (left, right) => right.bindingEntryCount - left.bindingEntryCount
         || codeUnitCompare(left.tokenId, right.tokenId),
     )
     .map((item) => item.tokenId);
@@ -75,12 +84,12 @@ function commonTokens(
 
 function rareTokens(
   support: CatalogSupportIndex,
-  minimumCatalogEntries: number,
+  policy: CurriculumPolicy,
 ): string[] {
   return Object.values(support.byToken)
-    .filter((item) => item.entryCount < minimumCatalogEntries)
+    .filter((item) => item.bindingEntryCount < policy.minimumCatalogEntries)
     .sort(
-      (left, right) => left.entryCount - right.entryCount
+      (left, right) => left.bindingEntryCount - right.bindingEntryCount
         || codeUnitCompare(left.tokenId, right.tokenId),
     )
     .map((item) => item.tokenId);
@@ -98,28 +107,28 @@ export function createStandardSimulationScenarios(
     "zhuyin-standard",
   );
   const tokenIds = Object.keys(support.byToken).sort(codeUnitCompare);
-  const common = commonTokens(support, policy.minimumCatalogEntries);
-  const rare = rareTokens(support, policy.minimumCatalogEntries);
-  const primary = common[0];
-  const secondary = common[1] ?? primary;
+  const supported = supportedTokens(support, policy);
+  const rare = rareTokens(support, policy);
+  const primary = supported[0];
+  const secondary = supported[1] ?? primary;
   if (primary === undefined) {
     throw new Error(
-      "curriculum scenarios require a token that meets the catalog-support policy",
+      "curriculum scenarios require a token that meets the binding-support policy",
     );
   }
 
-  const baseline = baselineAggregates(empty);
+  const baseline = baselineAggregates(support, policy, empty);
   const weakPrimary = baseline.map((aggregate) =>
     aggregate.scope.tokenId === primary
-      ? aggregateFor(empty, primary, 420, 0.35)
+      ? aggregateFor(support, policy, empty, primary, 420, 0.35)
       : aggregate,
   );
   const competing = baseline.map((aggregate) => {
     if (aggregate.scope.tokenId === primary) {
-      return aggregateFor(empty, primary, 360, 0.25);
+      return aggregateFor(support, policy, empty, primary, 360, 0.25);
     }
     if (aggregate.scope.tokenId === secondary) {
-      return aggregateFor(empty, secondary, 350, 0.26);
+      return aggregateFor(support, policy, empty, secondary, 350, 0.26);
     }
     return aggregate;
   });
@@ -129,7 +138,7 @@ export function createStandardSimulationScenarios(
     ? baseline
     : baseline.map((aggregate) =>
         aggregate.scope.tokenId === rareToken
-          ? aggregateFor(empty, rareToken, 600, 0.5)
+          ? aggregateFor(support, policy, empty, rareToken, 600, 0.5)
           : aggregate,
       );
 

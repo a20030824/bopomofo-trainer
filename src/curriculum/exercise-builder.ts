@@ -1,9 +1,10 @@
-import type { CatalogEntry, Exercise, RandomSource, TokenId } from "../core/model.js";
+import type { CatalogEntry, RandomSource, TokenId } from "../core/model.js";
 import { weightedPick } from "./random.js";
 import { entryTokenSet } from "./support.js";
 import type {
   BuiltCurriculumExercise,
   CatalogSupportIndex,
+  CurriculumEvidence,
   CurriculumPolicy,
   CurriculumProfile,
   ExerciseCandidateWeight,
@@ -16,16 +17,21 @@ function codeUnitCompare(left: string, right: string): number {
 
 function candidateWeight(
   entry: CatalogEntry,
-  focusTokenId: TokenId | null,
+  focusEntryIds: ReadonlySet<string>,
   profile: CurriculumProfile,
   policy: CurriculumPolicy,
 ): ExerciseCandidateWeight {
   const tokens = entryTokenSet(entry);
-  const containsFocus = focusTokenId !== null && tokens.has(focusTokenId);
+  const containsFocus = focusEntryIds.has(entry.id);
   const frequencyWeight = policy.frequencyBandWeights[entry.frequencyBand];
   const focusWeight = containsFocus ? policy.focusedEntryBoost : 1;
-  const recentEntryWeight = profile.recentEntryIds.includes(entry.id) ? policy.recentEntryPenalty : 1;
-  const overlap = profile.recentTokenIds.reduce((count, tokenId) => count + (tokens.has(tokenId) ? 1 : 0), 0);
+  const recentEntryWeight = profile.recentEntryIds.includes(entry.id)
+    ? policy.recentEntryPenalty
+    : 1;
+  const overlap = profile.recentTokenIds.reduce(
+    (count, tokenId) => count + (tokens.has(tokenId) ? 1 : 0),
+    0,
+  );
   const recentTokenWeight = Math.pow(policy.recentTokenPenalty, overlap);
   return {
     entryId: entry.id,
@@ -34,20 +40,25 @@ function candidateWeight(
     focusWeight,
     recentEntryWeight,
     recentTokenWeight,
-    totalWeight: frequencyWeight * focusWeight * recentEntryWeight * recentTokenWeight,
+    totalWeight: frequencyWeight
+      * focusWeight
+      * recentEntryWeight
+      * recentTokenWeight,
   };
 }
 
 function pickOne(
   entries: readonly CatalogEntry[],
-  focusTokenId: TokenId | null,
+  focusEntryIds: ReadonlySet<string>,
   profile: CurriculumProfile,
   policy: CurriculumPolicy,
   random: RandomSource,
   position: number,
   pool: "focused" | "general",
 ): { readonly entry: CatalogEntry; readonly trace: ExercisePickTrace } {
-  const weights = entries.map((entry) => candidateWeight(entry, focusTokenId, profile, policy));
+  const weights = entries.map((entry) =>
+    candidateWeight(entry, focusEntryIds, profile, policy),
+  );
   const selectedId = weightedPick(
     weights.map((weight) => ({ value: weight.entryId, weight: weight.totalWeight })),
     random,
@@ -58,7 +69,9 @@ function pickOne(
     trace: {
       position,
       pool,
-      candidates: [...weights].sort((left, right) => codeUnitCompare(left.entryId, right.entryId)),
+      candidates: [...weights].sort((left, right) =>
+        codeUnitCompare(left.entryId, right.entryId),
+      ),
       selectedEntryId: selectedId,
     },
   };
@@ -68,23 +81,33 @@ export function buildCurriculumExercise(
   support: CatalogSupportIndex,
   profile: CurriculumProfile,
   focusTokenId: TokenId | null,
+  focusEvidence: CurriculumEvidence | null,
   policy: CurriculumPolicy,
   random: RandomSource,
 ): BuiltCurriculumExercise {
   const allEntries = Object.values(support.entriesById)
     .sort((left, right) => codeUnitCompare(left.id, right.id));
-  if (allEntries.length === 0) throw new Error("cannot build an exercise from an empty catalog");
+  if (allEntries.length === 0) {
+    throw new Error("cannot build an exercise from an empty catalog");
+  }
 
   const fallbackReasons: string[] = [];
-  const focusEntries = focusTokenId === null
+  const tokenSupport = focusTokenId === null ? undefined : support.byToken[focusTokenId];
+  const focusEntryIds = focusTokenId === null || tokenSupport === undefined
     ? []
-    : (support.byToken[focusTokenId]?.entryIds ?? [])
-        .map((entryId) => support.entriesById[entryId]!)
-        .filter(Boolean);
+    : focusEvidence === "timed"
+      ? tokenSupport.motorEntryIds
+      : tokenSupport.bindingEntryIds;
+  const focusEntrySet = new Set(focusEntryIds);
+  const focusEntries = focusEntryIds.map((entryId) => support.entriesById[entryId]!);
   const desiredFocused = focusTokenId === null
     ? 0
     : Math.ceil(policy.exerciseEntryCount * policy.focusedEntryShare);
-  const focusedCount = Math.min(desiredFocused, focusEntries.length, policy.exerciseEntryCount);
+  const focusedCount = Math.min(
+    desiredFocused,
+    focusEntries.length,
+    policy.exerciseEntryCount,
+  );
   if (focusTokenId !== null && focusEntries.length < desiredFocused) {
     fallbackReasons.push(`focus-support-limited:${focusEntries.length}/${desiredFocused}`);
   }
@@ -100,7 +123,15 @@ export function buildCurriculumExercise(
     );
     const source = available.length > 0 ? available : poolEntries;
     if (source.length === 0) return;
-    const picked = pickOne(source, focusTokenId, profile, policy, random, selected.length, pool);
+    const picked = pickOne(
+      source,
+      focusEntrySet,
+      profile,
+      policy,
+      random,
+      selected.length,
+      pool,
+    );
     selected.push(picked.entry);
     picks.push(picked.trace);
   };
@@ -120,6 +151,7 @@ export function buildCurriculumExercise(
       entries: selected,
     },
     focusTokenId,
+    focusEvidence,
     picks,
     fallbackReasons,
   };

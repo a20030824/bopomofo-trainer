@@ -1,4 +1,3 @@
-import type { TokenId } from "../core/model.js";
 import { coverageTargetForToken, classifyBindingStates } from "./state.js";
 import type {
   CatalogSupportIndex,
@@ -20,7 +19,7 @@ export function selectCurriculumFocus(
   const initialStates = classifyBindingStates(profile, support, policy);
   const coverageCandidates = initialStates
     .filter((state) => state.state !== "cooldown")
-    .filter((state) => state.supportCount >= policy.minimumCatalogEntries)
+    .filter((state) => state.bindingSupportCount >= policy.minimumCatalogEntries)
     .filter((state) => state.attempts < coverageTargetForToken(state.tokenId, policy))
     .sort((left, right) => {
       const leftTarget = coverageTargetForToken(left.tokenId, policy);
@@ -28,8 +27,10 @@ export function selectCurriculumFocus(
       const leftUrgency = (leftTarget - left.attempts) / leftTarget;
       const rightUrgency = (rightTarget - right.attempts) / rightTarget;
       if (leftUrgency !== rightUrgency) return rightUrgency - leftUrgency;
-      const leftSupport = support.byToken[left.tokenId]!.commonEntryCount * 1000 + left.supportCount;
-      const rightSupport = support.byToken[right.tokenId]!.commonEntryCount * 1000 + right.supportCount;
+      const leftSupport = support.byToken[left.tokenId]!.commonBindingEntryCount * 1000
+        + left.bindingSupportCount;
+      const rightSupport = support.byToken[right.tokenId]!.commonBindingEntryCount * 1000
+        + right.bindingSupportCount;
       if (leftSupport !== rightSupport) return rightSupport - leftSupport;
       return codeUnitCompare(left.tokenId, right.tokenId);
     });
@@ -38,11 +39,13 @@ export function selectCurriculumFocus(
     return {
       phase: "coverage",
       tokenId: selected.tokenId,
+      evidence: selected.evidence,
       reason: "baseline-coverage-deficit",
       candidates: coverageCandidates.map((candidate) => ({
         tokenId: candidate.tokenId,
+        evidence: candidate.evidence!,
         errorRate: 0,
-        timingRatio: 0,
+        timingRatio: null,
         score: (coverageTargetForToken(candidate.tokenId, policy) - candidate.attempts)
           / coverageTargetForToken(candidate.tokenId, policy),
         supportCount: candidate.supportCount,
@@ -51,28 +54,41 @@ export function selectCurriculumFocus(
   }
 
   const eligible = initialStates.filter((state) => state.state === "eligible");
+  const timed = eligible.filter((state) => state.evidence === "timed");
   const maximumTiming = Math.max(
     1,
-    ...eligible.map((state) => profile.bindings[state.tokenId]?.aggregate?.currentTimeToTypeMs ?? 0),
+    ...timed.map((state) =>
+      profile.bindings[state.tokenId]!.aggregate!.currentTimeToTypeMs!,
+    ),
   );
-  const totalWeight = policy.errorWeight + policy.timingWeight;
   const scores: FocusScore[] = eligible.map((state) => {
     const aggregate = profile.bindings[state.tokenId]!.aggregate!;
     const errorRate = aggregate.attempts === 0 ? 0 : aggregate.errors / aggregate.attempts;
-    const timingRatio = (aggregate.currentTimeToTypeMs ?? 0) / maximumTiming;
+    const timingRatio = state.evidence === "timed"
+      ? aggregate.currentTimeToTypeMs! / maximumTiming
+      : null;
+    const timingContribution = timingRatio === null ? 0 : timingRatio * policy.timingWeight;
+    const denominator = policy.errorWeight
+      + (timingRatio === null ? 0 : policy.timingWeight);
     return {
       tokenId: state.tokenId,
+      evidence: state.evidence!,
       errorRate,
       timingRatio,
-      score: (errorRate * policy.errorWeight + timingRatio * policy.timingWeight) / totalWeight,
+      score: (errorRate * policy.errorWeight + timingContribution) / denominator,
       supportCount: state.supportCount,
     };
-  }).sort((left, right) => right.score - left.score || codeUnitCompare(left.tokenId, right.tokenId));
+  }).sort((left, right) =>
+    right.score - left.score || codeUnitCompare(left.tokenId, right.tokenId),
+  );
 
   return {
     phase: "adaptive",
     tokenId: scores[0]?.tokenId ?? null,
-    reason: scores.length === 0 ? "no-eligible-binding" : "highest-explainable-weakness-score",
+    evidence: scores[0]?.evidence ?? null,
+    reason: scores.length === 0
+      ? "no-eligible-binding"
+      : "highest-explainable-weakness-score",
     candidates: scores,
   };
 }

@@ -3,6 +3,7 @@ import type { BindingAggregate } from "../measurement/types.js";
 
 export type CurriculumState = "unobserved" | "sampling" | "eligible" | "focused" | "cooldown";
 export type CurriculumPhase = "coverage" | "adaptive";
+export type CurriculumEvidence = "timed" | "correctness-only";
 
 export interface CurriculumPolicy {
   readonly version: string;
@@ -26,7 +27,13 @@ export interface CatalogTokenSupport {
   readonly tokenId: TokenId;
   readonly entryIds: readonly string[];
   readonly entryCount: number;
+  readonly bindingEntryIds: readonly string[];
+  readonly bindingEntryCount: number;
+  readonly motorEntryIds: readonly string[];
+  readonly motorEntryCount: number;
   readonly commonEntryCount: number;
+  readonly commonBindingEntryCount: number;
+  readonly commonMotorEntryCount: number;
   readonly frequencyBandCounts: Readonly<Record<1 | 2 | 3, number>>;
 }
 
@@ -54,15 +61,19 @@ export interface BindingStateDecision {
   readonly tokenId: TokenId;
   readonly state: CurriculumState;
   readonly reason: string;
+  readonly evidence: CurriculumEvidence | null;
   readonly supportCount: number;
+  readonly bindingSupportCount: number;
+  readonly motorSupportCount: number;
   readonly attempts: number;
   readonly timingSamples: number;
 }
 
 export interface FocusScore {
   readonly tokenId: TokenId;
+  readonly evidence: CurriculumEvidence;
   readonly errorRate: number;
-  readonly timingRatio: number;
+  readonly timingRatio: number | null;
   readonly score: number;
   readonly supportCount: number;
 }
@@ -70,6 +81,7 @@ export interface FocusScore {
 export interface FocusSelection {
   readonly phase: CurriculumPhase;
   readonly tokenId: TokenId | null;
+  readonly evidence: CurriculumEvidence | null;
   readonly reason: string;
   readonly candidates: readonly FocusScore[];
 }
@@ -94,6 +106,7 @@ export interface ExercisePickTrace {
 export interface BuiltCurriculumExercise {
   readonly exercise: Exercise;
   readonly focusTokenId: TokenId | null;
+  readonly focusEvidence: CurriculumEvidence | null;
   readonly picks: readonly ExercisePickTrace[];
   readonly fallbackReasons: readonly string[];
 }
@@ -113,6 +126,8 @@ export interface SimulationRoundReport {
   readonly stateTransitions: readonly BindingStateTransition[];
   readonly exerciseEntryIds: readonly string[];
   readonly tokenExposure: Readonly<Record<string, number>>;
+  readonly bindingObservationExposure: Readonly<Record<string, number>>;
+  readonly motorTimingExposure: Readonly<Record<string, number>>;
   readonly frequencyBands: Readonly<Record<"1" | "2" | "3", number>>;
   readonly repeatedEntryCount: number;
   readonly fallbackReasons: readonly string[];
