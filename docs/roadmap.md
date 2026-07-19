@@ -115,9 +115,9 @@ Deliverables:
 
 Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, adaptive exercise selection, and separate transfer checks on held-out entries.
 
-## Phase 6A — Pilot history and validation instrumentation
+## Phase 6 — Pilot instrumentation and product-interface refinement
 
-Goal: collect enough local, per-round evidence for a real 10–20 round pilot before changing curriculum thresholds or redesigning the full UI.
+Goal: prepare one coherent version for a real 10–20 round pilot. Preserve enough local evidence to inspect curriculum behavior while making the practice flow visually clear enough that UI friction does not dominate the pilot.
 
 Deliverables:
 
@@ -126,15 +126,19 @@ Deliverables:
 - retention of at least 20 completed practice/evaluation rounds;
 - mapped-key attempts, errors, accuracy, phase, focus, evidence route, timing-sample count, and median clean latency per round;
 - reconciliation when progress and pilot-history localStorage writes are temporarily out of sync;
-- a restrained, inspectable history table;
 - deterministic local JSON export containing policy versions, history, curriculum cooldown metadata, cumulative measurements, and catalog partition IDs;
-- no telemetry, account identifier, browser identifier, or learning-effectiveness claim.
+- a focused current-entry practice surface rather than six equally weighted cards;
+- clear separation of current token, completed tokens, upcoming entries, wrong-key feedback, completion summary, and next-round action;
+- compact expandable round history with held-out evaluation visually distinct;
+- raw diagnostics and destructive reset kept outside the primary practice flow;
+- desktop and mobile layouts that preserve the same information hierarchy;
+- no telemetry, curriculum-threshold tuning, account identifier, browser identifier, mastery score, or learning-effectiveness claim.
 
-Exit condition: a 10–20 round human pilot can inspect coverage-to-focus behavior, cooldown, repetition, and held-out evaluation without altering the adaptive policy or conflating observation with validated learning effect.
+Exit condition: a 10–20 round human pilot can inspect coverage-to-focus behavior, cooldown, repetition, and held-out evaluation while the practice UI remains legible, responsive, and secondary to the measured motor task.
 
 ## Later experiments
 
-- Phase 6B full UI refinement informed by pilot friction;
+- curriculum threshold changes supported by pilot evidence;
 - recall practice mode with separate statistics;
 - transition-aware curriculum;
 - beginner progression by syllable families;
