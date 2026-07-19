@@ -34,7 +34,10 @@ function splitList(value: string): string[] {
     .filter((item) => item.length > 0);
 }
 
-function parseSourceRow(record: CsvRecord):
+function parseSourceRow(
+  record: CsvRecord,
+  knownProvenanceIds: ReadonlySet<string>,
+):
   | { readonly ok: true; readonly row: CatalogSourceRow }
   | { readonly ok: false; readonly errors: readonly CatalogValidationError[] } {
   const errors: CatalogValidationError[] = [];
@@ -93,6 +96,18 @@ function parseSourceRow(record: CsvRecord):
       text || null,
       "provenance_ids",
     ));
+  } else {
+    for (const provenanceId of provenanceIds) {
+      if (!knownProvenanceIds.has(provenanceId)) {
+        errors.push(issue(
+          "unknown-provenance",
+          `找不到 provenance ID「${provenanceId}」`,
+          record.rowNumber,
+          text || null,
+          "provenance_ids",
+        ));
+      }
+    }
   }
 
   if (errors.length > 0) {
@@ -160,13 +175,16 @@ function compileRow(row: CatalogSourceRow):
   };
 }
 
-export function compileCatalog(records: readonly CsvRecord[]): CatalogCompilationResult {
+export function compileCatalog(
+  records: readonly CsvRecord[],
+  knownProvenanceIds: ReadonlySet<string>,
+): CatalogCompilationResult {
   const entries: CatalogEntry[] = [];
   const errors: CatalogValidationError[] = [];
   const identities = new Map<string, number>();
 
   for (const record of records) {
-    const source = parseSourceRow(record);
+    const source = parseSourceRow(record, knownProvenanceIds);
     if (!source.ok) {
       errors.push(...source.errors);
       continue;
