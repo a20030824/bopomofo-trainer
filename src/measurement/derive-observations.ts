@@ -35,6 +35,13 @@ function baseExclusion(trace: InteractionTrace): ObservationExclusionReason | nu
   }
 }
 
+function isInteractionNoise(trace: InteractionTrace): boolean {
+  return trace.outcome === "ignored-repeat"
+    || trace.outcome === "ignored-modifier"
+    || trace.outcome === "composition"
+    || trace.outcome === "unmapped";
+}
+
 function contextExclusion(context: TimingContext): ObservationExclusionReason {
   if (context === "exercise-start") return "exercise-start";
   if (context === "entry-start") return "entry-start";
@@ -44,12 +51,16 @@ function contextExclusion(context: TimingContext): ObservationExclusionReason {
 function timingDecision(
   trace: InteractionTrace,
   policy: MeasurementPolicy,
+  noiseSinceAdvance: boolean,
 ): { readonly timingMs: number | null; readonly reason: TimingExclusionReason | null } {
   if (trace.outcome !== "correct") {
     return { timingMs: null, reason: "incorrect" };
   }
   if (trace.recovery) {
     return { timingMs: null, reason: "recovery" };
+  }
+  if (noiseSinceAdvance) {
+    return { timingMs: null, reason: "interaction-noise" };
   }
   if (!includesContext(policy.motorTimingContexts, trace.context)) {
     return { timingMs: null, reason: "syllable-start" };
@@ -61,6 +72,7 @@ function deriveBinding(
   exercise: Exercise,
   trace: InteractionTrace,
   policy: MeasurementPolicy,
+  noiseSinceAdvance: boolean,
 ): ObservationDecision<BindingObservation> {
   const base = baseExclusion(trace);
   if (base !== null) return excluded(base);
@@ -70,7 +82,7 @@ function deriveBinding(
   }
   if (trace.actualToken === null) return excluded("unmapped");
 
-  const timing = timingDecision(trace, policy);
+  const timing = timingDecision(trace, policy, noiseSinceAdvance);
   return included({
     traceSequence: trace.sequence,
     scope: {
@@ -117,6 +129,7 @@ function deriveTransition(
   exercise: Exercise,
   trace: InteractionTrace,
   policy: MeasurementPolicy,
+  noiseSinceAdvance: boolean,
 ): ObservationDecision<TransitionObservation> {
   const base = baseExclusion(trace);
   if (base !== null) return excluded(base);
@@ -126,6 +139,7 @@ function deriveTransition(
   }
   if (trace.outcome !== "correct") return excluded("not-correct");
   if (trace.recovery) return excluded("recovery");
+  if (noiseSinceAdvance) return excluded("interaction-noise");
   if (trace.tokenIndex === 0) return excluded("cross-boundary");
   if (trace.previousToken === null) return excluded("no-previous-token");
 
@@ -147,19 +161,30 @@ export function deriveMeasurementDecisions(
   traces: readonly InteractionTrace[],
   policy: MeasurementPolicy,
 ): readonly TraceMeasurementDecision[] {
-  return traces.map((trace) => {
+  const decisions: TraceMeasurementDecision[] = [];
+  let noiseSinceAdvance = false;
+
+  for (const trace of traces) {
     if (trace.exerciseId !== exercise.id) {
       throw new Error(
         `trace ${trace.sequence} belongs to exercise ${trace.exerciseId}, expected ${exercise.id}`,
       );
     }
 
-    return {
+    decisions.push({
       traceSequence: trace.sequence,
       context: trace.context,
-      binding: deriveBinding(exercise, trace, policy),
+      binding: deriveBinding(exercise, trace, policy, noiseSinceAdvance),
       confusion: deriveConfusion(exercise, trace, policy),
-      transition: deriveTransition(exercise, trace, policy),
-    };
-  });
+      transition: deriveTransition(exercise, trace, policy, noiseSinceAdvance),
+    });
+
+    if (trace.advanced) {
+      noiseSinceAdvance = false;
+    } else if (isInteractionNoise(trace)) {
+      noiseSinceAdvance = true;
+    }
+  }
+
+  return decisions;
 }
