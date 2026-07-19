@@ -26,3 +26,5 @@ export * from "./product/types.js";
 export * from "./product/catalog-partition.js";
 export * from "./product/progress.js";
 export * from "./product/session.js";
+export * from "./product/pilot-history.js";
+export * from "./product/pilot-export.js";
