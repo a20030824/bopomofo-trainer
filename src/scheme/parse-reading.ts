@@ -33,7 +33,7 @@ function parseSyllable(source: string, syllableIndex: number): Syllable | Readin
   const symbols = [...source];
   const last = symbols.at(-1);
 
-  if (last === undefined || !/^[0-9]$/.test(last)) {
+  if (last === undefined || !/^[0-9]$/u.test(last)) {
     return error(
       "missing-tone",
       `音節「${source}」必須以 1–5 的顯式聲調結尾`,
@@ -57,6 +57,15 @@ function parseSyllable(source: string, syllableIndex: number): Syllable | Readin
     return error(
       "unsupported-syllable",
       `音節「${source}」缺少注音符號`,
+      source,
+      syllableIndex,
+    );
+  }
+
+  if (bodySymbols.some((symbol) => /^[0-9]$/u.test(symbol))) {
+    return error(
+      "invalid-tone",
+      `音節「${source}」只能有一個位於結尾的聲調數字`,
       source,
       syllableIndex,
     );
