@@ -6,7 +6,7 @@ The product shows Traditional Chinese context together with the complete Bopomof
 
 ## Current status
 
-Phases 0–4 established the domain model, validated catalog compiler, browser interaction semantics, versioned measurement policy, and deterministic curriculum simulator. Phase 5 connected those parts into a thin usable product. Phase 6A adds local pilot instrumentation without changing the curriculum policy:
+Phases 0–4 established the domain model, validated catalog compiler, browser interaction semantics, versioned measurement policy, and deterministic curriculum simulator. Phase 5 connected those parts into a thin usable product. Phase 6 combines local pilot instrumentation with a focused product-interface refinement, without changing curriculum policy:
 
 - curriculum-generated six-entry guided exercises;
 - cumulative Phase 3 measurement across completed rounds;
@@ -14,9 +14,10 @@ Phases 0–4 established the domain model, validated catalog compiler, browser i
 - schema-versioned progress in browser `localStorage`;
 - a held-out evaluation round after every five completed practice rounds;
 - separate evaluation summaries that never update adaptive training aggregates;
-- a compact completion summary and inspectable raw diagnostics;
+- a focused current-entry practice surface, inline wrong-key feedback, and restrained completion flow;
 - a separate 24-round local pilot history with mapped-key accuracy, focus, timing-sample count, and median clean latency;
-- deterministic pilot JSON export with no account, browser identifier, upload, or effectiveness claim.
+- deterministic pilot JSON export with no account, browser identifier, upload, or effectiveness claim;
+- raw traces and destructive reset kept outside the primary practice flow.
 
 The UI remains Vanilla TypeScript + Vite. The current single-page interaction does not justify a framework migration.
 
@@ -38,7 +39,7 @@ npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
-The browser saves guided, `zhuyin-standard` progress locally after each completed round. It also stores pilot history under a separate schema-versioned key so valid Phase 5 progress does not need to be rewritten. “清除本機進度” removes progress and pilot history. There is no account, backend, cloud synchronization, telemetry upload, or validated confidence/mastery score.
+The browser saves guided, `zhuyin-standard` progress locally after each completed round. It also stores pilot history under a separate schema-versioned key so valid Phase 5 progress does not need to be rewritten. “清除所有本機進度” removes progress and pilot history. There is no account, backend, cloud synchronization, telemetry upload, or validated confidence/mastery score.
 
 ## Principles
 
