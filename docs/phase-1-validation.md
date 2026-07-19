@@ -13,12 +13,14 @@ npm run catalog:build
 Observed results:
 
 - TypeScript strict typecheck passed.
-- 2 Vitest files and 11 tests passed.
+- 2 Vitest files and 13 tests passed.
 - The provenance registry and all catalog references validated successfully.
 - The provisional catalog compiled successfully.
 - 50 entries produced 102 syllables.
 - Coverage included all 37 Bopomofo symbols and all 5 explicit tone tokens.
 - Generated catalog data contained semantic token IDs only; physical key codes remain in the layout module.
+- Duplicate detection uses normalized reading whitespace, so equivalent readings cannot produce duplicate runtime IDs.
+- Repeated tone digits are reported as tone errors instead of unknown symbols.
 - A second Ministry of Education inventory audit added uncommon supported forms `ㄉㄣ`, `ㄋㄨㄣ`, `ㄌㄛ`, and `ㄌㄩㄢ`.
 - The same audit removed unsupported standalone `ㄕㄨㄥ` and excluded attached-erhua-only `ㄋㄧㄚ` from the current pure-Han catalog format.
 
