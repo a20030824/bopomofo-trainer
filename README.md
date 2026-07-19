@@ -8,6 +8,8 @@ The first product shows Traditional Chinese context together with the complete B
 
 The architecture baseline, catalog compiler, guided interaction spike, and Phase 3 measurement model are complete. Phase 4 adds a deterministic headless curriculum simulator for baseline coverage, eligibility, focused binding selection, and continuous exercise generation. It still does not create a validated confidence score, persistent learner profile, or production adaptive UI.
 
+Eligibility follows the Phase 3 measurement boundary: tokens with motor-eligible positions use timed evidence, while syllable-start initials may use correctness-only evidence instead of fabricated latency.
+
 ## Run the spike
 
 ```bash
