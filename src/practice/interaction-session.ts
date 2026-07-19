@@ -171,7 +171,7 @@ export function applyInteractionInput(
     traces: [...state.traces, trace],
     hadErrorSinceAdvance: advanced
       ? false
-      : state.hadErrorSinceAdvance || (accepted && correct === false),
+      : state.hadErrorSinceAdvance || outcome === "incorrect",
     completed: nextPosition >= state.targets.length,
   };
 }
