@@ -1,0 +1,41 @@
+import type { TokenDefinition, TokenId } from "../core/model.js";
+
+export const INITIALS = [
+  "ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ",
+  "ㄐ", "ㄑ", "ㄒ", "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ",
+] as const;
+
+export const MEDIALS = ["ㄧ", "ㄨ", "ㄩ"] as const;
+
+export const FINALS = [
+  "ㄚ", "ㄛ", "ㄜ", "ㄝ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄣ", "ㄤ", "ㄥ", "ㄦ",
+] as const;
+
+export const BOPOMOFO_SYMBOLS = [
+  ...INITIALS,
+  ...MEDIALS,
+  ...FINALS,
+] as const;
+
+export const TONES = [1, 2, 3, 4, 5] as const;
+
+export function zhuyinToken(symbol: string): TokenId {
+  return `zhuyin:${symbol}`;
+}
+
+export function toneToken(tone: (typeof TONES)[number]): TokenId {
+  return `tone:${tone}`;
+}
+
+export const ZHUYIN_TOKENS: readonly TokenDefinition[] = [
+  ...BOPOMOFO_SYMBOLS.map((symbol) => ({
+    id: zhuyinToken(symbol),
+    label: symbol,
+    kind: "bopomofo" as const,
+  })),
+  ...TONES.map((tone) => ({
+    id: toneToken(tone),
+    label: tone === 1 ? "一聲" : tone === 2 ? "二聲" : tone === 3 ? "三聲" : tone === 4 ? "四聲" : "輕聲",
+    kind: "tone" as const,
+  })),
+];
