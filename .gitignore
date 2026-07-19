@@ -3,6 +3,7 @@ dist/
 coverage/
 data/generated/catalog.json
 data/generated/coverage.json
+src/app/generated/catalog.ts
 *.log
 .DS_Store
 .env
