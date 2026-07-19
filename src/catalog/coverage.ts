@@ -26,7 +26,7 @@ export function createCoverageReport(entries: readonly CatalogEntry[]): Coverage
       occurrences: value.occurrences,
       entryCount: value.entries.size,
     }))
-    .sort((left, right) => left.tokenId.localeCompare(right.tokenId, "zh-TW"));
+    .sort((left, right) => left.tokenId < right.tokenId ? -1 : left.tokenId > right.tokenId ? 1 : 0);
 
   return {
     entryCount: entries.length,
