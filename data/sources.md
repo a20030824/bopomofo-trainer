@@ -1,8 +1,8 @@
 # Data Sources
 
-The current `words.sample.csv` is a small hand-authored architecture sample. It is not a production vocabulary dataset, an authoritative pronunciation source, or validated frequency data.
+The current `words.sample.csv` contains 50 hand-authored entries for parser, coverage, and interaction experiments. It is not a production vocabulary dataset, an authoritative pronunciation source, or validated frequency data.
 
-All current rows are marked `provisional`. That status means they are suitable for parser, layout, and interaction experiments only. It does not mean the reading, frequency band, or vocabulary choice has completed a documented review workflow.
+All current rows are marked `provisional` and reference `local:sample-v1` from `data/provenance.csv`. That status means they are suitable for engineering experiments only. It does not mean the reading, frequency band, or vocabulary choice has completed a documented review workflow.
 
 Before importing a larger source, record:
 
@@ -13,6 +13,13 @@ Before importing a larger source, record:
 - whether readings are word-level or assembled per character;
 - whether entries were modified or only linked to derived metadata;
 - review status for ambiguous or multiple readings.
+
+## Registered references
+
+- `local:sample-v1`: manually authored provisional words used only by this repository's tests and spike.
+- `moe:phonetic-symbols-manual`: Ministry of Education *國語注音符號手冊*, used as the reference for the syllable-table validation approach. The project implements an independent program representation and does not redistribute the manual's tables.
+
+See `docs/syllable-validation.md` for the parser boundary and known limitations.
 
 ## Planned source layers
 
