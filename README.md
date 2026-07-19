@@ -6,7 +6,7 @@ The first product shows Traditional Chinese context together with the complete B
 
 ## Current status
 
-The architecture baseline, catalog compiler, and guided interaction spike are complete. Phase 3 now derives explicit binding, confusion, and transition observations from raw traces using a versioned measurement policy. It still does not create a final confidence score or persistent learner profile.
+The architecture baseline, catalog compiler, guided interaction spike, and Phase 3 measurement model are complete. Phase 4 adds a deterministic headless curriculum simulator for baseline coverage, eligibility, focused binding selection, and continuous exercise generation. It still does not create a validated confidence score, persistent learner profile, or production adaptive UI.
 
 ## Run the spike
 
@@ -33,6 +33,13 @@ Analyze a downloaded trace with the Phase 3 policy:
 npm run measurement:analyze -- path/to/bopomofo-spike.json
 ```
 
+Run the Phase 4 synthetic curriculum scenarios:
+
+```bash
+npm run curriculum:simulate
+npm run curriculum:simulate -- --seed review --rounds 20
+```
+
 ## Principles
 
 - Semantic Bopomofo tokens are not physical keys.
@@ -53,9 +60,10 @@ npm run measurement:analyze -- path/to/bopomofo-spike.json
 - [Roadmap](docs/roadmap.md)
 - [Interaction spike](docs/interaction-spike.md)
 - [Measurement policy](docs/measurement-policy.md)
+- [Curriculum simulator](docs/curriculum-simulator.md)
 - [Architecture decisions](docs/decisions/)
 
-## Validated interaction milestone
+## Validated interaction and simulation milestones
 
 The disposable browser spike can:
 
@@ -66,4 +74,4 @@ The disposable browser spike can:
 5. distinguish errors, recovery, unmapped keys, repeats, modifiers, and composition;
 6. expose raw timing traces without prematurely assigning permanent progress scores.
 
-The Phase 3 measurement model keeps boundary, recovery, and interaction-noise intervals separate from eligible within-syllable motor timing. A deterministic curriculum simulator follows after this policy is validated and merged.
+The Phase 3 model keeps boundary, recovery, and interaction-noise intervals separate from eligible within-syllable motor timing. The Phase 4 simulator then tests coverage and focused selection with explicit states, catalog-support gates, seeded weighted sampling, and inspectable reports before those rules are connected to a product UI.
