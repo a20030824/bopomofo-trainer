@@ -1,150 +1,146 @@
 # Roadmap
 
-## Phase 0 — Architecture baseline
+## Completed foundation
 
-Goal: agree on the product boundary and stable domain language before building interaction code.
+### Phase 0 — Architecture baseline
 
-Deliverables:
+Separated Chinese context, semantic Bopomofo tokens, physical layouts, guided/recall modes, catalog entries, and exercises.
 
-- vision and non-goals;
-- Chinese context / semantic token / physical input separation;
-- guided versus recall practice-mode distinction;
-- layout-scoped skill identity;
-- catalog-entry versus exercise distinction;
-- module dependency rules;
-- Keybr comparison;
-- architecture decision records;
-- minimal TypeScript type skeleton;
-- small provisional word sample.
+### Phase 1 — Scheme and catalog feasibility
 
-Exit condition: the repository can clearly answer what is visible, what is semantic, what is layout-specific, what is measured, and what remains experimental.
+Implemented explicit tones, legal syllable parsing, provenance, validation, and a 49-entry provisional catalog.
 
-## Phase 1 — Scheme and catalog feasibility
+### Phase 2 — Interaction spike
 
-Goal: compile traceable word readings into semantic catalog entries without prematurely defining final performance scoring.
+Validated Taiwan Standard physical input, first-tone Space, boundaries, errors, recovery, and raw trace semantics.
 
-Deliverables:
+### Phase 3 — Measurement baseline
 
-- complete Bopomofo and tone token catalog;
-- Taiwan Standard Bopomofo layout;
-- reading parser for forms such as `ㄓㄨㄥ1 ㄨㄣ2`;
-- legal syllable validation;
-- catalog provenance and validation;
-- coverage report;
-- 30–50 provisional entries with explicit status.
+Implemented deterministic binding, confusion, and transition observations with explicit boundary, recovery, and noise exclusions.
 
-Exit condition: invalid readings fail clearly, valid entries compile without physical-key data, and every field can be traced to a source or provisional authoring decision.
+### Phase 4 — Binding-only curriculum baseline
 
-## Phase 2 — Human-operated interaction spike
+Implemented coverage, eligibility, cooldown, seeded weighted sampling, and a fixed six-entry builder. This remains a comparison baseline, not the final relational curriculum.
 
-Goal: validate the physical interaction and timing semantics before committing to a metrics model or adaptive curriculum.
+### Phases 5–6 — Existing adapters
+
+Connected the baseline to a local browser product, held-out evaluation, persistence, pilot history, export, and a clearer interface. These remain useful observation and diagnostic adapters. They do not define the current research priority.
+
+## Current research phase
+
+# Phase 7 — Relational catalog and synthetic curriculum experiments
+
+Human pilot and further UI work are paused until Phase 7 is coherent.
+
+## Phase 7A — Research reframing and semantic contracts
+
+Goal: make binding nodes, transition edges, confusion edges, and ordered catalog paths first-class.
 
 Deliverables:
 
-- minimal disposable web page;
-- Chinese context plus visible complete Bopomofo reading;
-- physical keyboard event adapter using `KeyboardEvent.code`;
-- correct handling of all five tones, including first-tone Space;
-- several catalog entries per continuous exercise;
-- raw observation trace with timestamps and timing contexts;
-- explicit error and recovery traces;
-- manual event-log export or inspection.
+- corrected README, vision, architecture, domain language, and roadmap;
+- clean evidence assignment: binding correctness, directional confusion, and transition latency;
+- explicit statement that timed destination-token binding is a historical proxy;
+- relation-objective, content-query, and variable-length practice-sequence contracts;
+- fixed-six retained only as a baseline.
 
-Non-goals:
+Exit condition: the repository can explain what relation is selected, what text occurrence supports it, why a sequence has its length, and which evidence updates each estimate.
 
-- polished visual design;
-- persistent learner progress;
-- adaptive selection;
-- final speed or confidence scoring.
+## Phase 7B — Relational catalog analysis
 
-Exit condition: real traces clarify where cognitive resets occur, which timing contexts are usable, how errors affect latency, and whether guided Bopomofo input feels coherent.
-
-## Phase 3 — Session and measurement model
-
-Goal: turn findings from the interaction spike into reliable layout-scoped observations and skill estimates.
+Goal: understand what the current text data can and cannot train before adding more words.
 
 Deliverables:
 
-- exercise/session state machine;
-- entry and syllable boundary handling;
-- expected-versus-actual input behavior;
-- versioned timing-context inclusion policy;
-- explicit binding, confusion, and transition observation decisions;
-- exclusion of boundary, recovery, and interaction-noise intervals from motor timing;
-- layout- and practice-mode-scoped skill identities;
-- deterministic aggregation and provisional smoothing;
-- replay CLI for exported spike traces;
-- deterministic scripted tests.
+- exact binding occurrences by entry, syllable, and token position;
+- exact directional transition occurrences by entry and syllable;
+- frequency, provenance, tag, occurrence, and distinct-entry support reports;
+- entry and lexical-family concentration metrics;
+- held-out support-loss checks;
+- possible expected/actual contrast pools for confusion objectives;
+- explicit unsupported, rare-only, and weakly supported relation lists.
 
-Exit condition: scripted and recorded input sequences produce stable, explainable statistics without mixing reading recall, boundary latency, recovery, interaction noise, and within-syllable motor timing.
+Exit condition: catalog blind spots are numeric and traceable, and expansion requests can name the missing relations they are meant to cover.
 
-## Phase 4 — Curriculum simulator
+## Phase 7C — Synthetic learner and trace generator
 
-Goal: validate coverage and focused-token selection using the measurement model established in Phase 3.
+Goal: generate ordinary Phase 3-compatible traces from known latent relational skill.
 
 Deliverables:
 
-- explicit `unobserved`, `sampling`, `eligible`, `focused`, and `cooldown` states;
-- baseline coverage phase;
-- catalog support and minimum-sample eligibility rules;
-- focused binding selection;
-- multi-entry exercise builder;
-- frequency-band preference;
-- repetition control;
-- seeded weighted sampling;
-- synthetic learner profiles and simulation reports.
+- binding correctness parameters;
+- directional confusion matrices;
+- directional transition latency distributions;
+- relation-specific improvement rates;
+- separate boundary, noise, recovery, and session-drift parameters;
+- deterministic trace generation through a real layout;
+- ground-truth snapshots before and after each sequence.
 
-Exit condition: simulations show increased exposure for eligible weak bindings without pathological repetition, rare-token domination, or loss of broad coverage.
+Exit condition: identical seeds are byte-for-byte reproducible and estimators can be scored against hidden truth.
 
-## Phase 5 — Thin product prototype
+## Phase 7D — Objective and composition strategies
 
-Goal: combine validated interaction, measurement, and curriculum behavior into a small usable local-first product.
+Goal: compare weakness selection separately from text construction.
 
-Deliverables:
+Objective policies:
 
-- retain Vanilla TypeScript + Vite based on the actual one-page UI complexity;
-- curriculum-generated guided exercise display;
-- IME-mode warning and explicit first-tone Space behavior;
-- cumulative measurement appended only after completed practice rounds;
-- schema-versioned, guided/layout-scoped local progress persistence;
-- deterministic reload and next-round construction;
-- simple completion summary without a confidence/mastery claim;
-- deterministic practice/held-out catalog partition;
-- periodic held-out evaluation that never updates adaptive training aggregates;
-- malformed/stale local state rejection and explicit local reset.
+1. frequency-weighted random;
+2. binding-only baseline;
+3. transition-aware;
+4. confusion-aware;
+5. combined relational.
 
-Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, adaptive exercise selection, and separate transfer checks on held-out entries.
+Composition policies:
 
-## Phase 6 — Pilot instrumentation and product-interface refinement
+1. fixed-six baseline;
+2. greedy target-exposure;
+3. balanced set cover;
+4. confusion contrast;
+5. constrained multi-objective.
 
-Goal: prepare one coherent version for a real 10–20 round pilot. Preserve enough local evidence to inspect curriculum behavior while making the practice flow visually clear enough that UI friction does not dominate the pilot.
+The canonical output is variable length and budgeted by target exposures, tokens, syllables, boundaries, lexical quality, repetition, and concentration. Every stop and fallback is explicit.
 
-Deliverables:
+Exit condition: any objective/composer combination exposes its selected relation, exact supporting occurrences, candidate costs, ordered items, sequence length, and stop reason.
 
-- a separate schema-versioned pilot-history store that does not rewrite valid Phase 5 progress;
-- migration from existing compact round summaries, with unavailable historical latency represented as `null`;
-- retention of at least 20 completed practice/evaluation rounds;
-- mapped-key attempts, errors, accuracy, phase, focus, evidence route, timing-sample count, and median clean latency per round;
-- reconciliation when progress and pilot-history localStorage writes are temporarily out of sync;
-- deterministic local JSON export containing policy versions, history, curriculum cooldown metadata, cumulative measurements, and catalog partition IDs;
-- a focused current-entry practice surface rather than six equally weighted cards;
-- clear separation of current token, completed tokens, upcoming entries, wrong-key feedback, completion summary, and next-round action;
-- compact expandable round history with held-out evaluation visually distinct;
-- raw diagnostics and destructive reset kept outside the primary practice flow;
-- desktop and mobile layouts that preserve the same information hierarchy;
-- no telemetry, curriculum-threshold tuning, account identifier, browser identifier, mastery score, or learning-effectiveness claim.
+## Phase 7E — Seeded cohort experiments
 
-Exit condition: a 10–20 round human pilot can inspect coverage-to-focus behavior, cooldown, repetition, and held-out evaluation while the practice UI remains legible, responsive, and secondary to the measured motor task.
+Goal: compare strategies numerically across controlled learner scenarios.
 
-## Later experiments
+Required scenarios:
 
-- curriculum threshold changes supported by pilot evidence;
-- recall practice mode with separate statistics;
-- transition-aware curriculum;
-- beginner progression by syllable families;
-- focused tone practice;
-- alternate Bopomofo layouts;
-- domain-specific catalogs;
-- export/import of local progress;
-- richer keyboard and transition visualizations;
-- optional accounts only if cross-device demand is demonstrated.
+- one weak binding;
+- one weak transition with strong component bindings;
+- asymmetric confusion;
+- competing binding and transition weaknesses;
+- rare unsupported relation;
+- heterogeneous improvement rates;
+- noisy and boundary-heavy learners;
+- multiple seeds and learner cohorts.
+
+Reports include:
+
+- node and edge coverage;
+- estimation error against latent truth;
+- weakness-identification delay;
+- target exposure lift over baseline;
+- held-out path performance;
+- confusion reduction;
+- sequence-length distribution;
+- frequency and lexical diversity;
+- repetition and concentration;
+- unsupported and fallback rates;
+- stability across seeds.
+
+Exit condition: strategy differences are reproducible, explainable, and not artifacts of one fixed word count or one word picker.
+
+## After Phase 7
+
+Only after reviewing the relational architecture and numeric reports should the project decide:
+
+- which catalog relations require more real words;
+- which estimator and strategy deserve browser integration;
+- how a variable-length sequence is presented to a person;
+- whether auto-advance or round boundaries still make sense;
+- what limited human experiment is needed to challenge simulation assumptions.
+
+Recall mode, alternate layouts, accounts, cloud sync, and further product refinement remain deferred.
