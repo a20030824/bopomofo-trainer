@@ -57,7 +57,7 @@ async function learnerIsolationPlan(): Promise<RelationalExperimentPlan> {
     },
     partitionOptions: {
       ...plan.partitionOptions,
-      evaluationEntryCount: 0,
+      evaluationEntryCount: 1,
     },
   };
 }
