@@ -1,6 +1,8 @@
 node_modules/
 dist/
 coverage/
+data/external/
+data/reference-generated/
 data/generated/catalog.json
 data/generated/coverage.json
 src/app/generated/catalog.ts
