@@ -7,22 +7,31 @@ import type {
   CurriculumProfile,
   FocusSelection,
 } from "../curriculum/types.js";
+import type {
+  FrequencyFirstSelectionState,
+  FrequencyFirstUtterancePolicy,
+  FrequencyFirstUtteranceSelection,
+  FrequencyStage,
+} from "../curriculum/frequency-first-utterance.js";
+import type { GrammarAnnotation } from "../grammar/types.js";
 import type { MeasurementPolicy, MeasurementSummary } from "../measurement/types.js";
 import type { InteractionSessionState } from "../practice/interaction-session.js";
 
-export const PRODUCT_PROGRESS_SCHEMA_VERSION = 1 as const;
+export const PRODUCT_PROGRESS_SCHEMA_VERSION = 2 as const;
 
 export type ProductRoundKind = "practice" | "evaluation";
 
 export interface ProductCatalogs {
   readonly practice: readonly CatalogEntry[];
   readonly evaluation: readonly CatalogEntry[];
+  readonly grammarAnnotations: Readonly<Record<string, GrammarAnnotation>>;
 }
 
 export interface ProductRound {
   readonly kind: ProductRoundKind;
   readonly exercise: Exercise;
   readonly focus: FocusSelection | null;
+  readonly selection: FrequencyFirstUtteranceSelection;
 }
 
 export interface ProductRoundSummary {
@@ -30,6 +39,9 @@ export interface ProductRoundSummary {
   readonly exerciseId: string;
   readonly completedAt: string;
   readonly entryIds: readonly string[];
+  readonly utteranceId: string;
+  readonly templateId: string | null;
+  readonly frequencyStage: FrequencyStage;
   readonly phase: CurriculumPhase | "evaluation";
   readonly focusTokenId: TokenId | null;
   readonly focusEvidence: CurriculumEvidence | null;
@@ -46,6 +58,7 @@ export interface ProductProgress {
   readonly measurements: MeasurementSummary;
   readonly curriculumPolicyVersion: string;
   readonly curriculum: CurriculumProfile;
+  readonly selection: FrequencyFirstSelectionState;
   readonly practiceRoundsCompleted: number;
   readonly evaluationRoundsCompleted: number;
   readonly recentSummaries: readonly ProductRoundSummary[];
@@ -57,6 +70,7 @@ export interface ProductEnvironment {
   readonly evaluationSupport: CatalogSupportIndex;
   readonly measurementPolicy: MeasurementPolicy;
   readonly curriculumPolicy: CurriculumPolicy;
+  readonly utterancePolicy: FrequencyFirstUtterancePolicy;
   readonly evaluationInterval: number;
   readonly evaluationEntryCount: number;
 }
