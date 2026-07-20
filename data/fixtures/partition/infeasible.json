@@ -1,8 +1,11 @@
 [
   {
     "id": "fixture:singleton-a",
-    "prompt": { "text": "八", "locale": "zh-TW" },
-    "syllables": [{ "tokens": ["zhuyin:ㄅ", "zhuyin:ㄚ", "tone:1"] }],
+    "prompt": { "text": "爸爸", "locale": "zh-TW" },
+    "syllables": [
+      { "tokens": ["zhuyin:ㄅ", "zhuyin:ㄚ", "tone:1"] },
+      { "tokens": ["zhuyin:ㄅ", "zhuyin:ㄚ", "tone:1"] }
+    ],
     "frequencyBand": 1,
     "tags": ["singleton-a"],
     "provenanceIds": ["fixture:partition"]
