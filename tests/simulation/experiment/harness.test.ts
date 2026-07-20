@@ -50,12 +50,22 @@ describe("relational experiment harness", () => {
     const registered = report.runs.filter(
       (run) => run.cell.learnerModelId === "synthetic-relational-v1",
     );
+    const missingExecutableRounds = missing.flatMap((run) =>
+      run.rounds.filter((round) =>
+        round.sequence !== null
+        && round.sequence.items.length > 0
+        && round.sequence.mode !== null
+        && round.sequence.layoutId !== null
+      )
+    );
 
     expect(report.runCount).toBe(16);
     expect(missing).toHaveLength(8);
-    expect(missing.every((run) => run.rounds.some((round) =>
-      round.failures.some((failure) => failure.stage === "learner")
-    ))).toBe(true);
+    expect(missingExecutableRounds.length).toBeGreaterThan(0);
+    expect(missingExecutableRounds.every((round) =>
+      round.learnerBatch === null
+      && round.failures.some((failure) => failure.stage === "learner")
+    )).toBe(true);
     expect(registered.every((run) => run.rounds.every((round) =>
       round.failures.every((failure) => failure.stage !== "learner")
     ))).toBe(true);
