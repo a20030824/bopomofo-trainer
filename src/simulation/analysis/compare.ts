@@ -5,6 +5,7 @@ import type {
   RelationalExperimentRunRecord,
 } from "../experiment/types.js";
 import type { RelationalStrategyCell } from "../strategy-matrix.js";
+import { blockingFallbackRate, totalFallbackRate } from "./fallback-policy.js";
 import type {
   CellScenarioComparison,
   ExperimentMetricKey,
@@ -103,7 +104,7 @@ function classify(
   cellId: string,
   scenarioId: string,
   executableRounds: number,
-  fallbackRate: number,
+  blockingRate: number,
   failureRate: number,
   metrics: readonly MetricComparison[],
   policy: RelationalAnalysisPolicy,
@@ -119,9 +120,9 @@ function classify(
     rejected = true;
     reasons.push("non-zero-failure-rate");
   }
-  if (fallbackRate > policy.maximumFallbackRate) {
+  if (blockingRate > policy.maximumBlockingFallbackRate) {
     rejected = true;
-    reasons.push("fallback-rate-above-policy-threshold");
+    reasons.push("blocking-fallback-rate-above-policy-threshold");
   }
   const protectedRegression = metrics.filter(
     (item) => item.role === "protected" && item.materialRegression,
@@ -181,17 +182,24 @@ export function compareExperimentCells(
   const comparisons: CellScenarioComparison[] = [];
   for (const aggregate of report.aggregates) {
     const key = aggregateKey(aggregate.cellId, aggregate.scenarioId);
-    const baseline = aggregates.get(aggregateKey(baselineCellId, aggregate.scenarioId));
+    const baselineKey = aggregateKey(baselineCellId, aggregate.scenarioId);
+    const baseline = aggregates.get(baselineKey);
     if (baseline === undefined) throw new Error(`missing baseline aggregate for ${aggregate.scenarioId}`);
     const cell = cells.get(aggregate.cellId);
     if (cell === undefined) throw new Error(`missing cell definition for ${aggregate.cellId}`);
-    const counts = executionCounts(runGroups.get(key) ?? []);
+    const runs = [...(runGroups.get(key) ?? [])];
+    const baselineRuns = [...(runGroups.get(baselineKey) ?? [])];
+    const counts = executionCounts(runs);
+    const fallbackRate = totalFallbackRate(runs);
+    const blockingRate = blockingFallbackRate(runs, policy);
+    const baselineFallbackRate = totalFallbackRate(baselineRuns);
+    const baselineBlockingRate = blockingFallbackRate(baselineRuns, policy);
     const metrics = RELATIONAL_EXPERIMENT_METRIC_KEYS.map((metric) =>
       metricComparison(metric, aggregate, baseline, policy)
     );
     const classification = classify(
       aggregate.cellId, aggregate.scenarioId, counts.executableRounds,
-      aggregate.fallbackRate, aggregate.failureRate,
+      blockingRate, aggregate.failureRate,
       metrics, policy, baselineCellId,
     );
     comparisons.push({
@@ -206,10 +214,15 @@ export function compareExperimentCells(
       },
       runCount: aggregate.runCount,
       ...counts,
-      fallbackRate: aggregate.fallbackRate,
+      fallbackRate,
+      blockingFallbackRate: blockingRate,
       failureRate: aggregate.failureRate,
-      baselineFallbackRate: baseline.fallbackRate,
+      baselineFallbackRate,
+      baselineBlockingFallbackRate: baselineBlockingRate,
       baselineFailureRate: baseline.failureRate,
+      fallbackDelta: fallbackRate - baselineFallbackRate,
+      blockingFallbackDelta: blockingRate - baselineBlockingRate,
+      failureDelta: aggregate.failureRate - baseline.failureRate,
       metrics,
       ...classification,
     });
