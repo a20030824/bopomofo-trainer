@@ -88,14 +88,26 @@ describe("relational partition policies", () => {
     }
   });
 
-  it("returns explicit hard-constraint failure for an infeasible held-out request", async () => {
+  it("counts repeated occurrences as one distinct supporting entry", async () => {
     const input = createPartitionInput(await readPartitionFixture("infeasible"));
+    const repeatedKey = transitionRelationKey(
+      zhuyinToken("ㄅ"),
+      zhuyinToken("ㄚ"),
+    );
+    const crossSyllableKey = transitionRelationKey(
+      toneToken(1),
+      zhuyinToken("ㄅ"),
+    );
     const decision = partitionRelationSupportPreserving(input, {
       evaluationEntryCount: 1,
       minimumTrainingDistinctEntries: 1,
     });
 
+    expect(input.index.transitionOccurrences[repeatedKey]).toHaveLength(2);
+    expect(input.index.support[repeatedKey]?.distinctEntryCount).toBe(1);
+    expect(input.index.transitionOccurrences[crossSyllableKey]).toBeUndefined();
     expect(decision.evaluationEntryIds).toEqual([]);
+    expect(decision.metrics.evaluationNovelty).toBe(0);
     expect(decision.constraintResults).toContainEqual(expect.objectContaining({
       id: "evaluation-entry-count",
       kind: "hard",
@@ -114,18 +126,55 @@ describe("relational partition policies", () => {
     }));
   });
 
-  it("replays seeded decisions independent of input entry order", async () => {
+  it("rejects duplicate lexical identities before partitioning", async () => {
+    const entries = await readPartitionFixture("feasible");
+    const first = entries[0]!;
+    const duplicate = {
+      ...first,
+      id: "fixture:duplicate-lexical-identity",
+    };
+    const input = createPartitionInput([...entries, duplicate]);
+
+    expect(() => partitionRelationSupportPreserving(input, THREE_ENTRY_OPTIONS))
+      .toThrow(/duplicate catalog lexical identity/u);
+  });
+
+  it("replays every strategy independent of input entry order", async () => {
     const entries = await readPartitionFixture("feasible");
     const forward = createPartitionInput(entries);
     const reversed = createPartitionInput([...entries].reverse());
-    const first = partitionSeededMaximumCoverage(forward, 20260720, THREE_ENTRY_OPTIONS);
-    const replay = partitionSeededMaximumCoverage(forward, 20260720, THREE_ENTRY_OPTIONS);
-    const reordered = partitionSeededMaximumCoverage(reversed, 20260720, THREE_ENTRY_OPTIONS);
+    const builders = [
+      (input: typeof forward) => partitionBindingPreservingBaseline(
+        input,
+        THREE_ENTRY_OPTIONS,
+      ),
+      (input: typeof forward) => partitionRelationSupportPreserving(
+        input,
+        THREE_ENTRY_OPTIONS,
+      ),
+      (input: typeof forward) => partitionFrequencyStratified(input, {
+        ...THREE_ENTRY_OPTIONS,
+        allowCrossBandFallback: true,
+      }),
+      (input: typeof forward) => partitionPathNovelty(input, THREE_ENTRY_OPTIONS),
+      (input: typeof forward) => partitionSeededMaximumCoverage(
+        input,
+        20260720,
+        THREE_ENTRY_OPTIONS,
+      ),
+    ];
 
-    expect(JSON.stringify(replay)).toBe(JSON.stringify(first));
-    expect(JSON.stringify(reordered)).toBe(JSON.stringify(first));
-    expect(first.seed).toBe(20260720);
-    expect(first.selectionTrace.some(
+    for (const build of builders) {
+      const first = build(forward);
+      const replay = build(forward);
+      const reordered = build(reversed);
+      expect(JSON.stringify(replay)).toBe(JSON.stringify(first));
+      expect(JSON.stringify(reordered)).toBe(JSON.stringify(first));
+    }
+
+    const seeded = builders.at(-1)!(forward);
+    expect(seeded.seed).toBe(20260720);
+    expect(seeded.selectionTrace.some(
       (trace) => trace.seedTieBreak !== null,
     )).toBe(true);
   });
