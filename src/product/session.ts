@@ -9,18 +9,23 @@ import {
 import { aggregateMeasurements } from "../measurement/aggregate.js";
 import { deriveMeasurementDecisions } from "../measurement/derive-observations.js";
 import { PHASE_3_MEASUREMENT_POLICY } from "../measurement/policy.js";
-import { buildCurriculumExercise } from "../curriculum/exercise-builder.js";
-import { selectCurriculumFocus } from "../curriculum/focus.js";
+import {
+  FREQUENCY_FIRST_UTTERANCE_POLICY,
+  selectFrequencyFirstUtterance,
+  updateFrequencyFirstSelectionState,
+  validateFrequencyFirstUtterancePolicy,
+  type FrequencyFirstUtterancePolicy,
+} from "../curriculum/frequency-first-utterance.js";
 import { PHASE_4_CURRICULUM_POLICY } from "../curriculum/policy.js";
 import { createSeededRandom } from "../curriculum/random.js";
 import { createCatalogSupportIndex, entryTokenSet } from "../curriculum/support.js";
 import type {
   CurriculumBindingRecord,
-  CurriculumPolicy,
   CurriculumProfile,
 } from "../curriculum/types.js";
 import {
   appendRecentSummary,
+  createEmptyMeasurementSummary,
   createFreshProductProgress,
 } from "./progress.js";
 import type {
@@ -35,10 +40,24 @@ import type {
 export const DEFAULT_EVALUATION_INTERVAL = 5;
 export const DEFAULT_EVALUATION_ENTRY_COUNT = 3;
 
+function validateGrammarCoverage(catalogs: ProductCatalogs): void {
+  const allEntries = [...catalogs.practice, ...catalogs.evaluation];
+  for (const entry of allEntries) {
+    const annotation = catalogs.grammarAnnotations[entry.id];
+    if (annotation === undefined) {
+      throw new Error(`product catalog entry is missing grammar annotation: ${entry.id}`);
+    }
+    if (annotation.entryId !== entry.id) {
+      throw new Error(`grammar annotation identity mismatch: ${entry.id}`);
+    }
+  }
+}
+
 export function createProductEnvironment(
   catalogs: ProductCatalogs,
   evaluationInterval = DEFAULT_EVALUATION_INTERVAL,
   evaluationEntryCount = DEFAULT_EVALUATION_ENTRY_COUNT,
+  utterancePolicy: FrequencyFirstUtterancePolicy = FREQUENCY_FIRST_UTTERANCE_POLICY,
 ): ProductEnvironment {
   if (!Number.isInteger(evaluationInterval) || evaluationInterval <= 0) {
     throw new RangeError("evaluationInterval must be a positive integer");
@@ -60,12 +79,15 @@ export function createProductEnvironment(
   if ([...evaluationIds].some((entryId) => practiceIds.has(entryId))) {
     throw new Error("practice and evaluation catalogs must be disjoint");
   }
+  validateGrammarCoverage(catalogs);
+  validateFrequencyFirstUtterancePolicy(utterancePolicy);
   return {
     catalogs,
     practiceSupport: createCatalogSupportIndex(catalogs.practice),
     evaluationSupport: createCatalogSupportIndex(catalogs.evaluation),
     measurementPolicy: PHASE_3_MEASUREMENT_POLICY,
     curriculumPolicy: PHASE_4_CURRICULUM_POLICY,
+    utterancePolicy,
     evaluationInterval,
     evaluationEntryCount,
   };
@@ -84,6 +106,7 @@ export function createFreshProgressForEnvironment(
     layoutId,
     environment.measurementPolicy,
     environment.curriculumPolicy.version,
+    environment.utterancePolicy,
   );
 }
 
@@ -97,62 +120,54 @@ function evaluationDue(
   return scheduled > progress.evaluationRoundsCompleted;
 }
 
-function evaluationPolicy(environment: ProductEnvironment): CurriculumPolicy {
-  return {
-    ...environment.curriculumPolicy,
-    exerciseEntryCount: Math.min(
-      environment.evaluationEntryCount,
-      environment.catalogs.evaluation.length,
-    ),
-    focusedEntryShare: 0,
-  };
-}
-
 function selectRound(
   environment: ProductEnvironment,
   progress: ProductProgress,
 ): ProductRound {
-  if (evaluationDue(progress, environment)) {
-    const built = buildCurriculumExercise(
-      environment.evaluationSupport,
-      progress.curriculum,
-      null,
-      null,
-      evaluationPolicy(environment),
-      createSeededRandom(
-        `${progress.seed}:evaluation:${progress.evaluationRoundsCompleted}`,
-      ),
-    );
-    return {
-      kind: "evaluation",
-      exercise: {
-        ...built.exercise,
-        id: `evaluation-${progress.evaluationRoundsCompleted + 1}`,
+  const evaluation = evaluationDue(progress, environment);
+  const selection = selectFrequencyFirstUtterance({
+    entries: evaluation
+      ? environment.catalogs.evaluation
+      : environment.catalogs.practice,
+    annotations: environment.catalogs.grammarAnnotations,
+    measurement: evaluation
+      ? createEmptyMeasurementSummary(environment.measurementPolicy)
+      : progress.measurements,
+    mode: progress.mode,
+    layoutId: progress.layoutId,
+    stage: evaluation ? 3 : progress.selection.stage,
+    history: evaluation
+      ? {
+        recentEntryIds: [],
+        recentUtteranceIds: [],
+        recentTemplateIds: [],
+      }
+      : {
+        recentEntryIds: progress.curriculum.recentEntryIds,
+        recentUtteranceIds: progress.selection.recentUtteranceIds,
+        recentTemplateIds: progress.selection.recentTemplateIds,
       },
-      focus: null,
-    };
-  }
-
-  const focus = selectCurriculumFocus(
-    progress.curriculum,
-    environment.practiceSupport,
-    environment.curriculumPolicy,
-  );
-  const built = buildCurriculumExercise(
-    environment.practiceSupport,
-    progress.curriculum,
-    focus.tokenId,
-    focus.evidence,
-    environment.curriculumPolicy,
-    createSeededRandom(`${progress.seed}:practice:${progress.curriculum.round}`),
-  );
+    policy: environment.utterancePolicy,
+    random: createSeededRandom(
+      evaluation
+        ? `${progress.seed}:evaluation:${progress.evaluationRoundsCompleted}`
+        : `${progress.seed}:practice:${progress.practiceRoundsCompleted}`,
+    ),
+  });
+  const kind = evaluation ? "evaluation" : "practice";
+  const number = evaluation
+    ? progress.evaluationRoundsCompleted + 1
+    : progress.practiceRoundsCompleted + 1;
   return {
-    kind: "practice",
+    kind,
     exercise: {
-      ...built.exercise,
-      id: `practice-${progress.curriculum.round + 1}`,
+      id: `${kind}-${number}`,
+      mode: progress.mode,
+      layoutId: progress.layoutId,
+      entries: selection.utterance.entries,
     },
-    focus,
+    focus: null,
+    selection,
   };
 }
 
@@ -213,9 +228,6 @@ function updateCurriculumAfterPractice(
     bindings[tokenId] = {
       ...record,
       aggregate: aggregates.get(tokenId) ?? record.aggregate,
-      lastFocusedRound: round.focus?.tokenId === tokenId
-        ? profile.round
-        : record.lastFocusedRound,
     };
   }
   const recentTokenIds = [
@@ -250,11 +262,16 @@ function finalizeRound(
     exerciseId: state.round.exercise.id,
     completedAt,
     entryIds: state.round.exercise.entries.map((entry) => entry.id),
+    utteranceId: state.round.selection.utterance.id,
+    templateId: state.round.selection.utterance.templateId,
+    frequencyStage: state.round.selection.stage,
     phase: state.round.kind === "evaluation"
       ? "evaluation"
-      : state.round.focus!.phase,
-    focusTokenId: state.round.focus?.tokenId ?? null,
-    focusEvidence: state.round.focus?.evidence ?? null,
+      : state.round.selection.stage === 1
+        ? "coverage"
+        : "adaptive",
+    focusTokenId: null,
+    focusEvidence: null,
     ...metrics,
   };
 
@@ -277,10 +294,18 @@ function finalizeRound(
     measurements,
     state.round,
   );
+  const selection = updateFrequencyFirstSelectionState(
+    state.progress.selection,
+    state.round.selection,
+    metrics.attempts,
+    metrics.errors,
+    environment.utterancePolicy,
+  );
   const progress: ProductProgress = {
     ...state.progress,
     measurements,
     curriculum,
+    selection,
     practiceRoundsCompleted: state.progress.practiceRoundsCompleted + 1,
     recentSummaries: appendRecentSummary(state.progress, summary),
   };
