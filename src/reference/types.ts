@@ -50,6 +50,8 @@ export interface ReferenceCandidate {
 
 export type ReferenceCompilationErrorCode =
   | "unknown-source"
+  | "invalid-source-row-id"
+  | "invalid-source-record-url"
   | "unresolved-alternative"
   | "invalid-text"
   | "invalid-reading"
