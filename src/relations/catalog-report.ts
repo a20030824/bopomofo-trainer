@@ -2,6 +2,7 @@ import type { CatalogEntry, PracticeMode } from "../core/model.js";
 import type {
   CatalogPartition,
   CatalogRelationIndex,
+  ConfusionRelationRef,
   RelationSupportSummary,
 } from "./types.js";
 import { createCatalogRelationIndex } from "./catalog-index.js";
@@ -85,6 +86,7 @@ export interface RelationalCatalogReportOptions {
   readonly layoutId: string;
   readonly partitionByEntryId: Readonly<Record<string, CatalogPartition>>;
   readonly supportPolicy?: RelationSupportPolicy;
+  readonly confusionRelations?: readonly ConfusionRelationRef[];
 }
 
 export function createRelationalCatalogReport(
