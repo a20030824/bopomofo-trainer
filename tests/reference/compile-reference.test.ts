@@ -38,20 +38,28 @@ function row(overrides: Partial<ReferenceSourceRow> = {}): ReferenceSourceRow {
 
 describe("reference compilation", () => {
   it("compiles one resolved Han headword and deterministic metadata", () => {
-    const result = compileReferenceRow(row(), sources);
+    const result = compileReferenceRow(row({
+      sourceRowId: " 1 ",
+      sourceRecordUrl: "https://example.invalid/fixture/1",
+    }), sources);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.candidate).toMatchObject({
       id: "reference:fixture:naer:1",
+      sourceRowId: "1",
       text: "可樂",
       reading: "ㄎㄜ3 ㄌㄜ4",
       syllableCount: 2,
       tokenCount: 6,
       domains: ["核心詞", "餐飲"],
+      sourceRecordUrl: "https://example.invalid/fixture/1",
     });
   });
 
   it.each([
+    ["invalid-source-row-id", row({ sourceRowId: "  " })],
+    ["invalid-source-record-url", row({ sourceRecordUrl: "http://example.invalid/1" })],
+    ["invalid-source-record-url", row({ sourceRecordUrl: "not-a-url" })],
     ["unresolved-alternative", row({ text: "爸爸/爸" })],
     ["unresolved-alternative", row({ reading: "ㄅㄚ4 ㄅㄚ5 / ㄅㄚ4" })],
     ["invalid-text", row({ text: "A可樂" })],
