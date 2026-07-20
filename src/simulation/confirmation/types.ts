@@ -8,7 +8,7 @@ import type {
   RelationalLearnerModelId,
   RelationalStrategyCell,
 } from "../strategy-matrix.js";
-import type { ExperimentMetricValue } from "../experiment/types.js";
+import type { RelationalExperimentMetrics } from "../experiment/types.js";
 
 export type ConfirmationCellRole =
   | "historical-baseline"
@@ -88,7 +88,7 @@ export interface ConfirmationRunSummary {
   readonly seed: number;
   readonly evaluationEntryIds: readonly string[];
   readonly trajectories: readonly ConfirmationRoundTrajectory[];
-  readonly finalMetrics: Readonly<Record<string, ExperimentMetricValue>>;
+  readonly finalMetrics: RelationalExperimentMetrics;
   readonly executableRoundCount: number;
   readonly totalFallbackCount: number;
   readonly blockingFallbackCount: number;
