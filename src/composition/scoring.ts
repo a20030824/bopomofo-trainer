@@ -178,7 +178,7 @@ function concentrationRecoverable(
 
 function commonEntriesNeeded(commonEntries: number, selectedEntries: number, share: number): number {
   if (share <= 0 || commonEntries / Math.max(1, selectedEntries) >= share) return 0;
-  if (share === 1) return selectedEntries - commonEntries;
+  if (share === 1) return Number.POSITIVE_INFINITY;
   return Math.max(0, Math.ceil((share * selectedEntries - commonEntries) / (1 - share)));
 }
 
