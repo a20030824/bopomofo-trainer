@@ -29,17 +29,26 @@ describe("relational strategy matrix", () => {
     expect(new Set(expectedIds).size).toBe(expectedIds.length);
   });
 
-  it("keeps the historical binding/fixed-six combination as the baseline", () => {
-    const matrix = createRelationalStrategyMatrix();
+  it("keeps the historical binding/fixed-six learner combination as the baseline", () => {
     const baseline = relationalStrategyCellId(
       "binding-only-baseline",
       "binding-preserving-baseline-v1",
       "fixed-six-baseline",
       "synthetic-relational-v1",
     );
+    const matrix = createRelationalStrategyMatrix();
+    const extended = createRelationalStrategyMatrix({
+      learnerModelIds: ["synthetic-relational-v1", "alternate-model-v1"],
+    });
 
     expect(matrix.baselineCellId).toBe(baseline);
     expect(matrix.cells.some((cell) => cell.id === baseline)).toBe(true);
+    expect(extended.axes.learnerModelIds).toEqual([
+      "alternate-model-v1",
+      "synthetic-relational-v1",
+    ]);
+    expect(extended.baselineCellId).toBe(baseline);
+    expect(extended.cells.some((cell) => cell.id === baseline)).toBe(true);
   });
 
   it("canonicalizes input order and replays byte-for-byte", () => {
@@ -79,6 +88,10 @@ describe("relational strategy matrix", () => {
 
     expect(() => createRelationalStrategyMatrix({
       objectiveStrategyIds: ["transition-aware"],
+    })).toThrow("strategy matrix options exclude the required baseline cell");
+
+    expect(() => createRelationalStrategyMatrix({
+      learnerModelIds: ["alternate-model-v1"],
     })).toThrow("strategy matrix options exclude the required baseline cell");
   });
 });
