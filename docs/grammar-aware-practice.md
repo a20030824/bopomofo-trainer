@@ -23,8 +23,11 @@ The current predicate frames are:
 - `none`;
 - `intransitive`;
 - `transitive`;
+- `ambitransitive`;
 - `modal`;
 - `adjectival`.
+
+`ambitransitive` is explicit rather than inferred. It is used only when a reviewed item can appear both without and with an object, such as the current provisional annotations for `練習` and `學習`.
 
 Standalone behavior is separate:
 
@@ -32,7 +35,7 @@ Standalone behavior is separate:
 - `lexical-prompt` — may be shown as one reviewed fallback word;
 - `utterance` — forms a complete utterance, such as `謝謝` or `對不起`.
 
-Part of speech alone is insufficient. Predicate frame prevents treating every verb-like word as accepting the same neighbors.
+Part of speech alone is insufficient. Predicate frame prevents treating every verb-like word as accepting the same neighbors. For example, `使用` may fill a verb slot only in a template that also supplies an object; the composer cannot emit `老師 可以 使用` as a complete candidate.
 
 ## Validation
 
@@ -44,6 +47,8 @@ Part of speech alone is insufficient. Predicate frame prevents treating every ve
 - inconsistent role/frame combinations;
 - formulaic entries mixed with ordinary roles;
 - absent or unknown provenance IDs.
+
+The manual grammar decisions use their own `local:grammar-review-v1` provenance record rather than inheriting lexical-sample provenance.
 
 Generated browser catalog output includes the canonical annotation map, but the browser does not yet consume it in this PR.
 
@@ -57,10 +62,10 @@ subject + temporal + intransitive predicate
 temporal + subject + transitive predicate + object
 subject + temporal + transitive predicate + object
 subject + transitive predicate + object
-temporal + subject + modal + verb + object
-subject + modal + verb + object
-temporal + subject + modal + verb
-subject + modal + verb
+temporal + subject + modal + transitive/ambitransitive verb + object
+subject + modal + transitive/ambitransitive verb + object
+temporal + subject + modal + intransitive/ambitransitive verb
+subject + modal + intransitive/ambitransitive verb
 subject + adjectival predicate
 formulaic utterance
 ```
@@ -78,10 +83,12 @@ Examples supported by the current annotations include:
 
 1. requires every input entry to have an annotation;
 2. indexes entries by reviewed grammar role;
-3. fills templates without reusing one entry in multiple slots;
-4. orders templates, role pools, and final candidates with code-unit-stable comparisons;
-5. enforces a declared maximum candidate count;
-6. returns complete selection identities, slot assignments, ordered entries, display text, and punctuation.
+3. checks each slot's accepted predicate frames;
+4. fills templates without reusing one entry in multiple slots;
+5. orders templates, role pools, and final candidates with code-unit-stable comparisons;
+6. enforces a declared maximum candidate count;
+7. takes candidates round-robin across templates before applying the global cap, so one high-cardinality template cannot erase every other sentence shape;
+8. returns complete selection identities, slot assignments, ordered entries, display text, and punctuation.
 
 Input order does not affect canonical output for the same entries, annotations, templates, and candidate limit.
 
