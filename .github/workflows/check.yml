@@ -53,7 +53,17 @@ jobs:
       - name: Verify relational strategy matrix
         run: npm run strategy:matrix
       - name: Verify seeded cohort experiments
-        run: npm run experiment:relational
+        id: experiments
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run experiment:relational 2>&1 | tee experiment.log
+      - name: Upload experiment failure log
+        if: failure() && steps.experiments.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-failure-log
+          path: experiment.log
       - name: Verify relational strategy analysis
         run: npx tsx scripts/analyze-relational-experiments.ts --verify --output-dir analysis-artifacts
       - name: Upload relational strategy analysis
