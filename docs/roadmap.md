@@ -117,13 +117,39 @@ The deterministic integration fixture verifies:
 4. practice sequence → synthetic learner → ordinary `InteractionTrace` → existing Phase 3 measurement → estimation error;
 5. identical fixtures, versions, policies, seeds, scenario, and timestamp → byte-for-byte identical complete report.
 
-The reference path stops at `manual-review-required`; it never mutates the reviewed catalog. This checkpoint uses one fixed objective, partition, composer, and learner scenario only. It does not implement the strategy matrix.
+The reference path stops at `manual-review-required`; it never mutates the reviewed catalog. This checkpoint uses one fixed objective, partition, composer, and learner scenario only.
 
 Exit condition: `npm run integration:research` and the integration regressions pass on the exact PR head.
 
-## Phase 7E — Seeded cohort experiments
+## Phase 7E — Relational strategy matrix
 
-Goal: compare replaceable strategies numerically across controlled learner scenarios.
+Goal: declare the complete replaceable comparison space without hard-coding one simulator or prematurely executing experiments.
+
+Replaceable axes:
+
+1. objective selector;
+2. partition policy;
+3. practice composer;
+4. learner model.
+
+The initial declaration contains:
+
+- five objective strategies;
+- five partition policies;
+- five composition strategies;
+- one current synthetic learner model;
+- 125 deterministic matrix cells;
+- one explicit historical binding/fixed-six baseline cell;
+- stable cell IDs, canonical axis ordering, and a matrix digest;
+- adapter interfaces for every axis.
+
+Matrix cells contain strategy identities only. They do not contain seeds, scenarios, cohorts, rounds, metrics, confidence intervals, or result status.
+
+Exit condition: `npm run strategy:matrix` is input-order invariant, every declared combination appears exactly once, the baseline cannot be silently removed, and all four axes are represented in the experiment contract.
+
+## Phase 7F — Seeded cohort experiment harness
+
+Goal: execute matrix cells numerically across controlled learner scenarios.
 
 Required scenarios:
 
@@ -148,9 +174,10 @@ Reports include:
 - frequency and lexical diversity;
 - repetition and concentration;
 - unsupported and fallback rates;
-- stability across seeds.
+- stability across seeds;
+- JSON, CSV, and Markdown outputs with a determinism digest.
 
-Exit condition: strategy differences are reproducible, explainable, and not artifacts of one fixed word count or one word picker.
+Exit condition: strategy differences are reproducible, explainable, and not artifacts of one fixed word count, one partition, one word picker, one learner, or one seed.
 
 ## After Phase 7
 

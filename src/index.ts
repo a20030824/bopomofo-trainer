@@ -50,10 +50,12 @@ export * from "./curriculum/objectives.js";
 export * from "./composition/types.js";
 export * from "./composition/composer.js";
 export * from "./simulation/types.js";
+export * from "./simulation/strategy-matrix.js";
 export {
   SYNTHETIC_EXERCISE,
   SYNTHETIC_LAYOUT,
   SYNTHETIC_SCENARIO_IDS,
+  SYNTHETIC_TOKEN_IDS,
   createSyntheticScenarios,
   getSyntheticScenario,
 } from "./simulation/learner/scenarios.js";

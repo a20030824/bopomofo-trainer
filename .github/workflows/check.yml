@@ -40,5 +40,7 @@ jobs:
         run: npm run catalog:relations
       - name: Verify relational integration replay
         run: npm run integration:research
+      - name: Verify relational strategy matrix
+        run: npm run strategy:matrix
       - name: Production build
         run: npm run build
