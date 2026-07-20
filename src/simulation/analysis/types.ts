@@ -47,6 +47,8 @@ export interface CellScenarioComparison {
   readonly scenarioId: string;
   readonly axes: Readonly<Record<AnalysisAxis, string>>;
   readonly runCount: number;
+  readonly totalRounds: number;
+  readonly executableRounds: number;
   readonly fallbackRate: number;
   readonly failureRate: number;
   readonly baselineFallbackRate: number;
