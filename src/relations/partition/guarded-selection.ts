@@ -2,6 +2,7 @@ import type { CatalogEntry } from "../../core/model.js";
 import {
   createPartitionRelationModel,
   relationSupportViolations,
+  validatePartitionInput,
   type PartitionRelationModel,
 } from "./model.js";
 import type {
@@ -51,8 +52,8 @@ export function selectWithRelationSupportGuard(
   minimumTrainingDistinctEntries: number,
   scorer: CandidateScorer,
 ): GuardedSelectionResult {
-  const entries = [...input.entries].sort((left, right) => compareText(left.id, right.id));
-  const model = createPartitionRelationModel(input.index);
+  const entries = validatePartitionInput(input);
+  const model = createPartitionRelationModel(input.report.index);
   const evaluationEntryIds = new Set<string>();
   const trace: PartitionSelectionTrace[] = [];
   let traceStep = 0;
