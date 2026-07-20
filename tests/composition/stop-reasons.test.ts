@@ -105,6 +105,20 @@ describe("composition stop reasons", () => {
     expect(result.fallbackReasons).toContain("coverage-objective-not-composable");
   });
 
+  it("reports invalid budgets without mislabeling the retrieval exclusion", () => {
+    const { exact, index } = oneCandidate();
+    const result = composePracticeSequence(input({
+      entries: [exact],
+      index,
+      budget: budget({
+        targetExposures: { minimum: 2, preferred: 1, maximum: 2 },
+      }),
+    }));
+    expect(result.stopReason).toBe("policy-conflict");
+    expect(result.fallbackReasons).toContain("invalid-budget");
+    expect(result.retrievalTrace.exclusions[0]?.reason).toBe("invalid-budget");
+  });
+
   it("reports fallback-completed without padding to six entries", () => {
     const { exact, index } = oneCandidate();
     const result = composePracticeSequence(input({
