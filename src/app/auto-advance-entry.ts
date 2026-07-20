@@ -7,6 +7,8 @@ import {
 
 const app = document.querySelector<HTMLElement>("#app");
 if (app === null) throw new Error("Missing required element: #app");
+const capture = document.querySelector<HTMLTextAreaElement>("#keyboard-capture");
+if (capture === null) throw new Error("Missing required element: #keyboard-capture");
 
 let activeButton: HTMLButtonElement | null = null;
 let activeNote: HTMLParagraphElement | null = null;
@@ -65,6 +67,13 @@ observer.observe(app, { childList: true, subtree: true });
 syncCompletionTarget();
 
 document.addEventListener("keydown", (event) => {
+  if (
+    event.code === "Enter"
+    && document.activeElement !== capture
+    && document.activeElement !== activeButton
+  ) {
+    return;
+  }
   if (!controller.handleKey(event.code)) return;
   event.preventDefault();
   event.stopPropagation();
