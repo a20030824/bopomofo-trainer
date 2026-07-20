@@ -94,10 +94,59 @@ function validTransitionOccurrence(
     && occurrence.toToken === relation.scope.toToken;
 }
 
+function sameRelationScope(left: RelationRef, right: RelationRef): boolean {
+  if (left.kind !== right.kind) return false;
+  if (left.scope.mode !== right.scope.mode || left.scope.layoutId !== right.scope.layoutId) {
+    return false;
+  }
+  if (left.kind === "binding" && right.kind === "binding") {
+    return left.scope.tokenId === right.scope.tokenId;
+  }
+  if (left.kind === "transition" && right.kind === "transition") {
+    return left.scope.fromToken === right.scope.fromToken
+      && left.scope.toToken === right.scope.toToken;
+  }
+  if (left.kind === "confusion" && right.kind === "confusion") {
+    return left.scope.expectedToken === right.scope.expectedToken
+      && left.scope.actualToken === right.scope.actualToken;
+  }
+  return false;
+}
+
+function supportKey(target: ObjectiveTarget): string | null {
+  if (target.relation.kind === "binding") {
+    return bindingRelationKey(target.relation.scope.tokenId);
+  }
+  if (target.relation.kind === "transition") {
+    return transitionRelationKey(
+      target.relation.scope.fromToken,
+      target.relation.scope.toToken,
+    );
+  }
+  return null;
+}
+
+function indexScopeProblem(
+  target: ObjectiveTarget,
+  index: CatalogRelationIndex,
+): string | null {
+  const key = supportKey(target);
+  if (key === null) return null;
+  const summary = index.support[key];
+  if (summary === undefined) {
+    return "relation support summary is missing, so index mode and layout cannot be verified";
+  }
+  if (!sameRelationScope(summary.relation, target.relation)) {
+    return "relation support summary scope does not match objective mode, layout, or relation";
+  }
+  return null;
+}
+
 function exactOccurrences(
   target: ObjectiveTarget,
   index: CatalogRelationIndex,
 ): readonly RelationOccurrence[] {
+  if (indexScopeProblem(target, index) !== null) return [];
   if (target.relation.kind === "binding") {
     return index.bindingOccurrences[bindingRelationKey(target.relation.scope.tokenId)] ?? [];
   }
@@ -257,6 +306,15 @@ export function retrieveCandidates(
   }
 
   for (const target of targets) {
+    const scopeProblem = indexScopeProblem(target, index);
+    if (scopeProblem !== null) {
+      exclusions.push({
+        entryId: null,
+        targetKey: target.key,
+        reason: "inconsistent-objective-scope",
+        detail: scopeProblem,
+      });
+    }
     if (target.relation.kind === "confusion" && confusionPool(target, index) === null) {
       exclusions.push({
         entryId: null,
