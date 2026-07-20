@@ -52,8 +52,11 @@ function tagSet(entries: readonly CatalogEntry[]): ReadonlySet<string> {
 
 function bandDistribution(entries: readonly CatalogEntry[]): readonly [number, number, number] {
   if (entries.length === 0) return [0, 0, 0];
-  const counts = [0, 0, 0];
-  for (const entry of entries) counts[entry.frequencyBand - 1] += 1;
+  const counts: [number, number, number] = [0, 0, 0];
+  for (const entry of entries) {
+    const index = entry.frequencyBand - 1;
+    counts[index] = (counts[index] ?? 0) + 1;
+  }
   return counts.map((count) => count / entries.length) as [number, number, number];
 }
 
@@ -74,23 +77,23 @@ function frequencyBandDivergence(
 }
 
 function relationCoverage(
-  summaries: readonly RelationSupportSummary[],
+  summaries: readonly (readonly [string, RelationSupportSummary])[],
 ): RelationPartitionCoverageMetrics {
-  const observed = summaries.filter((summary) => summary.occurrenceCount > 0);
+  const observed = summaries.filter(([, summary]) => summary.occurrenceCount > 0);
   const evaluationOnlyRelationKeys = observed
-    .filter((summary) =>
+    .filter(([, summary]) =>
       summary.trainingDistinctEntryCount === 0
       && summary.evaluationDistinctEntryCount > 0,
     )
-    .map((summary) => JSON.stringify(summary.relation.scope))
+    .map(([key]) => key)
     .sort(compareText);
   return {
     observedRelationCount: observed.length,
     trainingCoveredRelationCount: observed.filter(
-      (summary) => summary.trainingDistinctEntryCount > 0,
+      ([, summary]) => summary.trainingDistinctEntryCount > 0,
     ).length,
     evaluationCoveredRelationCount: observed.filter(
-      (summary) => summary.evaluationDistinctEntryCount > 0,
+      ([, summary]) => summary.evaluationDistinctEntryCount > 0,
     ).length,
     evaluationOnlyRelationCount: evaluationOnlyRelationKeys.length,
     evaluationOnlyRelationKeys,
@@ -128,11 +131,9 @@ export function evaluatePartitionMetrics(
   const supportEntries = Object.entries(report.index.support)
     .sort(([left], [right]) => compareText(left, right));
   const bindingSummaries = supportEntries
-    .filter(([, summary]) => summary.relation.kind === "binding")
-    .map(([, summary]) => summary);
+    .filter(([, summary]) => summary.relation.kind === "binding");
   const transitionSummaries = supportEntries
-    .filter(([, summary]) => summary.relation.kind === "transition")
-    .map(([, summary]) => summary);
+    .filter(([, summary]) => summary.relation.kind === "transition");
   const observedSummaries = supportEntries
     .map(([, summary]) => summary)
     .filter((summary) => summary.occurrenceCount > 0);
