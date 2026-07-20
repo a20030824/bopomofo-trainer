@@ -115,8 +115,30 @@ Deliverables:
 
 Exit condition: a learner can complete repeated sessions with correct tone handling, persistent layout-scoped progress, adaptive exercise selection, and separate transfer checks on held-out entries.
 
+## Phase 6 — Pilot instrumentation and product-interface refinement
+
+Goal: prepare one coherent version for a real 10–20 round pilot. Preserve enough local evidence to inspect curriculum behavior while making the practice flow visually clear enough that UI friction does not dominate the pilot.
+
+Deliverables:
+
+- a separate schema-versioned pilot-history store that does not rewrite valid Phase 5 progress;
+- migration from existing compact round summaries, with unavailable historical latency represented as `null`;
+- retention of at least 20 completed practice/evaluation rounds;
+- mapped-key attempts, errors, accuracy, phase, focus, evidence route, timing-sample count, and median clean latency per round;
+- reconciliation when progress and pilot-history localStorage writes are temporarily out of sync;
+- deterministic local JSON export containing policy versions, history, curriculum cooldown metadata, cumulative measurements, and catalog partition IDs;
+- a focused current-entry practice surface rather than six equally weighted cards;
+- clear separation of current token, completed tokens, upcoming entries, wrong-key feedback, completion summary, and next-round action;
+- compact expandable round history with held-out evaluation visually distinct;
+- raw diagnostics and destructive reset kept outside the primary practice flow;
+- desktop and mobile layouts that preserve the same information hierarchy;
+- no telemetry, curriculum-threshold tuning, account identifier, browser identifier, mastery score, or learning-effectiveness claim.
+
+Exit condition: a 10–20 round human pilot can inspect coverage-to-focus behavior, cooldown, repetition, and held-out evaluation while the practice UI remains legible, responsive, and secondary to the measured motor task.
+
 ## Later experiments
 
+- curriculum threshold changes supported by pilot evidence;
 - recall practice mode with separate statistics;
 - transition-aware curriculum;
 - beginner progression by syllable families;
