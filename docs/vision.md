@@ -2,82 +2,99 @@
 
 ## Problem
 
-Most typing trainers assume that the prompt character, the semantic unit being learned, and the physical key are the same thing. Bopomofo input has three distinct layers:
+Most typing trainers assume that the prompt, the learned unit, and the physical key are the same thing. Bopomofo practice has distinct layers:
 
-1. a Chinese context prompt, such as `中文`;
-2. a semantic sequence, such as `ㄓ ㄨ ㄥ tone:1 ㄨ ㄣ tone:2`;
-3. physical keyboard events, such as `Digit5 KeyJ Slash Space KeyJ KeyP Digit6`.
+1. Chinese context, such as `中文`;
+2. an ordered semantic path, such as `ㄓ ㄨ ㄥ tone:1 | ㄨ ㄣ tone:2`;
+3. a physical layout mapping, such as `Digit5 KeyJ Slash Space | KeyJ KeyP Digit6`;
+4. learner relations over bindings, transitions, and directional confusions.
 
-A useful trainer must preserve these layers instead of collapsing them into one key sequence.
+A useful research environment must preserve all four layers and retain the exact text occurrences that provide evidence for each relation.
 
-## Product thesis
+## Research thesis
 
-The first product is guided motor training for a specific Bopomofo keyboard layout. It shows both the Chinese context and the complete Bopomofo reading, including every tone, then measures how fluently the learner maps those visible semantic tokens to physical keys.
+The project studies how reviewed Traditional Chinese text can be indexed and composed to expose Bopomofo keyboard relations, and how different curriculum strategies behave against synthetic learners with known latent skill.
 
-This deliberately avoids treating reading recall and keyboard fluency as the same skill.
+The core structures are:
 
-The initial learning loop is:
+- binding nodes: visible token to layout-specific key correctness;
+- transition edges: directional clean movement between adjacent tokens inside one syllable;
+- confusion edges: directional expected-to-actual substitutions;
+- catalog paths: ordered text-derived token sequences that support those relations.
 
-1. show reviewed Chinese vocabulary together with its explicit Bopomofo reading;
-2. measure layout-scoped performance for each token binding;
-3. select one eligible low-confidence binding as the current focus;
-4. build a short continuous exercise from common catalog entries containing that token;
-5. update the learner profile from context-aware input observations.
+The browser interaction is one observation adapter. It does not define the research architecture.
+
+## Core loop
+
+1. compile reviewed text and explicit Bopomofo readings;
+2. index exact binding and transition occurrences and possible confusion contrasts;
+3. select a relation objective using a declared curriculum policy;
+4. retrieve supporting occurrences;
+5. compose a variable-length practice sequence under evidence and lexical budgets;
+6. let a synthetic learner emit ordinary input traces;
+7. aggregate estimates through the same measurement path used by real input;
+8. compare estimates and curriculum behavior against hidden learner truth.
+
+Objective selection and text composition remain separate policies so they can be evaluated independently.
 
 ## Practice modes
 
-### Guided mode — V1
+### Guided mode
 
-- Chinese context is visible.
-- Complete Bopomofo and tone sequence is visible.
-- Performance represents symbol-to-key mapping and motor execution for the selected layout.
+Chinese context and the complete Bopomofo reading are visible. Binding errors represent symbol-to-key mapping. Clean within-syllable inter-key latency represents directional transition evidence.
 
-### Recall mode — later experiment
+### Recall mode
 
-- Chinese context is visible.
-- Bopomofo is hidden or progressively revealed.
-- Performance also includes pronunciation recall and must not be merged directly with guided-mode statistics.
+Bopomofo is hidden or progressively revealed. Pronunciation retrieval is added to the task and must remain statistically separate. Recall remains deferred.
 
-## First scope
+## First relational scope
 
-- Traditional Chinese words and short phrases as context.
-- Explicit Bopomofo readings and all five tones.
-- Taiwan Standard Bopomofo physical layout.
-- English keyboard mode; no operating-system IME composition.
-- Guided practice mode only.
-- Layout-scoped token-binding statistics.
-- Transition observations collected for later analysis.
-- Local-first progress storage when a product UI is introduced.
+- Traditional Chinese words and short phrases with explicit Bopomofo and all five tones;
+- Taiwan Standard Bopomofo layout;
+- binding, transition, and confusion identities scoped by mode and layout;
+- exact within-syllable adjacency only for transition evidence;
+- catalog provenance, frequency, lexical tags, and held-out partitions;
+- deterministic synthetic learners and seeded cohort experiments;
+- no fixed exercise word count.
 
-## Non-goals for the first version
+## Existing baseline
 
-- Testing whether the learner can recall a word's pronunciation from Chinese alone.
-- Candidate selection or IME prediction quality.
-- Accounts, cloud sync, leaderboards, multiplayer, or a backend.
-- Mobile soft keyboards.
-- Generated pseudo-Bopomofo words.
-- A generic input-method plugin platform.
-- Transition-aware curriculum before token-only behavior is validated.
+The completed Phase 4 curriculum focuses one token and selects six entries. It remains useful as a binding-only, fixed-count baseline.
+
+Its destination-token timing score is not treated as an identifiable intrinsic token speed. The same clean interval is more naturally evidence for the incoming transition edge.
+
+## Non-goals before relational simulation is coherent
+
+- additional browser UI refinement;
+- immediate human pilot or device-specific optimization;
+- accounts, cloud sync, telemetry, or backend services;
+- candidate selection or IME prediction quality;
+- mobile soft keyboards;
+- generated pseudo-words, unless introduced as a separately labeled experiment;
+- claiming that simulation proves human learning effectiveness.
 
 ## Validation layers
 
-### Technical correctness
+### Catalog structure
 
-- Every syllable has an explicit tone token.
-- Readings, layouts, and catalog provenance are validated.
-- Deterministic tests reproduce session and sampling behavior.
+- every syllable ends with an explicit tone;
+- ordered relation occurrences are reproducible;
+- unsupported and concentrated relations are visible;
+- held-out partitioning does not silently remove all training support.
+
+### Estimation behavior
+
+- traces recover binding correctness, confusion direction, and transition latency with measurable error against latent truth;
+- boundary, noise, and recovery effects remain separate;
+- identical inputs and seeds produce identical reports.
 
 ### Curriculum behavior
 
-- Eligible weak bindings receive more exposure.
-- Common vocabulary remains dominant.
-- Repetition stays controlled.
-- Non-focused bindings retain broad coverage.
+- injected weaknesses are identified with explainable delay;
+- target exposure increases without pathological repetition or lexical concentration;
+- different objective and composition policies can be compared independently;
+- unsupported objectives produce explicit fallback rather than fabricated evidence.
 
-### Learning usefulness
+### Human usefulness
 
-- Repeated practice improves speed or accuracy on held-out words containing the same target binding.
-- Improvement is not limited to memorizing a small set of repeated words.
-- Learners report that the guided interaction is clearer and more useful than undirected random practice.
-
-A headless simulation can validate curriculum behavior, but only a human-operated interaction spike can validate timing semantics and interaction usefulness.
+Human testing resumes after the relational architecture is stable. It will validate whether the simulated assumptions and resulting text sequences correspond to real learning and interaction, not define the architecture in advance.

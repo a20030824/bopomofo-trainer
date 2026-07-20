@@ -2,132 +2,143 @@
 
 ## Style
 
-Use a lightweight modular monolith:
-
-- one repository;
-- one TypeScript project;
-- no backend in the initial product;
-- no package-per-module monorepo;
-- framework-independent domain logic;
-- infrastructure added behind small interfaces only when required.
-
-The first architecture is Bopomofo-specific. It preserves alternate physical Bopomofo layouts but does not pre-build a generic plugin platform for unrelated input methods.
+Use one TypeScript repository and a lightweight modular monolith. Domain logic remains framework-independent. No backend, telemetry, or product framework migration is required for the current research phase.
 
 ## Modules
 
 ```text
 src/
-  core/          Shared domain types, identities, and invariants.
-  scheme/        Bopomofo tokens, syllable rules, and physical layouts.
-  catalog/       Source parsing, provenance, validation, and compiled entries.
-  practice/      Practice modes, exercises, sessions, and observations.
-  measurement/   Layout-scoped binding, transition, and confusion statistics.
-  curriculum/    Coverage phase, focus eligibility, and exercise sampling.
-  infrastructure/ Optional persistence, clock, and random adapters.
-  app/           Future thin interaction spike and product interface.
+  core/          Semantic types, identities, invariants.
+  scheme/        Bopomofo grammar, tokens, physical layouts.
+  catalog/       Source parsing, provenance, validation, compiled entries.
+  relations/     Ordered occurrence indexes and support analysis.
+  practice/      Existing sessions, boundaries, and normalized traces.
+  measurement/   Binding, transition, confusion, boundary estimators.
+  curriculum/    Objective policies and historical binding-only baseline.
+  composition/   Retrieval, candidate costs, ordering, variable sequences.
+  simulation/    Synthetic learners, scenarios, cohorts, experiment runner.
+  product/       Existing persistence and browser-product coordination.
+  app/           Existing browser observation adapter.
 ```
 
-A module is a source directory, not a separately published package. The current skeleton may be migrated incrementally toward these names; directory naming is less important than the dependency boundaries.
+Directories may be introduced incrementally. Dependency boundaries matter more than exact names.
 
 ## Dependency direction
 
 ```text
-app ─────────────────────┐
-infrastructure ───────────┼──> practice / curriculum / measurement
-catalog compiler ─────────┘                 │
-                                             v
-                                       core + scheme
+catalog sources
+      ↓
+catalog compiler → relation index
+                         ↓
+latent scenario → objective policy → content query
+                         ↓              ↓
+                    estimator       composer
+                         ↑              ↓
+                generated traces ← practice sequence
+                         ↑
+                 synthetic learner
 ```
+
+The browser follows the same lower path as a trace source, but is not required by simulation.
 
 Rules:
 
-1. `core` imports nothing from the application.
-2. `scheme` may depend on core types but not UI or storage.
-3. `catalog` produces semantic `CatalogEntry` values; it never produces physical key sequences.
-4. `practice` turns selected entries into an `Exercise` and normalized token attempts into observations.
-5. `measurement` consumes observations and scopes motor skill by practice mode and layout.
-6. `curriculum` consumes a catalog and learner profile; it does not know about DOM events.
-7. `app` coordinates modules but contains no learning algorithm.
-8. Recall-mode and guided-mode measurements remain separate.
+1. semantic catalog paths never contain physical key codes;
+2. relation indexing depends on ordered syllable paths, not UI exercises;
+3. measurement consumes traces and does not know which strategy selected the text;
+4. objective policies do not directly pick entries;
+5. composition resolves a query against exact occurrence references;
+6. synthetic learners emit normal traces and never expose hidden truth to estimators or curricula;
+7. experiment reports may read hidden truth only after a run for evaluation;
+8. product and app modules contain no research selection algorithm.
 
-## Data flow
+## Evidence flow
+
+For each attempted token:
 
 ```text
-traceable vocabulary and reading sources
-                ↓
-        validation and compilation
-                ↓
-          semantic catalog entries
-                ↓
- curriculum builds a multi-entry exercise
-                ↓
- practice mode decides visible guidance
-                ↓
- layout maps physical code to semantic token
-                ↓
- session checks expected token and preserves boundaries
-                ↓
- context-rich observations
-                ↓
- layout-scoped measurement updates learner profile
-                ↓
- next coverage or adaptive curriculum decision
+expected token + actual token
+          ↓
+binding correctness and directional confusion
+
+previous token + expected token + clean interval
+          ↓
+directional transition latency
+
+entry/syllable/exercise boundary interval
+          ↓
+separate boundary evidence
 ```
+
+The existing destination-token timing aggregate is a historical baseline. New relational estimators must not count one interval as independently identified token speed and transition speed.
+
+## Relational catalog flow
+
+```text
+reviewed text and pronunciation
+          ↓
+ordered syllable paths
+          ↓
+exact binding and transition occurrences
+          ↓
+support, frequency, concentration, provenance, partition reports
+          ↓
+objective-specific candidate retrieval
+```
+
+Catalog expansion is driven by measured blind spots. New entries must state which unsupported or concentrated relations they improve.
+
+## Selection pipeline
+
+### Objective policy
+
+Chooses coverage, binding, transition, confusion, or combined demands. It reports scores, eligibility, support, cooldown, and fallback.
+
+### Content query
+
+Translates the objective into target exposures, token/syllable budgets, lexical constraints, repetition limits, and held-out restrictions.
+
+### Composer
+
+Selects and orders exact supporting entries. It reports candidate costs, objective occurrence references, sequence length, and stop reason.
+
+The fixed six-entry builder is retained as one baseline composer only.
+
+## Synthetic experiment flow
+
+1. instantiate latent learner truth and a catalog partition;
+2. choose objective and composition strategies;
+3. build a practice sequence;
+4. generate deterministic traces through the real layout;
+5. aggregate measurements;
+6. update latent skill using the declared learning model;
+7. repeat for requested rounds or exposure budget;
+8. compare estimates and outcomes with latent truth;
+9. serialize a deterministic report.
 
 ## Extension seams
 
-Only four seams are intentionally preserved at the start.
+Only explicit experimental seams are preserved:
 
-### Bopomofo layout
+- layout;
+- catalog source and partition;
+- relation index version;
+- estimator policy;
+- objective policy;
+- composition policy;
+- synthetic learner model;
+- experiment metric set;
+- optional progress or browser adapter.
 
-Supports a different physical Bopomofo layout without changing catalog readings. Skill measurements remain separate per layout.
+## Current artifacts
 
-### Catalog compiler
+The interaction spike, local product, pilot history, and auto-advance branch are adapters around already completed work. They are paused while the relational index, synthetic learner, and strategy matrix are designed and tested numerically.
 
-Allows changing word sources, pronunciation metadata, frequency bands, and review workflow while keeping runtime entries stable.
+## Deferred
 
-### Curriculum strategy
-
-Allows experiments such as baseline coverage, focused-token selection, transition-aware selection, beginner progression, or tone-focused lessons.
-
-### Progress store
-
-The core depends on a minimal persistence contract. Initial interaction traces may remain in memory or be downloaded manually. Browser persistence is added only after the measurement policy is stable.
-
-## First executable artifact: interaction spike
-
-The first runnable feature is a deliberately disposable human-operated measurement page, not a polished product UI and not the final curriculum simulator.
-
-It should:
-
-- show Chinese context and complete visible Bopomofo readings;
-- accept Taiwan Standard Bopomofo physical keys in English keyboard mode;
-- preserve entry and syllable boundaries while allowing several entries per exercise;
-- record raw key code, timestamp, expected token, actual token, correctness, and timing context;
-- export or display an event trace for inspection;
-- avoid permanent progress scoring until timing semantics are reviewed.
-
-The spike answers interaction questions that a headless simulation cannot answer: whether the guidance is readable, whether first-tone Space feels coherent, where cognitive resets occur, and how errors affect timing.
-
-## Second executable artifact: curriculum simulator
-
-After the interaction spike defines credible measurement rules, build a deterministic simulator that accepts:
-
-- a compiled sample catalog;
-- a synthetic layout-scoped learner profile;
-- coverage and focus eligibility rules;
-- a deterministic random seed;
-- a requested number of exercises.
-
-It reports focus distribution, token coverage, frequency-band balance, exercise diversity, and recent repetition.
-
-## Deferred decisions
-
-- React, Preact, Svelte, or vanilla DOM for the product UI.
-- IndexedDB and raw-event retention.
-- Exact smoothing filter for time-to-type.
-- Final timing-context inclusion policy.
-- Error recovery timing semantics.
-- Transition-aware scoring.
-- Recall-mode curriculum.
-- Account or cloud architecture.
+- browser presentation of variable-length sequences;
+- additional UI refinement and immediate human pilot;
+- recall curriculum;
+- alternate layouts;
+- accounts, cloud sync, or telemetry;
+- claims about real learning effectiveness.
