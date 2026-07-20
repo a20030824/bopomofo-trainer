@@ -135,7 +135,7 @@ function selectRound(
       : progress.measurements,
     mode: progress.mode,
     layoutId: progress.layoutId,
-    stage: evaluation ? 3 : progress.selection.stage,
+    stage: progress.selection.stage,
     history: evaluation
       ? {
         recentEntryIds: [],
