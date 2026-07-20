@@ -3,6 +3,7 @@ import { compositionRelationKey } from "../../composition/objective.js";
 import { stableDigest, stableStringify } from "../../composition/stable.js";
 import type { MeasurementSummary } from "../../measurement/types.js";
 import type { RelationalCatalogReport } from "../../relations/catalog-report.js";
+import { bindingRelationKey } from "../../relations/catalog-occurrences.js";
 import type { CatalogPartition, RelationRef } from "../../relations/types.js";
 import type { SyntheticLearnerState } from "../learner/types.js";
 import type { RelationalExperimentPlan } from "./types.js";
@@ -12,6 +13,7 @@ function compareText(left: string, right: string): number {
 }
 
 function uniqueSortedStrings(name: string, values: readonly string[]): readonly string[] {
+  if (values.length === 0) throw new Error(`${name} must contain at least one value`);
   const normalized = values.map((value) => value.trim());
   if (normalized.some((value) => value.length === 0)) {
     throw new Error(`${name} must not contain an empty value`);
@@ -50,11 +52,13 @@ export function canonicalizeRelationalExperimentPlan(
   if (plan.schemaVersion !== "relational-experiment-plan-v1") {
     throw new Error(`unsupported experiment plan version ${plan.schemaVersion}`);
   }
+  const id = plan.id.trim();
+  if (id.length === 0) throw new Error("experiment plan id must not be empty");
   if (!Number.isInteger(plan.rounds) || plan.rounds <= 0) {
     throw new RangeError("experiment rounds must be a positive integer");
   }
-  if (!Number.isFinite(plan.beamWidth) || plan.beamWidth < 1) {
-    throw new RangeError("experiment beamWidth must be at least one");
+  if (!Number.isInteger(plan.beamWidth) || plan.beamWidth < 1) {
+    throw new RangeError("experiment beamWidth must be a positive integer");
   }
   if (!Number.isFinite(plan.startTimestampMs)
     || !Number.isFinite(plan.roundTimestampStepMs)
@@ -63,7 +67,7 @@ export function canonicalizeRelationalExperimentPlan(
   }
   return {
     ...plan,
-    id: plan.id.trim(),
+    id,
     catalog: sortedCatalog(plan.catalog),
     confusionRelations: [...plan.confusionRelations].sort((left, right) =>
       compareText(stableStringify(left), stableStringify(right))
@@ -161,12 +165,12 @@ export function supportedRelationCount(report: RelationalCatalogReport): number 
   const confusion = Object.values(report.index.confusionContrastPools)
     .filter((pool) => {
       const expected = new Set(
-        report.index.bindingOccurrences[JSON.stringify(["binding", pool.relation.scope.expectedToken])]
+        report.index.bindingOccurrences[bindingRelationKey(pool.relation.scope.expectedToken)]
           ?.filter((item) => item.partition === "training")
           .map((item) => item.entryId) ?? [],
       );
       const actual = new Set(
-        report.index.bindingOccurrences[JSON.stringify(["binding", pool.relation.scope.actualToken])]
+        report.index.bindingOccurrences[bindingRelationKey(pool.relation.scope.actualToken)]
           ?.filter((item) => item.partition === "training")
           .map((item) => item.entryId) ?? [],
       );
