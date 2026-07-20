@@ -4,6 +4,10 @@ import type {
 } from "./types.js";
 import type { RelationalCatalogReport } from "./catalog-report.js";
 
+function compareText(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
 function tokenLabel(tokenId: string): string {
   if (tokenId.startsWith("zhuyin:")) return tokenId.slice("zhuyin:".length);
   if (tokenId === "tone:1") return "一聲";
@@ -37,22 +41,29 @@ export function formatRelationalCatalogReport(
   const support = Object.values(report.index.support);
   const losses = support
     .filter((summary) => summary.supportState === "evaluation-only")
-    .sort((left, right) => relationLabel(left.relation).localeCompare(relationLabel(right.relation), "zh-Hant"));
+    .sort((left, right) => compareText(
+      relationLabel(left.relation),
+      relationLabel(right.relation),
+    ));
   const concentrated = support
     .filter((summary) => summary.supportState === "concentrated")
     .sort((left, right) =>
       right.trainingEntryConcentration - left.trainingEntryConcentration
       || left.trainingDistinctEntryCount - right.trainingDistinctEntryCount
-      || relationLabel(left.relation).localeCompare(relationLabel(right.relation), "zh-Hant"),
+      || compareText(relationLabel(left.relation), relationLabel(right.relation)),
     );
   const rareOnly = support
     .filter((summary) => summary.supportState === "rare-only")
-    .sort((left, right) => relationLabel(left.relation).localeCompare(relationLabel(right.relation), "zh-Hant"));
+    .sort((left, right) => compareText(
+      relationLabel(left.relation),
+      relationLabel(right.relation),
+    ));
 
   const lines = [
     "Relational catalog analysis",
     `schema: ${report.schemaVersion}`,
     `scope: ${report.mode} / ${report.layoutId}`,
+    `analyzed: ${report.analyzedRelationKinds.join(", ")}`,
     `digest: ${report.determinismDigest}`,
     "",
     `entries: ${report.totals.entries} (${report.totals.trainingEntries} training / ${report.totals.evaluationEntries} evaluation)`,
@@ -75,7 +86,7 @@ export function formatRelationalCatalogReport(
     ...relationLines(concentrated),
     "",
     `unsupported bindings: ${report.unsupportedBindingKeys.length}`,
-    `unsupported theoretical transitions: ${report.unsupportedTransitionKeys.length}`,
+    `unsupported grammar-supported transitions: ${report.unsupportedTransitionKeys.length}`,
   ];
 
   return `${lines.join("\n")}\n`;
