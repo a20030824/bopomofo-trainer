@@ -48,9 +48,9 @@ describe("relational partition policies", () => {
       status: "unsatisfied",
       actual: 13,
     });
-    expect(new Set(supportDiagnostic?.relatedRelationKeys)).toEqual(
-      expect.objectContaining(expected),
-    );
+    for (const relationKey of expected) {
+      expect(supportDiagnostic?.relatedRelationKeys).toContain(relationKey);
+    }
     expect(decision.selectionTrace.at(-1)).toMatchObject({
       action: "stopped",
       reasonCode: "evaluation-target-reached",
