@@ -1,0 +1,8 @@
+{
+  "sourceFixture": "feasible",
+  "mutation": {
+    "kind": "remove-transition-occurrence",
+    "relationKey": "[\"transition\",\"zhuyin:ㄅ\",\"zhuyin:ㄚ\"]",
+    "entryId": "fixture:pair-a:2"
+  }
+}

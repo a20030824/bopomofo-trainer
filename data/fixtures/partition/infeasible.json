@@ -1,0 +1,29 @@
+[
+  {
+    "id": "fixture:singleton-a",
+    "prompt": { "text": "爸爸", "locale": "zh-TW" },
+    "syllables": [
+      { "tokens": ["zhuyin:ㄅ", "zhuyin:ㄚ", "tone:1"] },
+      { "tokens": ["zhuyin:ㄅ", "zhuyin:ㄚ", "tone:1"] }
+    ],
+    "frequencyBand": 1,
+    "tags": ["singleton-a"],
+    "provenanceIds": ["fixture:partition"]
+  },
+  {
+    "id": "fixture:singleton-b",
+    "prompt": { "text": "德", "locale": "zh-TW" },
+    "syllables": [{ "tokens": ["zhuyin:ㄉ", "zhuyin:ㄜ", "tone:2"] }],
+    "frequencyBand": 2,
+    "tags": ["singleton-b"],
+    "provenanceIds": ["fixture:partition"]
+  },
+  {
+    "id": "fixture:singleton-c",
+    "prompt": { "text": "古", "locale": "zh-TW" },
+    "syllables": [{ "tokens": ["zhuyin:ㄍ", "zhuyin:ㄨ", "tone:3"] }],
+    "frequencyBand": 3,
+    "tags": ["singleton-c"],
+    "provenanceIds": ["fixture:partition"]
+  }
+]
