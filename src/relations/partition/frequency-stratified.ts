@@ -77,7 +77,7 @@ export function partitionFrequencyStratified(
     entries.length,
     options.evaluationEntryCount,
   );
-  const model = createPartitionRelationModel(input.index);
+  const model = createPartitionRelationModel(input.report.index);
   const evaluationEntryIds = new Set<string>();
   const trace: PartitionSelectionTrace[] = [];
   const fallbackReasons: PartitionFallbackReason[] = [];
