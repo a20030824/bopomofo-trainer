@@ -25,6 +25,7 @@ export interface BindingOccurrence extends CatalogOccurrenceBase {
   readonly tokenIndex: number;
   readonly tokenId: TokenId;
   readonly context: "syllable-start" | "within-syllable" | "tone";
+  readonly entryInitial: boolean;
 }
 
 export interface TransitionOccurrence extends CatalogOccurrenceBase {
