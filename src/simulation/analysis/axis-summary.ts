@@ -4,11 +4,13 @@ import type {
   RelationalExperimentReport,
   RelationalExperimentRunRecord,
 } from "../experiment/types.js";
+import { blockingFallbackRate, totalFallbackRate } from "./fallback-policy.js";
 import type {
   AnalysisAxis,
   AnalysisStatistics,
   AxisLevelSummary,
   ExperimentMetricKey,
+  RelationalAnalysisPolicy,
 } from "./types.js";
 
 const AXES = ["objective", "partition", "composition", "learner"] as const;
@@ -69,6 +71,7 @@ interface PendingSummary extends Omit<AxisLevelSummary, "balanced"> {
 function summariesForScope(
   runs: readonly RelationalExperimentRunRecord[],
   scenarioId: string | "all-scenarios",
+  policy: RelationalAnalysisPolicy,
 ): readonly PendingSummary[] {
   const result: PendingSummary[] = [];
   for (const axis of AXES) {
@@ -80,7 +83,6 @@ function summariesForScope(
     for (const [levelId, group] of groups) {
       const ordered = [...group].sort(compareExperimentRuns);
       const totalRounds = ordered.reduce((sum, run) => sum + run.rounds.length, 0);
-      const fallbackRounds = ordered.reduce((sum, run) => sum + run.fallbackCount, 0);
       const failureRounds = ordered.reduce((sum, run) => sum + run.failureCount, 0);
       result.push({
         groupKey: JSON.stringify([axis, scenarioId]),
@@ -89,7 +91,8 @@ function summariesForScope(
         scenarioId,
         cellCount: new Set(ordered.map((run) => run.cell.id)).size,
         runCount: ordered.length,
-        fallbackRate: totalRounds === 0 ? 0 : fallbackRounds / totalRounds,
+        fallbackRate: totalFallbackRate(ordered),
+        blockingFallbackRate: blockingFallbackRate(ordered, policy),
         failureRate: totalRounds === 0 ? 0 : failureRounds / totalRounds,
         metrics: Object.fromEntries(RELATIONAL_EXPERIMENT_METRIC_KEYS.map((metric) => [
           metric,
@@ -103,14 +106,16 @@ function summariesForScope(
 
 export function summarizeExperimentAxes(
   report: RelationalExperimentReport,
+  policy: RelationalAnalysisPolicy,
 ): readonly AxisLevelSummary[] {
   const pending: PendingSummary[] = [
-    ...summariesForScope(report.runs, "all-scenarios"),
+    ...summariesForScope(report.runs, "all-scenarios", policy),
     ...[...new Set(report.runs.map((run) => run.scenarioId))]
       .sort(compareText)
       .flatMap((scenarioId) => summariesForScope(
         report.runs.filter((run) => run.scenarioId === scenarioId),
         scenarioId,
+        policy,
       )),
   ];
   const balance = new Map<string, boolean>();
