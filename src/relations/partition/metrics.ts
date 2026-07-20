@@ -1,6 +1,7 @@
 import type { CatalogEntry } from "../../core/model.js";
 import { createRelationalCatalogReport } from "../catalog-report.js";
 import type { CatalogPartition, RelationSupportSummary } from "../types.js";
+import { validatePartitionInput } from "./model.js";
 import type {
   PartitionConstraintResult,
   PartitionInput,
@@ -105,25 +106,26 @@ export function evaluatePartitionMetrics(
   evaluationEntryIds: ReadonlySet<string>,
   constraintResults: readonly PartitionConstraintResult[],
 ): PartitionMetrics {
-  const knownIds = new Set(input.entries.map((entry) => entry.id));
+  const entries = validatePartitionInput(input);
+  const knownIds = new Set(entries.map((entry) => entry.id));
   for (const entryId of evaluationEntryIds) {
     if (!knownIds.has(entryId)) throw new Error(`unknown evaluation entry id: ${entryId}`);
   }
-  const training = input.entries
+  const training = entries
     .filter((entry) => !evaluationEntryIds.has(entry.id))
     .sort((left, right) => compareText(left.id, right.id));
-  const evaluation = input.entries
+  const evaluation = entries
     .filter((entry) => evaluationEntryIds.has(entry.id))
     .sort((left, right) => compareText(left.id, right.id));
   const partitionByEntryId = Object.fromEntries(
-    input.entries
+    entries
       .map((entry) => [
         entry.id,
         evaluationEntryIds.has(entry.id) ? "evaluation" : "training",
       ] as const)
       .sort(([left], [right]) => compareText(left, right)),
   ) as Readonly<Record<string, CatalogPartition>>;
-  const report = createRelationalCatalogReport(input.entries, {
+  const report = createRelationalCatalogReport(entries, {
     mode: input.report.mode,
     layoutId: input.report.layoutId,
     partitionByEntryId,
