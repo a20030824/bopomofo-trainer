@@ -6,7 +6,7 @@ import type { RelationalCatalogReport } from "../../relations/catalog-report.js"
 import type { PartitionDecision, PartitionPolicyOptions } from "../../relations/partition/types.js";
 import type { ConfusionRelationRef } from "../../relations/types.js";
 import type {
-  EstimationErrorReport,
+  EstimationErrorComponent,
   SyntheticLearnerState,
   SyntheticTraceBatch,
 } from "../learner/types.js";
@@ -60,6 +60,13 @@ export interface RelationalExperimentFailure {
   readonly detail: string;
 }
 
+export interface CumulativeEstimationErrorReport {
+  readonly components: readonly EstimationErrorComponent[];
+  readonly meanAbsoluteErrorByKind: Readonly<Record<string, number | null>>;
+  readonly comparisonTruthReason:
+    "cumulative-phase-3-estimate-versus-current-pre-exposure-truth";
+}
+
 export interface RelationalExperimentRoundRecord {
   readonly round: number;
   readonly objectiveDecision: ObjectiveDecision;
@@ -67,7 +74,7 @@ export interface RelationalExperimentRoundRecord {
   readonly sequence: PracticeSequence | null;
   readonly learnerBatch: SyntheticTraceBatch | null;
   readonly cumulativeMeasurement: MeasurementSummary;
-  readonly cumulativeEstimationError: EstimationErrorReport;
+  readonly cumulativeEstimationError: CumulativeEstimationErrorReport;
   readonly learnerBefore: SyntheticLearnerState;
   readonly learnerAfter: SyntheticLearnerState;
   readonly failures: readonly RelationalExperimentFailure[];
