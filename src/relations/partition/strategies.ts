@@ -187,8 +187,9 @@ export function partitionPathNovelty(
   input: PartitionInput,
   options: PartitionPolicyOptions = DEFAULT_RELATION_PARTITION_OPTIONS,
 ): PartitionDecision {
-  const model = createPartitionRelationModel(input.index);
-  const featuresByEntryId = createEntryFeatureMap(input.entries, model);
+  const entries = validatePartitionInput(input);
+  const model = createPartitionRelationModel(input.report.index);
+  const featuresByEntryId = createEntryFeatureMap(entries, model);
   return finalizeGuarded(
     input,
     options,
