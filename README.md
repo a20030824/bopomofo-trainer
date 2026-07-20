@@ -1,57 +1,65 @@
 # Bopomofo Trainer
 
-A local-first experiment for guided, adaptive Bopomofo keyboard practice.
+A deterministic research environment for studying how Traditional Chinese text can expose and train Bopomofo keyboard relations.
 
-The product shows Traditional Chinese context together with the complete Bopomofo and tone sequence. The learner presses physical keys in English keyboard mode; Space is the explicit first-tone key. Reading recall remains a separate future practice mode rather than being mixed into motor timing.
+## Research thesis
+
+Bopomofo practice contains several linked structures that must not be collapsed into a flat key sequence:
+
+1. Chinese context and reviewed pronunciation;
+2. semantic Bopomofo token paths;
+3. layout-specific symbol-to-key bindings;
+4. directional within-syllable key transitions;
+5. directional expected-to-actual confusions.
+
+The main problem is to organize text data around those relations, estimate learner state from traces, and compare curriculum and content-composition strategies using synthetic learners with known latent truth.
+
+The browser is an existing observation adapter. It is not the current research priority and does not define the curriculum architecture.
 
 ## Current status
 
-Phases 0–4 established the domain model, validated catalog compiler, browser interaction semantics, versioned measurement policy, and deterministic curriculum simulator. Phase 5 connected those parts into a thin usable product. Phase 6 combines local pilot instrumentation with a focused product-interface refinement, without changing curriculum policy:
+Phases 0–6 produced useful infrastructure:
 
-- curriculum-generated six-entry guided exercises;
-- cumulative Phase 3 measurement across completed rounds;
-- coverage, focus, and cooldown from Phase 4;
-- schema-versioned progress in browser `localStorage`;
-- a held-out evaluation round after every five completed practice rounds;
-- separate evaluation summaries that never update adaptive training aggregates;
-- a focused current-entry practice surface, inline wrong-key feedback, and restrained completion flow;
-- a separate 24-round local pilot history with mapped-key accuracy, focus, timing-sample count, and median clean latency;
-- deterministic pilot JSON export with no account, browser identifier, upload, or effectiveness claim;
-- raw traces and destructive reset kept outside the primary practice flow.
+- validated Bopomofo readings, provenance, and a 49-entry provisional catalog;
+- a guided keyboard interaction and context-aware raw traces;
+- versioned binding, transition, and confusion aggregation;
+- a deterministic binding-only curriculum baseline;
+- a local-first browser adapter, held-out evaluation, and pilot diagnostics.
 
-The UI remains Vanilla TypeScript + Vite. The current single-page interaction does not justify a framework migration.
+The current phase reframes that work around relational modeling and headless numeric simulation:
 
-## Run
+- binding nodes, transition edges, confusion edges, and ordered catalog paths;
+- exact relation-support analysis for every text entry;
+- synthetic learners that emit ordinary measurement traces;
+- independent objective-selection and text-composition policies;
+- variable-length practice sequences instead of a fixed six-word round;
+- seeded cohort experiments comparing relational strategies.
+
+The existing timed-binding score is retained as a historical baseline. Clean within-syllable inter-key latency is treated primarily as transition-edge evidence, not an independently identifiable destination-token speed.
+
+## Existing commands
 
 ```bash
 npm install
-npm run dev
-```
-
-Open the Vite URL, switch the operating system to English keyboard mode, and type the visible Bopomofo sequence.
-
-Useful commands:
-
-```bash
 npm run check
 npm run build
 npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
-The browser saves guided, `zhuyin-standard` progress locally after each completed round. It also stores pilot history under a separate schema-versioned key so valid Phase 5 progress does not need to be rewritten. “清除所有本機進度” removes progress and pilot history. There is no account, backend, cloud synchronization, telemetry upload, or validated confidence/mastery score.
+The browser can still be run with `npm run dev`, but further UI work is deferred until the relational catalog, synthetic learner, strategy matrix, and experiment reports are coherent.
 
 ## Principles
 
-- Semantic Bopomofo tokens are not physical keys.
-- Every syllable ends with an explicit tone token, including first tone.
-- V1 is guided practice: Chinese context and complete Bopomofo are visible.
-- Motor statistics are scoped by practice mode, layout, and token.
-- Catalog entries are content units; exercises contain several entries.
-- Boundary, recovery, and interaction-noise timing remain separate from clean motor timing.
-- Evaluation vocabulary is held out from adaptive practice and does not update curriculum state.
-- Pilot history is observational evidence, not a mastery or learning-effectiveness claim.
-- Curriculum, measurement, persistence, pilot instrumentation, and browser adapters remain separate modules.
+- Semantic tokens are not physical keys.
+- Syllables and catalog entries are ordered paths, not unordered token sets.
+- Binding correctness, transition latency, and directional confusion are separate evidence.
+- Physical codes belong to layouts and traces, never semantic catalog readings.
+- Objective selection and text composition are independent experimental policies.
+- Sequence length is determined by evidence and cost budgets, not a fixed word count.
+- Held-out text never updates training estimates.
+- Simulation can validate internal behavior, identifiability, and strategy differences; it cannot prove human learning effectiveness.
+- UI, persistence, measurement, relational indexing, curriculum, composition, and simulation remain separate modules.
 
 ## Documents
 
@@ -59,9 +67,10 @@ The browser saves guided, `zhuyin-standard` progress locally after each complete
 - [Domain model](docs/domain-model.md)
 - [Architecture](docs/architecture.md)
 - [Roadmap](docs/roadmap.md)
-- [Interaction spike](docs/interaction-spike.md)
+- [Relational skill model](docs/relational-skill-model.md)
+- [Content retrieval and composition](docs/content-retrieval-and-composition.md)
 - [Measurement policy](docs/measurement-policy.md)
-- [Curriculum simulator](docs/curriculum-simulator.md)
-- [Thin product prototype](docs/thin-product-prototype.md)
-- [Pilot validation](docs/pilot-validation.md)
+- [Binding-only curriculum baseline](docs/curriculum-simulator.md)
+- [Existing browser adapter](docs/thin-product-prototype.md)
+- [Pilot instrumentation](docs/pilot-validation.md)
 - [Architecture decisions](docs/decisions/)
