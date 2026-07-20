@@ -1,4 +1,6 @@
 import type { CatalogEntry } from "../../src/core/model.js";
+import type { GrammarAnnotation } from "../../src/grammar/types.js";
+import type { ProductCatalogs } from "../../src/product/types.js";
 
 export function entry(id: string, tone: 1 | 2 = 1): CatalogEntry {
   return {
@@ -20,3 +22,21 @@ export const PRACTICE = Array.from({ length: 8 }, (_, index) =>
 export const EVALUATION = Array.from({ length: 4 }, (_, index) =>
   entry(`evaluation-${index + 1}`, index % 2 === 0 ? 1 : 2),
 );
+
+export const GRAMMAR_ANNOTATIONS: Readonly<Record<string, GrammarAnnotation>> =
+  Object.fromEntries([...PRACTICE, ...EVALUATION].map((candidate) => [
+    candidate.id,
+    {
+      entryId: candidate.id,
+      roles: ["formulaic"],
+      predicateFrame: "none",
+      standaloneKind: "utterance",
+      provenanceIds: ["test"],
+    },
+  ]));
+
+export const PRODUCT_CATALOGS: ProductCatalogs = {
+  practice: PRACTICE,
+  evaluation: EVALUATION,
+  grammarAnnotations: GRAMMAR_ANNOTATIONS,
+};

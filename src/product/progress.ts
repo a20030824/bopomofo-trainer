@@ -19,11 +19,19 @@ import type {
   CurriculumProfile,
 } from "../curriculum/types.js";
 import {
+  createFrequencyFirstSelectionState,
+  validateFrequencyFirstUtterancePolicy,
+  type FrequencyFirstSelectionState,
+  type FrequencyFirstUtterancePolicy,
+  type FrequencyStage,
+} from "../curriculum/frequency-first-utterance.js";
+import {
   PRODUCT_PROGRESS_SCHEMA_VERSION,
   type ProductProgress,
   type ProductRoundSummary,
 } from "./types.js";
 
+const LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION = 1;
 const RECENT_SUMMARY_LIMIT = 12;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -221,6 +229,10 @@ function parseMeasurementSummary(
   };
 }
 
+function parseFrequencyStage(value: unknown): FrequencyStage | null {
+  return value === 1 || value === 2 || value === 3 ? value : null;
+}
+
 function parseSummary(value: unknown): ProductRoundSummary | null {
   if (!isRecord(value) || !Array.isArray(value.entryIds)) return null;
   const kind = value.kind;
@@ -231,6 +243,7 @@ function parseSummary(value: unknown): ProductRoundSummary | null {
     || typeof value.exerciseId !== "string"
     || typeof value.completedAt !== "string"
     || Number.isNaN(Date.parse(value.completedAt))
+    || value.entryIds.length === 0
     || value.entryIds.some((entryId) => typeof entryId !== "string")
     || (phase !== "coverage" && phase !== "adaptive" && phase !== "evaluation")
     || (value.focusTokenId !== null && typeof value.focusTokenId !== "string")
@@ -244,17 +257,64 @@ function parseSummary(value: unknown): ProductRoundSummary | null {
   if (kind === "evaluation" && (phase !== "evaluation" || value.focusTokenId !== null || focusEvidence !== null)) return null;
   if (kind === "practice" && phase === "evaluation") return null;
   if ((value.focusTokenId === null) !== (focusEvidence === null)) return null;
+
+  const utteranceId = typeof value.utteranceId === "string"
+    ? value.utteranceId
+    : value.exerciseId;
+  const templateId = value.templateId === undefined || value.templateId === null
+    ? null
+    : typeof value.templateId === "string"
+      ? value.templateId
+      : undefined;
+  const frequencyStage = value.frequencyStage === undefined
+    ? 1
+    : parseFrequencyStage(value.frequencyStage);
+  if (templateId === undefined || frequencyStage === null) return null;
+
   return {
     kind,
     exerciseId: value.exerciseId,
     completedAt: value.completedAt,
     entryIds: value.entryIds as string[],
+    utteranceId,
+    templateId,
+    frequencyStage,
     phase,
     focusTokenId: value.focusTokenId as string | null,
     focusEvidence,
     attempts: value.attempts as number,
     errors: value.errors as number,
     timingSamples: value.timingSamples as number,
+  };
+}
+
+function parseSelectionState(
+  value: unknown,
+  policy: FrequencyFirstUtterancePolicy,
+): FrequencyFirstSelectionState | null {
+  if (
+    !isRecord(value)
+    || value.policyVersion !== policy.version
+    || parseFrequencyStage(value.stage) === null
+    || !isNonNegativeInteger(value.stagePracticeRounds)
+    || !isNonNegativeInteger(value.stageAttempts)
+    || !isNonNegativeInteger(value.stageErrors)
+    || (value.stageErrors as number) > (value.stageAttempts as number)
+    || !Array.isArray(value.recentUtteranceIds)
+    || !Array.isArray(value.recentTemplateIds)
+    || value.recentUtteranceIds.some((item) => typeof item !== "string")
+    || value.recentTemplateIds.some((item) => typeof item !== "string")
+    || value.recentUtteranceIds.length > policy.recentUtteranceLimit
+    || value.recentTemplateIds.length > policy.recentTemplateLimit
+  ) return null;
+  return {
+    policyVersion: policy.version,
+    stage: value.stage as FrequencyStage,
+    stagePracticeRounds: value.stagePracticeRounds as number,
+    stageAttempts: value.stageAttempts as number,
+    stageErrors: value.stageErrors as number,
+    recentUtteranceIds: value.recentUtteranceIds as string[],
+    recentTemplateIds: value.recentTemplateIds as string[],
   };
 }
 
@@ -278,8 +338,10 @@ export function createFreshProductProgress(
   layoutId: string,
   measurementPolicy: MeasurementPolicy,
   curriculumPolicyVersion: string,
+  utterancePolicy: FrequencyFirstUtterancePolicy,
 ): ProductProgress {
   if (seed.length === 0) throw new Error("product seed must not be empty");
+  validateFrequencyFirstUtterancePolicy(utterancePolicy);
   return {
     schemaVersion: PRODUCT_PROGRESS_SCHEMA_VERSION,
     seed,
@@ -288,6 +350,7 @@ export function createFreshProductProgress(
     measurements: createEmptyMeasurementSummary(measurementPolicy),
     curriculumPolicyVersion,
     curriculum: createEmptyCurriculumProfile(support, mode, layoutId),
+    selection: createFrequencyFirstSelectionState(utterancePolicy),
     practiceRoundsCompleted: 0,
     evaluationRoundsCompleted: 0,
     recentSummaries: [],
@@ -314,6 +377,7 @@ export function serializeProductProgress(progress: ProductProgress): string {
       recentEntryIds: progress.curriculum.recentEntryIds,
       recentTokenIds: progress.curriculum.recentTokenIds,
     },
+    selection: progress.selection,
     practiceRoundsCompleted: progress.practiceRoundsCompleted,
     evaluationRoundsCompleted: progress.evaluationRoundsCompleted,
     recentSummaries: progress.recentSummaries,
@@ -327,6 +391,7 @@ export function parseProductProgress(
   expectedLayoutId: string,
   measurementPolicy: MeasurementPolicy,
   expectedCurriculumPolicyVersion: string,
+  utterancePolicy: FrequencyFirstUtterancePolicy,
 ): ProductProgress | null {
   let parsed: unknown;
   try {
@@ -336,7 +401,8 @@ export function parseProductProgress(
   }
   if (
     !isRecord(parsed)
-    || parsed.schemaVersion !== PRODUCT_PROGRESS_SCHEMA_VERSION
+    || (parsed.schemaVersion !== PRODUCT_PROGRESS_SCHEMA_VERSION
+      && parsed.schemaVersion !== LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION)
     || typeof parsed.seed !== "string"
     || parsed.seed.length === 0
     || parsed.mode !== expectedMode
@@ -353,6 +419,7 @@ export function parseProductProgress(
     || !Array.isArray(parsed.curriculum.recentTokenIds)
   ) return null;
 
+  validateFrequencyFirstUtterancePolicy(utterancePolicy);
   const validTokens = new Set(Object.keys(support.byToken));
   const measurements = parseMeasurementSummary(
     parsed.measurements,
@@ -400,6 +467,11 @@ export function parseProductProgress(
     recentEntryIds: recentEntryIds as string[],
     recentTokenIds: recentTokenIds as string[],
   };
+  const selection = parsed.schemaVersion === LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION
+    ? createFrequencyFirstSelectionState(utterancePolicy)
+    : parseSelectionState(parsed.selection, utterancePolicy);
+  if (selection === null) return null;
+
   return {
     schemaVersion: PRODUCT_PROGRESS_SCHEMA_VERSION,
     seed: parsed.seed,
@@ -408,6 +480,7 @@ export function parseProductProgress(
     measurements,
     curriculumPolicyVersion: expectedCurriculumPolicyVersion,
     curriculum,
+    selection,
     practiceRoundsCompleted: parsed.practiceRoundsCompleted as number,
     evaluationRoundsCompleted: parsed.evaluationRoundsCompleted as number,
     recentSummaries: (summaries as ProductRoundSummary[]).slice(-RECENT_SUMMARY_LIMIT),

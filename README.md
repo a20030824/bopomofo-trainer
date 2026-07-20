@@ -1,10 +1,24 @@
 # Bopomofo Trainer
 
-A deterministic research environment for studying how Traditional Chinese text can expose and train Bopomofo keyboard relations.
+A local-first Bopomofo keyboard trainer that presents reviewed Traditional Chinese utterances and adapts their selection without hiding the underlying evidence.
 
-## Research thesis
+## Product direction
 
-Bopomofo practice contains several linked structures that must not be collapsed into a flat key sequence:
+The browser now follows one deliberately simple policy:
+
+1. common vocabulary determines the initial practice pool;
+2. lower-frequency vocabulary unlocks gradually;
+3. reviewed grammar metadata produces complete utterance candidates;
+4. expected-token errors and clean timing add only bounded weight;
+5. exact within-syllable transition latency may raise candidates containing that ordered transition;
+6. the actual wrong token and directional confusion aggregate do not affect curriculum selection;
+7. held-out evaluation remains separate and never updates training state.
+
+A round is one grammar-valid utterance, not six independently sampled words. The meaning may occasionally be unusual, but every multi-entry candidate must match a reviewed Mandarin template. Fallback never returns an arbitrary word list.
+
+## Evidence model
+
+Bopomofo practice retains several linked structures:
 
 1. Chinese context and reviewed pronunciation;
 2. semantic Bopomofo token paths;
@@ -12,42 +26,52 @@ Bopomofo practice contains several linked structures that must not be collapsed 
 4. directional within-syllable key transitions;
 5. directional expected-to-actual confusions.
 
-The main problem is to organize text data around those relations, estimate learner state from traces, and compare curriculum and content-composition strategies using synthetic learners with known latent truth.
+These channels remain separate:
 
-The browser is an existing observation adapter. It is not the current research priority and does not define the curriculum architecture.
+- binding correctness updates the expected token;
+- accepted binding timing may add a capped token boost;
+- clean adjacent timing belongs to an exact transition edge;
+- confusion observations remain diagnostic and exportable, but do not raise the actual wrong token or create a curriculum target.
 
-## Current status
+## Current product status
 
-Phases 0–6 produced useful infrastructure:
+The product includes:
 
 - validated Bopomofo readings, provenance, and a 49-entry provisional catalog;
-- a guided keyboard interaction and context-aware raw traces;
+- complete grammar sidecar coverage for the current catalog;
+- explicit lexical roles, predicate valency, standalone utterances, and deterministic templates;
+- frequency stages 1–3 with conservative unlock gates;
+- frequency-dominant utterance scoring with capped learner evidence;
+- deterministic seeded selection and recent entry/utterance/template penalties;
+- guided keyboard interaction and context-aware raw traces;
 - versioned binding, transition, and confusion aggregation;
-- a deterministic binding-only curriculum baseline;
-- a local-first browser adapter, held-out evaluation, and pilot diagnostics.
+- schema-versioned local progress with schema-1 migration;
+- grammar-valid held-out evaluation;
+- local pilot history, diagnostics, and deterministic export.
 
-Phase 7 now includes:
+Run the browser with:
+
+```bash
+npm install
+npm run dev
+```
+
+## Research archive
+
+Phase 7 built a deterministic relational research environment:
 
 - exact binding/transition catalog indexing and support reports;
 - deterministic external reference importing into a manual review queue;
-- relation-preserving training/evaluation partition policies;
-- exact retrieval and budgeted variable-length practice composition;
+- relation-preserving partitions and budgeted composers;
 - latent relational learners that emit ordinary interaction traces;
-- Phase 3-backed estimates, estimation-error reports, and deterministic replay;
-- a deterministic four-axis strategy matrix;
-- a seeded cohort experiment harness with local failure/fallback accounting;
-- a versioned analysis layer with fixed-baseline comparisons, balanced axis summaries, failure/fallback clusters, and reproducible findings;
-- a targeted candidate-confirmation harness with per-seed decisions, per-round trajectories, matched composer ablations, anchor scenarios, and byte-for-byte findings verification.
+- a four-axis strategy matrix;
+- seeded cohort experiments, analysis, and targeted confirmation.
 
-The committed factorial cohort executes all 125 objective/partition/composer/learner cells across three synthetic learner scenarios, two seeds, and two adaptive rounds: 750 runs and 1,500 rounds. Objective selectors observe cumulative Phase 3 measurements and catalog support, never hidden learner truth. Metrics that are not identifiable remain `null` with an explicit reason.
+The factorial cohort executed 750 runs / 1,500 rounds. Candidate confirmation executed 770 runs / 6,160 rounds. Neither candidate survived its anchor scenario, so no experimental objective/composer combination was promoted as the product strategy.
 
-The canonical Phase 7G analysis found no failed or zero-execution cell after repairing partition validation for declared confusion pools. Under the versioned `phase-7g-v2` guardrails, two cell/scenario combinations were policy-compatible candidates, five were inconclusive, and 368 were rejected. Those candidates were follow-up targets, not production recommendations.
+Those results remain reproducible comparison evidence. They do not block the browser product, and simulation is not treated as proof of human learning effectiveness.
 
-Phase 7H then challenged the historical baseline, both candidates, six matched composer ablations, and two transition-aware diagnostics across seven scenarios, ten deterministic seeds, and eight adaptive rounds: 770 runs and 6,160 rounds. Under `phase-7h-v2`, neither Phase 7G candidate survived its anchor scenario. All matched composer ablations and transition-aware diagnostic hypotheses were also rejected. The repository therefore selects no product strategy from this cohort; fixed-six is not promoted as a winner, and UI or human-pilot work remains deferred.
-
-The existing timed-binding score is retained as a historical baseline. Clean within-syllable inter-key latency is treated primarily as transition-edge evidence, not an independently identifiable destination-token speed.
-
-## Existing commands
+## Commands
 
 ```bash
 npm install
@@ -62,29 +86,27 @@ npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
+- `npm run check` runs typecheck, tests, catalog validation, and production build.
 - `npm run integration:research` verifies the single-policy cross-module fixture twice.
 - `npm run strategy:matrix` verifies the complete declaration matrix and digest.
-- `npm run experiment:relational` executes the full committed factorial cohort twice and requires byte-for-byte identical JSON, CSV, and Markdown outputs.
-- `npm run analysis:relational` reproduces the factorial analysis outputs and requires the committed strategy findings to match byte-for-byte.
-- `npm run confirmation:relational` executes the targeted extended cohort twice, verifies JSON and all CSV/Markdown artifacts byte-for-byte, and requires the committed confirmation findings to match.
-
-The browser can still be run with `npm run dev`, but further UI work is deferred. The next research decision must address the identified catalog-support, measurement-identifiability, concentration, and sustained-improvement limitations before proposing another strategy or browser experiment.
+- `npm run experiment:relational` reproduces the committed factorial cohort.
+- `npm run analysis:relational` reproduces the canonical strategy findings.
+- `npm run confirmation:relational` reproduces the extended candidate stress test.
 
 ## Principles
 
 - Semantic tokens are not physical keys.
 - Syllables and catalog entries are ordered paths, not unordered token sets.
-- Binding correctness, transition latency, and directional confusion are separate evidence.
-- Physical codes belong to layouts and traces, never semantic catalog readings.
-- Objective selection, partitioning, text composition, and learner modeling are independent experimental axes.
-- Sequence length is determined by evidence and cost budgets, not a fixed word count.
-- Held-out text never updates training estimates.
-- External reference candidates stop at a manual review queue; they never enter the reviewed catalog automatically.
-- Unsupported or failed matrix cells remain in reports; failure rates cannot be improved by silently dropping runs.
-- Bootstrap fallbacks remain visible but are separated from blocking fallbacks by a versioned analysis policy.
-- Confirmation decisions preserve every seed, anchor scenario, matched reference, and material trajectory reversal.
-- Simulation can validate internal behavior, identifiability, replayability, and strategy differences; it cannot prove human learning effectiveness.
-- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, integration, experiment reporting, findings analysis, and candidate confirmation remain separate modules.
+- Frequency determines eligibility and the dominant selection base.
+- Learner-specific boosts are sample-gated, explainable, and capped.
+- A locked frequency stage cannot be bypassed by a weakness score.
+- The actual wrong token does not receive curriculum weight.
+- Exact transitions never cross syllable or entry boundaries.
+- Grammar validity is established before scoring.
+- Formulaic utterances cannot occupy ordinary sentence slots.
+- Held-out text never updates training estimates or stage state.
+- External reference candidates stop at a manual review queue.
+- Simulation can validate internal behavior and replayability, not human effectiveness.
 
 ## Documents
 
@@ -92,15 +114,12 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - [Domain model](docs/domain-model.md)
 - [Architecture](docs/architecture.md)
 - [Roadmap](docs/roadmap.md)
+- [Grammar-aware practice composition](docs/grammar-aware-practice.md)
+- [Frequency-first utterance policy](docs/frequency-first-utterance-policy.md)
+- [Measurement policy](docs/measurement-policy.md)
+- [Existing product prototype history](docs/thin-product-prototype.md)
+- [Pilot instrumentation](docs/pilot-validation.md)
 - [Relational skill model](docs/relational-skill-model.md)
-- [Content retrieval and composition](docs/content-retrieval-and-composition.md)
-- [Relational research integration](docs/relational-research-integration.md)
-- [Relational strategy matrix](docs/research/strategy-matrix.md)
-- [Relational experiment harness](docs/research/experiment-harness.md)
 - [Relational strategy findings](docs/research/strategy-findings.md)
 - [Relational strategy confirmation](docs/research/strategy-confirmation.md)
-- [Measurement policy](docs/measurement-policy.md)
-- [Binding-only curriculum baseline](docs/curriculum-simulator.md)
-- [Existing browser adapter](docs/thin-product-prototype.md)
-- [Pilot instrumentation](docs/pilot-validation.md)
 - [Architecture decisions](docs/decisions/)

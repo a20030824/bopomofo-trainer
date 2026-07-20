@@ -4,7 +4,7 @@ import {
   type PilotHistory,
 } from "./pilot-history.js";
 
-export const PILOT_EXPORT_VERSION = 1 as const;
+export const PILOT_EXPORT_VERSION = 2 as const;
 
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -27,6 +27,7 @@ export function createPilotExport(
     pilotHistorySchemaVersion: PILOT_HISTORY_SCHEMA_VERSION,
     measurementPolicyVersion: environment.measurementPolicy.version,
     curriculumPolicyVersion: environment.curriculumPolicy.version,
+    utterancePolicyVersion: environment.utterancePolicy.version,
     scope: {
       mode: progress.mode,
       layoutId: progress.layoutId,
@@ -36,7 +37,8 @@ export function createPilotExport(
       evaluation: progress.evaluationRoundsCompleted,
     },
     history: history.records,
-    curriculum: {
+    selection: progress.selection,
+    legacyCurriculumDiagnostics: {
       round: progress.curriculum.round,
       cooldown,
       recentEntryIds: progress.curriculum.recentEntryIds,

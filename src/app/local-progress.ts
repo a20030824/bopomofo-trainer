@@ -67,6 +67,7 @@ export function loadLocalProductProgress(
     layoutId,
     environment.measurementPolicy,
     environment.curriculumPolicy.version,
+    environment.utterancePolicy,
   );
   return {
     progress,

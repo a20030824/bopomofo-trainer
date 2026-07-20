@@ -16,12 +16,9 @@ import {
   type PilotRoundRecord,
 } from "../../src/product/pilot-history.js";
 import type { ProductProgress } from "../../src/product/types.js";
-import { EVALUATION, PRACTICE } from "./fixtures.js";
+import { PRODUCT_CATALOGS } from "./fixtures.js";
 
-const environment = createProductEnvironment({
-  practice: PRACTICE,
-  evaluation: EVALUATION,
-});
+const environment = createProductEnvironment(PRODUCT_CATALOGS);
 
 function completeRound() {
   const progress = createFreshProgressForEnvironment(
@@ -99,7 +96,7 @@ describe("pilot history", () => {
     expect(history.records.at(-1)?.roundNumber).toBe(30);
   });
 
-  it("migrates existing Phase 5 summaries with explicit unknown latency", () => {
+  it("migrates existing summaries with explicit unknown latency", () => {
     const completed = completeRound();
     const legacyProgress: ProductProgress = {
       ...completed.progress,
