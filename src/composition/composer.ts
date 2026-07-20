@@ -49,7 +49,9 @@ function emptyRetrievalTrace(
       targetKey: null,
       reason: resolution.fallbackReason === "coverage-objective-not-composable"
         ? "coverage-objective-requires-explicit-demands"
-        : "inconsistent-objective-scope",
+        : resolution.fallbackReason === "invalid-budget"
+          ? "invalid-budget"
+          : "inconsistent-objective-scope",
       detail: resolution.detail,
     }],
   };
