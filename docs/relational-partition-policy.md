@@ -16,6 +16,8 @@ The current product partition protects token-level raw, binding, and motor conte
 - `ㄜ → tone:3`;
 - `ㄩ → ㄥ`.
 
+With the baseline's configured minimum of three distinct training entries, 13 exact relations fall below that threshold after partitioning. The three evaluation-only transitions are the strict zero-training-support subset of those 13 shortfalls. Reports keep these measurements separate.
+
 This is valid baseline behavior, not a defect to hide. The research question is whether alternative numeric policies produce a more useful transfer/evaluation boundary.
 
 ## Contract
