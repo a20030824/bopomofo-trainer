@@ -1,0 +1,24 @@
+[
+  {
+    "id": "missing-reading",
+    "text": "媽"
+  },
+  {
+    "id": "missing-reading",
+    "text": "媽",
+    "reading": "ㄇㄚ1"
+  },
+  {
+    "id": "nested-value",
+    "text": "媽",
+    "reading": "ㄇㄚ1",
+    "metadata": {
+      "unexpected": true
+    }
+  },
+  {
+    "id": "nested-value",
+    "text": "媽",
+    "reading": "ㄇㄚ1"
+  }
+]
