@@ -5,10 +5,7 @@ import {
 } from "../analysis/fallback-policy.js";
 import { RELATIONAL_ANALYSIS_POLICY } from "../analysis/policy.js";
 import type { ExperimentMetricKey } from "../analysis/types.js";
-import {
-  compareExperimentRuns,
-  runRelationalExperimentCell,
-} from "../experiment/run-cell.js";
+import { runRelationalExperimentCell } from "../experiment/run-cell.js";
 import type {
   RelationalExperimentMetrics,
   RelationalExperimentRoundRecord,
@@ -19,17 +16,18 @@ import {
   confirmationExperimentPlan,
   relationalConfirmationPlanDigest,
 } from "./plan.js";
-import {
-  RELATIONAL_CONFIRMATION_POLICY,
-  type RelationalConfirmationPolicy,
-} from "./policy.js";
+import { RELATIONAL_CONFIRMATION_POLICY } from "./policy.js";
 import type {
   CanonicalConfirmationCellDeclaration,
   ConfirmationDecision,
+  ConfirmationHypothesisDecision,
   ConfirmationRoundTrajectory,
   ConfirmationRunSummary,
+  ConfirmationSeedAssessment,
+  ConfirmationSeedDecision,
   ConfirmationSurvivalRecord,
   RelationalConfirmationPlan,
+  RelationalConfirmationPolicy,
   RelationalConfirmationReport,
 } from "./types.js";
 
@@ -97,6 +95,7 @@ function compactRun(
     cell: run.cell,
     role: declaration.role,
     hypothesisId: declaration.hypothesisId,
+    anchorScenarioIds: declaration.anchorScenarioIds,
     matchedReferenceCellId: declaration.matchedReferenceCellId,
     scenarioId: run.scenarioId,
     seed: run.seed,
@@ -119,14 +118,12 @@ interface MetricDirectionResult {
   readonly materialRegression: boolean;
 }
 
-function compareMetric(
+function compareValues(
   key: ExperimentMetricKey,
-  cell: RelationalExperimentMetrics,
-  reference: RelationalExperimentMetrics,
+  cellValue: number | null,
+  referenceValue: number | null,
 ): MetricDirectionResult {
   const rule = RELATIONAL_ANALYSIS_POLICY.metrics[key];
-  const cellValue = cell[key].value;
-  const referenceValue = reference[key].value;
   if (rule.direction === "descriptive-only") {
     return {
       identifiable: cellValue !== null && referenceValue !== null,
@@ -160,142 +157,300 @@ function compareMetric(
   };
 }
 
-interface SeedAssessment {
-  readonly status: "pass" | "no-improvement" | "missing" | "reject";
-  readonly reasons: readonly string[];
+function compareMetric(
+  key: ExperimentMetricKey,
+  cell: RelationalExperimentMetrics,
+  reference: RelationalExperimentMetrics,
+): MetricDirectionResult {
+  return compareValues(key, cell[key].value, reference[key].value);
 }
 
-function assessSeed(
+const TRAJECTORY_ERROR_METRICS = [
+  "bindingEstimateMeanAbsoluteError",
+  "transitionEstimateMeanAbsoluteErrorMs",
+  "confusionEstimateMeanAbsoluteError",
+] as const satisfies readonly ExperimentMetricKey[];
+
+type TrajectoryErrorMetric = (typeof TRAJECTORY_ERROR_METRICS)[number];
+
+function trajectoryValue(
+  trajectory: ConfirmationRoundTrajectory,
+  key: TrajectoryErrorMetric,
+): number | null {
+  return trajectory[key];
+}
+
+function trajectoryEvidence(
   run: ConfirmationRunSummary,
   reference: ConfirmationRunSummary,
   primaryMetrics: readonly ExperimentMetricKey[],
-  policy: RelationalConfirmationPolicy,
-): SeedAssessment {
-  const reasons: string[] = [];
-  if (run.failureCount > 0) reasons.push("non-zero-failure-count");
-  const blockingRate = run.trajectories.length === 0
-    ? 0
-    : run.blockingFallbackCount / run.trajectories.length;
-  if (blockingRate > policy.maximumBlockingFallbackRate) {
-    reasons.push("blocking-fallback-rate-above-threshold");
+): {
+  readonly reversals: readonly string[];
+  readonly unsustained: readonly string[];
+} {
+  const referenceByRound = new Map(reference.trajectories.map((item) => [item.round, item]));
+  const reversals: string[] = [];
+  const unsustained: string[] = [];
+  for (const key of TRAJECTORY_ERROR_METRICS) {
+    if (!primaryMetrics.includes(key)) continue;
+    const comparisons = run.trajectories.flatMap((trajectory) => {
+      const referenceTrajectory = referenceByRound.get(trajectory.round);
+      if (referenceTrajectory === undefined) return [];
+      return [compareValues(
+        key,
+        trajectoryValue(trajectory, key),
+        trajectoryValue(referenceTrajectory, key),
+      )];
+    });
+    if (comparisons.length < 2) continue;
+    const earlierImprovement = comparisons.slice(0, -1).some((item) =>
+      item.materialImprovement
+    );
+    const final = comparisons.at(-1)!;
+    if (earlierImprovement && final.materialRegression) {
+      reversals.push(`trajectory-reversal:${key}`);
+    } else if (earlierImprovement && !final.materialImprovement) {
+      unsustained.push(`trajectory-improvement-not-sustained:${key}`);
+    }
   }
-  const protectedKeys = (Object.entries(RELATIONAL_ANALYSIS_POLICY.metrics) as Array<[
+  return {
+    reversals: reversals.sort(compareText),
+    unsustained: unsustained.sort(compareText),
+  };
+}
+
+function protectedMetricKeys(): readonly ExperimentMetricKey[] {
+  return (Object.entries(RELATIONAL_ANALYSIS_POLICY.metrics) as Array<[
     ExperimentMetricKey,
     (typeof RELATIONAL_ANALYSIS_POLICY.metrics)[ExperimentMetricKey],
   ]>)
     .filter(([, rule]) => rule.role === "protected")
     .map(([key]) => key);
-  const protectedRegression = protectedKeys.filter((key) =>
-    compareMetric(key, run.finalMetrics, reference.finalMetrics).materialRegression
-  );
-  if (protectedRegression.length > 0) {
-    reasons.push(...protectedRegression.map((key) => `protected-regression:${key}`));
+}
+
+function seedAssessment(
+  run: ConfirmationRunSummary,
+  reference: ConfirmationRunSummary,
+  primaryMetrics: readonly ExperimentMetricKey[],
+  policy: RelationalConfirmationPolicy,
+): ConfirmationSeedAssessment {
+  if (run.matchedReferenceCellId === null) {
+    throw new Error(`non-baseline run has no matched reference: ${run.id}`);
+  }
+  const blockers: string[] = [];
+  if (run.failureCount > 0) blockers.push("non-zero-failure-count");
+  const blockingRate = run.trajectories.length === 0
+    ? 0
+    : run.blockingFallbackCount / run.trajectories.length;
+  if (blockingRate > policy.maximumBlockingFallbackRate) {
+    blockers.push("blocking-fallback-rate-above-threshold");
+  }
+  for (const key of protectedMetricKeys()) {
+    if (compareMetric(key, run.finalMetrics, reference.finalMetrics).materialRegression) {
+      blockers.push(`protected-regression:${key}`);
+    }
   }
   const primary = primaryMetrics.map((key) => [
     key,
     compareMetric(key, run.finalMetrics, reference.finalMetrics),
   ] as const);
-  const missing = primary.filter(([, result]) => !result.identifiable);
-  const regressions = primary.filter(([, result]) => result.materialRegression);
-  const improvements = primary.filter(([, result]) => result.materialImprovement);
-  if (regressions.length > 0) {
-    reasons.push(...regressions.map(([key]) => `contradictory-primary-regression:${key}`));
+  for (const [key, result] of primary) {
+    if (result.materialRegression) blockers.push(`contradictory-primary-regression:${key}`);
   }
-  if (reasons.length > 0) return { status: "reject", reasons: uniqueSorted(reasons) };
-  if (missing.length > 0) {
-    return {
-      status: "missing",
-      reasons: missing.map(([key]) => `primary-metric-not-identifiable:${key}`).sort(compareText),
-    };
-  }
-  if (improvements.length === 0) {
-    return { status: "no-improvement", reasons: ["no-material-primary-improvement"] };
+  const trajectory = trajectoryEvidence(run, reference, primaryMetrics);
+  blockers.push(...trajectory.reversals);
+
+  let decision: ConfirmationSeedDecision;
+  let reasons: readonly string[];
+  if (blockers.length > 0) {
+    decision = "rejected";
+    reasons = uniqueSorted([...blockers, ...trajectory.unsustained]);
+  } else {
+    const missing = primary.filter(([, result]) => !result.identifiable);
+    const improvements = primary.filter(([, result]) => result.materialImprovement);
+    if (missing.length > 0) {
+      decision = "missing-evidence";
+      reasons = uniqueSorted([
+        ...missing.map(([key]) => `primary-metric-not-identifiable:${key}`),
+        ...trajectory.unsustained,
+      ]);
+    } else if (improvements.length === 0) {
+      decision = "no-improvement";
+      reasons = uniqueSorted([
+        "no-material-primary-improvement",
+        ...trajectory.unsustained,
+      ]);
+    } else {
+      decision = "pass";
+      reasons = uniqueSorted([
+        ...improvements.map(([key]) => `material-improvement:${key}`),
+        ...trajectory.unsustained,
+      ]);
+    }
   }
   return {
-    status: "pass",
-    reasons: improvements.map(([key]) => `material-improvement:${key}`).sort(compareText),
+    cellId: run.cell.id,
+    scenarioId: run.scenarioId,
+    seed: run.seed,
+    role: run.role,
+    hypothesisId: run.hypothesisId,
+    matchedReferenceCellId: run.matchedReferenceCellId,
+    decision,
+    reasons,
+    trajectoryReversals: trajectory.reversals,
+    unsustainedTrajectoryImprovements: trajectory.unsustained,
   };
+}
+
+function buildSeedAssessments(
+  runs: readonly ConfirmationRunSummary[],
+  policy: RelationalConfirmationPolicy,
+): readonly ConfirmationSeedAssessment[] {
+  const runMap = new Map(runs.map((run) => [
+    stableStringify([run.cell.id, run.scenarioId, run.seed]),
+    run,
+  ] as const));
+  const assessments: ConfirmationSeedAssessment[] = [];
+  for (const run of runs) {
+    if (run.role === "historical-baseline") continue;
+    if (run.matchedReferenceCellId === null) {
+      throw new Error(`non-baseline run has no matched reference: ${run.id}`);
+    }
+    const reference = runMap.get(stableStringify([
+      run.matchedReferenceCellId,
+      run.scenarioId,
+      run.seed,
+    ]));
+    if (reference === undefined) {
+      assessments.push({
+        cellId: run.cell.id,
+        scenarioId: run.scenarioId,
+        seed: run.seed,
+        role: run.role,
+        hypothesisId: run.hypothesisId,
+        matchedReferenceCellId: run.matchedReferenceCellId,
+        decision: "rejected",
+        reasons: ["missing-matched-reference-run"],
+        trajectoryReversals: [],
+        unsustainedTrajectoryImprovements: [],
+      });
+      continue;
+    }
+    const primaryMetrics = policy.scenarioPrimaryMetrics[run.scenarioId];
+    if (primaryMetrics === undefined || primaryMetrics.length === 0) {
+      assessments.push({
+        cellId: run.cell.id,
+        scenarioId: run.scenarioId,
+        seed: run.seed,
+        role: run.role,
+        hypothesisId: run.hypothesisId,
+        matchedReferenceCellId: run.matchedReferenceCellId,
+        decision: "missing-evidence",
+        reasons: ["scenario-primary-metrics-not-declared"],
+        trajectoryReversals: [],
+        unsustainedTrajectoryImprovements: [],
+      });
+      continue;
+    }
+    assessments.push(seedAssessment(run, reference, primaryMetrics, policy));
+  }
+  return assessments.sort((left, right) =>
+    compareText(left.scenarioId, right.scenarioId)
+      || compareText(left.cellId, right.cellId)
+      || left.seed - right.seed
+  );
+}
+
+function reasonCounts(
+  assessments: readonly ConfirmationSeedAssessment[],
+): readonly string[] {
+  const counts = new Map<string, number>();
+  for (const reason of assessments.flatMap((item) => item.reasons)) {
+    counts.set(reason, (counts.get(reason) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort(([left], [right]) => compareText(left, right))
+    .map(([reason, count]) => `seed-reason:${reason}:${count}/${assessments.length}`);
 }
 
 function survivalDecision(
   runs: readonly ConfirmationRunSummary[],
-  allRuns: readonly ConfirmationRunSummary[],
+  seedAssessments: readonly ConfirmationSeedAssessment[],
   policy: RelationalConfirmationPolicy,
 ): ConfirmationSurvivalRecord {
   const first = runs[0]!;
   const seedCount = new Set(runs.map((run) => run.seed)).size;
+  const anchorScenario = first.anchorScenarioIds.includes(first.scenarioId);
   if (first.role === "historical-baseline") {
     return {
       cellId: first.cell.id,
       scenarioId: first.scenarioId,
       role: first.role,
       hypothesisId: first.hypothesisId,
+      anchorScenario: false,
       seedCount,
       runCount: runs.length,
+      passCount: 0,
+      noImprovementCount: 0,
+      missingEvidenceCount: 0,
+      rejectedCount: 0,
+      passShare: 0,
+      rejectedShare: 0,
       decision: "inconclusive",
       reasons: ["historical-baseline-reference"],
     };
   }
-  const primaryMetrics = policy.scenarioPrimaryMetrics[first.scenarioId];
-  if (primaryMetrics === undefined || primaryMetrics.length === 0) {
-    return {
-      cellId: first.cell.id,
-      scenarioId: first.scenarioId,
-      role: first.role,
-      hypothesisId: first.hypothesisId,
-      seedCount,
-      runCount: runs.length,
-      decision: "inconclusive",
-      reasons: ["scenario-primary-metrics-not-declared"],
-    };
-  }
-  const assessments: SeedAssessment[] = [];
-  for (const run of runs) {
-    const reference = allRuns.find((candidate) =>
-      candidate.cell.id === run.matchedReferenceCellId
-      && candidate.scenarioId === run.scenarioId
-      && candidate.seed === run.seed
-    );
-    if (reference === undefined) {
-      assessments.push({ status: "reject", reasons: ["missing-matched-reference-run"] });
-    } else {
-      assessments.push(assessSeed(run, reference, primaryMetrics, policy));
-    }
-  }
-  const count = (status: SeedAssessment["status"]) =>
-    assessments.filter((assessment) => assessment.status === status).length;
-  const rejected = count("reject");
-  const missing = count("missing");
+  const count = (decision: ConfirmationSeedDecision) =>
+    seedAssessments.filter((item) => item.decision === decision).length;
   const passed = count("pass");
   const noImprovement = count("no-improvement");
-  const passShare = assessments.length === 0 ? 0 : passed / assessments.length;
+  const missing = count("missing-evidence");
+  const rejected = count("rejected");
+  const passShare = seedAssessments.length === 0 ? 0 : passed / seedAssessments.length;
+  const rejectedShare = seedAssessments.length === 0 ? 0 : rejected / seedAssessments.length;
   let decision: ConfirmationDecision;
-  if (rejected > 0) decision = "rejected";
-  else if (missing > 0) decision = "inconclusive";
-  else if (passShare >= policy.minimumSurvivingSeedShare) decision = "survives-confirmation";
-  else if (passShare >= policy.minimumScenarioLimitedSeedShare) decision = "scenario-limited";
-  else if (passed === 0 && noImprovement > 0) decision = "rejected";
-  else decision = "inconclusive";
+  if (passShare >= policy.minimumSurvivingSeedShare
+    && rejectedShare <= policy.maximumRejectedSeedShare) {
+    decision = "survives-confirmation";
+  } else if (passShare >= policy.minimumScenarioLimitedSeedShare) {
+    decision = "scenario-limited";
+  } else if (rejectedShare >= 0.5) {
+    decision = "rejected";
+  } else if (missing > 0) {
+    decision = "inconclusive";
+  } else if (passed === 0 && noImprovement > 0) {
+    decision = "rejected";
+  } else {
+    decision = "inconclusive";
+  }
   return {
     cellId: first.cell.id,
     scenarioId: first.scenarioId,
     role: first.role,
     hypothesisId: first.hypothesisId,
+    anchorScenario,
     seedCount,
     runCount: runs.length,
+    passCount: passed,
+    noImprovementCount: noImprovement,
+    missingEvidenceCount: missing,
+    rejectedCount: rejected,
+    passShare,
+    rejectedShare,
     decision,
     reasons: uniqueSorted([
-      `seed-pass:${passed}/${assessments.length}`,
-      `seed-no-improvement:${noImprovement}/${assessments.length}`,
-      `seed-missing:${missing}/${assessments.length}`,
-      `seed-rejected:${rejected}/${assessments.length}`,
-      ...assessments.flatMap((assessment) => assessment.reasons),
+      `seed-pass:${passed}/${seedAssessments.length}`,
+      `seed-no-improvement:${noImprovement}/${seedAssessments.length}`,
+      `seed-missing:${missing}/${seedAssessments.length}`,
+      `seed-rejected:${rejected}/${seedAssessments.length}`,
+      ...reasonCounts(seedAssessments),
     ]),
   };
 }
 
 function buildSurvival(
   runs: readonly ConfirmationRunSummary[],
+  seedAssessments: readonly ConfirmationSeedAssessment[],
   policy: RelationalConfirmationPolicy,
 ): readonly ConfirmationSurvivalRecord[] {
   const groups = new Map<string, ConfirmationRunSummary[]>();
@@ -303,16 +458,116 @@ function buildSurvival(
     const key = stableStringify([run.cell.id, run.scenarioId]);
     groups.set(key, [...(groups.get(key) ?? []), run]);
   }
-  return [...groups.values()]
-    .map((group) => survivalDecision(group, runs, policy))
+  return [...groups.entries()]
+    .map(([key, group]) => survivalDecision(
+      group,
+      seedAssessments.filter((item) =>
+        stableStringify([item.cellId, item.scenarioId]) === key
+      ),
+      policy,
+    ))
     .sort((left, right) => compareText(left.scenarioId, right.scenarioId)
       || compareText(left.cellId, right.cellId));
+}
+
+function hypothesisDecision(
+  runs: readonly ConfirmationRunSummary[],
+  survival: readonly ConfirmationSurvivalRecord[],
+  policy: RelationalConfirmationPolicy,
+): ConfirmationHypothesisDecision {
+  const first = runs[0]!;
+  const records = survival.filter((item) => item.cellId === first.cell.id);
+  if (first.role === "historical-baseline") {
+    return {
+      cellId: first.cell.id,
+      role: first.role,
+      hypothesisId: first.hypothesisId,
+      anchorScenarioIds: [],
+      scenarioCount: records.length,
+      robustScenarioCount: 0,
+      robustScenarioShare: 0,
+      decision: "inconclusive",
+      reasons: ["historical-baseline-reference"],
+    };
+  }
+  const anchors = records.filter((item) => first.anchorScenarioIds.includes(item.scenarioId));
+  const robustness = records.filter((item) => !first.anchorScenarioIds.includes(item.scenarioId));
+  const robustScenarioCount = robustness.filter((item) =>
+    item.decision === "survives-confirmation" || item.decision === "scenario-limited"
+  ).length;
+  const robustScenarioShare = robustness.length === 0
+    ? 0
+    : robustScenarioCount / robustness.length;
+  let decision: ConfirmationDecision;
+  const reasons: string[] = [];
+  if (anchors.length !== first.anchorScenarioIds.length) {
+    decision = "inconclusive";
+    reasons.push("anchor-scenario-result-missing");
+  } else if (anchors.some((item) => item.decision === "rejected")) {
+    decision = "rejected";
+    reasons.push("anchor-scenario-rejected");
+  } else if (anchors.some((item) => item.decision === "inconclusive")) {
+    decision = "inconclusive";
+    reasons.push("anchor-scenario-inconclusive");
+  } else if (anchors.some((item) => item.decision === "scenario-limited")) {
+    decision = "scenario-limited";
+    reasons.push("anchor-scenario-limited");
+  } else if (robustScenarioShare >= policy.minimumRobustScenarioShare) {
+    decision = "survives-confirmation";
+    reasons.push("anchor-survives-and-robust-scenario-share-passes");
+  } else {
+    decision = "scenario-limited";
+    reasons.push("anchor-survives-but-robust-scenario-share-below-threshold");
+  }
+  reasons.push(`robust-scenarios:${robustScenarioCount}/${robustness.length}`);
+  return {
+    cellId: first.cell.id,
+    role: first.role,
+    hypothesisId: first.hypothesisId,
+    anchorScenarioIds: first.anchorScenarioIds,
+    scenarioCount: records.length,
+    robustScenarioCount,
+    robustScenarioShare,
+    decision,
+    reasons: reasons.sort(compareText),
+  };
+}
+
+function buildHypotheses(
+  runs: readonly ConfirmationRunSummary[],
+  survival: readonly ConfirmationSurvivalRecord[],
+  policy: RelationalConfirmationPolicy,
+): readonly ConfirmationHypothesisDecision[] {
+  const groups = new Map<string, ConfirmationRunSummary[]>();
+  for (const run of runs) {
+    groups.set(run.cell.id, [...(groups.get(run.cell.id) ?? []), run]);
+  }
+  return [...groups.values()]
+    .map((group) => hypothesisDecision(group, survival, policy))
+    .sort((left, right) => compareText(left.hypothesisId, right.hypothesisId));
+}
+
+function validatePolicy(policy: RelationalConfirmationPolicy): void {
+  const shares = [
+    policy.maximumBlockingFallbackRate,
+    policy.minimumSurvivingSeedShare,
+    policy.minimumScenarioLimitedSeedShare,
+    policy.maximumRejectedSeedShare,
+    policy.minimumRobustScenarioShare,
+  ];
+  if (shares.some((value) => !Number.isFinite(value) || value < 0 || value > 1)) {
+    throw new RangeError("confirmation policy rates must be between zero and one");
+  }
+  if (policy.minimumScenarioLimitedSeedShare > policy.minimumSurvivingSeedShare) {
+    throw new RangeError("scenario-limited seed share cannot exceed surviving seed share");
+  }
 }
 
 export function runRelationalConfirmation(
   inputPlan: RelationalConfirmationPlan,
   policy: RelationalConfirmationPolicy = RELATIONAL_CONFIRMATION_POLICY,
 ): RelationalConfirmationReport {
+  validatePolicy(policy);
   const plan = canonicalizeRelationalConfirmationPlan(inputPlan);
   if (plan.sourceFindingsPolicyVersion !== policy.sourceAnalysisPolicyVersion) {
     throw new Error("confirmation plan source findings policy does not match confirmation policy");
@@ -340,22 +595,30 @@ export function runRelationalConfirmation(
   runs.sort((left, right) => compareText(left.cell.id, right.cell.id)
     || compareText(left.scenarioId, right.scenarioId)
     || left.seed - right.seed);
-  const survival = buildSurvival(runs, policy);
+  const seedAssessments = buildSeedAssessments(runs, policy);
+  const survival = buildSurvival(runs, seedAssessments, policy);
+  const hypotheses = buildHypotheses(runs, survival, policy);
   const body = {
     schemaVersion: "relational-confirmation-report-v1" as const,
     planId: plan.id,
     planDigest: relationalConfirmationPlanDigest(inputPlan),
     sourceFindingsPolicyVersion: plan.sourceFindingsPolicyVersion,
+    sourceReportDigest: plan.sourceReportDigest,
+    sourceAnalysisDigest: plan.sourceAnalysisDigest,
     baselineCellId: plan.baselineCellId,
+    policy,
     runCount: runs.length,
     roundCount: runs.reduce((sum, run) => sum + run.trajectories.length, 0),
     runs,
+    seedAssessments,
     survival,
+    hypotheses,
     limitations: [
       "Synthetic confirmation does not establish human learning effectiveness.",
-      "Survives-confirmation means robust under this declared cohort and policy only.",
+      "Survives-confirmation means robust under this declared cohort and versioned policy only.",
       "Compact trajectories omit raw trace events while preserving objectives, outcomes, errors, failures, and fallbacks.",
       "Matched ablations are interpretable only when exactly one declared strategy axis changes.",
+      "Trajectory reversal checks cover cumulative binding, transition, and confusion estimation error; other metrics remain final-aggregate evidence.",
       "Browser/UI work, auto-advance, and human pilot remain deferred.",
     ] as const,
   };
