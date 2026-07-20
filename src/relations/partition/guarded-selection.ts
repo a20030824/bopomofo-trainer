@@ -56,6 +56,7 @@ export function selectWithRelationSupportGuard(
   const evaluationEntryIds = new Set<string>();
   const trace: PartitionSelectionTrace[] = [];
   let traceStep = 0;
+  let stopped = false;
 
   while (evaluationEntryIds.size < evaluationEntryCount) {
     const legal: Array<readonly [CatalogEntry, CandidateScore]> = [];
@@ -109,6 +110,7 @@ export function selectWithRelationSupportGuard(
         relatedRelationKeys: sortedUnique(blockedRelationKeys),
         seedTieBreak: null,
       });
+      stopped = true;
       break;
     }
 
@@ -143,6 +145,23 @@ export function selectWithRelationSupportGuard(
       seedTieBreak: selected[1].seedTieBreak,
     });
     traceStep += 1;
+  }
+
+  if (!stopped) {
+    trace.push({
+      step: traceStep,
+      candidateEntryId: null,
+      action: "stopped",
+      reasonCode: "evaluation-target-reached",
+      evaluationCountBefore: evaluationEntryIds.size,
+      evaluationCountAfter: evaluationEntryIds.size,
+      scoreComponents: {
+        evaluationTarget: evaluationEntryCount,
+      },
+      violatedConstraintIds: [],
+      relatedRelationKeys: [],
+      seedTieBreak: null,
+    });
   }
 
   return { evaluationEntryIds, trace };
