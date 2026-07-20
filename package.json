@@ -18,6 +18,7 @@
     "strategy:matrix": "tsx scripts/print-relational-strategy-matrix.ts --verify",
     "experiment:relational": "tsx scripts/run-relational-experiments.ts --verify",
     "analysis:relational": "tsx scripts/analyze-relational-experiments.ts --verify --verify-findings",
+    "confirmation:relational": "tsx scripts/run-relational-confirmation.ts --verify",
     "predev": "npm run app:catalog",
     "dev": "vite",
     "prebuild": "npm run app:catalog",
