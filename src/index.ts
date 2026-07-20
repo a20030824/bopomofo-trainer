@@ -47,10 +47,15 @@ export * from "./curriculum/exercise-builder.js";
 export * from "./curriculum/simulator.js";
 export * from "./curriculum/scenarios.js";
 export * from "./curriculum/objectives.js";
+export * from "./curriculum/relational-objective-strategies.js";
 export * from "./composition/types.js";
 export * from "./composition/composer.js";
 export * from "./simulation/types.js";
 export * from "./simulation/strategy-matrix.js";
+export * from "./simulation/experiment/types.js";
+export * from "./simulation/experiment/plan.js";
+export * from "./simulation/experiment/report.js";
+export * from "./simulation/experiment/serialize.js";
 export {
   SYNTHETIC_EXERCISE,
   SYNTHETIC_LAYOUT,
