@@ -42,5 +42,7 @@ jobs:
         run: npm run integration:research
       - name: Verify relational strategy matrix
         run: npm run strategy:matrix
+      - name: Verify seeded cohort experiments
+        run: npm run experiment:relational
       - name: Production build
         run: npm run build
