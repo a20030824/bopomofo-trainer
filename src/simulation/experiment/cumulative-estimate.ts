@@ -4,12 +4,12 @@ import {
   transitionTruthKey,
 } from "../learner/state.js";
 import type {
-  EstimationErrorReport,
   MeasurementEstimate,
   ScalarEstimate,
   SyntheticLearnerState,
 } from "../learner/types.js";
 import { reportEstimationError } from "../trace-generator/estimate.js";
+import type { CumulativeEstimationErrorReport } from "./types.js";
 
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -86,9 +86,15 @@ export function cumulativeMeasurementEstimate(
 export function cumulativeEstimationError(
   learnerBefore: SyntheticLearnerState,
   summary: MeasurementSummary,
-): EstimationErrorReport {
-  return reportEstimationError(
+): CumulativeEstimationErrorReport {
+  const report = reportEstimationError(
     learnerBefore,
     cumulativeMeasurementEstimate(summary),
   );
+  return {
+    components: report.components,
+    meanAbsoluteErrorByKind: report.meanAbsoluteErrorByKind,
+    comparisonTruthReason:
+      "cumulative-phase-3-estimate-versus-current-pre-exposure-truth",
+  };
 }
