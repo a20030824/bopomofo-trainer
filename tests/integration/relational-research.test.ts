@@ -1,10 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
+import { composePracticeSequence } from "../../src/composition/composer.js";
+import { stableStringify } from "../../src/composition/stable.js";
+import { createSeededRandom } from "../../src/curriculum/random.js";
 import {
   runRelationalResearchIntegration,
   serializeRelationalResearchIntegrationReport,
   type RelationalResearchIntegrationFixture,
 } from "../../src/integration/relational-research.js";
+import { createRelationalCatalogReport } from "../../src/relations/catalog-report.js";
+import { partitionRelationSupportPreserving } from "../../src/relations/partition/strategies.js";
 
 async function readFixture(): Promise<{
   readonly fixture: RelationalResearchIntegrationFixture;
@@ -29,9 +34,58 @@ async function readFixture(): Promise<{
   };
 }
 
+function compositionPreflight(fixture: RelationalResearchIntegrationFixture) {
+  const objective = fixture.composition.objective;
+  if (objective.kind !== "transition") {
+    throw new Error("integration preflight expects the committed transition objective");
+  }
+  const allTraining = Object.fromEntries(
+    fixture.reviewedCatalog.map((entry) => [entry.id, "training"] as const),
+  );
+  const initialReport = createRelationalCatalogReport(fixture.reviewedCatalog, {
+    mode: objective.relation.scope.mode,
+    layoutId: objective.relation.scope.layoutId,
+    partitionByEntryId: allTraining,
+  });
+  const decision = partitionRelationSupportPreserving(
+    { entries: fixture.reviewedCatalog, report: initialReport },
+    fixture.partition,
+  );
+  const evaluationIds = new Set(decision.evaluationEntryIds);
+  const partitionedReport = createRelationalCatalogReport(fixture.reviewedCatalog, {
+    mode: objective.relation.scope.mode,
+    layoutId: objective.relation.scope.layoutId,
+    partitionByEntryId: Object.fromEntries(fixture.reviewedCatalog.map((entry) => [
+      entry.id,
+      evaluationIds.has(entry.id) ? "evaluation" : "training",
+    ] as const)),
+  });
+  const sequence = composePracticeSequence({
+    objective,
+    relationIndex: partitionedReport.index,
+    entries: fixture.reviewedCatalog,
+    history: fixture.composition.history,
+    budget: fixture.composition.budget,
+    policy: fixture.composition.policy,
+    random: createSeededRandom(fixture.composition.seed),
+  });
+  return { decision, partitionedReport, sequence };
+}
+
 describe("relational research integration", () => {
   it("connects review, partition, composition, trace generation, and Phase 3 measurement", async () => {
     const { fixture, referenceInput } = await readFixture();
+    const preflight = compositionPreflight(fixture);
+    expect(
+      preflight.sequence.items,
+      stableStringify({
+        evaluationEntryIds: preflight.decision.evaluationEntryIds,
+        transitionKeys: Object.keys(preflight.partitionedReport.index.transitionOccurrences),
+        retrievalTrace: preflight.sequence.retrievalTrace,
+        stopReason: preflight.sequence.stopReason,
+      }),
+    ).not.toHaveLength(0);
+
     const report = runRelationalResearchIntegration(fixture, referenceInput);
 
     expect(report.reference.importResult.summary).toMatchObject({
