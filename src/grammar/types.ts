@@ -19,6 +19,7 @@ export const PREDICATE_FRAMES = [
   "none",
   "intransitive",
   "transitive",
+  "ambitransitive",
   "modal",
   "adjectival",
 ] as const;
@@ -70,6 +71,7 @@ export interface GrammarAnnotationCompilationResult {
 export interface GrammarTemplateSlot {
   readonly key: string;
   readonly role: GrammarRole;
+  readonly predicateFrames?: readonly PredicateFrame[];
 }
 
 export interface GrammarTemplate {
