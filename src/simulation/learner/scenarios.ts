@@ -324,6 +324,31 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
     decayRatePerStep: 0.1,
   });
 
+  let heterogeneous = replaceBinding(baseLearner(), u, {
+    errorProbability: 0.36,
+    learningRate: 0.015,
+  });
+  heterogeneous = replaceBinding(heterogeneous, bo, {
+    errorProbability: 0.24,
+    fallbackActualToken: zhi,
+    learningRate: 0.16,
+  });
+  heterogeneous = replaceTransition(heterogeneous, zhi, u, {
+    latency: { meanMs: 390, standardDeviationMs: 30 },
+    learningRate: 0.02,
+  });
+  heterogeneous = replaceTransition(heterogeneous, bo, po, {
+    latency: { meanMs: 250, standardDeviationMs: 20 },
+    learningRate: 0.14,
+  });
+  heterogeneous = addConfusion(heterogeneous, {
+    expectedToken: bo,
+    actualToken: po,
+    conditionalProbability: 0.58,
+    learningRate: 0.09,
+    decayRatePerStep: 0,
+  });
+
   return [
     scenario("weak-binding", "One weak binding with otherwise normal transitions.", 1101, weakBinding),
     scenario("weak-transition", "One slow directional transition with normal component bindings.", 1102, weakTransition),
@@ -334,6 +359,7 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
     scenario("slow-accurate", "High transition latency with nearly perfect binding correctness.", 1107, slowAccurate),
     scenario("zero-learning", "Exposure produces no latent skill improvement.", 1108, zeroLearning),
     scenario("retention-decay", "Exposure improvement is followed by declared retention decay.", 1109, retention, 4),
+    scenario("heterogeneous-improvement", "Binding, transition, and confusion relations improve at deliberately different rates.", 1110, heterogeneous),
   ];
 }
 
