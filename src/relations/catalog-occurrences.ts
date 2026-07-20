@@ -68,6 +68,7 @@ export function indexCatalogOccurrences(
           tokenIndex,
           tokenId,
           context: bindingContext(tokenId, tokenIndex),
+          entryInitial: syllableIndex === 0 && tokenIndex === 0,
           frequencyBand: entry.frequencyBand,
           tags: entry.tags,
           provenanceIds: entry.provenanceIds,
@@ -96,6 +97,12 @@ export function indexCatalogOccurrences(
         transition.set(key, [...(transition.get(key) ?? []), occurrence]);
         transitionCount += 1;
       }
+    }
+  }
+
+  for (const entryId of Object.keys(partitionByEntryId)) {
+    if (!seenEntryIds.has(entryId)) {
+      throw new Error(`catalog partition references unknown entry: ${entryId}`);
     }
   }
 
