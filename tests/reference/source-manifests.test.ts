@@ -3,6 +3,22 @@ import { describe, expect, it } from "vitest";
 import { parseReferenceSourceManifests } from "../../src/reference/manifest-parser.js";
 import { createReferenceSourceRegistry } from "../../src/reference/source-registry.js";
 
+function manifest(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+  return {
+    id: "fixture",
+    title: "Fixture",
+    version: "1",
+    homepageUrl: "https://example.invalid",
+    downloadUrl: null,
+    retrievedAt: null,
+    checksumSha256: null,
+    licenseLabel: "fixture",
+    redistributionStatus: "unconfirmed",
+    notes: [" note ", ""],
+    ...overrides,
+  };
+}
+
 describe("reference source manifests", () => {
   it("parses the committed source registry deterministically", async () => {
     const source = await readFile(
@@ -22,18 +38,22 @@ describe("reference source manifests", () => {
       .toBe("CC BY-ND 3.0 Taiwan");
   });
 
-  it("rejects invalid URLs and checksums", () => {
-    expect(() => parseReferenceSourceManifests([{
-      id: "bad",
-      title: "Bad",
-      version: "1",
-      homepageUrl: "http://example.com",
-      downloadUrl: null,
-      retrievedAt: null,
-      checksumSha256: "abc",
-      licenseLabel: "unknown",
-      redistributionStatus: "unconfirmed",
-      notes: [],
-    }])).toThrow();
+  it("normalizes notes and accepts real YYYY-MM-DD retrieval dates", () => {
+    const [parsed] = parseReferenceSourceManifests([
+      manifest({ retrievedAt: "2026-07-20" }),
+    ]);
+    expect(parsed).toMatchObject({
+      retrievedAt: "2026-07-20",
+      notes: ["note"],
+    });
+  });
+
+  it.each([
+    manifest({ homepageUrl: "http://example.com" }),
+    manifest({ checksumSha256: "abc" }),
+    manifest({ retrievedAt: "07/20/2026" }),
+    manifest({ retrievedAt: "2026-02-30" }),
+  ])("rejects invalid source metadata", (sourceManifest) => {
+    expect(() => parseReferenceSourceManifests([sourceManifest])).toThrow();
   });
 });
