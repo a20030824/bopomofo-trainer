@@ -1,5 +1,13 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import {
+  mkdir,
+  mkdtemp,
+  open,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { runRelationalExperiments } from "../src/simulation/experiment/report.js";
 import {
   serializeRelationalExperimentCsv,
@@ -16,45 +24,107 @@ const plan = JSON.parse(
   await readFile(fixtureUrl, "utf8"),
 ) as RelationalExperimentPlan;
 
-function render() {
-  const report = runRelationalExperiments(plan);
-  return {
-    report,
-    json: serializeRelationalExperimentJson(report),
-    csv: serializeRelationalExperimentCsv(report),
-    markdown: serializeRelationalExperimentMarkdown(report),
-  };
+const ARTIFACTS = [
+  ["relational-experiments.json", serializeRelationalExperimentJson],
+  ["relational-experiments.csv", serializeRelationalExperimentCsv],
+  ["relational-experiments.md", serializeRelationalExperimentMarkdown],
+] as const;
+
+interface RenderSummary {
+  readonly determinismDigest: string;
+  readonly runCount: number;
+  readonly aggregateCount: number;
 }
 
-const first = render();
-if (process.argv.includes("--verify")) {
-  const replay = render();
-  if (first.json !== replay.json
-    || first.csv !== replay.csv
-    || first.markdown !== replay.markdown) {
-    throw new Error("relational experiment outputs are not byte-for-byte deterministic");
+async function renderToDirectory(directory: string): Promise<RenderSummary> {
+  await mkdir(directory, { recursive: true });
+  const report = runRelationalExperiments(plan);
+  const summary: RenderSummary = {
+    determinismDigest: report.determinismDigest,
+    runCount: report.runCount,
+    aggregateCount: report.aggregates.length,
+  };
+  for (const [filename, serialize] of ARTIFACTS) {
+    await writeFile(join(directory, filename), serialize(report), "utf8");
+  }
+  return summary;
+}
+
+async function filesEqual(leftPath: string, rightPath: string): Promise<boolean> {
+  const left = await open(leftPath, "r");
+  const right = await open(rightPath, "r");
+  const leftBuffer = Buffer.allocUnsafe(64 * 1024);
+  const rightBuffer = Buffer.allocUnsafe(64 * 1024);
+  let position = 0;
+  try {
+    while (true) {
+      const [leftRead, rightRead] = await Promise.all([
+        left.read(leftBuffer, 0, leftBuffer.length, position),
+        right.read(rightBuffer, 0, rightBuffer.length, position),
+      ]);
+      if (leftRead.bytesRead !== rightRead.bytesRead) return false;
+      if (leftRead.bytesRead === 0) return true;
+      if (!leftBuffer.subarray(0, leftRead.bytesRead).equals(
+        rightBuffer.subarray(0, rightRead.bytesRead),
+      )) return false;
+      position += leftRead.bytesRead;
+    }
+  } finally {
+    await Promise.all([left.close(), right.close()]);
   }
 }
 
-const outputFlag = process.argv.indexOf("--output-dir");
-if (outputFlag >= 0) {
-  const argument = process.argv[outputFlag + 1];
-  if (argument === undefined) throw new Error("--output-dir requires a directory path");
-  const directory = resolve(argument);
-  await mkdir(directory, { recursive: true });
-  await Promise.all([
-    writeFile(resolve(directory, "relational-experiments.json"), first.json, "utf8"),
-    writeFile(resolve(directory, "relational-experiments.csv"), first.csv, "utf8"),
-    writeFile(resolve(directory, "relational-experiments.md"), first.markdown, "utf8"),
-  ]);
+async function artifactSetsEqual(
+  leftDirectory: string,
+  rightDirectory: string,
+): Promise<boolean> {
+  for (const [filename] of ARTIFACTS) {
+    if (!await filesEqual(
+      join(leftDirectory, filename),
+      join(rightDirectory, filename),
+    )) return false;
+  }
+  return true;
 }
 
-if (!process.argv.includes("--verify") && outputFlag < 0) {
-  process.stdout.write(first.markdown);
+const verify = process.argv.includes("--verify");
+const outputFlag = process.argv.indexOf("--output-dir");
+const outputArgument = outputFlag < 0 ? undefined : process.argv[outputFlag + 1];
+if (outputFlag >= 0 && outputArgument === undefined) {
+  throw new Error("--output-dir requires a directory path");
+}
+const outputDirectory = outputArgument === undefined ? undefined : resolve(outputArgument);
+
+let summary: RenderSummary;
+if (verify) {
+  const scratchDirectory = await mkdtemp(join(tmpdir(), "bopomofo-experiment-replay-"));
+  const firstDirectory = outputDirectory ?? join(scratchDirectory, "first");
+  const replayDirectory = join(scratchDirectory, "replay");
+  try {
+    summary = await renderToDirectory(firstDirectory);
+    const replaySummary = await renderToDirectory(replayDirectory);
+    const metadataEqual = summary.determinismDigest === replaySummary.determinismDigest
+      && summary.runCount === replaySummary.runCount
+      && summary.aggregateCount === replaySummary.aggregateCount;
+    if (!metadataEqual || !await artifactSetsEqual(firstDirectory, replayDirectory)) {
+      throw new Error("relational experiment outputs are not byte-for-byte deterministic");
+    }
+  } finally {
+    await rm(scratchDirectory, { recursive: true, force: true });
+  }
+} else if (outputDirectory !== undefined) {
+  summary = await renderToDirectory(outputDirectory);
+} else {
+  const report = runRelationalExperiments(plan);
+  summary = {
+    determinismDigest: report.determinismDigest,
+    runCount: report.runCount,
+    aggregateCount: report.aggregates.length,
+  };
+  process.stdout.write(serializeRelationalExperimentMarkdown(report));
 }
 
 process.stderr.write(
-  "relational experiments " + first.report.determinismDigest
-  + " (" + first.report.runCount + " runs, "
-  + first.report.aggregates.length + " aggregates)\n",
+  `relational experiments ${summary.determinismDigest} `
+  + `(${summary.runCount} runs, ${summary.aggregateCount} aggregates)\n`,
 );

@@ -30,7 +30,7 @@ Connected the baseline to a local browser product, held-out evaluation, persiste
 
 # Phase 7 — Relational catalog and synthetic curriculum experiments
 
-Human pilot and further UI work are paused until Phase 7 reports are reviewed.
+Human pilot and further UI work are paused until the synthetic findings are challenged with broader evidence.
 
 ## Phase 7A — Research reframing and semantic contracts
 
@@ -189,15 +189,49 @@ Reported metrics include:
 
 Exit condition: `npm run experiment:relational` reproduces JSON, CSV, and Markdown byte-for-byte; failed cells remain in the report; evaluation entries never update learner measurements; and objective selectors never receive hidden truth.
 
-## Next research checkpoint — report interpretation and strategy selection
+## Phase 7G — Report interpretation and strategy candidates
+
+Goal: interpret the complete factorial report without inventing a single score or silently dropping failed, null, or contradictory evidence.
+
+Implemented deliverables:
+
+- matrix-declared baseline comparisons within each scenario;
+- explicit metric directions, roles, material thresholds, and candidate guardrails;
+- separate total fallback and versioned blocking-fallback rates;
+- balanced objective, partition, composer, and learner axis summaries;
+- global, scenario, cell, and axis failure/fallback clusters;
+- conservative `candidate`, `inconclusive`, and `rejected` classifications;
+- JSON, cell-comparison CSV, axis-summary CSV, and canonical Markdown findings;
+- byte-for-byte verification of the committed findings document.
+
+The first analysis exposed and repaired a Phase 7F source-contract defect: partition validation reconstructed reports without their declared confusion pools, causing every run to fail before execution. After the fix, all 375 cell/scenario groups have executable rounds and no failure cluster.
+
+Under policy `phase-7g-v2`, the committed cohort yields:
+
+- 2 policy-compatible candidate cell/scenario combinations;
+- 5 inconclusive combinations;
+- 368 rejected combinations;
+- 0 zero-execution combinations;
+- 0 recorded failure clusters.
+
+The two candidates are:
+
+1. asymmetric confusion: frequency-random objective, binding-preserving partition, fixed-six composer;
+2. weak binding: binding-only objective, relation-support-preserving partition, fixed-six composer.
+
+They are follow-up targets, not production winners. A frequency-stratified asymmetric-confusion combination was explicitly kept inconclusive because faster weakness identification coincided with materially worse confusion-estimation error.
+
+Exit condition: `npm run analysis:relational` reproduces the analysis artifacts and verifies `docs/research/strategy-findings.md` byte-for-byte; baseline identity cannot drift; axis groups remain balanced; contradictory primary evidence cannot be labeled a candidate.
+
+## Next research checkpoint — challenge candidate evidence
 
 Before resuming product work:
 
-- inspect aggregate failure/fallback patterns across cells;
-- identify strategies whose apparent gains depend on unsupported relations or missing metrics;
-- compare estimators and composers against the fixed historical baseline;
-- decide which additional scenarios, seeds, catalog relations, or learner models are needed;
-- choose whether any strategy is mature enough for a limited browser adapter experiment;
-- define a narrowly scoped human study that challenges, rather than assumes, simulation validity.
+- rerun the two candidates with more seeds and more than two adaptive rounds;
+- add competing-weakness, noisy, retention, and heterogeneous-improvement scenarios;
+- verify whether fixed-six is genuinely robust or only advantaged by the small committed catalog and budget;
+- inspect why transition-aware shows zero blocking fallback but produces no current candidate;
+- decide whether catalog support or measurement identifiability must improve before strategy selection;
+- define a limited browser adapter experiment only after the synthetic result survives these challenges.
 
 Recall mode, alternate layouts, accounts, cloud sync, PR #18 auto-advance, human pilot, and further product refinement remain deferred.

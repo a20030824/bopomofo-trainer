@@ -144,10 +144,14 @@ export function validatePartitionInput(input: PartitionInput): readonly CatalogE
   }
 
   const partitionByEntryId = derivePartitionByEntryId(input.report.index, seenEntryIds);
+  const confusionRelations = Object.values(input.report.index.confusionContrastPools)
+    .map((pool) => pool.relation)
+    .sort((left, right) => compareText(JSON.stringify(left), JSON.stringify(right)));
   const canonicalReport = createRelationalCatalogReport(sortedEntries, {
     mode: input.report.mode,
     layoutId: input.report.layoutId,
     partitionByEntryId,
+    confusionRelations,
   });
   const canonicalIndexDigest = canonicalDigest(canonicalReport.index);
   const receivedIndexDigest = canonicalDigest(input.report.index);

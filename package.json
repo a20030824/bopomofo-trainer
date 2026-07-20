@@ -17,12 +17,13 @@
     "integration:research": "tsx scripts/run-relational-integration.ts --verify",
     "strategy:matrix": "tsx scripts/print-relational-strategy-matrix.ts --verify",
     "experiment:relational": "tsx scripts/run-relational-experiments.ts --verify",
+    "analysis:relational": "tsx scripts/analyze-relational-experiments.ts --verify --verify-findings",
     "predev": "npm run app:catalog",
     "dev": "vite",
     "prebuild": "npm run app:catalog",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run catalog:relations && npm run integration:research && npm run strategy:matrix && npm run experiment:relational && npm run build"
+    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run catalog:relations && npm run integration:research && npm run strategy:matrix && npm run experiment:relational && npm run analysis:relational && npm run build"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

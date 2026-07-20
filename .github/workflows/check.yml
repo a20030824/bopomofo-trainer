@@ -21,7 +21,17 @@ jobs:
       - name: Install dependencies
         run: npm install --include=dev --ignore-scripts
       - name: Typecheck
-        run: npm run typecheck
+        id: typecheck
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee typecheck.log
+      - name: Upload TypeScript failure log
+        if: failure() && steps.typecheck.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-failure-log
+          path: typecheck.log
       - name: Tests
         id: tests
         shell: bash
@@ -43,6 +53,23 @@ jobs:
       - name: Verify relational strategy matrix
         run: npm run strategy:matrix
       - name: Verify seeded cohort experiments
-        run: npm run experiment:relational
+        id: experiments
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run experiment:relational 2>&1 | tee experiment.log
+      - name: Upload experiment failure log
+        if: failure() && steps.experiments.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-failure-log
+          path: experiment.log
+      - name: Verify relational strategy analysis
+        run: npm run analysis:relational -- --output-dir analysis-artifacts
+      - name: Upload relational strategy analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: relational-strategy-analysis
+          path: analysis-artifacts
       - name: Production build
         run: npm run build
