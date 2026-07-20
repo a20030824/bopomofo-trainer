@@ -51,7 +51,7 @@ export interface RelationalExperimentMetrics {
 
 export interface RelationalExperimentFailure {
   readonly round: number;
-  readonly stage: "objective" | "composition" | "learner";
+  readonly stage: "partition" | "objective" | "composition" | "learner";
   readonly code: string;
   readonly detail: string;
 }
@@ -73,7 +73,7 @@ export interface RelationalExperimentRunRecord {
   readonly cell: RelationalStrategyCell;
   readonly scenarioId: string;
   readonly seed: number;
-  readonly partitionDecision: PartitionDecision;
+  readonly partitionDecision: PartitionDecision | null;
   readonly relationReport: RelationalCatalogReport;
   readonly hiddenWeaknessRelationKeys: readonly string[];
   readonly rounds: readonly RelationalExperimentRoundRecord[];
