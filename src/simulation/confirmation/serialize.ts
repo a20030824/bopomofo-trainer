@@ -1,6 +1,7 @@
 import { stableStringify } from "../../composition/stable.js";
 import type {
   ConfirmationDecision,
+  ConfirmationSeedDecision,
   RelationalConfirmationReport,
 } from "./types.js";
 
@@ -62,12 +63,39 @@ export function serializeConfirmationTrajectoriesCsv(
   return `${rows.join("\n")}\n`;
 }
 
+export function serializeConfirmationSeedAssessmentsCsv(
+  report: RelationalConfirmationReport,
+): string {
+  const rows: string[] = [[
+    "cell_id", "scenario_id", "seed", "role", "hypothesis_id",
+    "matched_reference_cell_id", "decision", "reasons",
+    "trajectory_reversals", "unsustained_trajectory_improvements",
+  ].join(",")];
+  for (const record of report.seedAssessments) {
+    rows.push([
+      record.cellId,
+      record.scenarioId,
+      record.seed,
+      record.role,
+      record.hypothesisId,
+      record.matchedReferenceCellId,
+      record.decision,
+      record.reasons.join(";"),
+      record.trajectoryReversals.join(";"),
+      record.unsustainedTrajectoryImprovements.join(";"),
+    ].map(csvCell).join(","));
+  }
+  return `${rows.join("\n")}\n`;
+}
+
 export function serializeConfirmationSurvivalCsv(
   report: RelationalConfirmationReport,
 ): string {
   const rows: string[] = [[
-    "cell_id", "scenario_id", "role", "hypothesis_id", "seed_count",
-    "run_count", "decision", "reasons",
+    "cell_id", "scenario_id", "role", "hypothesis_id", "anchor_scenario",
+    "seed_count", "run_count", "pass_count", "no_improvement_count",
+    "missing_evidence_count", "rejected_count", "pass_share", "rejected_share",
+    "decision", "reasons",
   ].join(",")];
   for (const record of report.survival) {
     rows.push([
@@ -75,8 +103,15 @@ export function serializeConfirmationSurvivalCsv(
       record.scenarioId,
       record.role,
       record.hypothesisId,
+      record.anchorScenario,
       record.seedCount,
       record.runCount,
+      record.passCount,
+      record.noImprovementCount,
+      record.missingEvidenceCount,
+      record.rejectedCount,
+      record.passShare,
+      record.rejectedShare,
       record.decision,
       record.reasons.join(";"),
     ].map(csvCell).join(","));
@@ -84,30 +119,49 @@ export function serializeConfirmationSurvivalCsv(
   return `${rows.join("\n")}\n`;
 }
 
-function decisionCount(
+function scenarioDecisionCount(
   report: RelationalConfirmationReport,
   decision: ConfirmationDecision,
 ): number {
   return report.survival.filter((item) => item.decision === decision).length;
 }
 
-function candidateLines(report: RelationalConfirmationReport): string[] {
-  const candidates = report.survival.filter((item) =>
-    item.role === "phase-7g-candidate"
-  );
-  return candidates.map((item) =>
-    `| ${item.scenarioId} | \`${item.hypothesisId}\` | ${item.decision} | ${item.reasons.join("; ")} |`
-  );
+function seedDecisionCount(
+  report: RelationalConfirmationReport,
+  decision: ConfirmationSeedDecision,
+): number {
+  return report.seedAssessments.filter((item) => item.decision === decision).length;
+}
+
+function candidateScenarioLines(report: RelationalConfirmationReport): string[] {
+  return report.survival
+    .filter((item) => item.role === "phase-7g-candidate")
+    .map((item) =>
+      `| ${item.scenarioId} | \`${item.hypothesisId}\` | ${item.anchorScenario ? "yes" : "no"}`
+      + ` | ${item.passCount}/${item.seedCount} | ${item.rejectedCount}/${item.seedCount}`
+      + ` | ${item.decision} |`
+    );
 }
 
 function hypothesisLines(report: RelationalConfirmationReport): string[] {
-  const ids = [...new Set(report.survival.map((item) => item.hypothesisId))].sort();
-  return ids.map((hypothesisId) => {
-    const records = report.survival.filter((item) => item.hypothesisId === hypothesisId);
-    const count = (decision: ConfirmationDecision) =>
-      records.filter((item) => item.decision === decision).length;
-    return `| \`${hypothesisId}\` | ${records.length} | ${count("survives-confirmation")} | ${count("scenario-limited")} | ${count("inconclusive")} | ${count("rejected")} |`;
-  });
+  return report.hypotheses.map((item) =>
+    `| \`${item.hypothesisId}\` | ${item.anchorScenarioIds.join(", ") || "—"}`
+    + ` | ${item.robustScenarioCount}/${Math.max(0, item.scenarioCount - item.anchorScenarioIds.length)}`
+    + ` | ${item.decision} | ${item.reasons.join("; ")} |`
+  );
+}
+
+function reversalLines(report: RelationalConfirmationReport): string[] {
+  const reversals = report.seedAssessments.filter((item) =>
+    item.trajectoryReversals.length > 0
+  );
+  if (reversals.length === 0) return ["No material trajectory reversal was recorded."];
+  const counts = new Map<string, number>();
+  for (const reversal of reversals.flatMap((item) => item.trajectoryReversals)) {
+    counts.set(reversal, (counts.get(reversal) ?? 0) + 1);
+  }
+  return [...counts.entries()].sort(([left], [right]) => left.localeCompare(right))
+    .map(([reason, count]) => `- \`${reason}\` — ${count} seed/scenario assessments.`);
 }
 
 export function serializeRelationalConfirmationMarkdown(
@@ -118,38 +172,52 @@ export function serializeRelationalConfirmationMarkdown(
     "",
     `- Plan: \`${report.planId}\``,
     `- Plan digest: \`${report.planDigest}\``,
+    `- Source report digest: \`${report.sourceReportDigest}\``,
+    `- Source analysis digest: \`${report.sourceAnalysisDigest}\``,
     `- Source findings policy: \`${report.sourceFindingsPolicyVersion}\``,
+    `- Confirmation policy: \`${report.policy.version}\``,
     `- Baseline cell: \`${report.baselineCellId}\``,
     `- Report digest: \`${report.determinismDigest}\``,
     `- Runs: ${report.runCount}`,
     `- Adaptive rounds: ${report.roundCount}`,
     "",
-    "## Decision counts",
+    "## Scenario decision counts",
     "",
-    `- Survives confirmation: ${decisionCount(report, "survives-confirmation")}`,
-    `- Scenario limited: ${decisionCount(report, "scenario-limited")}`,
-    `- Inconclusive: ${decisionCount(report, "inconclusive")}`,
-    `- Rejected: ${decisionCount(report, "rejected")}`,
+    `- Survives confirmation: ${scenarioDecisionCount(report, "survives-confirmation")}`,
+    `- Scenario limited: ${scenarioDecisionCount(report, "scenario-limited")}`,
+    `- Inconclusive: ${scenarioDecisionCount(report, "inconclusive")}`,
+    `- Rejected: ${scenarioDecisionCount(report, "rejected")}`,
     "",
-    "## Phase 7G candidate survival",
+    "## Seed assessment counts",
     "",
-    "| Scenario | Candidate hypothesis | Decision | Reasons |",
-    "|---|---|---|---|",
-    ...candidateLines(report),
+    `- Pass: ${seedDecisionCount(report, "pass")}`,
+    `- No material improvement: ${seedDecisionCount(report, "no-improvement")}`,
+    `- Missing evidence: ${seedDecisionCount(report, "missing-evidence")}`,
+    `- Rejected: ${seedDecisionCount(report, "rejected")}`,
     "",
-    "## Hypothesis overview",
+    "## Phase 7G candidate survival by scenario",
     "",
-    "| Hypothesis | Scenario count | Survives | Limited | Inconclusive | Rejected |",
-    "|---|---:|---:|---:|---:|---:|",
+    "| Scenario | Candidate hypothesis | Anchor | Passing seeds | Rejected seeds | Decision |",
+    "|---|---|---|---:|---:|---|",
+    ...candidateScenarioLines(report),
+    "",
+    "## Hypothesis decisions",
+    "",
+    "| Hypothesis | Anchor scenarios | Robust scenarios | Decision | Reasons |",
+    "|---|---|---:|---|---|",
     ...hypothesisLines(report),
+    "",
+    "## Material trajectory reversals",
+    "",
+    ...reversalLines(report),
     "",
     "## Interpretation boundary",
     "",
     ...report.limitations.map((item) => `- ${item}`),
     "",
-    "## Selected final metrics",
+    "## Machine-readable evidence",
     "",
-    "The machine-readable JSON and CSV artifacts retain every seed and per-round trajectory. This document intentionally summarizes decisions rather than ranking cells with one score.",
+    "The JSON, seed-assessment CSV, survival CSV, and trajectory CSV retain every seed and adaptive round. This document intentionally summarizes decisions rather than ranking cells with one score.",
   ];
   return `${lines.join("\n")}\n`;
 }
