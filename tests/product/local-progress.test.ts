@@ -10,7 +10,7 @@ import {
   createFreshProgressForEnvironment,
   createProductEnvironment,
 } from "../../src/product/session.js";
-import { EVALUATION, PRACTICE } from "./fixtures.js";
+import { PRODUCT_CATALOGS } from "./fixtures.js";
 
 class MemoryStorage implements StorageLike {
   private readonly values = new Map<string, string>();
@@ -19,7 +19,7 @@ class MemoryStorage implements StorageLike {
   removeItem(key: string): void { this.values.delete(key); }
 }
 
-const environment = createProductEnvironment({ practice: PRACTICE, evaluation: EVALUATION });
+const environment = createProductEnvironment(PRODUCT_CATALOGS);
 
 describe("local progress adapter", () => {
   it("saves, restores, and clears canonical progress", () => {
@@ -53,9 +53,12 @@ describe("local progress adapter", () => {
       exerciseId: "practice-1",
       completedAt: "2026-07-20T00:00:00.000Z",
       entryIds: ["unknown"],
+      utteranceId: "utterance:unknown",
+      templateId: null,
+      frequencyStage: 1,
       phase: "coverage",
-      focusTokenId: "zhuyin:ㄇ",
-      focusEvidence: "correctness-only",
+      focusTokenId: null,
+      focusEvidence: null,
       attempts: 1,
       errors: 0,
       timingSamples: 0,
