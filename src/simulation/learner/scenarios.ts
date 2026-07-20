@@ -1,5 +1,7 @@
-import type { CatalogEntry, Exercise, InputLayout, TokenId } from "../../core/model.js";
+import type { CatalogEntry, Exercise, TokenId } from "../../core/model.js";
 import { PHASE_3_MEASUREMENT_POLICY } from "../../measurement/policy.js";
+import { STANDARD_BOPOMOFO_LAYOUT } from "../../scheme/standard-layout.js";
+import { toneToken, zhuyinToken } from "../../scheme/tokens.js";
 import { confusionTruthKey, transitionTruthKey } from "./state.js";
 import type {
   BindingTruth,
@@ -10,21 +12,27 @@ import type {
   TransitionTruth,
 } from "./types.js";
 
-const TOKENS = ["ㄅ", "ㄆ", "ㄇ", "ㄓ", "ㄨ", "ㄥ", "tone:1"] as const;
+export const SYNTHETIC_TOKEN_IDS = {
+  bo: zhuyinToken("ㄅ"),
+  po: zhuyinToken("ㄆ"),
+  mo: zhuyinToken("ㄇ"),
+  zhi: zhuyinToken("ㄓ"),
+  u: zhuyinToken("ㄨ"),
+  eng: zhuyinToken("ㄥ"),
+  tone1: toneToken(1),
+} as const;
 
-export const SYNTHETIC_LAYOUT: InputLayout = {
-  id: "synthetic-taiwan-standard",
-  name: "Synthetic Taiwan Standard subset",
-  bindings: {
-    KeyB: "ㄅ",
-    KeyP: "ㄆ",
-    KeyM: "ㄇ",
-    KeyZ: "ㄓ",
-    KeyU: "ㄨ",
-    KeyG: "ㄥ",
-    Space: "tone:1",
-  },
-};
+const {
+  bo,
+  po,
+  mo,
+  zhi,
+  u,
+  eng,
+  tone1,
+} = SYNTHETIC_TOKEN_IDS;
+
+export const SYNTHETIC_LAYOUT = STANDARD_BOPOMOFO_LAYOUT;
 
 function entry(id: string, syllables: readonly (readonly TokenId[])[]): CatalogEntry {
   return {
@@ -43,11 +51,11 @@ export const SYNTHETIC_EXERCISE: Exercise = {
   layoutId: SYNTHETIC_LAYOUT.id,
   entries: [
     entry("synthetic-a", [
-      ["ㄓ", "ㄨ", "ㄥ", "tone:1"],
-      ["ㄓ", "ㄅ", "tone:1"],
-      ["ㄓ", "ㄆ", "tone:1"],
-      ["ㄅ", "ㄆ", "tone:1"],
-      ["ㄆ", "ㄅ", "tone:1"],
+      [zhi, u, eng, tone1],
+      [zhi, bo, tone1],
+      [zhi, po, tone1],
+      [bo, po, tone1],
+      [po, bo, tone1],
     ]),
   ],
 };
@@ -96,24 +104,24 @@ function baseContext(): ContextNoiseTruth {
 
 function baseLearner(): SyntheticLearnerState {
   const bindings: Record<string, BindingTruth> = {
-    "ㄅ": binding("ㄅ", "ㄓ"),
-    "ㄆ": binding("ㄆ", "ㄇ"),
-    "ㄇ": binding("ㄇ", "ㄓ"),
-    "ㄓ": binding("ㄓ", "ㄇ"),
-    "ㄨ": binding("ㄨ", "ㄅ"),
-    "ㄥ": binding("ㄥ", "ㄇ"),
-    "tone:1": binding("tone:1", "ㄇ"),
+    [bo]: binding(bo, zhi),
+    [po]: binding(po, mo),
+    [mo]: binding(mo, zhi),
+    [zhi]: binding(zhi, mo),
+    [u]: binding(u, bo),
+    [eng]: binding(eng, mo),
+    [tone1]: binding(tone1, mo),
   };
   const pairs: readonly (readonly [TokenId, TokenId])[] = [
-    ["ㄓ", "ㄨ"],
-    ["ㄨ", "ㄥ"],
-    ["ㄥ", "tone:1"],
-    ["ㄓ", "ㄅ"],
-    ["ㄅ", "tone:1"],
-    ["ㄓ", "ㄆ"],
-    ["ㄆ", "tone:1"],
-    ["ㄅ", "ㄆ"],
-    ["ㄆ", "ㄅ"],
+    [zhi, u],
+    [u, eng],
+    [eng, tone1],
+    [zhi, bo],
+    [bo, tone1],
+    [zhi, po],
+    [po, tone1],
+    [bo, po],
+    [po, bo],
   ];
   const transitions = Object.fromEntries(
     pairs.map(([fromToken, toToken]) => [
@@ -212,39 +220,39 @@ function scenario(
 }
 
 export function createSyntheticScenarios(): readonly SyntheticScenario[] {
-  const weakBinding = replaceBinding(baseLearner(), "ㄨ", {
+  const weakBinding = replaceBinding(baseLearner(), u, {
     errorProbability: 0.48,
     learningRate: 0.08,
   });
 
-  const weakTransition = replaceTransition(baseLearner(), "ㄓ", "ㄨ", {
+  const weakTransition = replaceTransition(baseLearner(), zhi, u, {
     latency: { meanMs: 520, standardDeviationMs: 35 },
     learningRate: 0.06,
   });
 
-  let asymmetricConfusion = replaceBinding(baseLearner(), "ㄅ", {
+  let asymmetricConfusion = replaceBinding(baseLearner(), bo, {
     errorProbability: 0.42,
-    fallbackActualToken: "ㄓ",
+    fallbackActualToken: zhi,
   });
   asymmetricConfusion = addConfusion(asymmetricConfusion, {
-    expectedToken: "ㄅ",
-    actualToken: "ㄆ",
+    expectedToken: bo,
+    actualToken: po,
     conditionalProbability: 0.88,
     learningRate: 0.05,
     decayRatePerStep: 0,
   });
 
-  let competing = replaceBinding(baseLearner(), "ㄨ", { errorProbability: 0.28 });
-  competing = replaceBinding(competing, "ㄅ", {
+  let competing = replaceBinding(baseLearner(), u, { errorProbability: 0.28 });
+  competing = replaceBinding(competing, bo, {
     errorProbability: 0.34,
-    fallbackActualToken: "ㄓ",
+    fallbackActualToken: zhi,
   });
-  competing = replaceTransition(competing, "ㄓ", "ㄨ", {
+  competing = replaceTransition(competing, zhi, u, {
     latency: { meanMs: 430, standardDeviationMs: 30 },
   });
   competing = addConfusion(competing, {
-    expectedToken: "ㄅ",
-    actualToken: "ㄆ",
+    expectedToken: bo,
+    actualToken: po,
     conditionalProbability: 0.62,
     learningRate: 0.04,
     decayRatePerStep: 0,
@@ -265,7 +273,7 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
 
   let fastInaccurate = mapBindings(baseLearner(), (truth) => ({
     ...truth,
-    errorProbability: truth.tokenId === "tone:1" ? 0.18 : 0.3,
+    errorProbability: truth.tokenId === tone1 ? 0.18 : 0.3,
   }));
   fastInaccurate = mapTransitions(fastInaccurate, (truth) => ({
     ...truth,
@@ -297,7 +305,7 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
 
   let zeroLearning = mapBindings(baseLearner(), (truth) => ({
     ...truth,
-    errorProbability: truth.tokenId === "ㄨ" ? 0.35 : truth.errorProbability,
+    errorProbability: truth.tokenId === u ? 0.35 : truth.errorProbability,
     learningRate: 0,
   }));
   zeroLearning = mapTransitions(zeroLearning, (truth) => ({
@@ -305,12 +313,12 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
     learningRate: 0,
   }));
 
-  let retention = replaceBinding(baseLearner(), "ㄨ", {
+  let retention = replaceBinding(baseLearner(), u, {
     errorProbability: 0.18,
     learningRate: 0.18,
     decayRatePerStep: 0.12,
   });
-  retention = replaceTransition(retention, "ㄓ", "ㄨ", {
+  retention = replaceTransition(retention, zhi, u, {
     latency: { meanMs: 300, standardDeviationMs: 25 },
     learningRate: 0.1,
     decayRatePerStep: 0.1,
@@ -336,4 +344,3 @@ export function getSyntheticScenario(id: SyntheticScenario["id"]): SyntheticScen
 }
 
 export const SYNTHETIC_SCENARIO_IDS = createSyntheticScenarios().map((candidate) => candidate.id);
-void TOKENS;
