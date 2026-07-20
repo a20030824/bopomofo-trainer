@@ -36,12 +36,30 @@ function occurrenceEntryIds(
   return sortedUnique(occurrences.map((occurrence) => occurrence.entryId));
 }
 
+function lexicalIdentity(entry: CatalogEntry): string {
+  return JSON.stringify([
+    entry.prompt.text,
+    entry.syllables.map((syllable) => syllable.tokens),
+  ]);
+}
+
 export function validatePartitionInput(input: PartitionInput): readonly CatalogEntry[] {
   const sortedEntries = [...input.entries].sort((left, right) => compareText(left.id, right.id));
-  const seen = new Set<string>();
+  const seenEntryIds = new Set<string>();
+  const entryIdByLexicalIdentity = new Map<string, string>();
   for (const entry of sortedEntries) {
-    if (seen.has(entry.id)) throw new Error(`duplicate catalog entry id: ${entry.id}`);
-    seen.add(entry.id);
+    if (seenEntryIds.has(entry.id)) {
+      throw new Error(`duplicate catalog entry id: ${entry.id}`);
+    }
+    seenEntryIds.add(entry.id);
+    const identity = lexicalIdentity(entry);
+    const priorEntryId = entryIdByLexicalIdentity.get(identity);
+    if (priorEntryId !== undefined) {
+      throw new Error(
+        `duplicate catalog lexical identity: ${priorEntryId} and ${entry.id}`,
+      );
+    }
+    entryIdByLexicalIdentity.set(identity, entry.id);
   }
   if (input.report.totals.entries !== sortedEntries.length) {
     throw new Error(
@@ -56,7 +74,9 @@ export function validatePartitionInput(input: PartitionInput): readonly CatalogE
     for (const occurrence of occurrences) indexedEntryIds.add(occurrence.entryId);
   }
   for (const entryId of indexedEntryIds) {
-    if (!seen.has(entryId)) throw new Error(`relation index references unknown entry: ${entryId}`);
+    if (!seenEntryIds.has(entryId)) {
+      throw new Error(`relation index references unknown entry: ${entryId}`);
+    }
   }
   return sortedEntries;
 }
