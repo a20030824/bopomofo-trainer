@@ -16,7 +16,7 @@ import {
   createProductEnvironment,
 } from "../../src/product/session.js";
 import type { ProductProgress, ProductRoundSummary } from "../../src/product/types.js";
-import { EVALUATION, PRACTICE } from "./fixtures.js";
+import { PRACTICE, PRODUCT_CATALOGS } from "./fixtures.js";
 
 class MemoryStorage implements StorageLike {
   private readonly values = new Map<string, string>();
@@ -31,17 +31,17 @@ class MemoryStorage implements StorageLike {
   }
 }
 
-const environment = createProductEnvironment({
-  practice: PRACTICE,
-  evaluation: EVALUATION,
-});
+const environment = createProductEnvironment(PRODUCT_CATALOGS);
 
 function summary(round: number): ProductRoundSummary {
   return {
     kind: "practice",
     exerciseId: `practice-${round}`,
     completedAt: `2026-07-20T00:${String(round).padStart(2, "0")}:00.000Z`,
-    entryIds: PRACTICE.slice(0, 2).map((entry) => entry.id),
+    entryIds: PRACTICE.slice(0, 1).map((entry) => entry.id),
+    utteranceId: `utterance:${round}`,
+    templateId: null,
+    frequencyStage: 1,
     phase: "coverage",
     focusTokenId: null,
     focusEvidence: null,
@@ -71,7 +71,7 @@ function withLatency(record: PilotRoundRecord, latency: number): PilotRoundRecor
 }
 
 describe("local pilot history and export", () => {
-  it("migrates existing Phase 5 progress when the pilot key is absent", () => {
+  it("migrates existing progress when the pilot key is absent", () => {
     const storage = new MemoryStorage();
     const progress = progressWithSummaries(3);
     const loaded = loadLocalPilotHistory(storage, progress, environment);
@@ -113,6 +113,8 @@ describe("local pilot history and export", () => {
     const parsed = JSON.parse(first) as Record<string, unknown>;
     expect(parsed.seed).toBeUndefined();
     expect(parsed.exportedAt).toBeUndefined();
+    expect(parsed.utterancePolicyVersion).toBe("frequency-first-utterance-v1");
+    expect(parsed.selection).toEqual(progress.selection);
     expect(parsed.history).toEqual(history.records);
     const partition = parsed.catalogPartition as {
       practiceEntryIds: string[];
