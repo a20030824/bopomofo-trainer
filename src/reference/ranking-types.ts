@@ -30,3 +30,21 @@ export interface RankedReferenceCandidate {
   readonly priorityVector: readonly number[];
   readonly rank: number;
 }
+
+export type ReferenceExclusionReason =
+  | "already-reviewed"
+  | "policy-excluded"
+  | "duplicate-candidate-id"
+  | "duplicate-reference-identity";
+
+export interface ReferenceReviewExclusion {
+  readonly candidateId: string;
+  readonly reason: ReferenceExclusionReason;
+  readonly detail: string;
+}
+
+export interface ReferenceReviewQueue {
+  readonly profile: ReferenceRankingProfile;
+  readonly ranked: readonly RankedReferenceCandidate[];
+  readonly excluded: readonly ReferenceReviewExclusion[];
+}
