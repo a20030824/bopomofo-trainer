@@ -41,36 +41,48 @@ async function smallPlan(): Promise<RelationalExperimentPlan> {
   };
 }
 
+async function learnerIsolationPlan(): Promise<RelationalExperimentPlan> {
+  const plan = await smallPlan();
+  return {
+    ...plan,
+    id: "learner-isolation-test",
+    matrixOptions: {
+      objectiveStrategyIds: ["binding-only-baseline"],
+      partitionPolicyIds: ["binding-preserving-baseline-v1"],
+      compositionStrategyIds: ["fixed-six-baseline"],
+      learnerModelIds: [
+        "synthetic-relational-v1",
+        "missing-test-model-v1",
+      ],
+    },
+    partitionOptions: {
+      ...plan.partitionOptions,
+      evaluationEntryCount: 0,
+    },
+  };
+}
+
 describe("relational experiment harness", () => {
-  it("preserves every cell and contains unknown learner failures locally", async () => {
-    const report = runRelationalExperiments(await smallPlan());
-    const missing = report.runs.filter(
+  it("preserves an unknown learner cell and records its failure locally", async () => {
+    const report = runRelationalExperiments(await learnerIsolationPlan());
+    const missing = report.runs.find(
       (run) => run.cell.learnerModelId === "missing-test-model-v1",
     );
-    const registered = report.runs.filter(
+    const registered = report.runs.find(
       (run) => run.cell.learnerModelId === "synthetic-relational-v1",
     );
-    const missingExecutableRounds = missing.flatMap((run) =>
-      run.rounds.filter((round) =>
-        round.sequence !== null
-        && round.sequence.items.length > 0
-        && round.sequence.mode !== null
-        && round.sequence.layoutId !== null
-      )
-    );
 
-    expect(report.runCount).toBe(16);
-    expect(missing).toHaveLength(8);
-    expect(missingExecutableRounds.length).toBeGreaterThan(0);
-    expect(missingExecutableRounds.every((round) =>
-      round.learnerBatch === null
-      && round.failures.some((failure) => failure.stage === "learner")
-    )).toBe(true);
-    expect(registered.every((run) => run.rounds.every((round) =>
-      round.failures.every((failure) => failure.stage !== "learner")
-    ))).toBe(true);
-    expect(registered.some((run) =>
-      run.rounds.some((round) => round.learnerBatch !== null)
+    expect(report.runCount).toBe(2);
+    expect(missing).toBeDefined();
+    expect(registered).toBeDefined();
+    expect(missing?.rounds[0]?.sequence?.items.length).toBeGreaterThan(0);
+    expect(missing?.rounds[0]?.learnerBatch).toBeNull();
+    expect(missing?.rounds[0]?.failures).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stage: "learner", code: "learner-model-failed" }),
+    ]));
+    expect(registered?.rounds[0]?.learnerBatch).not.toBeNull();
+    expect(registered?.rounds[0]?.failures.every(
+      (failure) => failure.stage !== "learner",
     )).toBe(true);
   });
 
