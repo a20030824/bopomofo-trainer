@@ -53,8 +53,10 @@ export const RELATIONAL_COMPOSITION_STRATEGY_IDS = [
   "bounded-beam-search",
 ] as const satisfies readonly CompositionStrategyId[];
 
+export const RELATIONAL_BASELINE_LEARNER_MODEL_ID = "synthetic-relational-v1" as const;
+
 export const RELATIONAL_LEARNER_MODEL_IDS = [
-  "synthetic-relational-v1",
+  RELATIONAL_BASELINE_LEARNER_MODEL_ID,
 ] as const;
 
 export type RelationalLearnerModelId = (typeof RELATIONAL_LEARNER_MODEL_IDS)[number] | string;
@@ -242,7 +244,7 @@ function matrixBody(options: RelationalStrategyMatrixOptions = {}) {
     "binding-only-baseline",
     "binding-preserving-baseline-v1",
     "fixed-six-baseline",
-    learnerModelIds[0]!,
+    RELATIONAL_BASELINE_LEARNER_MODEL_ID,
   );
 
   return {
