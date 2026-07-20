@@ -2,37 +2,48 @@
 
 ## Problem
 
-Selecting a weak relation and finding useful text are separate problems. The current six-entry exercise builder combines them and fixes the output length before knowing how much evidence the selected text provides.
+Selecting a weak relation and finding useful text are separate problems. The historical six-entry exercise builder combines them and fixes the output length before knowing how much evidence the selected text provides.
 
 The research architecture separates:
 
 1. **objective selection** — what binding, transition, confusion, or coverage target needs evidence;
 2. **retrieval** — which exact catalog occurrences support that objective;
-3. **composition** — which ordered text items form a useful sequence under a budget.
+3. **candidate scoring** — what marginal relation gain and declared cost each candidate adds;
+4. **composition** — which ordered text items form a useful sequence under a budget;
+5. **trace** — why each candidate was selected, excluded, rejected, or left unused.
 
 ## Retrieval units
 
 The catalog keeps whole reviewed entries, but the relation index addresses exact occurrences:
 
-- token occurrence: entry, syllable, token position;
-- transition occurrence: entry, syllable, adjacent positions;
-- contrast candidate: an entry exposing the expected token, actual token, or both;
+- binding occurrence: entry, syllable, token position, entry-initial flag, and syllable/tone context;
+- transition occurrence: entry, syllable, and adjacent token positions;
+- confusion contrast requirement: an explicit expected-token or actual-token role from a declared contrast pool;
 - held-out path: an entry excluded from training selection.
 
-A word is not relevant merely because it contains both tokens. A transition objective `ㄓ>ㄨ` requires that exact order and adjacency inside one syllable.
+A word is not relevant merely because it contains both tokens. A transition objective `ㄓ>ㄨ` requires that exact order and adjacency inside one syllable. Retrieval revalidates indexed occurrences against the supplied catalog path, excludes evaluation occurrences, rejects missing entries, and deduplicates repeated index rows. It therefore does not trust a poisoned or stale index row as evidence by assertion alone.
+
+Confusion composition does not treat ordinary co-occurrence as confusion training. The first version emits explicit contrast requirements only when the directional `expected>actual` pool and corresponding training binding support are both present.
+
+## Objective resolution
+
+Binding, transition, confusion, and combined objectives resolve to explicit relation demands. All demands in one sequence must share mode and layout.
+
+A broad coverage objective names relation kinds but not exact relation demands. The composer returns `policy-conflict` with `coverage-objective-not-composable` instead of guessing which relation to train. A later objective policy may translate coverage demand into explicit relation demands before calling the composer.
 
 ## Candidate metadata
 
 Every candidate exposes:
 
-- exact objective occurrences and secondary relations;
-- total tokens, syllables, and boundaries;
-- frequency band and provenance status;
-- tags and lexical identity;
-- recent-use and cumulative-use counts;
-- overlap with held-out paths;
-- concentration risk: how dependent the objective is on this entry;
-- contrast role for confusion objectives.
+- exact objective occurrences or explicit confusion contrast requirements;
+- total tokens, syllables, and token-path signature;
+- frequency contribution;
+- recent-entry and recent-path costs;
+- same-entry repetition and same-path diversity costs;
+- relation concentration risk;
+- machine-readable rejection reasons.
+
+The composer uses only reviewed `CatalogEntry` values supplied by the caller. It does not import or approve external reference words.
 
 ## Variable-length practice sequence
 
@@ -40,69 +51,114 @@ The canonical research output is a `PracticeSequence`, not a fixed six-word exer
 
 - selected objective or objectives;
 - ordered catalog items;
-- exact objective occurrence references;
-- token, syllable, entry, and boundary counts;
-- expected target exposures;
-- lexical-quality and repetition costs;
-- complete retrieval and composition trace;
-- stop reason.
+- exact objective occurrence references or contrast requirements;
+- token, syllable, entry, and lexical-boundary counts;
+- occurrence exposure and distinct supporting-entry coverage;
+- common-word share and maximum observed relation concentration;
+- complete retrieval, candidate-ranking, selection, fallback, and stop trace;
+- a stable deterministic identifier derived from the serialized result.
 
 A product adapter may later render this sequence as words, pages, rounds, or a continuous stream.
+
+## Exposure accounting policy
+
+Phase 7C counts target exposure by exact occurrence. Two valid target occurrences in one entry therefore contribute two occurrence exposures. This is not treated as equivalent to two different supporting entries:
+
+- `achievedExposures` counts occurrences or explicit contrast roles;
+- `distinctSupportingEntries` is reported separately;
+- `maximumRelationConcentration` and diversity penalties expose dependence on one entry or path;
+- duplicate index rows are excluded before counting.
+
+This keeps the first implementation measurable without hiding the unresolved learning-value question. Experiments can compare occurrence-based gain with distinct-entry coverage rather than collapsing them into one number.
 
 ## Budgets and stop rules
 
 Composition accepts configurable budgets instead of a fixed entry count:
 
-- minimum and maximum target exposures;
-- maximum total tokens or syllables;
-- maximum entries and boundaries;
-- maximum repeated-entry and repeated-path cost;
+- minimum, preferred, and maximum target exposures;
+- maximum total tokens;
+- maximum total syllables;
+- maximum lexical boundaries;
 - minimum common-word share;
-- optional duration estimate.
+- maximum same-entry repetition;
+- maximum relation concentration;
+- recent-entry penalty;
+- recent token-path penalty;
+- marginal-gain threshold.
 
-Selection stops when one of these becomes true:
+The public stop reasons are:
 
-- required evidence is reached;
-- the token or syllable budget is exhausted;
-- no legal candidate remains;
-- the best remaining candidate adds too little marginal evidence;
-- lexical or repetition constraints would be violated.
+- `target-satisfied`;
+- `token-budget-exhausted`;
+- `syllable-budget-exhausted`;
+- `boundary-budget-exhausted`;
+- `no-supporting-candidates`;
+- `insufficient-diverse-support`;
+- `marginal-gain-below-threshold`;
+- `policy-conflict`;
+- `fallback-completed`.
 
-This allows a sequence to contain two long entries, several short entries, or a contrast pair without pretending that six words are equivalent units.
+A sequence that reaches the minimum but cannot reach the preferred exposure target keeps the valid partial sequence and reports `fallback-completed`. It is not padded with unsupported entries to reach six words.
 
 ## Composition strategies
 
-### Fixed-count baseline
+### Fixed-six baseline
 
-Reproduce the current six-entry behavior for comparison. It is a baseline, not the default research model.
+`fixed-six-baseline` ranks candidates using the marginal-gain baseline and stops at six selected entries. It may stop earlier when support or another budget is exhausted. Six is a comparison cap, not a filler requirement or the canonical output length.
 
-### Greedy target exposure
+### Greedy marginal gain
 
-At each step, select the candidate with the highest target-exposure gain per cost. Costs include rarity, repetition, boundaries, and concentration.
+`greedy-marginal-gain` selects the legal candidate with the highest weighted marginal target exposure, then applies stable frequency, penalty, seeded tie-break, and entry-ID ordering.
 
-### Balanced set cover
+### Greedy gain per token
 
-Select a small sequence that reaches the primary target while retaining declared secondary coverage. This tests whether one sequence can train a relation without collapsing broad exposure.
+`greedy-gain-per-token` prioritizes weighted marginal exposure divided by token cost. It tests whether compact repeated entries improve exposure efficiency at the cost of lexical repetition.
 
-### Contrast composer
+### Diversity-aware greedy
 
-For a confusion `expected>actual`, select alternating or mixed entries that provide controlled occurrences of both tokens. It must report balance, ordering, and whether an entry contains both tokens.
+`diversity-aware-greedy` subtracts same-path, concentration, repetition, and recent-history penalties from marginal gain. It tests whether broader entry and path support is worth additional token cost.
 
-### Multi-objective composer
+### Bounded beam-search experiment
 
-Satisfy explicit exposure demands for several relation objectives. It may reject objectives that cannot be jointly supported within the budget rather than silently diluting all of them.
+`bounded-beam-search` expands only the top legal candidates up to a declared beam width and a deterministic finite depth. Beam states are ordered by preferred-target completion, minimum completion, weighted coverage, diversity feasibility, token cost, repetition, and stable path identity. The selected path is replayed through ordinary scoring so every pick receives the same trace contract as greedy strategies.
 
-## Ordering is part of composition
+Beam search is an experiment, not evidence that a globally optimal sequence has been found.
 
-After choosing entries, ordering remains an optimization problem. Reports must distinguish:
+## Determinism and traceability
 
-- within-entry target transitions;
-- entry-boundary adjacency, which is not clean transition evidence;
-- consecutive repetition of the same entry or path;
-- contrast spacing;
-- clustering versus interleaving of objectives.
+Candidate entry IDs are sorted before consuming the seeded `RandomSource`. Stable sorting and canonical serialization make candidate input order irrelevant when the random stream is reset.
 
-The composer does not invent cross-entry transition evidence.
+Every pick records:
+
+- candidate entry and supported target evidence;
+- marginal gain and gain per token;
+- token, syllable, and lexical-boundary cost;
+- frequency contribution;
+- diversity, repetition, recent-entry, and recent-path penalties;
+- strategy score and seeded tie-break value;
+- rejection reasons for higher-ranked alternatives.
+
+Retrieval exclusions, hard-budget rejection reasons, fallback reasons, and stop reasons remain machine-readable. A higher-ranked legal candidate bypassed by beam path search is marked `beam-path-dominated` rather than left unexplained.
+
+## Ordering and boundaries
+
+Ordering is part of composition, but Phase 7C does not invent relation evidence from ordering:
+
+- target transitions exist only inside the original catalog syllable;
+- adjacency across syllables or entries is never counted as a target transition;
+- lexical boundaries equal `max(0, selectedEntryCount - 1)`;
+- repeated entries and repeated token paths remain visible in usage and trace data.
+
+## Reverse-review findings
+
+The Phase 7C reverse review checks:
+
+- **data pollution** — every occurrence is revalidated against the catalog path and partition;
+- **hidden assumptions** — occurrence exposure is declared and distinct-entry coverage remains separate;
+- **duplicate counting** — duplicate occurrence identities are excluded with a reason code;
+- **boundary errors** — transitions never cross syllables or entries and lexical boundaries use `n - 1`;
+- **replayability** — stable input ordering, seeded tie-breaks, canonical serialization, and deterministic beam ordering are regression tested;
+- **premature abstraction** — coverage objectives are rejected until an upstream policy provides explicit relation demands.
 
 ## Finding and expanding text data
 
@@ -118,12 +174,13 @@ New text is then sought for specific blind spots. Candidate sources are imported
 
 ## Experiment matrix
 
-Objective policy and composition policy are independent axes. Experiments should compare combinations such as:
+Objective policy and composition policy are independent axes. Phase 7C directly supports comparisons such as:
 
-- transition-aware objective + fixed-count composer;
-- transition-aware objective + greedy composer;
-- binding-only objective + balanced set cover;
-- confusion objective + contrast composer;
-- combined objective + constrained multi-objective composer.
+- transition-aware objective + fixed-six baseline;
+- transition-aware objective + greedy marginal gain;
+- transition-aware objective + greedy gain per token;
+- transition-aware objective + diversity-aware greedy;
+- explicit combined demands + bounded beam search;
+- confusion objective + explicit contrast requirements.
 
-Metrics include target exposure per token, sequence length distribution, lexical concentration, common-word share, repetition, fallback rate, and downstream latent-skill improvement.
+Metrics include target exposure per token, exact-occurrence coverage, distinct supporting entries, sequence length, lexical concentration, common-word share, repetition, fallback rate, and downstream latent-skill improvement.
