@@ -70,6 +70,10 @@ function predicateFrameConsistent(
       return roles.includes("intransitive-predicate") || roles.includes("verb");
     case "transitive":
       return roles.includes("transitive-predicate") || roles.includes("verb");
+    case "ambitransitive":
+      return roles.includes("verb")
+        && roles.includes("intransitive-predicate")
+        && roles.includes("transitive-predicate");
     case "modal":
       return roles.includes("modal");
     case "adjectival":
@@ -83,6 +87,7 @@ export function compileGrammarAnnotations(
   knownProvenanceIds: ReadonlySet<string>,
 ): GrammarAnnotationCompilationResult {
   const entriesById = new Map(entries.map((entry) => [entry.id, entry]));
+  const seenEntryIds = new Set<string>();
   const annotations: Record<string, GrammarAnnotation> = {};
   const errors: GrammarAnnotationError[] = [];
 
@@ -110,15 +115,16 @@ export function compileGrammarAnnotations(
         "reading",
       ));
     }
-    if (annotations[id] !== undefined) {
+    if (seenEntryIds.has(id)) {
       errors.push(issue(
         "duplicate-annotation",
-        `詞庫項目「${id}」已有文法標註`,
+        `詞庫項目「${id}」出現重複文法標註`,
         record.rowNumber,
         text || null,
         null,
       ));
     }
+    seenEntryIds.add(id);
 
     const rawRoles = splitList(record.values.roles ?? "");
     const invalidRoles = rawRoles.filter((role) =>
