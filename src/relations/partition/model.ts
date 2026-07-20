@@ -1,7 +1,15 @@
 import type { CatalogEntry } from "../../core/model.js";
-import type { CatalogRelationIndex, RelationOccurrence } from "../types.js";
+import {
+  createRelationalCatalogReport,
+  type RelationalCatalogReport,
+} from "../catalog-report.js";
+import type {
+  CatalogPartition,
+  CatalogRelationIndex,
+  RelationOccurrence,
+} from "../types.js";
 import type { PartitionInput } from "./types.js";
-import { compareText, sortedUnique } from "./utils.js";
+import { compareText, fnvDigest, sortedUnique } from "./utils.js";
 
 export interface PartitionRelationModel {
   readonly bindingKeys: readonly string[];
@@ -30,6 +38,14 @@ export interface EntryPartitionFeatures {
   readonly provenanceIds: ReadonlySet<string>;
 }
 
+type CanonicalValue =
+  | null
+  | boolean
+  | number
+  | string
+  | readonly CanonicalValue[]
+  | Readonly<Record<string, CanonicalValue>>;
+
 function occurrenceEntryIds(
   occurrences: readonly RelationOccurrence[],
 ): readonly string[] {
@@ -41,6 +57,73 @@ function lexicalIdentity(entry: CatalogEntry): string {
     entry.prompt.text,
     entry.syllables.map((syllable) => syllable.tokens),
   ]);
+}
+
+function canonicalize(value: unknown): CanonicalValue {
+  if (
+    value === null
+    || typeof value === "boolean"
+    || typeof value === "number"
+    || typeof value === "string"
+  ) return value;
+  if (Array.isArray(value)) {
+    return value
+      .map(canonicalize)
+      .sort((left, right) => compareText(JSON.stringify(left), JSON.stringify(right)));
+  }
+  if (typeof value === "object") {
+    const record = value as Readonly<Record<string, unknown>>;
+    return Object.fromEntries(
+      Object.keys(record)
+        .sort(compareText)
+        .map((key) => [key, canonicalize(record[key])]),
+    );
+  }
+  throw new TypeError(`unsupported canonical snapshot value: ${typeof value}`);
+}
+
+function canonicalDigest(value: unknown): string {
+  return fnvDigest(JSON.stringify(canonicalize(value)));
+}
+
+function reportSnapshot(report: RelationalCatalogReport): Omit<
+  RelationalCatalogReport,
+  "determinismDigest"
+> {
+  const { determinismDigest: _ignored, ...snapshot } = report;
+  return snapshot;
+}
+
+function derivePartitionByEntryId(
+  index: CatalogRelationIndex,
+  seenEntryIds: ReadonlySet<string>,
+): Readonly<Record<string, CatalogPartition>> {
+  const partitionByEntryId = new Map<string, CatalogPartition>();
+  for (const occurrences of [
+    ...Object.values(index.bindingOccurrences),
+    ...Object.values(index.transitionOccurrences),
+  ]) {
+    for (const occurrence of occurrences) {
+      if (!seenEntryIds.has(occurrence.entryId)) {
+        throw new Error(`relation index references unknown entry: ${occurrence.entryId}`);
+      }
+      const prior = partitionByEntryId.get(occurrence.entryId);
+      if (prior !== undefined && prior !== occurrence.partition) {
+        throw new Error(
+          `relation index contains conflicting partitions for entry: ${occurrence.entryId}`,
+        );
+      }
+      partitionByEntryId.set(occurrence.entryId, occurrence.partition);
+    }
+  }
+  for (const entryId of [...seenEntryIds].sort(compareText)) {
+    if (!partitionByEntryId.has(entryId)) {
+      throw new Error(`relation index omits catalog entry occurrences: ${entryId}`);
+    }
+  }
+  return Object.fromEntries(
+    [...partitionByEntryId.entries()].sort(([left], [right]) => compareText(left, right)),
+  );
 }
 
 export function validatePartitionInput(input: PartitionInput): readonly CatalogEntry[] {
@@ -66,17 +149,26 @@ export function validatePartitionInput(input: PartitionInput): readonly CatalogE
       `partition input report contains ${input.report.totals.entries} entries but received ${sortedEntries.length}`,
     );
   }
-  const indexedEntryIds = new Set<string>();
-  for (const occurrences of [
-    ...Object.values(input.index.bindingOccurrences),
-    ...Object.values(input.index.transitionOccurrences),
-  ]) {
-    for (const occurrence of occurrences) indexedEntryIds.add(occurrence.entryId);
+
+  const partitionByEntryId = derivePartitionByEntryId(input.report.index, seenEntryIds);
+  const canonicalReport = createRelationalCatalogReport(sortedEntries, {
+    mode: input.report.mode,
+    layoutId: input.report.layoutId,
+    partitionByEntryId,
+  });
+  const canonicalIndexDigest = canonicalDigest(canonicalReport.index);
+  const receivedIndexDigest = canonicalDigest(input.report.index);
+  if (canonicalIndexDigest !== receivedIndexDigest) {
+    throw new Error(
+      `partition relation index snapshot mismatch: canonical ${canonicalIndexDigest}, received ${receivedIndexDigest}`,
+    );
   }
-  for (const entryId of indexedEntryIds) {
-    if (!seenEntryIds.has(entryId)) {
-      throw new Error(`relation index references unknown entry: ${entryId}`);
-    }
+  const canonicalReportDigest = canonicalDigest(reportSnapshot(canonicalReport));
+  const receivedReportDigest = canonicalDigest(reportSnapshot(input.report));
+  if (canonicalReportDigest !== receivedReportDigest) {
+    throw new Error(
+      `partition relation report snapshot mismatch: canonical ${canonicalReportDigest}, received ${receivedReportDigest}`,
+    );
   }
   return sortedEntries;
 }
