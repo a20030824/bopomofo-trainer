@@ -38,5 +38,7 @@ jobs:
         run: npm run catalog:validate
       - name: Analyze relational catalog
         run: npm run catalog:relations
+      - name: Verify relational integration replay
+        run: npm run integration:research
       - name: Production build
         run: npm run build
