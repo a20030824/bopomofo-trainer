@@ -7,6 +7,10 @@ export type ReferenceRankingProfile =
   | "transition-broadening"
   | "balanced-review";
 
+export type ReferenceFrequencyPriority =
+  | "oral-then-written"
+  | "written-then-oral";
+
 export interface ReferenceRankComponents {
   readonly partitionRepairBindingCount: number;
   readonly partitionRepairTransitionCount: number;
@@ -26,6 +30,7 @@ export interface RankedReferenceCandidate {
   readonly candidate: ReferenceCandidate;
   readonly contribution: ReferenceRelationContribution;
   readonly profile: ReferenceRankingProfile;
+  readonly frequencyPriority: ReferenceFrequencyPriority;
   readonly components: ReferenceRankComponents;
   readonly priorityVector: readonly number[];
   readonly rank: number;
@@ -45,6 +50,7 @@ export interface ReferenceReviewExclusion {
 
 export interface ReferenceReviewQueue {
   readonly profile: ReferenceRankingProfile;
+  readonly frequencyPriority: ReferenceFrequencyPriority;
   readonly ranked: readonly RankedReferenceCandidate[];
   readonly excluded: readonly ReferenceReviewExclusion[];
 }
