@@ -1,0 +1,48 @@
+[
+  {
+    "id": "naer:graded-words:2025-04",
+    "title": "國教院三等七級詞語表",
+    "version": "14452詞語表202504",
+    "homepageUrl": "https://coct.naer.edu.tw/page.jsp?ID=41",
+    "downloadUrl": "https://coct.naer.edu.tw/file/files/14452詞語表202504.xlsx",
+    "retrievedAt": null,
+    "checksumSha256": null,
+    "licenseLabel": "國家教育研究院網站版權；下載資料重散布條款待確認",
+    "redistributionStatus": "unconfirmed",
+    "notes": [
+      "用作詞目、注音、能力等級與情境的本機 reference input",
+      "原始 xlsx 與批次 normalized rows 不提交至 repository，直到授權邊界確認"
+    ]
+  },
+  {
+    "id": "naer:general-frequency:2025-12-08",
+    "title": "國教院通用詞頻表",
+    "version": "定稿1141208",
+    "homepageUrl": "https://coct.naer.edu.tw/page.jsp?ID=41",
+    "downloadUrl": "https://coct.naer.edu.tw/file/files/通用詞頻表 - 定稿1141208.xlsx",
+    "retrievedAt": null,
+    "checksumSha256": null,
+    "licenseLabel": "國家教育研究院網站版權；下載資料重散布條款待確認",
+    "redistributionStatus": "unconfirmed",
+    "notes": [
+      "用作口語與書面詞頻的本機 reference input",
+      "詞頻只影響 reference priority，不直接成為 reviewed catalog provenance"
+    ]
+  },
+  {
+    "id": "moe:concised-dictionary:2014-20260626",
+    "title": "教育部國語辭典簡編本",
+    "version": "2014_20260626",
+    "homepageUrl": "https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/dict_concised_download.html",
+    "downloadUrl": "https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/download/dict_concised_2014_20260626.zip",
+    "retrievedAt": null,
+    "checksumSha256": null,
+    "licenseLabel": "CC BY-ND 3.0 Taiwan",
+    "redistributionStatus": "redistributable",
+    "notes": [
+      "只作現代臺灣詞目與讀音交叉驗證",
+      "不需要匯入或改寫釋義、例句、圖片與音訊",
+      "normalized pronunciation data 的發布方式另行審查"
+    ]
+  }
+]
