@@ -46,7 +46,7 @@ function metricComparison(
   const absoluteDelta = cellMean === null || baselineMean === null
     ? null
     : cellMean - baselineMean;
-  const relativeDelta = absoluteDelta === null || baselineMean === 0
+  const relativeDelta = absoluteDelta === null || baselineMean === null || baselineMean === 0
     ? null
     : absoluteDelta / Math.abs(baselineMean);
 
@@ -72,7 +72,7 @@ function metricComparison(
   const improvement = absoluteDelta === null
     ? null
     : rule.direction === "lower-is-better" ? -absoluteDelta : absoluteDelta;
-  const relativeImprovement = improvement === null || baselineMean === 0
+  const relativeImprovement = improvement === null || baselineMean === null || baselineMean === 0
     ? null
     : improvement / Math.abs(baselineMean);
   const absolutePass = improvement !== null && improvement >= rule.materialAbsoluteDelta;
