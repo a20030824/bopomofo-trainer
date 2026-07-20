@@ -1,4 +1,5 @@
 import { RELATIONAL_EXPERIMENT_METRIC_KEYS } from "../experiment/report.js";
+import { compareExperimentRuns } from "../experiment/run-cell.js";
 import type {
   RelationalExperimentReport,
   RelationalExperimentRunRecord,
@@ -77,21 +78,22 @@ function summariesForScope(
       groups.set(level, [...(groups.get(level) ?? []), run]);
     }
     for (const [levelId, group] of groups) {
-      const totalRounds = group.reduce((sum, run) => sum + run.rounds.length, 0);
-      const fallbackRounds = group.reduce((sum, run) => sum + run.fallbackCount, 0);
-      const failureRounds = group.reduce((sum, run) => sum + run.failureCount, 0);
+      const ordered = [...group].sort(compareExperimentRuns);
+      const totalRounds = ordered.reduce((sum, run) => sum + run.rounds.length, 0);
+      const fallbackRounds = ordered.reduce((sum, run) => sum + run.fallbackCount, 0);
+      const failureRounds = ordered.reduce((sum, run) => sum + run.failureCount, 0);
       result.push({
         groupKey: JSON.stringify([axis, scenarioId]),
         axis,
         levelId,
         scenarioId,
-        cellCount: new Set(group.map((run) => run.cell.id)).size,
-        runCount: group.length,
+        cellCount: new Set(ordered.map((run) => run.cell.id)).size,
+        runCount: ordered.length,
         fallbackRate: totalRounds === 0 ? 0 : fallbackRounds / totalRounds,
         failureRate: totalRounds === 0 ? 0 : failureRounds / totalRounds,
         metrics: Object.fromEntries(RELATIONAL_EXPERIMENT_METRIC_KEYS.map((metric) => [
           metric,
-          statistics(group, metric),
+          statistics(ordered, metric),
         ])) as AxisLevelSummary["metrics"],
       });
     }
