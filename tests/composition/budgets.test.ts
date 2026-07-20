@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { composePracticeSequence } from "../../src/composition/composer.js";
+import { resolveObjective } from "../../src/composition/objective.js";
+import { retrieveCandidates } from "../../src/composition/retrieval.js";
+import {
+  emptyCompositionState,
+  scoreCandidates,
+} from "../../src/composition/scoring.js";
 import { stableStringify } from "../../src/composition/stable.js";
 import {
   bindingOccurrence,
@@ -79,6 +85,58 @@ describe("practice budgets and penalties", () => {
       marginalGain: 2,
       rejectionReasons: expect.arrayContaining(["common-share-unrecoverable"]),
     });
+  });
+
+  it("rejects concentration before selection when the balancing entry cannot fit the remaining token budget", () => {
+    const concentrated = entry(
+      "word:a-concentrated",
+      [["ㄓ", "ㄨ", "ㄓ", "ㄨ", "tone:1"]],
+    );
+    const balancing = entry(
+      "word:b-balancing",
+      [["ㄓ", "ㄨ", "ㄓ", "ㄨ", "ㄥ", "tone:1"]],
+    );
+    const compositionInput = input({
+      entries: [concentrated, balancing],
+      index: relationIndex({
+        transitions: [
+          transitionOccurrence(concentrated, "ㄓ", "ㄨ", 0, 0),
+          transitionOccurrence(concentrated, "ㄓ", "ㄨ", 0, 2),
+          transitionOccurrence(balancing, "ㄓ", "ㄨ", 0, 0),
+          transitionOccurrence(balancing, "ㄓ", "ㄨ", 0, 2),
+        ],
+      }),
+      budget: budget({
+        targetExposures: { minimum: 2, preferred: 4, maximum: 4 },
+        maximumTokens: 5,
+        maximumRelationConcentration: 0.5,
+      }),
+    });
+    const resolution = resolveObjective(compositionInput.objective, compositionInput.budget);
+    if (!resolution.ok) throw new Error(resolution.detail);
+    const retrieval = retrieveCandidates(
+      resolution.targets,
+      compositionInput.relationIndex,
+      compositionInput.entries,
+    );
+    const tieBreakers = new Map(
+      retrieval.candidates.map((candidate) => [candidate.entry.id, 0.5]),
+    );
+    const concentratedScore = scoreCandidates(
+      compositionInput,
+      emptyCompositionState(),
+      resolution.targets,
+      retrieval.candidates,
+      tieBreakers,
+    ).find((candidate) => candidate.candidate.entry.id === concentrated.id)?.score;
+
+    expect(concentratedScore).toMatchObject({
+      marginalGain: 2,
+      rejectionReasons: expect.arrayContaining(["relation-concentration-unrecoverable"]),
+    });
+    const result = composePracticeSequence(compositionInput);
+    expect(result.items).toEqual([]);
+    expect(result.coverageSummary.maximumObservedRelationConcentration).toBe(0);
   });
 
   it("enforces maximum same-entry repetition", () => {
