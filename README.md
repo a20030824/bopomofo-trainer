@@ -26,16 +26,18 @@ Phases 0–6 produced useful infrastructure:
 - a deterministic binding-only curriculum baseline;
 - a local-first browser adapter, held-out evaluation, and pilot diagnostics.
 
-Phase 7 now has independently tested relational modules for:
+Phase 7 now includes:
 
 - exact binding/transition catalog indexing and support reports;
 - deterministic external reference importing into a manual review queue;
 - relation-preserving training/evaluation partition policies;
 - exact retrieval and budgeted variable-length practice composition;
 - latent relational learners that emit ordinary interaction traces;
-- Phase 3-backed estimates, estimation-error reports, and deterministic replay.
+- Phase 3-backed estimates, estimation-error reports, and deterministic replay;
+- a deterministic four-axis strategy matrix;
+- a seeded cohort experiment harness with local failure/fallback accounting and JSON, CSV, and Markdown reports.
 
-The integration fixture connects those modules without automatically approving reference candidates. The relational strategy matrix now declares four independently replaceable axes—objective selector, partition policy, composer, and learner model—and the complete 125-cell comparison space. It deliberately does not execute seeds, scenarios, cohorts, or statistical reports; those belong to the next experiment-harness phase.
+The committed cohort executes all 125 objective/partition/composer/learner cells across three synthetic learner scenarios, two seeds, and two adaptive rounds: 750 runs and 1,500 rounds. Objective selectors observe cumulative Phase 3 measurements and catalog support, never hidden learner truth. Metrics that are not identifiable remain `null` with an explicit reason.
 
 The existing timed-binding score is retained as a historical baseline. Clean within-syllable inter-key latency is treated primarily as transition-edge evidence, not an independently identifiable destination-token speed.
 
@@ -47,15 +49,16 @@ npm run check
 npm run build
 npm run integration:research
 npm run strategy:matrix
+npm run experiment:relational
 npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
-`npm run integration:research` runs the committed cross-module fixture twice and requires byte-for-byte identical reports.
+- `npm run integration:research` verifies the single-policy cross-module fixture twice.
+- `npm run strategy:matrix` verifies the complete declaration matrix and digest.
+- `npm run experiment:relational` executes the full committed cohort twice and requires byte-for-byte identical JSON, CSV, and Markdown outputs.
 
-`npm run strategy:matrix` verifies canonical ordering and the deterministic digest for the complete declaration matrix.
-
-The browser can still be run with `npm run dev`, but further UI work is deferred until the experiment harness and numeric reports are coherent.
+The browser can still be run with `npm run dev`, but further UI work is deferred until the numeric experiment reports are reviewed and a strategy is selected deliberately.
 
 ## Principles
 
@@ -67,8 +70,9 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - Sequence length is determined by evidence and cost budgets, not a fixed word count.
 - Held-out text never updates training estimates.
 - External reference candidates stop at a manual review queue; they never enter the reviewed catalog automatically.
-- Simulation can validate internal behavior, identifiability, and strategy differences; it cannot prove human learning effectiveness.
-- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, integration, and experiment declarations remain separate modules.
+- Unsupported or failed matrix cells remain in reports; failure rates cannot be improved by silently dropping runs.
+- Simulation can validate internal behavior, identifiability, replayability, and strategy differences; it cannot prove human learning effectiveness.
+- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, integration, and experiment reporting remain separate modules.
 
 ## Documents
 
@@ -80,6 +84,7 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - [Content retrieval and composition](docs/content-retrieval-and-composition.md)
 - [Relational research integration](docs/relational-research-integration.md)
 - [Relational strategy matrix](docs/research/strategy-matrix.md)
+- [Relational experiment harness](docs/research/experiment-harness.md)
 - [Measurement policy](docs/measurement-policy.md)
 - [Binding-only curriculum baseline](docs/curriculum-simulator.md)
 - [Existing browser adapter](docs/thin-product-prototype.md)

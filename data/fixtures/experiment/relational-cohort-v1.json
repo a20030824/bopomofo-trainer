@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "relational-experiment-plan-v1",
+  "id": "relational-cohort-v1",
+  "catalog": [
+    {
+      "id": "cohort:zhu-a",
+      "prompt": { "text": "朱", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄨ", "zhuyin:ㄥ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["cohort", "common"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhu-b",
+      "prompt": { "text": "珠", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄨ", "zhuyin:ㄥ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhu-c",
+      "prompt": { "text": "豬", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄨ", "zhuyin:ㄥ", "tone:1"] }],
+      "frequencyBand": 3,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-bo-a",
+      "prompt": { "text": "知波甲", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["cohort", "common"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-bo-b",
+      "prompt": { "text": "知波乙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-bo-c",
+      "prompt": { "text": "知波丙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 3,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-po-a",
+      "prompt": { "text": "知坡甲", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["cohort", "common"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-po-b",
+      "prompt": { "text": "知坡乙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:zhi-po-c",
+      "prompt": { "text": "知坡丙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 3,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:bo-po-a",
+      "prompt": { "text": "波坡甲", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄅ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["cohort", "common"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:bo-po-b",
+      "prompt": { "text": "波坡乙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄅ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:bo-po-c",
+      "prompt": { "text": "波坡丙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄅ", "zhuyin:ㄆ", "tone:1"] }],
+      "frequencyBand": 3,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:po-bo-a",
+      "prompt": { "text": "坡波甲", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄆ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["cohort", "common"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:po-bo-b",
+      "prompt": { "text": "坡波乙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄆ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    },
+    {
+      "id": "cohort:po-bo-c",
+      "prompt": { "text": "坡波丙", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["zhuyin:ㄆ", "zhuyin:ㄅ", "tone:1"] }],
+      "frequencyBand": 3,
+      "tags": ["cohort"],
+      "provenanceIds": ["synthetic-cohort"]
+    }
+  ],
+  "confusionRelations": [
+    {
+      "kind": "confusion",
+      "scope": {
+        "mode": "guided",
+        "layoutId": "zhuyin-standard",
+        "expectedToken": "zhuyin:ㄅ",
+        "actualToken": "zhuyin:ㄆ"
+      }
+    }
+  ],
+  "scenarioIds": [
+    "weak-binding",
+    "weak-transition",
+    "asymmetric-confusion"
+  ],
+  "seeds": [101, 202],
+  "rounds": 2,
+  "partitionOptions": {
+    "evaluationEntryCount": 2,
+    "minimumTrainingDistinctEntries": 1
+  },
+  "frequencyAllowCrossBandFallback": true,
+  "practiceBudget": {
+    "targetExposures": {
+      "minimum": 1,
+      "preferred": 1,
+      "maximum": 2
+    },
+    "maximumTokens": 24,
+    "maximumSyllables": 6,
+    "maximumLexicalBoundaries": 5,
+    "minimumCommonWordShare": 0,
+    "maximumSameEntryRepetition": 1,
+    "maximumRelationConcentration": 1,
+    "recentEntryPenalty": 0.25,
+    "recentTokenPathPenalty": 0.25,
+    "marginalGainThreshold": 0
+  },
+  "beamWidth": 4,
+  "startTimestampMs": 1700000000000,
+  "roundTimestampStepMs": 60000
+}
