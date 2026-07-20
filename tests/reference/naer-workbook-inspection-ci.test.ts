@@ -15,7 +15,7 @@ const shouldInspect = process.env.GITHUB_HEAD_REF === INSPECTION_BRANCH
       execFileSync(
         "python3",
         [
-          "scripts/inspect-naer-frequency-workbook.py",
+          "scripts/run-naer-frequency-workbook-inspection.py",
           "--url",
           "https://coct.naer.edu.tw/file/files/%E9%80%9A%E7%94%A8%E8%A9%9E%E9%A0%BB%E8%A1%A8%20-%20%E5%AE%9A%E7%A8%BF1141208.xlsx",
           "--output-dir",
