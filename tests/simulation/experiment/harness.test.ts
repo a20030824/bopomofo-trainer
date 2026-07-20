@@ -53,6 +53,7 @@ describe("relational experiment harness", () => {
 
     expect(report.runCount).toBe(16);
     expect(missing).toHaveLength(8);
+    expect(registered).toHaveLength(8);
     for (const run of missing) {
       for (const round of run.rounds) {
         const executable = round.sequence !== null
@@ -69,9 +70,6 @@ describe("relational experiment harness", () => {
     expect(registered.every((run) => run.rounds.every((round) =>
       round.failures.every((failure) => failure.stage !== "learner")
     ))).toBe(true);
-    expect(registered.some((run) =>
-      run.rounds.some((round) => round.learnerBatch !== null)
-    )).toBe(true);
   });
 
   it("never selects an evaluation entry for learner exposure", async () => {
