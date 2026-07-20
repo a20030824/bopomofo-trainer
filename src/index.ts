@@ -21,6 +21,7 @@ export * from "./relations/catalog-index.js";
 export * from "./relations/catalog-report.js";
 export * from "./relations/catalog-report-text.js";
 export * from "./reference/types.js";
+export * from "./reference/manifest-parser.js";
 export * from "./reference/source-registry.js";
 export * from "./reference/compile-reference.js";
 export * from "./reference/identity.js";
