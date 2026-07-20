@@ -81,7 +81,7 @@ export function createPartitionDecision(
   const trainingEntryIds = entries
     .filter((entry) => !evaluationSet.has(entry.id))
     .map((entry) => entry.id);
-  const model = createPartitionRelationModel(input.index);
+  const model = createPartitionRelationModel(input.report.index);
   const supportViolations = relationSupportViolations(
     model,
     evaluationSet,
