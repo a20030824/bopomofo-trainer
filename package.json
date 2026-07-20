@@ -9,6 +9,7 @@
     "test": "vitest run",
     "catalog:validate": "tsx scripts/validate-catalog.ts",
     "catalog:build": "tsx scripts/compile-catalog.ts",
+    "catalog:relations": "tsx scripts/analyze-relational-catalog.ts",
     "app:catalog": "tsx scripts/compile-app-catalog.ts",
     "spike:catalog": "npm run app:catalog",
     "measurement:analyze": "tsx scripts/analyze-trace.ts",
@@ -18,7 +19,7 @@
     "prebuild": "npm run app:catalog",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run build"
+    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run catalog:relations && npm run build"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

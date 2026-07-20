@@ -36,5 +36,7 @@ jobs:
           path: vitest.log
       - name: Validate catalog
         run: npm run catalog:validate
+      - name: Analyze relational catalog
+        run: npm run catalog:relations
       - name: Production build
         run: npm run build

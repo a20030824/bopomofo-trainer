@@ -56,11 +56,21 @@ export function analyseSyllableBody(body: string): SyllableBodyAnalysis {
 }
 
 export function isSupportedCatalogSyllableBody(body: string): boolean {
-  if (body.length === 0) {
-    return false;
-  }
+  if (body.length === 0) return false;
   const { initial, rime } = analyseSyllableBody(body);
   return initial === null
     ? SUPPORTED_ZERO_INITIAL_RIMES.has(rime)
     : SUPPORTED_RIMES_BY_INITIAL[initial].has(rime);
+}
+
+export function listSupportedCatalogSyllableBodies(): readonly string[] {
+  const bodies = [
+    ...SUPPORTED_ZERO_INITIAL_RIMES,
+    ...INITIALS.flatMap((initial) =>
+      [...SUPPORTED_RIMES_BY_INITIAL[initial]].map((rime) => `${initial}${rime}`),
+    ),
+  ];
+  return [...new Set(bodies)].sort((left, right) =>
+    left < right ? -1 : left > right ? 1 : 0,
+  );
 }
