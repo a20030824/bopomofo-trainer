@@ -1,0 +1,128 @@
+{
+  "id": "relational-research-integration-v1",
+  "reference": {
+    "manifest": {
+      "id": "fixture:integration-reference",
+      "title": "Hand-authored relational integration reference fixture",
+      "version": "v1",
+      "homepageUrl": "https://example.invalid/integration-reference",
+      "downloadUrl": null,
+      "retrievedAt": null,
+      "checksumSha256": null,
+      "licenseLabel": "hand-authored test fixture",
+      "redistributionStatus": "redistributable",
+      "notes": [
+        "This fixture is synthetic and contains no copied official source rows."
+      ]
+    },
+    "adapter": {
+      "adapterId": "fixture:integration-tabular",
+      "adapterVersion": "1",
+      "sourceId": "fixture:integration-reference",
+      "sourceVersion": "v1",
+      "format": "csv",
+      "toneNotation": "explicit-digits",
+      "columns": {
+        "sourceRowId": "id",
+        "text": "text",
+        "reading": "reading",
+        "oralPerMillion": "oral",
+        "writtenPerMillion": "written",
+        "level": null,
+        "levelOrdinal": null,
+        "domains": null,
+        "sourceRecordUrl": null
+      },
+      "csvDelimiter": ",",
+      "domainSeparator": "|",
+      "sourceRecordUrlTemplate": null
+    },
+    "rankingProfile": "transition-broadening"
+  },
+  "reviewedCatalog": [
+    {
+      "id": "integration:zhu-a",
+      "prompt": { "text": "朱", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["ㄓ", "ㄨ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["integration", "common"],
+      "provenanceIds": ["integration-fixture"]
+    },
+    {
+      "id": "integration:zhu-b",
+      "prompt": { "text": "珠", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["ㄓ", "ㄨ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["integration", "common"],
+      "provenanceIds": ["integration-fixture"]
+    },
+    {
+      "id": "integration:ba",
+      "prompt": { "text": "八", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["ㄅ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["integration", "common"],
+      "provenanceIds": ["integration-fixture"]
+    },
+    {
+      "id": "integration:pa",
+      "prompt": { "text": "坡", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["ㄆ", "tone:1"] }],
+      "frequencyBand": 2,
+      "tags": ["integration"],
+      "provenanceIds": ["integration-fixture"]
+    },
+    {
+      "id": "integration:ma",
+      "prompt": { "text": "媽", "locale": "zh-TW" },
+      "syllables": [{ "tokens": ["ㄇ", "tone:1"] }],
+      "frequencyBand": 1,
+      "tags": ["integration", "common"],
+      "provenanceIds": ["integration-fixture"]
+    }
+  ],
+  "partition": {
+    "evaluationEntryCount": 1,
+    "minimumTrainingDistinctEntries": 1
+  },
+  "composition": {
+    "objective": {
+      "kind": "transition",
+      "relation": {
+        "kind": "transition",
+        "scope": {
+          "mode": "guided",
+          "layoutId": "synthetic-taiwan-standard",
+          "fromToken": "ㄓ",
+          "toToken": "ㄨ"
+        }
+      }
+    },
+    "history": {
+      "entryIds": [],
+      "tokenPathSignatures": []
+    },
+    "budget": {
+      "targetExposures": { "minimum": 1, "preferred": 1, "maximum": 1 },
+      "maximumTokens": 8,
+      "maximumSyllables": 2,
+      "maximumLexicalBoundaries": 1,
+      "minimumCommonWordShare": 0,
+      "maximumSameEntryRepetition": 1,
+      "maximumRelationConcentration": 1,
+      "recentEntryPenalty": 0,
+      "recentTokenPathPenalty": 0,
+      "marginalGainThreshold": 0
+    },
+    "policy": {
+      "strategy": "greedy-marginal-gain",
+      "beamWidth": 2
+    },
+    "seed": 7301
+  },
+  "learner": {
+    "scenarioId": "weak-transition",
+    "seed": 7302,
+    "startedAtMs": 1700000000000
+  }
+}
