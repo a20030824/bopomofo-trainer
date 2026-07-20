@@ -1,32 +1,34 @@
 {
   "version": "synthetic-relational-v1",
+  "tokenIdPolicy": "canonical repository TokenId values using zhuyin:<symbol> and tone:<number>",
+  "layoutId": "zhuyin-standard",
   "orderingReason": "scenario-id-order-is-fixed-for-replay-and-review",
   "scenarios": [
     {
       "id": "weak-binding",
       "seed": 1101,
-      "injectedTruth": ["binding:ㄨ:error-probability=0.48"],
+      "injectedTruth": ["binding:zhuyin:ㄨ:error-probability=0.48"],
       "reason": "isolate token-specific binding weakness while transition truth remains near baseline"
     },
     {
       "id": "weak-transition",
       "seed": 1102,
-      "injectedTruth": ["transition:ㄓ>ㄨ:mean-ms=520"],
+      "injectedTruth": ["transition:zhuyin:ㄓ>zhuyin:ㄨ:mean-ms=520"],
       "reason": "isolate one directional latency edge without weakening its component bindings"
     },
     {
       "id": "asymmetric-confusion",
       "seed": 1103,
-      "injectedTruth": ["confusion:ㄅ>ㄆ:conditional-probability=0.88"],
-      "reason": "verify directional substitution without an implicit ㄆ>ㄅ edge"
+      "injectedTruth": ["confusion:zhuyin:ㄅ>zhuyin:ㄆ:conditional-probability=0.88"],
+      "reason": "verify directional substitution without an implicit zhuyin:ㄆ>zhuyin:ㄅ edge"
     },
     {
       "id": "competing-weaknesses",
       "seed": 1104,
       "injectedTruth": [
-        "binding:ㄨ:error-probability=0.28",
-        "transition:ㄓ>ㄨ:mean-ms=430",
-        "confusion:ㄅ>ㄆ:conditional-probability=0.62"
+        "binding:zhuyin:ㄨ:error-probability=0.28",
+        "transition:zhuyin:ㄓ>zhuyin:ㄨ:mean-ms=430",
+        "confusion:zhuyin:ㄅ>zhuyin:ㄆ:conditional-probability=0.62"
       ],
       "reason": "exercise estimation when several relation families are weak"
     },
@@ -63,8 +65,8 @@
       "seed": 1109,
       "retentionSteps": 4,
       "injectedTruth": [
-        "binding:ㄨ:decay-rate-per-step=0.12",
-        "transition:ㄓ>ㄨ:decay-rate-per-step=0.10"
+        "binding:zhuyin:ㄨ:decay-rate-per-step=0.12",
+        "transition:zhuyin:ㄓ>zhuyin:ㄨ:decay-rate-per-step=0.10"
       ],
       "reason": "apply declared decay after exposure as an independent experiment"
     }

@@ -26,14 +26,16 @@ Phases 0–6 produced useful infrastructure:
 - a deterministic binding-only curriculum baseline;
 - a local-first browser adapter, held-out evaluation, and pilot diagnostics.
 
-The current phase reframes that work around relational modeling and headless numeric simulation:
+Phase 7 now has independently tested relational modules for:
 
-- binding nodes, transition edges, confusion edges, and ordered catalog paths;
-- exact relation-support analysis for every text entry;
-- synthetic learners that emit ordinary measurement traces;
-- independent objective-selection and text-composition policies;
-- variable-length practice sequences instead of a fixed six-word round;
-- seeded cohort experiments comparing relational strategies.
+- exact binding/transition catalog indexing and support reports;
+- deterministic external reference importing into a manual review queue;
+- relation-preserving training/evaluation partition policies;
+- exact retrieval and budgeted variable-length practice composition;
+- latent relational learners that emit ordinary interaction traces;
+- Phase 3-backed estimates, estimation-error reports, and deterministic replay.
+
+The integration fixture connects those modules without automatically approving reference candidates or introducing a new curriculum strategy. The next research gate is the replaceable strategy matrix and multi-seed experiment harness.
 
 The existing timed-binding score is retained as a historical baseline. Clean within-syllable inter-key latency is treated primarily as transition-edge evidence, not an independently identifiable destination-token speed.
 
@@ -43,11 +45,14 @@ The existing timed-binding score is retained as a historical baseline. Clean wit
 npm install
 npm run check
 npm run build
+npm run integration:research
 npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
-The browser can still be run with `npm run dev`, but further UI work is deferred until the relational catalog, synthetic learner, strategy matrix, and experiment reports are coherent.
+`npm run integration:research` runs the committed cross-module fixture twice and requires byte-for-byte identical reports.
+
+The browser can still be run with `npm run dev`, but further UI work is deferred until the relational strategy matrix and experiment reports are coherent.
 
 ## Principles
 
@@ -58,8 +63,9 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - Objective selection and text composition are independent experimental policies.
 - Sequence length is determined by evidence and cost budgets, not a fixed word count.
 - Held-out text never updates training estimates.
+- External reference candidates stop at a manual review queue; they never enter the reviewed catalog automatically.
 - Simulation can validate internal behavior, identifiability, and strategy differences; it cannot prove human learning effectiveness.
-- UI, persistence, measurement, relational indexing, curriculum, composition, and simulation remain separate modules.
+- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, and integration remain separate modules.
 
 ## Documents
 
@@ -69,6 +75,7 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - [Roadmap](docs/roadmap.md)
 - [Relational skill model](docs/relational-skill-model.md)
 - [Content retrieval and composition](docs/content-retrieval-and-composition.md)
+- [Relational research integration](docs/relational-research-integration.md)
 - [Measurement policy](docs/measurement-policy.md)
 - [Binding-only curriculum baseline](docs/curriculum-simulator.md)
 - [Existing browser adapter](docs/thin-product-prototype.md)

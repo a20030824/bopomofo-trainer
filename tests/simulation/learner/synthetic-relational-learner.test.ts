@@ -7,6 +7,7 @@ import {
   getSyntheticScenario,
   SYNTHETIC_EXERCISE,
   SYNTHETIC_LAYOUT,
+  SYNTHETIC_TOKEN_IDS,
 } from "../../../src/simulation/learner/scenarios.js";
 import type {
   BindingTruth,
@@ -14,6 +15,16 @@ import type {
   TransitionTruth,
 } from "../../../src/simulation/learner/types.js";
 import { generateSyntheticTraceBatch } from "../../../src/simulation/trace-generator/generate.js";
+
+const {
+  bo: BO,
+  po: PO,
+  mo: MO,
+  zhi: ZHI,
+  u: U,
+  eng: ENG,
+  tone1: TONE_1,
+} = SYNTHETIC_TOKEN_IDS;
 
 function entry(id: string, syllables: readonly (readonly TokenId[])[]): CatalogEntry {
   return {
@@ -109,11 +120,23 @@ function generate(
 }
 
 describe("synthetic relational learner", () => {
+  it("uses the canonical catalog token ids and Taiwan Standard layout", () => {
+    expect(SYNTHETIC_LAYOUT.id).toBe("zhuyin-standard");
+    expect(SYNTHETIC_EXERCISE.entries[0]?.syllables[0]?.tokens).toEqual([
+      ZHI,
+      U,
+      ENG,
+      TONE_1,
+    ]);
+    expect(ZHI).toBe("zhuyin:ㄓ");
+    expect(U).toBe("zhuyin:ㄨ");
+  });
+
   it("produces fully predictable traces when error, noise, and variance are zero", () => {
     const semanticExercise = exercise("predictable", [
       entry("predictable-entry", [
-        ["ㄓ", "ㄨ", "ㄥ", "tone:1"],
-        ["ㄅ", "ㄆ", "tone:1"],
+        [ZHI, U, ENG, TONE_1],
+        [BO, PO, TONE_1],
       ]),
     ]);
     const batch = generate(deterministicLearner(), semanticExercise);
@@ -136,7 +159,7 @@ describe("synthetic relational learner", () => {
 
   it("attributes an isolated slow ㄓ to ㄨ edge only to the transition estimate", () => {
     let learner = deterministicLearner();
-    const key = transitionTruthKey("ㄓ", "ㄨ");
+    const key = transitionTruthKey(ZHI, U);
     const current = learner.transitions[key];
     expect(current).toBeDefined();
     learner = {
@@ -151,7 +174,7 @@ describe("synthetic relational learner", () => {
     };
     const semanticExercise = exercise("weak-edge", [
       entry("weak-edge-entry", Array.from({ length: 12 }, () => [
-        "ㄓ", "ㄨ", "ㄥ", "tone:1",
+        ZHI, U, ENG, TONE_1,
       ])),
     ]);
     const batch = generate(learner, semanticExercise);
@@ -171,16 +194,16 @@ describe("synthetic relational learner", () => {
       ...learner,
       bindings: {
         ...learner.bindings,
-        "ㄅ": {
-          ...learner.bindings["ㄅ"]!,
+        [BO]: {
+          ...learner.bindings[BO]!,
           errorProbability: 1,
-          fallbackActualToken: "ㄓ",
+          fallbackActualToken: ZHI,
         },
       },
       confusions: {
-        [confusionTruthKey("ㄅ", "ㄆ")]: {
-          expectedToken: "ㄅ",
-          actualToken: "ㄆ",
+        [confusionTruthKey(BO, PO)]: {
+          expectedToken: BO,
+          actualToken: PO,
           conditionalProbability: 1,
           learningRate: 0,
           decayRatePerStep: 0,
@@ -189,17 +212,17 @@ describe("synthetic relational learner", () => {
     };
     const semanticExercise = exercise("directional-confusion", [
       entry("directional-entry", Array.from({ length: 10 }, () => [
-        ["ㄓ", "ㄅ", "tone:1"],
-        ["ㄓ", "ㄆ", "tone:1"],
+        [ZHI, BO, TONE_1],
+        [ZHI, PO, TONE_1],
       ]).flat()),
     ]);
     const batch = generate(learner, semanticExercise);
 
     expect(batch.measurementEstimate.conditionalConfusionRates[
-      confusionTruthKey("ㄅ", "ㄆ")
+      confusionTruthKey(BO, PO)
     ]?.value).toBe(1);
     expect(batch.measurementEstimate.conditionalConfusionRates[
-      confusionTruthKey("ㄆ", "ㄅ")
+      confusionTruthKey(PO, BO)
     ]).toBeUndefined();
   });
 
@@ -209,16 +232,16 @@ describe("synthetic relational learner", () => {
       ...learner,
       bindings: {
         ...learner.bindings,
-        "ㄨ": {
-          ...learner.bindings["ㄨ"]!,
+        [U]: {
+          ...learner.bindings[U]!,
           errorProbability: 1,
-          fallbackActualToken: "ㄅ",
+          fallbackActualToken: BO,
         },
       },
     };
     const batch = generate(
       learner,
-      exercise("recovery", [entry("recovery-entry", [["ㄓ", "ㄨ", "tone:1"]])]),
+      exercise("recovery", [entry("recovery-entry", [[ZHI, U, TONE_1]])]),
     );
     const recoveryTrace = batch.traces.find((trace) => trace.recovery);
     expect(recoveryTrace).toBeDefined();
@@ -227,7 +250,7 @@ describe("synthetic relational learner", () => {
     );
     expect(decision?.transition).toEqual({ included: false, reason: "recovery" });
     expect(batch.measurementEstimate.transitionMeanLatencies[
-      transitionTruthKey("ㄓ", "ㄨ")
+      transitionTruthKey(ZHI, U)
     ]).toBeUndefined();
   });
 
@@ -236,17 +259,17 @@ describe("synthetic relational learner", () => {
       deterministicLearner(),
       exercise("boundaries", [
         entry("boundary-entry", [
-          ["ㄓ", "ㄨ"],
-          ["ㄅ", "ㄆ"],
+          [ZHI, U],
+          [BO, PO],
         ]),
       ]),
     );
     expect(Object.keys(batch.measurementEstimate.transitionMeanLatencies)).toEqual([
-      transitionTruthKey("ㄅ", "ㄆ"),
-      transitionTruthKey("ㄓ", "ㄨ"),
+      transitionTruthKey(BO, PO),
+      transitionTruthKey(ZHI, U),
     ].sort());
     expect(batch.measurementEstimate.transitionMeanLatencies[
-      transitionTruthKey("ㄨ", "ㄅ")
+      transitionTruthKey(U, BO)
     ]).toBeUndefined();
   });
 
@@ -328,7 +351,7 @@ describe("synthetic relational learner", () => {
       },
     );
     const bindingEvents = batch.exposureUpdate.events.filter(
-      (event) => event.relationKind === "binding" && event.relationKey === "ㄨ",
+      (event) => event.relationKind === "binding" && event.relationKey === U,
     );
     expect(bindingEvents.some((event) => event.reason === "semantic-binding-exposure")).toBe(true);
     expect(bindingEvents.some((event) => event.reason === "binding-retention-decay")).toBe(true);
@@ -337,15 +360,15 @@ describe("synthetic relational learner", () => {
 
   it("converges toward latent binding, confusion, and transition truth without exact random snapshots", () => {
     let learner = deterministicLearner();
-    const transitionKey = transitionTruthKey("ㄓ", "ㄨ");
+    const transitionKey = transitionTruthKey(ZHI, U);
     learner = {
       ...learner,
       bindings: {
         ...learner.bindings,
-        "ㄨ": {
-          ...learner.bindings["ㄨ"]!,
+        [U]: {
+          ...learner.bindings[U]!,
           errorProbability: 0.2,
-          fallbackActualToken: "ㄆ",
+          fallbackActualToken: PO,
         },
       },
       transitions: {
@@ -356,9 +379,9 @@ describe("synthetic relational learner", () => {
         },
       },
       confusions: {
-        [confusionTruthKey("ㄨ", "ㄅ")]: {
-          expectedToken: "ㄨ",
-          actualToken: "ㄅ",
+        [confusionTruthKey(U, BO)]: {
+          expectedToken: U,
+          actualToken: BO,
           conditionalProbability: 0.7,
           learningRate: 0,
           decayRatePerStep: 0,
@@ -366,13 +389,13 @@ describe("synthetic relational learner", () => {
       },
     };
     const entries = Array.from({ length: 2500 }, (_, index) =>
-      entry(`mc-${index}`, [["ㄓ", "ㄨ", "tone:1"]])
+      entry(`mc-${index}`, [[ZHI, U, TONE_1]])
     );
     const batch = generate(learner, exercise("monte-carlo", entries), 483920);
 
-    expect(batch.measurementEstimate.bindingErrorRates["ㄨ"]?.value).toBeCloseTo(0.2, 1);
+    expect(batch.measurementEstimate.bindingErrorRates[U]?.value).toBeCloseTo(0.2, 1);
     expect(batch.measurementEstimate.conditionalConfusionRates[
-      confusionTruthKey("ㄨ", "ㄅ")
+      confusionTruthKey(U, BO)
     ]?.value).toBeCloseTo(0.7, 1);
     expect(batch.measurementEstimate.transitionMeanLatencies[transitionKey]?.value)
       .toBeGreaterThan(192);
@@ -382,10 +405,11 @@ describe("synthetic relational learner", () => {
     const report = Object.fromEntries(
       batch.estimationErrorReport.components.map((component) => [component.relationKey, component]),
     );
-    expect(report["ㄨ"]?.absoluteError).toBeLessThan(0.03);
+    expect(report[U]?.absoluteError).toBeLessThan(0.03);
     expect(report[transitionKey]?.relativeError).toBeLessThan(0.04);
-    expect(report[confusionTruthKey("ㄨ", "ㄅ")]?.absoluteError).toBeLessThan(0.05);
+    expect(report[confusionTruthKey(U, BO)]?.absoluteError).toBeLessThan(0.05);
   });
 });
 
 void SYNTHETIC_EXERCISE;
+void MO;

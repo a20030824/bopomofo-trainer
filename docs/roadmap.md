@@ -58,9 +58,11 @@ Deliverables:
 - entry and lexical-family concentration metrics;
 - held-out support-loss checks;
 - possible expected/actual contrast pools for confusion objectives;
-- explicit unsupported, rare-only, and weakly supported relation lists.
+- explicit unsupported, rare-only, and weakly supported relation lists;
+- deterministic external-reference importing into a structured manual review queue;
+- relation-support-preserving partition policies with constraints, fallbacks, and metrics.
 
-Exit condition: catalog blind spots are numeric and traceable, and expansion requests can name the missing relations they are meant to cover.
+Exit condition: catalog blind spots are numeric and traceable, expansion requests can name the missing relations they are meant to cover, and evaluation partitions do not silently remove required training support.
 
 ## Phase 7C — Synthetic learner and trace generator
 
@@ -74,7 +76,8 @@ Deliverables:
 - relation-specific improvement rates;
 - separate boundary, noise, recovery, and session-drift parameters;
 - deterministic trace generation through a real layout;
-- ground-truth snapshots before and after each sequence.
+- ground-truth snapshots before and after each sequence;
+- explicit transfer and retention semantics with duplicate-transfer validation.
 
 Exit condition: identical seeds are byte-for-byte reproducible and estimators can be scored against hidden truth.
 
@@ -93,18 +96,34 @@ Objective policies:
 Composition policies:
 
 1. fixed-six baseline;
-2. greedy target-exposure;
-3. balanced set cover;
-4. confusion contrast;
-5. constrained multi-objective.
+2. greedy marginal gain;
+3. greedy gain per token;
+4. diversity-aware greedy;
+5. bounded beam search.
 
-The canonical output is variable length and budgeted by target exposures, tokens, syllables, boundaries, lexical quality, repetition, and concentration. Every stop and fallback is explicit.
+The canonical output is variable length and budgeted by target exposures, tokens, syllables, boundaries, lexical quality, repetition, and concentration. Every retrieval exclusion, candidate rejection, stop, and fallback is explicit.
 
 Exit condition: any objective/composer combination exposes its selected relation, exact supporting occurrences, candidate costs, ordered items, sequence length, and stop reason.
 
+## Phase 7 integration checkpoint
+
+Goal: prove the independently developed Phase 7 modules connect without weakening their boundaries.
+
+The deterministic integration fixture verifies:
+
+1. source bytes → importer → normalized candidates/errors → relational review queue;
+2. reviewed catalog → relational report → relation-preserving partition → explicit constraints and metrics;
+3. partitioned relation index → exact retrieval → variable-length `PracticeSequence` → selection/stop trace;
+4. practice sequence → synthetic learner → ordinary `InteractionTrace` → existing Phase 3 measurement → estimation error;
+5. identical fixtures, versions, policies, seeds, scenario, and timestamp → byte-for-byte identical complete report.
+
+The reference path stops at `manual-review-required`; it never mutates the reviewed catalog. This checkpoint uses one fixed objective, partition, composer, and learner scenario only. It does not implement the strategy matrix.
+
+Exit condition: `npm run integration:research` and the integration regressions pass on the exact PR head.
+
 ## Phase 7E — Seeded cohort experiments
 
-Goal: compare strategies numerically across controlled learner scenarios.
+Goal: compare replaceable strategies numerically across controlled learner scenarios.
 
 Required scenarios:
 
