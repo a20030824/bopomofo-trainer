@@ -7,6 +7,7 @@ import type {
   GrammarRole,
   GrammarSlotAssignment,
   GrammarTemplate,
+  GrammarTemplateSlot,
   GrammarUtteranceCandidate,
 } from "./types.js";
 
@@ -62,9 +63,21 @@ function entriesByRole(
   return result;
 }
 
+function entryMatchesSlot(
+  entry: CatalogEntry,
+  slot: GrammarTemplateSlot,
+  annotations: Readonly<Record<string, GrammarAnnotation>>,
+): boolean {
+  const annotation = annotations[entry.id];
+  if (annotation === undefined || !annotation.roles.includes(slot.role)) return false;
+  return slot.predicateFrames === undefined
+    || slot.predicateFrames.includes(annotation.predicateFrame);
+}
+
 function enumerateTemplate(
   template: GrammarTemplate,
   roleIndex: ReadonlyMap<GrammarRole, readonly CatalogEntry[]>,
+  annotations: Readonly<Record<string, GrammarAnnotation>>,
   maximum: number,
 ): readonly GrammarUtteranceCandidate[] {
   const candidates: GrammarUtteranceCandidate[] = [];
@@ -80,7 +93,7 @@ function enumerateTemplate(
       return;
     }
     for (const entry of roleIndex.get(slot.role) ?? []) {
-      if (used.has(entry.id)) continue;
+      if (used.has(entry.id) || !entryMatchesSlot(entry, slot, annotations)) continue;
       used.add(entry.id);
       selected.push(entry);
       assignments.push({ slotKey: slot.key, role: slot.role, entryId: entry.id });
@@ -137,7 +150,7 @@ export function composeGrammarCandidates(
   for (const template of orderedTemplates) {
     const remaining = resolved.maximumCandidates - candidates.length;
     if (remaining <= 0) break;
-    candidates.push(...enumerateTemplate(template, roleIndex, remaining));
+    candidates.push(...enumerateTemplate(template, roleIndex, annotations, remaining));
   }
 
   const canonical = candidates.sort((left, right) =>
