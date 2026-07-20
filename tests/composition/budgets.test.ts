@@ -53,6 +53,34 @@ describe("practice budgets and penalties", () => {
     expect(result.coverageSummary.commonWordShare).toBe(0.5);
   });
 
+  it("rejects a higher-gain rare candidate when common-word share must remain one", () => {
+    const rare = entry("word:rare", [["ㄓ", "ㄨ", "ㄓ", "ㄨ", "tone:1"]], 3);
+    const common = entry("word:common", [["ㄓ", "ㄨ", "tone:1"]], 1);
+    const result = composePracticeSequence(input({
+      entries: [rare, common],
+      index: relationIndex({
+        transitions: [
+          transitionOccurrence(rare, "ㄓ", "ㄨ", 0, 0),
+          transitionOccurrence(rare, "ㄓ", "ㄨ", 0, 2),
+          transitionOccurrence(common, "ㄓ", "ㄨ"),
+        ],
+      }),
+      budget: budget({
+        targetExposures: { minimum: 1, preferred: 2, maximum: 2 },
+        minimumCommonWordShare: 1,
+      }),
+    }));
+
+    expect(result.items.map((item) => item.entry.id)).toEqual([common.id]);
+    expect(result.coverageSummary.commonWordShare).toBe(1);
+    const rareScore = result.selectionTrace[0]?.rankedCandidates
+      .find((candidate) => candidate.candidateEntryId === rare.id);
+    expect(rareScore).toMatchObject({
+      marginalGain: 2,
+      rejectionReasons: expect.arrayContaining(["common-share-unrecoverable"]),
+    });
+  });
+
   it("enforces maximum same-entry repetition", () => {
     const exact = entry("word:repeat", [["ㄓ", "ㄨ", "tone:1"]]);
     const result = composePracticeSequence(input({
