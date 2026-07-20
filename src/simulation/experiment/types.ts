@@ -5,7 +5,11 @@ import type { MeasurementSummary } from "../../measurement/types.js";
 import type { RelationalCatalogReport } from "../../relations/catalog-report.js";
 import type { PartitionDecision, PartitionPolicyOptions } from "../../relations/partition/types.js";
 import type { ConfusionRelationRef } from "../../relations/types.js";
-import type { SyntheticLearnerState, SyntheticTraceBatch } from "../learner/types.js";
+import type {
+  EstimationErrorReport,
+  SyntheticLearnerState,
+  SyntheticTraceBatch,
+} from "../learner/types.js";
 import type {
   RelationalStrategyCell,
   RelationalStrategyMatrixOptions,
@@ -63,6 +67,7 @@ export interface RelationalExperimentRoundRecord {
   readonly sequence: PracticeSequence | null;
   readonly learnerBatch: SyntheticTraceBatch | null;
   readonly cumulativeMeasurement: MeasurementSummary;
+  readonly cumulativeEstimationError: EstimationErrorReport;
   readonly learnerBefore: SyntheticLearnerState;
   readonly learnerAfter: SyntheticLearnerState;
   readonly failures: readonly RelationalExperimentFailure[];
