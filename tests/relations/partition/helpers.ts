@@ -8,6 +8,15 @@ import type { PartitionInput } from "../../../src/relations/partition/types.js";
 import type { CatalogPartition } from "../../../src/relations/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../../../src/scheme/standard-layout.js";
 
+interface StaleIndexFixture {
+  readonly sourceFixture: "feasible" | "infeasible";
+  readonly mutation: {
+    readonly kind: "remove-transition-occurrence";
+    readonly relationKey: string;
+    readonly entryId: string;
+  };
+}
+
 export function createPartitionInput(entries: readonly CatalogEntry[]): PartitionInput {
   const partitionByEntryId = Object.fromEntries(
     entries.map((entry) => [entry.id, "training"] as const),
@@ -17,7 +26,7 @@ export function createPartitionInput(entries: readonly CatalogEntry[]): Partitio
     layoutId: STANDARD_BOPOMOFO_LAYOUT.id,
     partitionByEntryId,
   });
-  return { entries, index: report.index, report };
+  return { entries, report };
 }
 
 export async function readPartitionFixture(
@@ -28,6 +37,38 @@ export async function readPartitionFixture(
     "utf8",
   );
   return JSON.parse(source) as readonly CatalogEntry[];
+}
+
+export async function createStalePartitionInput(): Promise<PartitionInput> {
+  const source = await readFile(
+    new URL("../../../data/fixtures/partition/stale-index.json", import.meta.url),
+    "utf8",
+  );
+  const fixture = JSON.parse(source) as StaleIndexFixture;
+  const input = createPartitionInput(await readPartitionFixture(fixture.sourceFixture));
+  const occurrences = input.report.index.transitionOccurrences[
+    fixture.mutation.relationKey
+  ] ?? [];
+  const staleOccurrences = occurrences.filter(
+    (occurrence) => occurrence.entryId !== fixture.mutation.entryId,
+  );
+  if (staleOccurrences.length === occurrences.length) {
+    throw new Error("stale index fixture did not remove an occurrence");
+  }
+  const staleIndex = {
+    ...input.report.index,
+    transitionOccurrences: {
+      ...input.report.index.transitionOccurrences,
+      [fixture.mutation.relationKey]: staleOccurrences,
+    },
+  };
+  return {
+    entries: input.entries,
+    report: {
+      ...input.report,
+      index: staleIndex,
+    },
+  };
 }
 
 export async function compileRealCatalog(): Promise<readonly CatalogEntry[]> {
