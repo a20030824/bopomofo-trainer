@@ -11,12 +11,14 @@ src/
   core/          Semantic types, identities, invariants.
   scheme/        Bopomofo grammar, tokens, physical layouts.
   catalog/       Source parsing, provenance, validation, compiled entries.
-  relations/     Ordered occurrence indexes and support analysis.
+  reference/     External-source normalization, contribution, manual review queue.
+  relations/     Ordered occurrence indexes, support analysis, partitions.
   practice/      Existing sessions, boundaries, and normalized traces.
   measurement/   Binding, transition, confusion, boundary estimators.
   curriculum/    Objective policies and historical binding-only baseline.
   composition/   Retrieval, candidate costs, ordering, variable sequences.
-  simulation/    Synthetic learners, scenarios, cohorts, experiment runner.
+  simulation/    Synthetic learners, trace generation, experiment contracts.
+  integration/   Cross-module replay proof; no strategy selection logic.
   product/       Existing persistence and browser-product coordination.
   app/           Existing browser observation adapter.
 ```
@@ -26,31 +28,34 @@ Directories may be introduced incrementally. Dependency boundaries matter more t
 ## Dependency direction
 
 ```text
-catalog sources
-      ↓
-catalog compiler → relation index
+external reference bytes → importer → contribution/ranking → manual review queue
+                                                    ✕ no automatic approval
+reviewed catalog → relation index → partition → objective + composer
+                                                   ↓
+latent scenario → synthetic learner ← practice sequence
                          ↓
-latent scenario → objective policy → content query
-                         ↓              ↓
-                    estimator       composer
-                         ↑              ↓
-                generated traces ← practice sequence
-                         ↑
-                 synthetic learner
+                 ordinary raw traces
+                         ↓
+                 Phase 3 measurement
+                         ↓
+             estimate versus hidden truth
 ```
 
-The browser follows the same lower path as a trace source, but is not required by simulation.
+The browser follows the same trace-to-measurement path as a trace source, but is not required by simulation.
 
 Rules:
 
 1. semantic catalog paths never contain physical key codes;
-2. relation indexing depends on ordered syllable paths, not UI exercises;
-3. measurement consumes traces and does not know which strategy selected the text;
-4. objective policies do not directly pick entries;
-5. composition resolves a query against exact occurrence references;
-6. synthetic learners emit normal traces and never expose hidden truth to estimators or curricula;
-7. experiment reports may read hidden truth only after a run for evaluation;
-8. product and app modules contain no research selection algorithm.
+2. external reference candidates stop at a manual review queue and never mutate the reviewed catalog automatically;
+3. relation indexing depends on ordered syllable paths, not UI exercises;
+4. partitions expose training/evaluation support loss, constraints, fallbacks, and metrics;
+5. measurement consumes traces and does not know which strategy selected the text;
+6. objective policies do not directly pick entries;
+7. composition resolves an objective against exact occurrence references and excludes evaluation occurrences;
+8. synthetic learners emit normal traces and never expose hidden truth to estimators or curricula;
+9. experiment reports may read hidden truth only after a run for evaluation;
+10. integration code orchestrates public module APIs and does not reimplement importer, partition, composition, learner, or measurement rules;
+11. product and app modules contain no research selection algorithm.
 
 ## Evidence flow
 
@@ -88,40 +93,65 @@ objective-specific candidate retrieval
 
 Catalog expansion is driven by measured blind spots. New entries must state which unsupported or concentrated relations they improve.
 
+External sources follow a separate path:
+
+```text
+local source bytes
+  → source-specific adapter
+  → normalized candidate or structured row error
+  → contribution ranking
+  → manual review queue
+```
+
+Approval into the reviewed catalog remains an explicit human/review workflow outside the importer and integration harness.
+
 ## Selection pipeline
 
 ### Objective policy
 
 Chooses coverage, binding, transition, confusion, or combined demands. It reports scores, eligibility, support, cooldown, and fallback.
 
-### Content query
+### Partition policy
 
-Translates the objective into target exposures, token/syllable budgets, lexical constraints, repetition limits, and held-out restrictions.
+Chooses evaluation entries while preserving declared training support. It reports every selected/rejected candidate, constraint result, fallback, stability input, and deterministic metrics.
 
 ### Composer
 
-Selects and orders exact supporting entries. It reports candidate costs, objective occurrence references, sequence length, and stop reason.
+Retrieves and orders exact supporting entries under exposure, token, syllable, boundary, common-word, repetition, concentration, and history budgets. It reports candidate costs, occurrence references, sequence length, selection trace, fallback, and stop reason.
 
 The fixed six-entry builder is retained as one baseline composer only.
 
 ## Synthetic experiment flow
 
-1. instantiate latent learner truth and a catalog partition;
-2. choose objective and composition strategies;
-3. build a practice sequence;
-4. generate deterministic traces through the real layout;
-5. aggregate measurements;
+1. instantiate latent learner truth and a reviewed catalog partition;
+2. choose an objective and composition policy;
+3. build a variable-length practice sequence from training occurrences;
+4. generate deterministic traces through a real layout;
+5. aggregate measurements through the existing Phase 3 pipeline;
 6. update latent skill using the declared learning model;
-7. repeat for requested rounds or exposure budget;
-8. compare estimates and outcomes with latent truth;
-9. serialize a deterministic report.
+7. compare estimates with the pre-exposure hidden truth;
+8. serialize deterministic reports.
+
+The integration checkpoint executes one fixed instance of this flow and verifies byte-for-byte replay. Multi-policy, multi-seed, and cohort comparison belongs to the later experiment harness.
+
+## Integration report
+
+The integration module records four connected artifacts without flattening them:
+
+- importer result and manual review queue;
+- partition decision and partitioned relational report;
+- `PracticeSequence` with retrieval, selection, budget, fallback, and stop data;
+- synthetic trace batch with raw traces, Phase 3 measurement, latent updates, estimation error, and digest.
+
+The outer report adds one deterministic digest over the complete canonical structure. The committed fixture is synthetic and does not contain official source rows.
 
 ## Extension seams
 
 Only explicit experimental seams are preserved:
 
 - layout;
-- catalog source and partition;
+- external reference adapter and version;
+- reviewed catalog source and partition;
 - relation index version;
 - estimator policy;
 - objective policy;
@@ -132,10 +162,12 @@ Only explicit experimental seams are preserved:
 
 ## Current artifacts
 
-The interaction spike, local product, pilot history, and auto-advance branch are adapters around already completed work. They are paused while the relational index, synthetic learner, and strategy matrix are designed and tested numerically.
+The relational importer, partition policies, variable-length composer, synthetic trace generator, and single-policy integration replay are implemented. The interaction spike, local product, pilot history, and auto-advance branch remain adapters around completed earlier work and stay paused while the strategy matrix and numeric experiment harness are developed.
 
 ## Deferred
 
+- strategy-matrix comparison across objective/partition/composer/learner combinations;
+- multiple seeds, cohorts, aggregate reports, and confidence/stability analysis;
 - browser presentation of variable-length sequences;
 - additional UI refinement and immediate human pilot;
 - recall curriculum;
