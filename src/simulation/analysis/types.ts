@@ -16,7 +16,8 @@ export interface MetricAnalysisPolicy {
 export interface RelationalAnalysisPolicy {
   readonly schemaVersion: "relational-analysis-policy-v1";
   readonly version: string;
-  readonly maximumFallbackRate: number;
+  readonly maximumBlockingFallbackRate: number;
+  readonly nonBlockingObjectiveFallbackCodes: readonly string[];
   readonly metrics: Readonly<Record<ExperimentMetricKey, MetricAnalysisPolicy>>;
   readonly scenarioPrimaryMetrics: Readonly<Record<string, readonly ExperimentMetricKey[]>>;
 }
@@ -50,9 +51,14 @@ export interface CellScenarioComparison {
   readonly totalRounds: number;
   readonly executableRounds: number;
   readonly fallbackRate: number;
+  readonly blockingFallbackRate: number;
   readonly failureRate: number;
   readonly baselineFallbackRate: number;
+  readonly baselineBlockingFallbackRate: number;
   readonly baselineFailureRate: number;
+  readonly fallbackDelta: number;
+  readonly blockingFallbackDelta: number;
+  readonly failureDelta: number;
   readonly metrics: readonly MetricComparison[];
   readonly recommendation: RecommendationStatus;
   readonly recommendationReasons: readonly string[];
@@ -76,6 +82,7 @@ export interface AxisLevelSummary {
   readonly cellCount: number;
   readonly runCount: number;
   readonly fallbackRate: number;
+  readonly blockingFallbackRate: number;
   readonly failureRate: number;
   readonly metrics: Readonly<Record<ExperimentMetricKey, AnalysisStatistics>>;
 }
