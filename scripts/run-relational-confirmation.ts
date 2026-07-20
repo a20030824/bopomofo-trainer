@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { runRelationalConfirmation } from "../src/simulation/confirmation/report.js";
 import {
+  serializeConfirmationSeedAssessmentsCsv,
   serializeConfirmationSurvivalCsv,
   serializeConfirmationTrajectoriesCsv,
   serializeRelationalConfirmationJson,
@@ -13,6 +14,7 @@ import type { RelationalConfirmationPlan } from "../src/simulation/confirmation/
 const artifactNames = [
   "relational-confirmation.json",
   "relational-confirmation-trajectories.csv",
+  "relational-confirmation-seeds.csv",
   "relational-confirmation-survival.csv",
   "strategy-confirmation.md",
 ] as const;
@@ -41,11 +43,16 @@ async function render(directory: string) {
     ),
     writeFile(
       resolve(directory, artifactNames[2]),
-      serializeConfirmationSurvivalCsv(report),
+      serializeConfirmationSeedAssessmentsCsv(report),
       "utf8",
     ),
     writeFile(
       resolve(directory, artifactNames[3]),
+      serializeConfirmationSurvivalCsv(report),
+      "utf8",
+    ),
+    writeFile(
+      resolve(directory, artifactNames[4]),
       serializeRelationalConfirmationMarkdown(report),
       "utf8",
     ),
