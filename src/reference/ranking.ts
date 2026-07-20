@@ -3,6 +3,7 @@ import { analyzeReferenceContribution } from "./contribution.js";
 import { candidateSemanticIdentity } from "./identity.js";
 import type {
   RankedReferenceCandidate,
+  ReferenceFrequencyPriority,
   ReferenceRankComponents,
   ReferenceRankingProfile,
   ReferenceReviewExclusion,
@@ -10,9 +11,13 @@ import type {
 } from "./ranking-types.js";
 import type { ReferenceCandidate } from "./types.js";
 
+export const DEFAULT_REFERENCE_FREQUENCY_PRIORITY: ReferenceFrequencyPriority =
+  "oral-then-written";
+
 export interface ReferenceRankingOptions {
   readonly reviewedIdentities: ReadonlySet<string>;
   readonly excludedCandidateIds?: ReadonlySet<string>;
+  readonly frequencyPriority?: ReferenceFrequencyPriority;
 }
 
 function compareText(left: string, right: string): number {
@@ -39,10 +44,15 @@ function componentsFor(
   };
 }
 
-function commonTail(components: ReferenceRankComponents): readonly number[] {
+function commonTail(
+  components: ReferenceRankComponents,
+  frequencyPriority: ReferenceFrequencyPriority,
+): readonly number[] {
+  const frequency = frequencyPriority === "oral-then-written"
+    ? [components.oralPerMillion ?? -1, components.writtenPerMillion ?? -1]
+    : [components.writtenPerMillion ?? -1, components.oralPerMillion ?? -1];
   return [
-    components.oralPerMillion ?? -1,
-    components.writtenPerMillion ?? -1,
+    ...frequency,
     components.levelOrdinal === null ? -1_000_000 : -components.levelOrdinal,
     -components.tokenCount,
   ];
@@ -51,6 +61,7 @@ function commonTail(components: ReferenceRankComponents): readonly number[] {
 function priorityVector(
   profile: ReferenceRankingProfile,
   components: ReferenceRankComponents,
+  frequencyPriority: ReferenceFrequencyPriority,
 ): readonly number[] {
   const bindingRepair = components.partitionRepairBindingCount;
   const transitionRepair = components.partitionRepairTransitionCount;
@@ -69,7 +80,7 @@ function priorityVector(
       bindingRare + transitionRare,
       bindingDeficit + transitionDeficit,
       newBinding + newTransition,
-      ...commonTail(components),
+      ...commonTail(components, frequencyPriority),
     ];
   }
   if (profile === "binding-broadening") {
@@ -82,7 +93,7 @@ function priorityVector(
       transitionRare,
       transitionDeficit,
       newTransition,
-      ...commonTail(components),
+      ...commonTail(components, frequencyPriority),
     ];
   }
   if (profile === "transition-broadening") {
@@ -95,7 +106,7 @@ function priorityVector(
       bindingRare,
       bindingDeficit,
       newBinding,
-      ...commonTail(components),
+      ...commonTail(components, frequencyPriority),
     ];
   }
   return [
@@ -107,7 +118,7 @@ function priorityVector(
     transitionDeficit,
     bindingRepair,
     bindingDeficit,
-    ...commonTail(components),
+    ...commonTail(components, frequencyPriority),
   ];
 }
 
@@ -127,6 +138,8 @@ export function buildReferenceReviewQueue(
   options: ReferenceRankingOptions,
 ): ReferenceReviewQueue {
   const excludedCandidateIds = options.excludedCandidateIds ?? new Set<string>();
+  const frequencyPriority = options.frequencyPriority
+    ?? DEFAULT_REFERENCE_FREQUENCY_PRIORITY;
   const seenIds = new Set<string>();
   const seenIdentities = new Set<string>();
   const ranked: Omit<RankedReferenceCandidate, "rank">[] = [];
@@ -175,8 +188,9 @@ export function buildReferenceReviewQueue(
       candidate,
       contribution,
       profile,
+      frequencyPriority,
       components,
-      priorityVector: priorityVector(profile, components),
+      priorityVector: priorityVector(profile, components, frequencyPriority),
     });
   }
 
@@ -187,6 +201,7 @@ export function buildReferenceReviewQueue(
 
   return {
     profile,
+    frequencyPriority,
     ranked: ranked.map((candidate, index) => ({ ...candidate, rank: index + 1 })),
     excluded: excluded.sort((left, right) =>
       compareText(left.candidateId, right.candidateId)
