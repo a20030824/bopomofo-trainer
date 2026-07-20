@@ -30,6 +30,25 @@ describe("relational catalog index", () => {
     expect(result.tokenCount).toBe(7);
     expect(result.transitionCount).toBe(5);
 
+    const zhiBinding = result.bindingOccurrences[bindingRelationKey(zhuyinToken("ㄓ"))];
+    expect(zhiBinding).toEqual([
+      expect.objectContaining({
+        entryId: entry.id,
+        syllableIndex: 0,
+        tokenIndex: 0,
+        context: "syllable-start",
+        entryInitial: true,
+      }),
+    ]);
+
+    const secondSyllableWu = result.bindingOccurrences[bindingRelationKey(zhuyinToken("ㄨ"))]
+      ?.find((occurrence) => occurrence.syllableIndex === 1);
+    expect(secondSyllableWu).toMatchObject({
+      tokenIndex: 0,
+      context: "syllable-start",
+      entryInitial: false,
+    });
+
     const zhiToWu = result.transitionOccurrences[
       transitionRelationKey(zhuyinToken("ㄓ"), zhuyinToken("ㄨ"))
     ];
@@ -48,11 +67,26 @@ describe("relational catalog index", () => {
 
     const firstTone = result.bindingOccurrences[bindingRelationKey(toneToken(1))];
     expect(firstTone).toEqual([
-      expect.objectContaining({ context: "tone", syllableIndex: 0, tokenIndex: 3 }),
+      expect.objectContaining({
+        context: "tone",
+        syllableIndex: 0,
+        tokenIndex: 3,
+        entryInitial: false,
+      }),
     ]);
   });
 
-  it("includes theoretical unsupported relations and deterministic support", () => {
+  it("rejects missing and unknown partition references", () => {
+    expect(() => indexCatalogOccurrences([entry], {})).toThrow(
+      `missing catalog partition for entry: ${entry.id}`,
+    );
+    expect(() => indexCatalogOccurrences([entry], {
+      ...partitions,
+      "word:unknown:test": "evaluation",
+    })).toThrow("catalog partition references unknown entry: word:unknown:test");
+  });
+
+  it("includes grammar-supported unsupported relations and deterministic support", () => {
     const index = createCatalogRelationIndex([entry], {
       mode: "guided",
       layoutId: "zhuyin-standard",
@@ -78,6 +112,7 @@ describe("relational catalog index", () => {
       partitionByEntryId: partitions,
     });
     expect(JSON.stringify(reportA)).toBe(JSON.stringify(reportB));
+    expect(reportA.analyzedRelationKinds).toEqual(["binding", "transition"]);
     expect(reportA.unsupportedTransitionKeys.length).toBeGreaterThan(0);
   });
 });
