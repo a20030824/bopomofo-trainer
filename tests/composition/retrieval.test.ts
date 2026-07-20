@@ -10,6 +10,7 @@ import {
   input,
   relationIndex,
   transitionObjective,
+  transitionOccurrence,
 } from "./helpers.js";
 
 interface TransitionFixture {
@@ -92,6 +93,42 @@ describe("composition retrieval", () => {
         reason: "invalid-index-occurrence",
       }),
     ]));
+  });
+
+  it("rejects a relation index whose support scope differs from the objective", () => {
+    const exact = entry("word:scope", [["ㄓ", "ㄨ", "tone:1"]]);
+    const index = relationIndex({
+      transitions: [transitionOccurrence(exact, "ㄓ", "ㄨ")],
+    });
+    const key = Object.keys(index.support)[0]!;
+    const summary = index.support[key]!;
+    const mismatched = {
+      ...index,
+      support: {
+        ...index.support,
+        [key]: {
+          ...summary,
+          relation: {
+            kind: "transition" as const,
+            scope: {
+              ...summary.relation.scope,
+              layoutId: "different-layout",
+              fromToken: "ㄓ",
+              toToken: "ㄨ",
+            },
+          },
+        },
+      },
+    };
+    const sequence = composePracticeSequence(input({
+      entries: [exact],
+      index: mismatched,
+    }));
+
+    expect(sequence.items).toEqual([]);
+    expect(sequence.retrievalTrace.exclusions).toContainEqual(expect.objectContaining({
+      reason: "inconsistent-objective-scope",
+    }));
   });
 
   it("retains binding context instead of flattening occurrences", () => {
