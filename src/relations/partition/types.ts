@@ -1,6 +1,5 @@
 import type { CatalogEntry } from "../../core/model.js";
 import type { RelationalCatalogReport } from "../catalog-report.js";
-import type { CatalogRelationIndex } from "../types.js";
 
 export type PartitionPolicyId =
   | "binding-preserving-baseline-v1"
@@ -11,7 +10,6 @@ export type PartitionPolicyId =
 
 export interface PartitionInput {
   readonly entries: readonly CatalogEntry[];
-  readonly index: CatalogRelationIndex;
   readonly report: RelationalCatalogReport;
 }
 
