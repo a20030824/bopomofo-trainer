@@ -1,0 +1,23 @@
+[
+  {
+    "id": "missing-tone",
+    "text": "媽",
+    "reading": "ㄇㄚ",
+    "oral": null,
+    "written": 0
+  },
+  {
+    "id": "multiple",
+    "text": "行",
+    "reading": ["ㄒㄧㄥˊ", "ㄏㄤˊ"],
+    "oral": 1,
+    "written": 1
+  },
+  {
+    "id": "accepted",
+    "text": "媽",
+    "reading": "ㄇㄚ1",
+    "oral": 0,
+    "written": null
+  }
+]

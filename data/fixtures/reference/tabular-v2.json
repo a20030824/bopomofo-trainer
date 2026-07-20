@@ -1,0 +1,13 @@
+[
+  {
+    "record_id": "1",
+    "headword": "可樂",
+    "bopomofo": "ㄎㄜˇ ㄌㄜˋ",
+    "oral_per_million": 12.5,
+    "written_per_million": 0,
+    "grade": "A",
+    "grade_order": 1,
+    "topics": ["常用", "飲食"],
+    "record_url": "https://example.invalid/record/1"
+  }
+]
