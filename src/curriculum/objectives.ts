@@ -1,4 +1,10 @@
-import type { RelationKind, RelationRef } from "../relations/types.js";
+import type {
+  BindingRelationRef,
+  ConfusionRelationRef,
+  RelationKind,
+  RelationRef,
+  TransitionRelationRef,
+} from "../relations/types.js";
 
 export interface RelationDemand {
   readonly relation: RelationRef;
@@ -14,8 +20,16 @@ export type RelationObjective =
       readonly relationKinds: readonly RelationKind[];
     }
   | {
-      readonly kind: "binding" | "transition" | "confusion";
-      readonly relation: RelationRef;
+      readonly kind: "binding";
+      readonly relation: BindingRelationRef;
+    }
+  | {
+      readonly kind: "transition";
+      readonly relation: TransitionRelationRef;
+    }
+  | {
+      readonly kind: "confusion";
+      readonly relation: ConfusionRelationRef;
     }
   | {
       readonly kind: "combined";
