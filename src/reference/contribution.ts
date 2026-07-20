@@ -91,9 +91,9 @@ export function analyzeReferenceContribution(
     occurrenceCounts: Object.fromEntries(
       [...counts.entries()].sort(([left], [right]) => compareText(left, right)),
     ),
-    bindingKeys: sort(bindingKeys),
-    transitionKeys: sort(transitionKeys),
-    entryInitialBindingKeys: sort(entryInitialBindingKeys),
+    bindingKeys: sort([...bindingKeys]),
+    transitionKeys: sort([...transitionKeys]),
+    entryInitialBindingKeys: sort([...entryInitialBindingKeys]),
     partitionRepairBindingKeys: sort(partitionRepairBindingKeys),
     partitionRepairTransitionKeys: sort(partitionRepairTransitionKeys),
     rareOnlyBindingKeys: sort(rareOnlyBindingKeys),
