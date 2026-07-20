@@ -65,7 +65,7 @@ jobs:
           name: experiment-failure-log
           path: experiment.log
       - name: Verify relational strategy analysis
-        run: npx tsx scripts/analyze-relational-experiments.ts --verify --output-dir analysis-artifacts
+        run: npm run analysis:relational -- --output-dir analysis-artifacts
       - name: Upload relational strategy analysis
         uses: actions/upload-artifact@v4
         with:
