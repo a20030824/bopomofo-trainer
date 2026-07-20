@@ -2,7 +2,6 @@ import type { CatalogEntry, PracticeMode } from "../core/model.js";
 import type {
   CatalogPartition,
   CatalogRelationIndex,
-  RelationKind,
   RelationSupportSummary,
 } from "./types.js";
 import { createCatalogRelationIndex } from "./catalog-index.js";
@@ -34,8 +33,12 @@ export interface RelationalCatalogReport {
   readonly schemaVersion: "relational-catalog-v1";
   readonly mode: PracticeMode;
   readonly layoutId: string;
+  readonly analyzedRelationKinds: readonly ["binding", "transition"];
   readonly totals: RelationalCatalogTotals;
-  readonly stateCounts: Readonly<Record<RelationKind, RelationStateCounts>>;
+  readonly stateCounts: {
+    readonly binding: RelationStateCounts;
+    readonly transition: RelationStateCounts;
+  };
   readonly partitionSupportLossKeys: readonly string[];
   readonly rareOnlyKeys: readonly string[];
   readonly concentratedKeys: readonly string[];
@@ -115,10 +118,12 @@ export function createRelationalCatalogReport(
     if (summary.supportState === "concentrated") concentratedKeys.push(key);
   }
 
-  const trainingEntries = Object.values(options.partitionByEntryId)
-    .filter((partition) => partition === "training").length;
-  const evaluationEntries = Object.values(options.partitionByEntryId)
-    .filter((partition) => partition === "evaluation").length;
+  const trainingEntries = entries.filter(
+    (entry) => options.partitionByEntryId[entry.id] === "training",
+  ).length;
+  const evaluationEntries = entries.filter(
+    (entry) => options.partitionByEntryId[entry.id] === "evaluation",
+  ).length;
   const bindingRelations = Object.values(index.support)
     .filter((summary) => summary.relation.kind === "binding").length;
   const transitionRelations = Object.values(index.support)
@@ -128,6 +133,7 @@ export function createRelationalCatalogReport(
     schemaVersion: "relational-catalog-v1" as const,
     mode: options.mode,
     layoutId: options.layoutId,
+    analyzedRelationKinds: ["binding", "transition"] as const,
     totals: {
       entries: entries.length,
       trainingEntries,
@@ -143,7 +149,6 @@ export function createRelationalCatalogReport(
     stateCounts: {
       binding: bindingCounts,
       transition: transitionCounts,
-      confusion: emptyStateCounts(),
     },
     partitionSupportLossKeys,
     rareOnlyKeys,
