@@ -2,6 +2,7 @@ import { RELATIONAL_EXPERIMENT_METRIC_KEYS } from "../experiment/report.js";
 import type {
   RelationalExperimentAggregate,
   RelationalExperimentReport,
+  RelationalExperimentRunRecord,
 } from "../experiment/types.js";
 import type { RelationalStrategyCell } from "../strategy-matrix.js";
 import type {
@@ -74,8 +75,7 @@ function metricComparison(
   const relativeImprovement = improvement === null || baselineMean === 0
     ? null
     : improvement / Math.abs(baselineMean);
-  const absolutePass = improvement !== null
-    && improvement >= rule.materialAbsoluteDelta;
+  const absolutePass = improvement !== null && improvement >= rule.materialAbsoluteDelta;
   const relativePass = rule.materialRelativeDelta === 0
     || baselineMean === 0
     || (relativeImprovement !== null && relativeImprovement >= rule.materialRelativeDelta);
@@ -102,6 +102,7 @@ function metricComparison(
 function classify(
   cellId: string,
   scenarioId: string,
+  executableRounds: number,
   fallbackRate: number,
   failureRate: number,
   metrics: readonly MetricComparison[],
@@ -110,6 +111,10 @@ function classify(
 ): Pick<CellScenarioComparison, "recommendation" | "recommendationReasons"> {
   const reasons: string[] = [];
   let rejected = false;
+  if (executableRounds === 0) {
+    rejected = true;
+    reasons.push("zero-executable-rounds");
+  }
   if (failureRate > 0) {
     rejected = true;
     reasons.push("non-zero-failure-rate");
@@ -151,6 +156,14 @@ function classify(
   };
 }
 
+function executionCounts(runs: readonly RelationalExperimentRunRecord[]) {
+  const totalRounds = runs.reduce((sum, run) => sum + run.rounds.length, 0);
+  const executableRounds = runs.reduce((sum, run) => sum + run.rounds.filter((round) =>
+    round.learnerBatch !== null
+  ).length, 0);
+  return { totalRounds, executableRounds };
+}
+
 export function compareExperimentCells(
   report: RelationalExperimentReport,
   baselineCellId: string,
@@ -160,17 +173,24 @@ export function compareExperimentCells(
   const aggregates = new Map(report.aggregates.map((item) => [
     aggregateKey(item.cellId, item.scenarioId), item,
   ] as const));
+  const runGroups = new Map<string, RelationalExperimentRunRecord[]>();
+  for (const run of report.runs) {
+    const key = aggregateKey(run.cell.id, run.scenarioId);
+    runGroups.set(key, [...(runGroups.get(key) ?? []), run]);
+  }
   const comparisons: CellScenarioComparison[] = [];
   for (const aggregate of report.aggregates) {
+    const key = aggregateKey(aggregate.cellId, aggregate.scenarioId);
     const baseline = aggregates.get(aggregateKey(baselineCellId, aggregate.scenarioId));
     if (baseline === undefined) throw new Error(`missing baseline aggregate for ${aggregate.scenarioId}`);
     const cell = cells.get(aggregate.cellId);
     if (cell === undefined) throw new Error(`missing cell definition for ${aggregate.cellId}`);
-    const metrics = RELATIONAL_EXPERIMENT_METRIC_KEYS.map((key) =>
-      metricComparison(key, aggregate, baseline, policy)
+    const counts = executionCounts(runGroups.get(key) ?? []);
+    const metrics = RELATIONAL_EXPERIMENT_METRIC_KEYS.map((metric) =>
+      metricComparison(metric, aggregate, baseline, policy)
     );
     const classification = classify(
-      aggregate.cellId, aggregate.scenarioId,
+      aggregate.cellId, aggregate.scenarioId, counts.executableRounds,
       aggregate.fallbackRate, aggregate.failureRate,
       metrics, policy, baselineCellId,
     );
@@ -185,6 +205,7 @@ export function compareExperimentCells(
         learner: cell.learnerModelId,
       },
       runCount: aggregate.runCount,
+      ...counts,
       fallbackRate: aggregate.fallbackRate,
       failureRate: aggregate.failureRate,
       baselineFallbackRate: baseline.fallbackRate,
