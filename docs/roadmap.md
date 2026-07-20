@@ -30,7 +30,7 @@ Connected the baseline to a local browser product, held-out evaluation, persiste
 
 # Phase 7 — Relational catalog and synthetic curriculum experiments
 
-Human pilot and further UI work are paused until Phase 7 is coherent.
+Human pilot and further UI work are paused until Phase 7 reports are reviewed.
 
 ## Phase 7A — Research reframing and semantic contracts
 
@@ -57,7 +57,7 @@ Deliverables:
 - frequency, provenance, tag, occurrence, and distinct-entry support reports;
 - entry and lexical-family concentration metrics;
 - held-out support-loss checks;
-- possible expected/actual contrast pools for confusion objectives;
+- directional expected/actual contrast pools for confusion objectives;
 - explicit unsupported, rare-only, and weakly supported relation lists;
 - deterministic external-reference importing into a structured manual review queue;
 - relation-support-preserving partition policies with constraints, fallbacks, and metrics.
@@ -151,42 +151,53 @@ Exit condition: `npm run strategy:matrix` is input-order invariant, every declar
 
 Goal: execute matrix cells numerically across controlled learner scenarios.
 
-Required scenarios:
+Implemented deliverables:
 
-- one weak binding;
-- one weak transition with strong component bindings;
-- asymmetric confusion;
-- competing binding and transition weaknesses;
-- rare unsupported relation;
-- heterogeneous improvement rates;
-- noisy and boundary-heavy learners;
-- multiple seeds and learner cohorts.
+- executable adapters for all five objective selectors, five partition policies, five composers, and the current learner model;
+- production directional confusion contrast pools included in canonical relational-report digests;
+- deterministic cell/scenario/seed/round execution with stage-specific derived seeds;
+- cumulative Phase 3 measurement and current pre-exposure latent-error comparison;
+- local partition, objective, composition, and learner failure records;
+- explicit null reasons for metrics that are not identifiable;
+- aggregate sample counts, missing counts, means, sample standard deviations, and descriptive 95% intervals;
+- canonical JSON, aggregate CSV, and Markdown reports;
+- byte-for-byte replay of the committed cohort.
 
-Reports include:
+The committed cohort runs:
 
-- node and edge coverage;
-- estimation error against latent truth;
+```text
+125 strategy cells
+× 3 learner scenarios
+× 2 seeds
+= 750 runs
+× 2 rounds
+= 1,500 rounds
+```
+
+Reported metrics include:
+
+- relation coverage;
+- cumulative estimation error against latent truth;
 - weakness-identification delay;
-- target exposure lift over baseline;
-- held-out path performance;
+- target exposure per token;
+- explicit transfer proxy when identifiable;
 - confusion reduction;
-- sequence-length distribution;
-- frequency and lexical diversity;
-- repetition and concentration;
-- unsupported and fallback rates;
-- stability across seeds;
-- JSON, CSV, and Markdown outputs with a determinism digest.
+- lexical concentration and repetition;
+- fallback and failure rates;
+- token cost per normalized latent improvement;
+- descriptive stability across seeds and cohorts.
 
-Exit condition: strategy differences are reproducible, explainable, and not artifacts of one fixed word count, one partition, one word picker, one learner, or one seed.
+Exit condition: `npm run experiment:relational` reproduces JSON, CSV, and Markdown byte-for-byte; failed cells remain in the report; evaluation entries never update learner measurements; and objective selectors never receive hidden truth.
 
-## After Phase 7
+## Next research checkpoint — report interpretation and strategy selection
 
-Only after reviewing the relational architecture and numeric reports should the project decide:
+Before resuming product work:
 
-- which catalog relations require more real words;
-- which estimator and strategy deserve browser integration;
-- how a variable-length sequence is presented to a person;
-- whether auto-advance or round boundaries still make sense;
-- what limited human experiment is needed to challenge simulation assumptions.
+- inspect aggregate failure/fallback patterns across cells;
+- identify strategies whose apparent gains depend on unsupported relations or missing metrics;
+- compare estimators and composers against the fixed historical baseline;
+- decide which additional scenarios, seeds, catalog relations, or learner models are needed;
+- choose whether any strategy is mature enough for a limited browser adapter experiment;
+- define a narrowly scoped human study that challenges, rather than assumes, simulation validity.
 
-Recall mode, alternate layouts, accounts, cloud sync, and further product refinement remain deferred.
+Recall mode, alternate layouts, accounts, cloud sync, PR #18 auto-advance, human pilot, and further product refinement remain deferred.
