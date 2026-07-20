@@ -42,18 +42,26 @@ async function smallPlan(): Promise<RelationalExperimentPlan> {
 }
 
 describe("relational experiment harness", () => {
-  it("preserves every cell and records local learner failures", async () => {
+  it("preserves every cell and contains unknown learner failures locally", async () => {
     const report = runRelationalExperiments(await smallPlan());
-    expect(report.runCount).toBe(16);
-    expect(report.runs.filter(
+    const missing = report.runs.filter(
       (run) => run.cell.learnerModelId === "missing-test-model-v1",
-    )).toHaveLength(8);
-    expect(report.runs.filter(
-      (run) => run.cell.learnerModelId === "missing-test-model-v1",
-    ).every((run) => run.failureCount > 0)).toBe(true);
-    expect(report.runs.filter(
+    );
+    const registered = report.runs.filter(
       (run) => run.cell.learnerModelId === "synthetic-relational-v1",
-    ).some((run) => run.failureCount === 0)).toBe(true);
+    );
+
+    expect(report.runCount).toBe(16);
+    expect(missing).toHaveLength(8);
+    expect(missing.every((run) => run.rounds.some((round) =>
+      round.failures.some((failure) => failure.stage === "learner")
+    ))).toBe(true);
+    expect(registered.every((run) => run.rounds.every((round) =>
+      round.failures.every((failure) => failure.stage !== "learner")
+    ))).toBe(true);
+    expect(registered.some((run) =>
+      run.rounds.some((round) => round.learnerBatch !== null)
+    )).toBe(true);
   });
 
   it("never selects an evaluation entry for learner exposure", async () => {
