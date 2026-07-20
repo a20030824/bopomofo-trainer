@@ -83,7 +83,8 @@ export type RetrievalExclusionReason =
   | "duplicate-index-occurrence"
   | "confusion-pool-missing"
   | "coverage-objective-requires-explicit-demands"
-  | "inconsistent-objective-scope";
+  | "inconsistent-objective-scope"
+  | "invalid-budget";
 
 export interface RetrievalExclusion {
   readonly entryId: string | null;
