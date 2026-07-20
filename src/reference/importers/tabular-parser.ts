@@ -8,6 +8,14 @@ export type ParsedTabularRecord =
   | { readonly ok: true; readonly inputIndex: number; readonly record: ReferenceTabularRecord }
   | { readonly ok: false; readonly error: ReferenceAdapterRowError };
 
+interface ParsedCsvCells {
+  readonly records: readonly (readonly string[])[];
+  readonly unterminatedTail: {
+    readonly values: readonly string[];
+    readonly quotedFieldIndex: number;
+  } | null;
+}
+
 function recoverSourceRowId(value: unknown): string | null {
   if (typeof value !== "string"
     && typeof value !== "number"
@@ -18,7 +26,7 @@ function recoverSourceRowId(value: unknown): string | null {
   return normalized.length > 0 ? normalized : null;
 }
 
-function parseCsvCells(input: string, delimiter: string): readonly (readonly string[])[] {
+function parseCsvCells(input: string, delimiter: string): ParsedCsvCells {
   if ([...delimiter].length !== 1) {
     throw new TypeError("csv delimiter must contain exactly one character");
   }
@@ -26,6 +34,7 @@ function parseCsvCells(input: string, delimiter: string): readonly (readonly str
   let record: string[] = [];
   let field = "";
   let inQuotes = false;
+  let quotedFieldIndex: number | null = null;
 
   for (let index = 0; index < input.length; index += 1) {
     const character = input[index]!;
@@ -36,6 +45,7 @@ function parseCsvCells(input: string, delimiter: string): readonly (readonly str
           index += 1;
         } else {
           inQuotes = false;
+          quotedFieldIndex = null;
         }
       } else {
         field += character;
@@ -45,6 +55,7 @@ function parseCsvCells(input: string, delimiter: string): readonly (readonly str
 
     if (character === '"' && field.length === 0) {
       inQuotes = true;
+      quotedFieldIndex = record.length;
       continue;
     }
     if (character === delimiter) {
@@ -63,12 +74,21 @@ function parseCsvCells(input: string, delimiter: string): readonly (readonly str
     field += character;
   }
 
-  if (inQuotes) throw new TypeError("csv input ends inside a quoted field");
+  if (inQuotes) {
+    record.push(field);
+    return {
+      records,
+      unterminatedTail: {
+        values: record,
+        quotedFieldIndex: quotedFieldIndex ?? Math.max(record.length - 1, 0),
+      },
+    };
+  }
   if (field.length > 0 || record.length > 0) {
     record.push(field);
     records.push(record);
   }
-  return records;
+  return { records, unterminatedTail: null };
 }
 
 function csvRecords(
@@ -76,7 +96,8 @@ function csvRecords(
   delimiter: string,
   sourceRowIdColumn: string,
 ): readonly ParsedTabularRecord[] {
-  const records = parseCsvCells(input, delimiter);
+  const parsedCells = parseCsvCells(input, delimiter);
+  const records = parsedCells.records;
   const headerRow = records[0];
   if (headerRow === undefined) throw new TypeError("csv input must contain a header row");
   const headers = headerRow.map((header, index) =>
@@ -90,7 +111,7 @@ function csvRecords(
   }
   const sourceRowIdIndex = headers.indexOf(sourceRowIdColumn);
 
-  return records.slice(1).map((values, rowOffset): ParsedTabularRecord => {
+  const results = records.slice(1).map((values, rowOffset): ParsedTabularRecord => {
     const inputIndex = rowOffset;
     if (values.length !== headers.length) {
       return {
@@ -115,6 +136,29 @@ function csvRecords(
     });
     return { ok: true, inputIndex, record };
   });
+
+  if (parsedCells.unterminatedTail !== null) {
+    const tail = parsedCells.unterminatedTail;
+    results.push({
+      ok: false,
+      error: {
+        inputIndex: results.length,
+        sourceRowId: sourceRowIdIndex < 0
+          ? null
+          : recoverSourceRowId(tail.values[sourceRowIdIndex]),
+        code: "malformed_tabular_row",
+        message: "csv input ends inside a quoted field",
+        details: {
+          parseFailure: "unterminated_quoted_field",
+          quotedFieldIndex: tail.quotedFieldIndex,
+          expectedFieldCount: headers.length,
+          actualFieldCount: tail.values.length,
+        },
+      },
+    });
+  }
+
+  return results;
 }
 
 function validJsonValue(value: unknown): value is ReferenceTabularValue {
