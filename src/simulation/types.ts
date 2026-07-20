@@ -4,6 +4,8 @@ import type {
   PracticeSequence,
 } from "../composition/types.js";
 import type { ObjectiveStrategyId } from "../curriculum/objectives.js";
+import type { PartitionPolicyId } from "../relations/partition/types.js";
+import type { RelationalLearnerModelId } from "./strategy-matrix.js";
 
 export interface ProbabilityLatent {
   readonly initial: number;
@@ -66,7 +68,9 @@ export interface SyntheticScenario {
 
 export interface ExperimentStrategy {
   readonly objectiveStrategy: ObjectiveStrategyId;
+  readonly partitionStrategy: PartitionPolicyId;
   readonly compositionStrategy: CompositionStrategyId;
+  readonly learnerModel: RelationalLearnerModelId;
 }
 
 export interface SequenceSimulationRecord {
