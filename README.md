@@ -36,11 +36,14 @@ Phase 7 now includes:
 - Phase 3-backed estimates, estimation-error reports, and deterministic replay;
 - a deterministic four-axis strategy matrix;
 - a seeded cohort experiment harness with local failure/fallback accounting;
-- a versioned analysis layer with fixed-baseline comparisons, balanced axis summaries, failure/fallback clusters, and reproducible findings.
+- a versioned analysis layer with fixed-baseline comparisons, balanced axis summaries, failure/fallback clusters, and reproducible findings;
+- a targeted candidate-confirmation harness with per-seed decisions, per-round trajectories, matched composer ablations, anchor scenarios, and byte-for-byte findings verification.
 
-The committed cohort executes all 125 objective/partition/composer/learner cells across three synthetic learner scenarios, two seeds, and two adaptive rounds: 750 runs and 1,500 rounds. Objective selectors observe cumulative Phase 3 measurements and catalog support, never hidden learner truth. Metrics that are not identifiable remain `null` with an explicit reason.
+The committed factorial cohort executes all 125 objective/partition/composer/learner cells across three synthetic learner scenarios, two seeds, and two adaptive rounds: 750 runs and 1,500 rounds. Objective selectors observe cumulative Phase 3 measurements and catalog support, never hidden learner truth. Metrics that are not identifiable remain `null` with an explicit reason.
 
-The canonical Phase 7G analysis found no failed or zero-execution cell after repairing partition validation for declared confusion pools. Under the versioned `phase-7g-v2` guardrails, two cell/scenario combinations are policy-compatible candidates, five are inconclusive, and 368 are rejected. These are synthetic-cohort findings, not production recommendations or evidence of human learning effectiveness.
+The canonical Phase 7G analysis found no failed or zero-execution cell after repairing partition validation for declared confusion pools. Under the versioned `phase-7g-v2` guardrails, two cell/scenario combinations were policy-compatible candidates, five were inconclusive, and 368 were rejected. Those candidates were follow-up targets, not production recommendations.
+
+Phase 7H then challenged the historical baseline, both candidates, six matched composer ablations, and two transition-aware diagnostics across seven scenarios, ten deterministic seeds, and eight adaptive rounds: 770 runs and 6,160 rounds. Under `phase-7h-v2`, neither Phase 7G candidate survived its anchor scenario. All matched composer ablations and transition-aware diagnostic hypotheses were also rejected. The repository therefore selects no product strategy from this cohort; fixed-six is not promoted as a winner, and UI or human-pilot work remains deferred.
 
 The existing timed-binding score is retained as a historical baseline. Clean within-syllable inter-key latency is treated primarily as transition-edge evidence, not an independently identifiable destination-token speed.
 
@@ -54,16 +57,18 @@ npm run integration:research
 npm run strategy:matrix
 npm run experiment:relational
 npm run analysis:relational
+npm run confirmation:relational
 npm run curriculum:simulate
 npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
 - `npm run integration:research` verifies the single-policy cross-module fixture twice.
 - `npm run strategy:matrix` verifies the complete declaration matrix and digest.
-- `npm run experiment:relational` executes the full committed cohort twice and requires byte-for-byte identical JSON, CSV, and Markdown outputs.
-- `npm run analysis:relational` reproduces the analysis outputs and requires the committed strategy findings to match byte-for-byte.
+- `npm run experiment:relational` executes the full committed factorial cohort twice and requires byte-for-byte identical JSON, CSV, and Markdown outputs.
+- `npm run analysis:relational` reproduces the factorial analysis outputs and requires the committed strategy findings to match byte-for-byte.
+- `npm run confirmation:relational` executes the targeted extended cohort twice, verifies JSON and all CSV/Markdown artifacts byte-for-byte, and requires the committed confirmation findings to match.
 
-The browser can still be run with `npm run dev`, but further UI work is deferred until the candidate evidence is challenged with additional scenarios, seeds, and a deliberately scoped follow-up experiment.
+The browser can still be run with `npm run dev`, but further UI work is deferred. The next research decision must address the identified catalog-support, measurement-identifiability, concentration, and sustained-improvement limitations before proposing another strategy or browser experiment.
 
 ## Principles
 
@@ -77,8 +82,9 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - External reference candidates stop at a manual review queue; they never enter the reviewed catalog automatically.
 - Unsupported or failed matrix cells remain in reports; failure rates cannot be improved by silently dropping runs.
 - Bootstrap fallbacks remain visible but are separated from blocking fallbacks by a versioned analysis policy.
+- Confirmation decisions preserve every seed, anchor scenario, matched reference, and material trajectory reversal.
 - Simulation can validate internal behavior, identifiability, replayability, and strategy differences; it cannot prove human learning effectiveness.
-- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, integration, experiment reporting, and findings analysis remain separate modules.
+- UI, persistence, measurement, relational indexing, curriculum, composition, simulation, integration, experiment reporting, findings analysis, and candidate confirmation remain separate modules.
 
 ## Documents
 
@@ -92,6 +98,7 @@ The browser can still be run with `npm run dev`, but further UI work is deferred
 - [Relational strategy matrix](docs/research/strategy-matrix.md)
 - [Relational experiment harness](docs/research/experiment-harness.md)
 - [Relational strategy findings](docs/research/strategy-findings.md)
+- [Relational strategy confirmation](docs/research/strategy-confirmation.md)
 - [Measurement policy](docs/measurement-policy.md)
 - [Binding-only curriculum baseline](docs/curriculum-simulator.md)
 - [Existing browser adapter](docs/thin-product-prototype.md)
