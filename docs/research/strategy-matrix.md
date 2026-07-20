@@ -22,7 +22,7 @@ Declared objective strategy IDs:
 
 ### Partition policy
 
-The partition policy receives reviewed catalog entries and a canonical relational report. It returns a `PartitionDecision` with selected training/evaluation entries, hard/soft constraints, fallbacks, selection trace, metrics, and deterministic digest.
+The partition policy receives reviewed catalog entries, a canonical relational report, explicit policy options, and an execution seed. It returns a `PartitionDecision` with selected training/evaluation entries, hard/soft constraints, fallbacks, selection trace, metrics, and deterministic digest. Non-seeded policies accept the same uniform seed input and may explicitly ignore it.
 
 Declared partition policy IDs:
 
@@ -85,7 +85,7 @@ binding-only-baseline
 + synthetic-relational-v1
 ```
 
-The matrix constructor rejects custom subsets that remove this baseline. Comparisons therefore cannot silently redefine the baseline after results are produced.
+The matrix constructor rejects custom subsets that remove this baseline. Comparisons therefore cannot silently redefine the baseline after results are produced, even when additional learner model IDs sort before the baseline model.
 
 ## Replaceable interfaces
 
@@ -96,7 +96,7 @@ The matrix module exports four adapter interfaces:
 - `PracticeComposerStrategy`
 - `LearnerModelStrategy`
 
-The adapter ID must match its declared axis. Implementations may close over policy-specific configuration, but the simulator must receive adapters rather than hard-code a single objective, partition, composer, or learner path.
+The adapter ID must match its declared axis. Execution inputs such as random sources, policy options, partition seeds, learner seeds, timestamps, and retention steps are passed through the adapter contracts rather than hidden in matrix cells or hard-coded into one simulator.
 
 ## Determinism
 
