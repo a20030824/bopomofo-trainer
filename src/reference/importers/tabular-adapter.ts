@@ -120,7 +120,12 @@ export function createTabularReferenceSourceAdapter(
     toneNotation: config.toneNotation,
     domainSeparator: config.domainSeparator,
     parse(input: string): readonly ReferenceAdapterRowResult[] {
-      return parseTabularRecords(input, config.format, config.csvDelimiter).map((parsed) =>
+      return parseTabularRecords(
+        input,
+        config.format,
+        config.csvDelimiter,
+        config.columns.sourceRowId,
+      ).map((parsed) =>
         parsed.ok ? mapRow(parsed.record, parsed.inputIndex, config) : parsed
       );
     },

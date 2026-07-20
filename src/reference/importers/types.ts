@@ -97,6 +97,7 @@ export interface ReferenceImportError {
   readonly normalizedReading: string | null;
   readonly adapterRow: ReferenceAdapterRow | null;
   readonly code: ReferenceImportErrorCode;
+  readonly relatedCodes: readonly ReferenceImportErrorCode[];
   readonly stage: ReferenceImportStage;
   readonly message: string;
   readonly reasons: readonly ReferenceImportReason[];

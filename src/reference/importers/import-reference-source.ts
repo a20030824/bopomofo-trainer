@@ -15,6 +15,7 @@ import {
 import type {
   ImportedReferenceRow,
   ReferenceAdapterRow,
+  ReferenceAdapterRowResult,
   ReferenceImportError,
   ReferenceImportErrorCode,
   ReferenceImportReason,
@@ -34,6 +35,7 @@ function importError(
   stage: ReferenceImportStage,
   message: string,
   reasons: readonly ReferenceImportReason[],
+  relatedCodes: readonly ReferenceImportErrorCode[] = [],
 ): ReferenceImportError {
   return {
     sourceId: adapter.sourceId,
@@ -46,10 +48,28 @@ function importError(
     normalizedReading,
     adapterRow,
     code,
+    relatedCodes,
     stage,
     message,
     reasons,
   };
+}
+
+function resultSourceRowId(parsed: ReferenceAdapterRowResult): string | null {
+  const raw = parsed.ok ? parsed.row.sourceRowId : parsed.error.sourceRowId;
+  if (raw === null) return null;
+  const normalized = normalizeSourceRowIdentity(raw);
+  return normalized.length > 0 ? normalized : null;
+}
+
+function duplicateReason(
+  sourceRowId: string,
+  occurrenceCount: number,
+): ReferenceImportReason {
+  return importReason("duplicate_identity_all_occurrences_rejected", "sourceRowId", {
+    sourceRowId,
+    occurrenceCount,
+  });
 }
 
 export function importReferenceSource(
@@ -69,9 +89,8 @@ export function importReferenceSource(
   const parsedRows = adapter.parse(input);
   const identityCounts = new Map<string, number>();
   for (const parsed of parsedRows) {
-    if (!parsed.ok) continue;
-    const identity = normalizeSourceRowIdentity(parsed.row.sourceRowId);
-    if (identity.length === 0) continue;
+    const identity = resultSourceRowId(parsed);
+    if (identity === null) continue;
     identityCounts.set(identity, (identityCounts.get(identity) ?? 0) + 1);
   }
 
@@ -82,25 +101,37 @@ export function importReferenceSource(
   };
 
   for (const parsed of parsedRows) {
+    const recoveredSourceRowId = resultSourceRowId(parsed);
+    const occurrenceCount = recoveredSourceRowId === null
+      ? 0
+      : (identityCounts.get(recoveredSourceRowId) ?? 0);
+    const recoveredDuplicateReason = recoveredSourceRowId !== null && occurrenceCount > 1
+      ? duplicateReason(recoveredSourceRowId, occurrenceCount)
+      : null;
+
     if (!parsed.ok) {
       errors.push(importError(
         adapter,
         parsed.error.inputIndex,
-        parsed.error.sourceRowId,
+        recoveredSourceRowId,
         null,
         null,
         null,
         parsed.error.code,
         "tabular-parse",
         parsed.error.message,
-        [importReason(parsed.error.code, null, parsed.error.details)],
+        [
+          importReason(parsed.error.code, null, parsed.error.details),
+          ...(recoveredDuplicateReason === null ? [] : [recoveredDuplicateReason]),
+        ],
+        recoveredDuplicateReason === null ? [] : ["duplicate_source_row_identity"],
       ));
       continue;
     }
 
     const adapterRow = parsed.row;
-    const sourceRowId = normalizeSourceRowIdentity(adapterRow.sourceRowId);
-    if (sourceRowId.length === 0) {
+    const sourceRowId = recoveredSourceRowId;
+    if (sourceRowId === null) {
       errors.push(importError(
         adapter,
         adapterRow.inputIndex,
@@ -116,8 +147,7 @@ export function importReferenceSource(
       continue;
     }
 
-    const occurrenceCount = identityCounts.get(sourceRowId) ?? 0;
-    if (occurrenceCount > 1) {
+    if (recoveredDuplicateReason !== null) {
       errors.push(importError(
         adapter,
         adapterRow.inputIndex,
@@ -128,10 +158,7 @@ export function importReferenceSource(
         "duplicate_source_row_identity",
         "deduplicate",
         "all rows sharing a duplicate source identity are rejected",
-        [importReason("duplicate_identity_all_occurrences_rejected", "sourceRowId", {
-          sourceRowId,
-          occurrenceCount,
-        })],
+        [recoveredDuplicateReason],
       ));
       continue;
     }

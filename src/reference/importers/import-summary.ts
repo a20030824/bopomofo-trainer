@@ -15,6 +15,10 @@ function emptyReasonCounts(): Record<ReferenceImportErrorCode, number> {
   ) as Record<ReferenceImportErrorCode, number>;
 }
 
+function errorCodes(item: ReferenceImportError): readonly ReferenceImportErrorCode[] {
+  return [...new Set([item.code, ...item.relatedCodes])];
+}
+
 export function buildReferenceImportSummary(
   manifest: ReferenceSourceManifest,
   adapter: ReferenceSourceAdapter,
@@ -23,7 +27,9 @@ export function buildReferenceImportSummary(
   errors: readonly ReferenceImportError[],
 ): ReferenceImportSummary {
   const rejectedByReason = emptyReasonCounts();
-  for (const item of errors) rejectedByReason[item.code] += 1;
+  for (const item of errors) {
+    for (const code of errorCodes(item)) rejectedByReason[code] += 1;
+  }
   const unresolvedCodes = new Set<ReferenceImportErrorCode>([
     "unresolved_alternatives",
     "multiple_pronunciations",
@@ -39,8 +45,12 @@ export function buildReferenceImportSummary(
     acceptedCount: accepted.length,
     rejectedCount: errors.length,
     rejectedByReason,
-    duplicateCount: errors.filter((item) => item.code === "duplicate_source_row_identity").length,
-    unresolvedPronunciationCount: errors.filter((item) => unresolvedCodes.has(item.code)).length,
+    duplicateCount: errors.filter((item) =>
+      errorCodes(item).includes("duplicate_source_row_identity")
+    ).length,
+    unresolvedPronunciationCount: errors.filter((item) =>
+      errorCodes(item).some((code) => unresolvedCodes.has(code))
+    ).length,
     orderingReason: "source_input_order" as const,
     fallbackReason: "no_fallback" as const,
     stopReason: "end_of_input" as const,
