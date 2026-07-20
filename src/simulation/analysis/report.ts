@@ -17,10 +17,17 @@ function validatePolicy(policy: RelationalAnalysisPolicy): void {
     throw new Error(`unsupported analysis policy schema: ${policy.schemaVersion}`);
   }
   if (policy.version.trim().length === 0) throw new Error("analysis policy version is required");
-  if (!Number.isFinite(policy.maximumFallbackRate)
-    || policy.maximumFallbackRate < 0
-    || policy.maximumFallbackRate > 1) {
-    throw new RangeError("maximumFallbackRate must be between zero and one");
+  if (!Number.isFinite(policy.maximumBlockingFallbackRate)
+    || policy.maximumBlockingFallbackRate < 0
+    || policy.maximumBlockingFallbackRate > 1) {
+    throw new RangeError("maximumBlockingFallbackRate must be between zero and one");
+  }
+  const normalizedFallbackCodes = policy.nonBlockingObjectiveFallbackCodes.map((code) => code.trim());
+  if (normalizedFallbackCodes.some((code) => code.length === 0)) {
+    throw new Error("nonBlockingObjectiveFallbackCodes must not contain empty codes");
+  }
+  if (new Set(normalizedFallbackCodes).size !== normalizedFallbackCodes.length) {
+    throw new Error("nonBlockingObjectiveFallbackCodes must not contain duplicates");
   }
   for (const [metric, rule] of Object.entries(policy.metrics) as Array<[
     ExperimentMetricKey,
@@ -45,7 +52,7 @@ export function analyzeRelationalExperiments(
     throw new Error("source report does not contain the matrix-declared baseline cell");
   }
   const comparisons = compareExperimentCells(report, baselineCellId, policy);
-  const axisSummaries = summarizeExperimentAxes(report);
+  const axisSummaries = summarizeExperimentAxes(report, policy);
   const failureClusters = clusterExperimentFailures(report);
   const fallbackClusters = clusterExperimentFallbacks(report);
   const recommendationCounts: Record<RecommendationStatus, number> = {
@@ -72,7 +79,8 @@ export function analyzeRelationalExperiments(
       "Synthetic strategy comparisons do not establish human learning effectiveness.",
       "Candidate means policy-compatible for this committed cohort, not a production recommendation.",
       "Axis summaries are descriptive factorial averages and are not causal effect estimates.",
-      "Null metrics, failed runs, and fallback rounds remain visible and are never dropped from guardrails.",
+      "All fallback rounds remain visible; only versioned round-zero bootstrap codes are non-blocking for candidate guardrails.",
+      "Null metrics and failed runs remain visible and are never dropped from guardrails.",
       "Descriptive normal intervals are not inferential evidence for a human population.",
     ] as const,
   };
