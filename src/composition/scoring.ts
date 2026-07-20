@@ -119,23 +119,106 @@ function predictedConcentration(
   return maximum;
 }
 
-function possibleFutureExposureFromOtherEntries(
-  targetKey: string,
+interface FutureExposureCopy {
+  readonly entryId: string;
+  readonly tokens: number;
+  readonly syllables: number;
+  readonly exposure: number;
+}
+
+interface FutureExposureState {
+  readonly tokens: number;
+  readonly syllables: number;
+  readonly boundaries: number;
+  readonly exposure: number;
+}
+
+function futureStateKey(state: FutureExposureState): string {
+  return `${state.tokens}:${state.syllables}:${state.boundaries}`;
+}
+
+function maximumBudgetedFutureExposureFromOtherEntries(
+  target: ObjectiveTarget,
   excludedEntryId: string,
-  state: CompositionState,
+  predicted: CompositionState,
   candidates: readonly RetrievalCandidate[],
   budget: PracticeBudget,
 ): number {
-  let total = 0;
-  for (const candidate of candidates) {
-    if (candidate.entry.id === excludedEntryId) continue;
-    const uses = state.entryUses.get(candidate.entry.id) ?? 0;
-    const remainingUses = Math.max(0, budget.maximumSameEntryRepetition - uses);
-    const perUse = candidate.targetEvidence
-      .find((item) => item.targetKey === targetKey)?.exposureCount ?? 0;
-    total += perUse * remainingUses;
+  const currentExposure = predicted.exposureByTarget.get(target.key) ?? 0;
+  const maximumAdditional = Math.max(0, target.exposures.maximum - currentExposure);
+  if (maximumAdditional === 0) return 0;
+
+  const remainingTokens = budget.maximumTokens - predicted.tokens;
+  const remainingSyllables = budget.maximumSyllables - predicted.syllables;
+  const remainingBoundaries = budget.maximumLexicalBoundaries
+    - Math.max(0, predicted.selected.length - 1);
+  if (remainingTokens < 0 || remainingSyllables < 0 || remainingBoundaries <= 0) return 0;
+
+  const copies: FutureExposureCopy[] = [];
+  for (const future of candidates) {
+    if (future.entry.id === excludedEntryId) continue;
+    const perUse = future.targetEvidence
+      .find((item) => item.targetKey === target.key)?.exposureCount ?? 0;
+    if (perUse <= 0) continue;
+    const available = Math.max(
+      0,
+      budget.maximumSameEntryRepetition - (predicted.entryUses.get(future.entry.id) ?? 0),
+    );
+    for (let use = 0; use < available; use += 1) {
+      copies.push({
+        entryId: future.entry.id,
+        tokens: future.tokenCount,
+        syllables: future.syllableCount,
+        exposure: perUse,
+      });
+    }
   }
-  return total;
+  copies.sort((left, right) => compareText(left.entryId, right.entryId)
+    || left.tokens - right.tokens
+    || left.syllables - right.syllables
+    || right.exposure - left.exposure);
+
+  let states = new Map<string, FutureExposureState>();
+  const empty: FutureExposureState = { tokens: 0, syllables: 0, boundaries: 0, exposure: 0 };
+  states.set(futureStateKey(empty), empty);
+  for (const copy of copies) {
+    const next = new Map(states);
+    for (const state of states.values()) {
+      const candidateState: FutureExposureState = {
+        tokens: state.tokens + copy.tokens,
+        syllables: state.syllables + copy.syllables,
+        boundaries: state.boundaries + 1,
+        exposure: Math.min(maximumAdditional, state.exposure + copy.exposure),
+      };
+      if (candidateState.tokens > remainingTokens
+        || candidateState.syllables > remainingSyllables
+        || candidateState.boundaries > remainingBoundaries) continue;
+      const key = futureStateKey(candidateState);
+      const existing = next.get(key);
+      if (existing === undefined || candidateState.exposure > existing.exposure) {
+        next.set(key, candidateState);
+      }
+    }
+    states = next;
+  }
+
+  let maximum = 0;
+  for (const state of states.values()) maximum = Math.max(maximum, state.exposure);
+  return maximum;
+}
+
+function largestEntryExposure(
+  byEntry: ReadonlyMap<string, number>,
+): { readonly entryId: string; readonly exposure: number } | null {
+  let largest: { entryId: string; exposure: number } | null = null;
+  for (const [entryId, exposure] of byEntry) {
+    if (largest === null
+      || exposure > largest.exposure
+      || (exposure === largest.exposure && compareText(entryId, largest.entryId) < 0)) {
+      largest = { entryId, exposure };
+    }
+  }
+  return largest;
 }
 
 function concentrationRecoverable(
@@ -147,29 +230,24 @@ function concentrationRecoverable(
   budget: PracticeBudget,
 ): boolean {
   const targetMap = new Map(targets.map((target) => [target.key, target]));
+  const predicted = applyCandidate(state, candidate, evidence);
   for (const item of evidence) {
     const target = targetMap.get(item.targetKey)!;
-    const currentTotal = state.exposureByTarget.get(item.targetKey) ?? 0;
-    const currentByEntry = state.exposureByTargetAndEntry.get(item.targetKey) ?? new Map();
-    const candidateEntryExposure = (currentByEntry.get(candidate.entry.id) ?? 0) + item.exposureCount;
-    let largest = candidateEntryExposure;
-    for (const [entryId, exposure] of currentByEntry) {
-      if (entryId !== candidate.entry.id) largest = Math.max(largest, exposure);
+    const nextTotal = predicted.exposureByTarget.get(item.targetKey) ?? 0;
+    const nextByEntry = predicted.exposureByTargetAndEntry.get(item.targetKey) ?? new Map();
+    const largest = largestEntryExposure(nextByEntry);
+    if (largest === null || largest.exposure / nextTotal <= budget.maximumRelationConcentration) {
+      continue;
     }
-    const nextTotal = currentTotal + item.exposureCount;
-    if (largest / nextTotal <= budget.maximumRelationConcentration) continue;
     const additionalNeeded = Math.ceil(
-      largest / budget.maximumRelationConcentration - nextTotal,
+      largest.exposure / budget.maximumRelationConcentration - nextTotal,
     );
-    const maximumAdditional = Math.min(
-      target.exposures.maximum - nextTotal,
-      possibleFutureExposureFromOtherEntries(
-        item.targetKey,
-        candidate.entry.id,
-        state,
-        candidates,
-        budget,
-      ),
+    const maximumAdditional = maximumBudgetedFutureExposureFromOtherEntries(
+      target,
+      largest.entryId,
+      predicted,
+      candidates,
+      budget,
     );
     if (maximumAdditional < additionalNeeded) return false;
   }
