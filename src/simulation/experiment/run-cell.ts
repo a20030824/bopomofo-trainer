@@ -271,7 +271,7 @@ export function runRelationalExperimentCell(
     round.objectiveDecision.fallbackReason !== null
     || (round.sequence?.fallbackReasons.length ?? 0) > 0
   ).length;
-  const failureCount = rounds.reduce((sum, round) => sum + round.failures.length, 0);
+  const failureCount = rounds.filter((round) => round.failures.length > 0).length;
   const id = stableStringify(["experiment-run", cell.id, scenarioId, seed]);
   const body = {
     id,
