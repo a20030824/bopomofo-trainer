@@ -43,7 +43,7 @@
     {
       "id": "integration:zhu-a",
       "prompt": { "text": "朱", "locale": "zh-TW" },
-      "syllables": [{ "tokens": ["ㄓ", "ㄨ", "tone:1"] }],
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄨ", "tone:1"] }],
       "frequencyBand": 1,
       "tags": ["integration", "common"],
       "provenanceIds": ["integration-fixture"]
@@ -51,7 +51,7 @@
     {
       "id": "integration:zhu-b",
       "prompt": { "text": "珠", "locale": "zh-TW" },
-      "syllables": [{ "tokens": ["ㄓ", "ㄨ", "tone:1"] }],
+      "syllables": [{ "tokens": ["zhuyin:ㄓ", "zhuyin:ㄨ", "tone:1"] }],
       "frequencyBand": 1,
       "tags": ["integration", "common"],
       "provenanceIds": ["integration-fixture"]
@@ -59,7 +59,7 @@
     {
       "id": "integration:ba",
       "prompt": { "text": "八", "locale": "zh-TW" },
-      "syllables": [{ "tokens": ["ㄅ", "tone:1"] }],
+      "syllables": [{ "tokens": ["zhuyin:ㄅ", "tone:1"] }],
       "frequencyBand": 1,
       "tags": ["integration", "common"],
       "provenanceIds": ["integration-fixture"]
@@ -67,7 +67,7 @@
     {
       "id": "integration:pa",
       "prompt": { "text": "坡", "locale": "zh-TW" },
-      "syllables": [{ "tokens": ["ㄆ", "tone:1"] }],
+      "syllables": [{ "tokens": ["zhuyin:ㄆ", "tone:1"] }],
       "frequencyBand": 2,
       "tags": ["integration"],
       "provenanceIds": ["integration-fixture"]
@@ -75,7 +75,7 @@
     {
       "id": "integration:ma",
       "prompt": { "text": "媽", "locale": "zh-TW" },
-      "syllables": [{ "tokens": ["ㄇ", "tone:1"] }],
+      "syllables": [{ "tokens": ["zhuyin:ㄇ", "tone:1"] }],
       "frequencyBand": 1,
       "tags": ["integration", "common"],
       "provenanceIds": ["integration-fixture"]
@@ -92,9 +92,9 @@
         "kind": "transition",
         "scope": {
           "mode": "guided",
-          "layoutId": "synthetic-taiwan-standard",
-          "fromToken": "ㄓ",
-          "toToken": "ㄨ"
+          "layoutId": "zhuyin-standard",
+          "fromToken": "zhuyin:ㄓ",
+          "toToken": "zhuyin:ㄨ"
         }
       }
     },
