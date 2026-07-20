@@ -1,4 +1,3 @@
-import "./pilot.css";
 import {
   mergePilotHistories,
   migratePilotHistory,
