@@ -100,7 +100,7 @@ function metricComparison(
   };
 }
 
-function classify(
+export function classifyCellScenario(
   cellId: string,
   scenarioId: string,
   executableRounds: number,
@@ -145,6 +145,15 @@ function classify(
     return {
       recommendation: "inconclusive",
       recommendationReasons: missing.map((item) => `primary-metric-not-identifiable:${item.metric}`).sort(compareText),
+    };
+  }
+  const contradictory = primaryComparisons.filter((item) => item.materialRegression);
+  if (contradictory.length > 0) {
+    return {
+      recommendation: "inconclusive",
+      recommendationReasons: contradictory
+        .map((item) => `contradictory-primary-regression:${item.metric}`)
+        .sort(compareText),
     };
   }
   const improved = primaryComparisons.filter((item) => item.materialImprovement);
@@ -197,7 +206,7 @@ export function compareExperimentCells(
     const metrics = RELATIONAL_EXPERIMENT_METRIC_KEYS.map((metric) =>
       metricComparison(metric, aggregate, baseline, policy)
     );
-    const classification = classify(
+    const classification = classifyCellScenario(
       aggregate.cellId, aggregate.scenarioId, counts.executableRounds,
       blockingRate, aggregate.failureRate,
       metrics, policy, baselineCellId,
