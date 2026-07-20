@@ -1,0 +1,72 @@
+{
+  "version": "synthetic-relational-v1",
+  "orderingReason": "scenario-id-order-is-fixed-for-replay-and-review",
+  "scenarios": [
+    {
+      "id": "weak-binding",
+      "seed": 1101,
+      "injectedTruth": ["binding:ㄨ:error-probability=0.48"],
+      "reason": "isolate token-specific binding weakness while transition truth remains near baseline"
+    },
+    {
+      "id": "weak-transition",
+      "seed": 1102,
+      "injectedTruth": ["transition:ㄓ>ㄨ:mean-ms=520"],
+      "reason": "isolate one directional latency edge without weakening its component bindings"
+    },
+    {
+      "id": "asymmetric-confusion",
+      "seed": 1103,
+      "injectedTruth": ["confusion:ㄅ>ㄆ:conditional-probability=0.88"],
+      "reason": "verify directional substitution without an implicit ㄆ>ㄅ edge"
+    },
+    {
+      "id": "competing-weaknesses",
+      "seed": 1104,
+      "injectedTruth": [
+        "binding:ㄨ:error-probability=0.28",
+        "transition:ㄓ>ㄨ:mean-ms=430",
+        "confusion:ㄅ>ㄆ:conditional-probability=0.62"
+      ],
+      "reason": "exercise estimation when several relation families are weak"
+    },
+    {
+      "id": "high-noise",
+      "seed": 1105,
+      "injectedTruth": [
+        "noise:unmapped=0.18",
+        "noise:held-repeat=0.14",
+        "noise:composition=0.16"
+      ],
+      "reason": "verify interaction-noise contamination is retained and excluded with reasons"
+    },
+    {
+      "id": "fast-inaccurate",
+      "seed": 1106,
+      "injectedTruth": ["transition:baseline-mean-ms=65", "binding:typical-error-probability=0.30"],
+      "reason": "separate low latency from correctness"
+    },
+    {
+      "id": "slow-accurate",
+      "seed": 1107,
+      "injectedTruth": ["transition:baseline-mean-ms=430", "binding:error-probability=0.005"],
+      "reason": "separate high latency from correctness"
+    },
+    {
+      "id": "zero-learning",
+      "seed": 1108,
+      "injectedTruth": ["learning-rate=0"],
+      "reason": "control for trace generation without latent improvement"
+    },
+    {
+      "id": "retention-decay",
+      "seed": 1109,
+      "retentionSteps": 4,
+      "injectedTruth": [
+        "binding:ㄨ:decay-rate-per-step=0.12",
+        "transition:ㄓ>ㄨ:decay-rate-per-step=0.10"
+      ],
+      "reason": "apply declared decay after exposure as an independent experiment"
+    }
+  ]
+}
