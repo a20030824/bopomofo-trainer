@@ -32,9 +32,16 @@ describe("relational partition policies", () => {
       transitionRelationKey(zhuyinToken("ㄜ"), toneToken(3)),
       transitionRelationKey(zhuyinToken("ㄩ"), zhuyinToken("ㄥ")),
     ]);
+    const expectedEvaluationEntryIds = new Set([
+      "word:中文:ㄓㄨㄥ1-ㄨㄣ2",
+      "word:今天:ㄐㄧㄣ1-ㄊㄧㄢ1",
+      "word:使用:ㄕ3-ㄩㄥ4",
+      "word:可以:ㄎㄜ3-ㄧ3",
+      "word:學生:ㄒㄩㄝ2-ㄕㄥ1",
+    ]);
 
     expect(entries).toHaveLength(49);
-    expect(decision.evaluationEntryIds).toHaveLength(5);
+    expect(new Set(decision.evaluationEntryIds)).toEqual(expectedEvaluationEntryIds);
     expect(decision.metrics.bindingCoverage.evaluationOnlyRelationCount).toBe(0);
     expect(decision.metrics.transitionCoverage.evaluationOnlyRelationCount).toBe(3);
     expect(new Set(
@@ -55,6 +62,42 @@ describe("relational partition policies", () => {
       action: "stopped",
       reasonCode: "evaluation-target-reached",
     });
+  });
+
+  it("runs all five strategies on the current 49-entry catalog", async () => {
+    const input = createPartitionInput(await compileRealCatalog());
+    const options = {
+      evaluationEntryCount: 5,
+      minimumTrainingDistinctEntries: 1,
+    } as const;
+    const decisions: readonly PartitionDecision[] = [
+      partitionBindingPreservingBaseline(input),
+      partitionRelationSupportPreserving(input, options),
+      partitionFrequencyStratified(input, {
+        ...options,
+        allowCrossBandFallback: true,
+      }),
+      partitionSeededMaximumCoverage(input, 20260720, options),
+      partitionPathNovelty(input, options),
+    ];
+
+    expect(new Set(decisions.map((decision) => decision.policyId)).size).toBe(5);
+    for (const decision of decisions) {
+      expect(decision.trainingEntryIds).toHaveLength(44);
+      expect(decision.evaluationEntryIds).toHaveLength(5);
+      expect(decision.constraintResults.filter(
+        (constraint) => constraint.kind === "hard" && constraint.status === "unsatisfied",
+      )).toEqual([]);
+      expect(evaluatePartitionMetrics(
+        input,
+        new Set(decision.evaluationEntryIds),
+        decision.constraintResults,
+      )).toEqual(decision.metrics);
+    }
+    expect(decisions[0]!.metrics.evaluationOnlyRelationCount).toBe(3);
+    for (const decision of decisions.slice(1)) {
+      expect(decision.metrics.evaluationOnlyRelationCount).toBe(0);
+    }
   });
 
   it("preserves relation support on the feasible paired fixture", async () => {
