@@ -27,6 +27,15 @@ function validNullableNumber(value: number | null): boolean {
   return value === null || (Number.isFinite(value) && value >= 0);
 }
 
+function validSourceRecordUrl(value: string | null): boolean {
+  if (value === null) return true;
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function compileReferenceRow(
   row: ReferenceSourceRow,
   sources: Readonly<Record<string, ReferenceSourceManifest>>,
@@ -34,6 +43,18 @@ export function compileReferenceRow(
   if (sources[row.sourceId] === undefined) {
     return fail(row, "unknown-source", `unknown reference source: ${row.sourceId}`);
   }
+  const sourceRowId = row.sourceRowId.trim();
+  if (sourceRowId.length === 0) {
+    return fail(row, "invalid-source-row-id", "source row id must not be empty");
+  }
+  if (!validSourceRecordUrl(row.sourceRecordUrl)) {
+    return fail(
+      row,
+      "invalid-source-record-url",
+      "source record URL must be an absolute HTTPS URL",
+    );
+  }
+
   const text = row.text.normalize("NFC").trim();
   const reading = row.reading.normalize("NFC").trim().split(/\s+/u).join(" ");
   if (/[\/／]/u.test(text) || /[\/／]/u.test(reading)) {
@@ -68,9 +89,9 @@ export function compileReferenceRow(
   }
 
   const candidate: ReferenceCandidate = {
-    id: `reference:${row.sourceId}:${row.sourceRowId}`,
+    id: `reference:${row.sourceId}:${sourceRowId}`,
     sourceId: row.sourceId,
-    sourceRowId: row.sourceRowId,
+    sourceRowId,
     text,
     reading,
     syllables: parsed.syllables,
