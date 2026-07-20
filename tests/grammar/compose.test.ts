@@ -49,7 +49,11 @@ const annotations: Readonly<Record<string, GrammarAnnotation>> = {
   today: annotation("today", ["temporal"]),
   we: annotation("we", ["subject"]),
   start: annotation("start", ["modal"], "modal"),
-  practice: annotation("practice", ["object", "transitive-predicate", "verb"], "transitive"),
+  practice: annotation(
+    "practice",
+    ["object", "intransitive-predicate", "transitive-predicate", "verb"],
+    "ambitransitive",
+  ),
   teacher: annotation("teacher", ["subject"]),
   can: annotation("can", ["modal"], "modal"),
   use: annotation("use", ["transitive-predicate", "verb"], "transitive"),
@@ -72,6 +76,16 @@ describe("grammar-aware composition", () => {
     expect(result.fallbackReasons).toEqual([]);
   });
 
+  it("enforces predicate valency for modal verb templates", () => {
+    const texts = new Set(
+      composeGrammarCandidates(entries, annotations).candidates
+        .map((candidate) => candidate.text),
+    );
+    expect(texts).not.toContain("老師 可以 使用");
+    expect(texts).toContain("老師 可以 使用 電腦");
+    expect(texts).toContain("今天 我們 開始 練習");
+  });
+
   it("never places formulaic utterances into ordinary slots", () => {
     const result = composeGrammarCandidates(entries, annotations);
     const ordinary = result.candidates.filter((candidate) =>
@@ -80,6 +94,15 @@ describe("grammar-aware composition", () => {
     expect(ordinary.every((candidate) =>
       candidate.entries.every((candidateEntry) => candidateEntry.id !== "thanks")
     )).toBe(true);
+  });
+
+  it("balances a bounded candidate set across available templates", () => {
+    const result = composeGrammarCandidates(entries, annotations, undefined, {
+      maximumCandidates: 4,
+    });
+    expect(result.candidates).toHaveLength(4);
+    expect(new Set(result.candidates.map((candidate) => candidate.templateId)).size)
+      .toBeGreaterThan(1);
   });
 
   it("is invariant to entry and annotation input order", () => {
