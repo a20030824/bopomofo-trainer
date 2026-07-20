@@ -1,0 +1,53 @@
+.utterance-overview {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  background: var(--paper-soft);
+}
+
+.utterance-overview > div {
+  min-width: 0;
+}
+
+.utterance-overview span,
+.utterance-overview small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.utterance-overview strong {
+  display: block;
+  margin-top: 7px;
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 900;
+  letter-spacing: .05em;
+  line-height: 1.25;
+}
+
+.utterance-overview small {
+  flex: 0 0 auto;
+  max-width: 34ch;
+  text-align: right;
+  text-transform: none;
+}
+
+@media (max-width: 720px) {
+  .utterance-overview {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .utterance-overview small {
+    max-width: none;
+    text-align: left;
+  }
+}
