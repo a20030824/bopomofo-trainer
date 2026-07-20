@@ -23,6 +23,7 @@ import type {
   PartitionDecision,
   PartitionInput,
   PartitionPolicyId,
+  PartitionPolicyOptions,
 } from "../relations/partition/types.js";
 import type {
   SyntheticLearnerState,
@@ -76,9 +77,15 @@ export interface ObjectiveSelectorStrategy {
   select(context: ObjectiveSelectionContext): ObjectiveDecision;
 }
 
-export interface PartitionSelectorStrategy {
+export interface PartitionSelectorStrategy<
+  Options extends PartitionPolicyOptions = PartitionPolicyOptions,
+> {
   readonly id: PartitionPolicyId;
-  partition(input: PartitionInput): PartitionDecision;
+  partition(
+    input: PartitionInput,
+    options: Options,
+    seed: number,
+  ): PartitionDecision;
 }
 
 export type StrategyCompositionInput = Omit<CompositionInput, "policy"> & {
