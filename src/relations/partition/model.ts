@@ -38,14 +38,6 @@ export interface EntryPartitionFeatures {
   readonly provenanceIds: ReadonlySet<string>;
 }
 
-type CanonicalValue =
-  | null
-  | boolean
-  | number
-  | string
-  | readonly CanonicalValue[]
-  | Readonly<Record<string, CanonicalValue>>;
-
 function occurrenceEntryIds(
   occurrences: readonly RelationOccurrence[],
 ): readonly string[] {
@@ -59,7 +51,7 @@ function lexicalIdentity(entry: CatalogEntry): string {
   ]);
 }
 
-function canonicalize(value: unknown): CanonicalValue {
+function canonicalize(value: unknown): unknown {
   if (
     value === null
     || typeof value === "boolean"
@@ -90,7 +82,8 @@ function reportSnapshot(report: RelationalCatalogReport): Omit<
   RelationalCatalogReport,
   "determinismDigest"
 > {
-  const { determinismDigest: _ignored, ...snapshot } = report;
+  const { determinismDigest, ...snapshot } = report;
+  void determinismDigest;
   return snapshot;
 }
 
