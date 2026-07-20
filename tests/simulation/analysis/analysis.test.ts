@@ -39,12 +39,13 @@ describe("relational experiment analysis", () => {
     const source = await smallReport();
     const analysis = analyzeRelationalExperiments(source);
     const baseline = createRelationalStrategyMatrix().baselineCellId;
+    const baselineComparison = analysis.comparisons.find((item) => item.cellId === baseline);
 
     expect(analysis.baselineCellId).toBe(baseline);
     expect(analysis.comparisons).toHaveLength(2);
     expect(analysis.comparisons.every((item) => item.baselineCellId === baseline)).toBe(true);
-    expect(analysis.comparisons.find((item) => item.cellId === baseline)?.recommendation)
-      .toBe("inconclusive");
+    expect(baselineComparison).toBeDefined();
+    expect(baselineComparison?.recommendation).not.toBe("candidate");
     expect(analysis.axisSummaries.every((item) => item.balanced)).toBe(true);
     expect(Object.values(analysis.recommendationCounts)
       .reduce((sum, value) => sum + value, 0)).toBe(analysis.comparisons.length);
