@@ -70,7 +70,12 @@ export interface RelationSupportSummary {
   readonly commonEntryCount: number;
   readonly entryConcentration: number;
   readonly trainingOccurrenceCount: number;
+  readonly trainingDistinctEntryCount: number;
+  readonly trainingCommonEntryCount: number;
+  readonly trainingEntryConcentration: number;
   readonly evaluationOccurrenceCount: number;
+  readonly evaluationDistinctEntryCount: number;
+  readonly evaluationCommonEntryCount: number;
   readonly supportState:
     | "unsupported"
     | "evaluation-only"
