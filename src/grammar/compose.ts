@@ -109,6 +109,25 @@ function enumerateTemplate(
   return candidates;
 }
 
+function balanceTemplateCandidates(
+  groups: readonly (readonly GrammarUtteranceCandidate[])[],
+  maximum: number,
+): readonly GrammarUtteranceCandidate[] {
+  const result: GrammarUtteranceCandidate[] = [];
+  for (let position = 0; result.length < maximum; position += 1) {
+    let added = false;
+    for (const group of groups) {
+      const candidate = group[position];
+      if (candidate === undefined) continue;
+      result.push(candidate);
+      added = true;
+      if (result.length >= maximum) break;
+    }
+    if (!added) break;
+  }
+  return result;
+}
+
 function standaloneCandidates(
   entries: readonly CatalogEntry[],
   annotations: Readonly<Record<string, GrammarAnnotation>>,
@@ -146,16 +165,17 @@ export function composeGrammarCandidates(
 
   const roleIndex = entriesByRole(entries, annotations);
   const orderedTemplates = [...templates].sort((left, right) => compareText(left.id, right.id));
-  const candidates: GrammarUtteranceCandidate[] = [];
-  for (const template of orderedTemplates) {
-    const remaining = resolved.maximumCandidates - candidates.length;
-    if (remaining <= 0) break;
-    candidates.push(...enumerateTemplate(template, roleIndex, annotations, remaining));
-  }
+  const groups = orderedTemplates.map((template) =>
+    enumerateTemplate(template, roleIndex, annotations, resolved.maximumCandidates)
+  );
+  const candidates = balanceTemplateCandidates(groups, resolved.maximumCandidates);
 
-  const canonical = candidates.sort((left, right) =>
+  const canonical = [...candidates].sort((left, right) =>
     compareText(left.templateId ?? "", right.templateId ?? "")
-    || compareText(left.entries.map((entry) => entry.id).join("\u0000"), right.entries.map((entry) => entry.id).join("\u0000"))
+    || compareText(
+      left.entries.map((entry) => entry.id).join("\u0000"),
+      right.entries.map((entry) => entry.id).join("\u0000"),
+    )
   );
   if (canonical.length > 0) {
     return { candidates: canonical, fallbackReasons: [] };
@@ -174,7 +194,11 @@ export function composeGrammarCandidates(
     if (lexical.length > 0) {
       return {
         candidates: lexical.slice(0, resolved.maximumCandidates),
-        fallbackReasons: ["no-complete-template", "no-standalone-utterance", "standalone-lexical-prompt"],
+        fallbackReasons: [
+          "no-complete-template",
+          "no-standalone-utterance",
+          "standalone-lexical-prompt",
+        ],
       };
     }
   }
