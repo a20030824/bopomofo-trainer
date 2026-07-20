@@ -16,7 +16,7 @@ function meanEstimationError(
   kind: "binding" | "transition" | "confusion",
 ): number | null {
   const values = rounds.flatMap((round) => {
-    const value = round.learnerBatch?.estimationErrorReport.meanAbsoluteErrorByKind[kind] ?? null;
+    const value = round.cumulativeEstimationError.meanAbsoluteErrorByKind[kind] ?? null;
     return value === null ? [] : [value];
   });
   return mean(values);
@@ -122,15 +122,15 @@ export function calculateRelationalExperimentMetrics(
     ),
     bindingEstimateMeanAbsoluteError: metric(
       bindingError,
-      bindingError === null ? "no-estimated-binding-component" : "mean-of-per-round-pre-exposure-error-reports",
+      bindingError === null ? "no-estimated-binding-component" : "mean-of-cumulative-phase-3-error-reports",
     ),
     transitionEstimateMeanAbsoluteErrorMs: metric(
       transitionError,
-      transitionError === null ? "no-estimated-transition-component" : "mean-of-per-round-pre-exposure-error-reports",
+      transitionError === null ? "no-estimated-transition-component" : "mean-of-cumulative-phase-3-error-reports",
     ),
     confusionEstimateMeanAbsoluteError: metric(
       confusionError,
-      confusionError === null ? "no-estimated-confusion-component" : "mean-of-per-round-pre-exposure-error-reports",
+      confusionError === null ? "no-estimated-confusion-component" : "mean-of-cumulative-phase-3-error-reports",
     ),
     targetExposurePerToken: metric(
       tokens === 0 ? null : exposures / tokens,
