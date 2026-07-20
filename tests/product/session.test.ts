@@ -11,12 +11,9 @@ import {
   parseProductProgress,
   serializeProductProgress,
 } from "../../src/product/progress.js";
-import { EVALUATION, PRACTICE } from "./fixtures.js";
+import { EVALUATION, PRACTICE, PRODUCT_CATALOGS } from "./fixtures.js";
 
-const environment = createProductEnvironment({
-  practice: PRACTICE,
-  evaluation: EVALUATION,
-});
+const environment = createProductEnvironment(PRODUCT_CATALOGS);
 
 function complete(state: ReturnType<typeof createProductState>) {
   let current = state;
@@ -42,16 +39,38 @@ function complete(state: ReturnType<typeof createProductState>) {
   return current;
 }
 
-describe("thin product session loop", () => {
-  it("requires unique disjoint practice and evaluation catalogs", () => {
+describe("frequency-first grammatical product session loop", () => {
+  it("requires unique disjoint annotated practice and evaluation catalogs", () => {
     expect(() => createProductEnvironment({
+      ...PRODUCT_CATALOGS,
       practice: PRACTICE,
       evaluation: [PRACTICE[0]!, ...EVALUATION],
     })).toThrow(/disjoint/);
     expect(() => createProductEnvironment({
+      ...PRODUCT_CATALOGS,
       practice: [PRACTICE[0]!, PRACTICE[0]!, ...PRACTICE.slice(1)],
       evaluation: EVALUATION,
     })).toThrow(/duplicate/);
+    expect(() => createProductEnvironment({
+      practice: PRACTICE,
+      evaluation: EVALUATION,
+      grammarAnnotations: {},
+    })).toThrow(/grammar annotation/);
+  });
+
+  it("builds one complete grammar-valid utterance instead of six unrelated entries", () => {
+    const progress = createFreshProgressForEnvironment(
+      environment,
+      "grammar-seed",
+      "guided",
+      "standard",
+    );
+    const state = createProductState(environment, progress, 0);
+    expect(state.round.selection.utterance.id).toBeTruthy();
+    expect(state.round.exercise.entries.map((entry) => entry.id)).toEqual(
+      state.round.selection.utterance.entries.map((entry) => entry.id),
+    );
+    expect(state.round.exercise.entries).toHaveLength(1);
   });
 
   it("reports interaction accuracy across boundaries without counting browser noise", () => {
@@ -100,7 +119,7 @@ describe("thin product session loop", () => {
     );
   });
 
-  it("updates practice measurement and curriculum exactly once", () => {
+  it("updates practice measurements, stage evidence, and legacy diagnostics exactly once", () => {
     const progress = createFreshProgressForEnvironment(
       environment,
       "seed",
@@ -111,6 +130,7 @@ describe("thin product session loop", () => {
     expect(completed.round.kind).toBe("practice");
     expect(completed.progress.practiceRoundsCompleted).toBe(1);
     expect(completed.progress.curriculum.round).toBe(1);
+    expect(completed.progress.selection.stagePracticeRounds).toBe(1);
     expect(completed.progress.measurements.bindingObservationCount).toBeGreaterThan(0);
 
     const unchanged = applyProductInput(environment, completed, {
@@ -124,7 +144,7 @@ describe("thin product session loop", () => {
     expect(unchanged).toBe(completed);
   });
 
-  it("restores a deterministic next exercise after serialization", () => {
+  it("restores the same next utterance and template after serialization", () => {
     const fresh = createFreshProgressForEnvironment(environment, "seed", "guided", "standard");
     const completed = complete(createProductState(environment, fresh, 0));
     const next = startNextProductRound(environment, completed, 500);
@@ -135,15 +155,18 @@ describe("thin product session loop", () => {
       "standard",
       environment.measurementPolicy,
       environment.curriculumPolicy.version,
+      environment.utterancePolicy,
     )!;
     const reloaded = createProductState(environment, restored, 700);
+    expect(reloaded.round.selection.utterance.id).toBe(next.round.selection.utterance.id);
+    expect(reloaded.round.selection.utterance.templateId)
+      .toBe(next.round.selection.utterance.templateId);
     expect(reloaded.round.exercise.entries.map((item) => item.id)).toEqual(
       next.round.exercise.entries.map((item) => item.id),
     );
-    expect(reloaded.round.focus).toEqual(next.round.focus);
   });
 
-  it("keeps held-out evaluation separate from adaptive measurements", () => {
+  it("keeps held-out evaluation separate from measurements and stage state", () => {
     const fresh = createFreshProgressForEnvironment(environment, "seed", "guided", "standard");
     const progress = {
       ...fresh,
@@ -154,9 +177,11 @@ describe("thin product session loop", () => {
     expect(state.round.kind).toBe("evaluation");
     const beforeMeasurements = JSON.stringify(state.progress.measurements);
     const beforeCurriculum = JSON.stringify(state.progress.curriculum);
+    const beforeSelection = JSON.stringify(state.progress.selection);
     const completed = complete(state);
     expect(completed.progress.evaluationRoundsCompleted).toBe(1);
     expect(JSON.stringify(completed.progress.measurements)).toBe(beforeMeasurements);
     expect(JSON.stringify(completed.progress.curriculum)).toBe(beforeCurriculum);
+    expect(JSON.stringify(completed.progress.selection)).toBe(beforeSelection);
   });
 });
