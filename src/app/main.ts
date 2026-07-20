@@ -19,6 +19,7 @@ import type { ProductProgress, ProductState } from "../product/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
 import {
   EVALUATION_CATALOG,
+  GRAMMAR_ANNOTATIONS,
   PRACTICE_CATALOG,
 } from "./generated/catalog.js";
 import { keyboardEventToInput } from "./keyboard-adapter.js";
@@ -44,6 +45,7 @@ const capture = requireElement<HTMLTextAreaElement>("#keyboard-capture");
 const environment = createProductEnvironment({
   practice: PRACTICE_CATALOG,
   evaluation: EVALUATION_CATALOG,
+  grammarAnnotations: GRAMMAR_ANNOTATIONS,
 });
 
 function newSeed(): string {
@@ -145,19 +147,32 @@ function currentProgressPercent(): number {
 }
 
 function roundKindLabel(): string {
-  return product.round.kind === "evaluation" ? "保留詞檢查" : "自適應練習";
+  return product.round.kind === "evaluation" ? "保留語句檢查" : "常用語句練習";
 }
 
 function phaseLabel(): string {
   if (product.round.kind === "evaluation") return "只觀察，不回灌";
-  return product.round.focus?.phase === "coverage" ? "基礎覆蓋" : "弱點聚焦";
+  return `常用度階段 ${product.round.selection.stage}`;
 }
 
 function focusDescription(): string {
-  const focus = product.round.focus;
-  if (focus === null || focus.tokenId === null) return "廣泛練習";
-  const evidence = focus.evidence === "timed" ? "正確率＋乾淨時間" : "正確率證據";
-  return `${tokenLabel(focus.tokenId)} · ${evidence}`;
+  if (product.round.kind === "evaluation") return "保留詞庫 · 不影響出題";
+  return "常用度為主 · 錯誤與慢速有限加權";
+}
+
+function templateDescription(): string {
+  const templateId = product.round.selection.utterance.templateId;
+  if (templateId === null) {
+    return product.round.selection.utterance.kind === "standalone-utterance"
+      ? "完整慣用語"
+      : "單詞提示";
+  }
+  return templateId.replaceAll("-", " · ");
+}
+
+function utteranceText(): string {
+  const utterance = product.round.selection.utterance;
+  return `${utterance.text}${utterance.punctuation ?? ""}`;
 }
 
 function entryStartPositions(): readonly number[] {
@@ -255,21 +270,25 @@ function renderExercise(): string {
     </li>`;
   }).join("");
 
-  return `<div class="exercise-layout">
-    <article class="active-entry${product.session.traces.at(-1)?.outcome === "incorrect" ? " has-error" : ""}">
-      <div class="active-entry-head">
-        <span>第 ${String(activeIndex + 1).padStart(2, "0")} 詞</span>
-        <strong>${activeState}</strong>
-      </div>
-      <div class="active-han">${escapeHtml(active.prompt.text)}</div>
-      <div class="active-reading" aria-label="目前詞的完整注音">${renderReading(activeIndex)}</div>
-      ${latestInputMarkup()}
-    </article>
-    <aside class="entry-queue-wrap" aria-label="本輪詞目順序">
-      <div class="queue-heading"><span>本輪詞目</span><strong>${product.round.exercise.entries.length}</strong></div>
-      <ol class="entry-queue">${queue}</ol>
-    </aside>
-  </div>`;
+  return `<div class="utterance-overview">
+      <div><span>本句</span><strong>${escapeHtml(utteranceText())}</strong></div>
+      <small>${escapeHtml(templateDescription())}</small>
+    </div>
+    <div class="exercise-layout">
+      <article class="active-entry${product.session.traces.at(-1)?.outcome === "incorrect" ? " has-error" : ""}">
+        <div class="active-entry-head">
+          <span>句內第 ${String(activeIndex + 1).padStart(2, "0")} 詞</span>
+          <strong>${activeState}</strong>
+        </div>
+        <div class="active-han">${escapeHtml(active.prompt.text)}</div>
+        <div class="active-reading" aria-label="目前詞的完整注音">${renderReading(activeIndex)}</div>
+        ${latestInputMarkup()}
+      </article>
+      <aside class="entry-queue-wrap" aria-label="句內詞序">
+        <div class="queue-heading"><span>句內詞序</span><strong>${product.round.exercise.entries.length}</strong></div>
+        <ol class="entry-queue">${queue}</ol>
+      </aside>
+    </div>`;
 }
 
 function feedbackMarkup(): string {
@@ -282,8 +301,8 @@ function feedbackMarkup(): string {
   }
   if (product.summary !== null) {
     const message = product.round.kind === "evaluation"
-      ? "結果已獨立保存，不會改變下一輪弱點選擇。"
-      : "量測、課程狀態與 Pilot 歷史已保存。";
+      ? "結果已獨立保存，不會改變下一句的出題權重。"
+      : "量測、常用度階段與最近句型已保存。";
     return `<div class="input-feedback complete" aria-live="polite"><span class="feedback-label">完成</span><strong>${message}</strong></div>`;
   }
   const latest = product.session.traces.at(-1);
@@ -317,10 +336,10 @@ function renderSummary(): string {
     && latestPilot.cleanLatencyMedianMs !== null
     ? `${Math.round(latestPilot.cleanLatencyMedianMs)} ms`
     : "—";
-  const title = summary.kind === "evaluation" ? "保留詞檢查完成" : "這一輪完成了";
+  const title = summary.kind === "evaluation" ? "保留語句檢查完成" : "這一句完成了";
   const copy = summary.kind === "evaluation"
-    ? "這份結果只觀察陌生詞表現，不回灌自適應課程。"
-    : "下一輪會依累積證據重新判斷 coverage、focus 與 cooldown。";
+    ? "這份結果只觀察保留詞表現，不回灌練習權重。"
+    : `下一句仍以常用度階段 ${product.progress.selection.stage} 為主，錯誤與慢速只做有限加權。`;
   return `<section class="completion-card" aria-labelledby="completion-title">
     <div class="completion-copy">
       <p class="eyebrow">Round ${String(completedRoundCount()).padStart(2, "0")}</p>
@@ -332,17 +351,17 @@ function renderSummary(): string {
       ${metric("按鍵嘗試", String(summary.attempts), "所有已映射按鍵")}
       ${metric("乾淨中位時間", median, `${summary.timingSamples} 個合格樣本`)}
     </div>
-    <button id="next-round" class="primary next-round" type="button">開始下一輪 <span aria-hidden="true">→</span></button>
+    <button id="next-round" class="primary next-round" type="button">開始下一句 <span aria-hidden="true">→</span></button>
   </section>`;
 }
 
 function historyPhaseLabel(record: PilotRoundRecord): string {
-  if (record.phase === "evaluation") return "保留詞";
-  return record.phase === "coverage" ? "基礎覆蓋" : "弱點聚焦";
+  if (record.phase === "evaluation") return "保留語句";
+  return record.phase === "coverage" ? "高頻階段" : "擴充詞庫";
 }
 
 function historyFocusLabel(record: PilotRoundRecord): string {
-  if (record.focusTokenId === null) return "廣泛練習";
+  if (record.focusTokenId === null) return "文法語句";
   const evidence = record.focusEvidence === "timed" ? "時間＋正確" : "正確率";
   return `${tokenLabel(record.focusTokenId)} · ${evidence}`;
 }
@@ -385,7 +404,7 @@ function renderPilotHistory(): string {
       <div class="history-detail">
         <span><small>錯誤 / 嘗試</small><strong>${record.errors} / ${record.attempts}</strong></span>
         <span><small>乾淨樣本</small><strong>${record.timingSamples}</strong></span>
-        <span class="history-entry-list"><small>詞目 ID</small><strong>${escapeHtml(record.entryIds.join(" · "))}</strong></span>
+        <span class="history-entry-list"><small>句內詞 ID</small><strong>${escapeHtml(record.entryIds.join(" · "))}</strong></span>
       </div>
     </details>`;
   }).join("");
@@ -395,11 +414,11 @@ function renderPilotHistory(): string {
       <div>
         <p class="eyebrow">Local pilot</p>
         <h2 id="pilot-history-title">練習紀錄</h2>
-        <p>保留最近 ${pilotHistory.records.length} 輪，其中 ${evaluationCount} 輪為保留詞評估。這些數字是觀察證據，不是熟練度分數。</p>
+        <p>保留最近 ${pilotHistory.records.length} 輪，其中 ${evaluationCount} 輪為保留語句評估。這些數字是觀察證據，不是熟練度分數。</p>
       </div>
       <button id="download-pilot" class="secondary" type="button">下載 Pilot JSON</button>
     </div>
-    <div class="history-list">${rows || '<div class="history-empty"><strong>還沒有完成紀錄</strong><span>完成第一輪後，這裡會顯示正確率、焦點與乾淨中位時間。</span></div>'}</div>
+    <div class="history-list">${rows || '<div class="history-empty"><strong>還沒有完成紀錄</strong><span>完成第一句後，這裡會顯示正確率與乾淨中位時間。</span></div>'}</div>
   </section>`;
 }
 
@@ -455,7 +474,7 @@ function downloadPilotExport(): void {
 function renderNotices(): string {
   return [
     recoveredFromInvalidState
-      ? '<div class="notice">舊的本機進度無法安全讀取，已從乾淨狀態重新開始。</div>'
+      ? '<div class="notice">舊的本機進度已保留可驗證量測，新的語句選題從高頻階段開始。</div>'
       : "",
     recoveredPilotHistory
       ? '<div class="notice">Pilot 歷史格式無法讀取，已從有效的完成摘要重建；舊輪次時間會顯示為未知。</div>'
@@ -475,32 +494,33 @@ function render(): void {
           <span class="brand-mark" aria-hidden="true">ㄅ</span>
           <div>
             <h1>注音鍵位練習</h1>
-            <p>看完整讀音，建立實體鍵位記憶。</p>
+            <p>看完整語句與讀音，建立實體鍵位記憶。</p>
           </div>
         </div>
         <div class="app-progress" aria-label="本機進度">
           <span>已完成練習</span>
           <strong>${product.progress.practiceRoundsCompleted}</strong>
-          <small>輪</small>
+          <small>句</small>
         </div>
       </header>
 
       ${renderNotices()}
 
-      <section class="session-header" aria-label="本輪資訊">
+      <section class="session-header" aria-label="本句資訊">
         <div class="round-identity">
           <span>Round ${String(currentRoundNumber()).padStart(2, "0")}</span>
           <h2>${roundKindLabel()}</h2>
         </div>
         <dl class="session-facts">
           <div><dt>策略</dt><dd>${phaseLabel()}</dd></div>
-          <div><dt>本輪重點</dt><dd>${escapeHtml(focusDescription())}</dd></div>
+          <div><dt>選題</dt><dd>${escapeHtml(focusDescription())}</dd></div>
+          <div><dt>句型</dt><dd>${escapeHtml(templateDescription())}</dd></div>
           <div><dt>輸入</dt><dd>英文鍵盤 · Space 一聲</dd></div>
         </dl>
         <button id="toggle-hint" class="hint-toggle" type="button" aria-pressed="${showPhysicalHint}">${showPhysicalHint ? "隱藏" : "顯示"}鍵位提示</button>
       </section>
 
-      <section class="practice-surface" aria-label="注音練習區">
+      <section class="practice-surface" aria-label="注音語句練習區">
         <div class="practice-progress">
           <span>${product.session.position} / ${product.session.targets.length} 個注音</span>
           <strong>${progressPercent}%</strong>
@@ -519,8 +539,8 @@ function render(): void {
           <div class="developer-tools-body">
             <div class="developer-tools-copy">
               <strong>Raw trace</strong>
-              <p>原始事件只用於檢查量測政策，不代表學習分數。</p>
-              <button id="download-round" type="button">下載本輪診斷</button>
+              <p>原始事件只用於檢查量測與出題權重，不代表學習分數。</p>
+              <button id="download-round" type="button">下載本句診斷</button>
             </div>
             <div class="table-wrap">
               <table>
