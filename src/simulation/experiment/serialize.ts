@@ -11,6 +11,11 @@ function csvCell(value: string | number | null): string {
     : text;
 }
 
+function formatNumber(value: number | null): string {
+  if (value === null) return "—";
+  return Number.isInteger(value) ? String(value) : value.toFixed(4);
+}
+
 export function serializeRelationalExperimentJson(
   report: RelationalExperimentReport,
 ): string {
@@ -58,4 +63,40 @@ export function serializeRelationalExperimentCsv(
     }
   }
   return rows.join("\n") + "\n";
+}
+
+export function serializeRelationalExperimentMarkdown(
+  report: RelationalExperimentReport,
+): string {
+  const lines: string[] = [
+    "# Relational experiment report",
+    "",
+    "- Plan: `" + report.planId + "`",
+    "- Runs: " + report.runCount,
+    "- Matrix digest: `" + report.matrixDigest + "`",
+    "- Report digest: `" + report.determinismDigest + "`",
+    "",
+    "## Aggregate overview",
+    "",
+    "| Cell | Scenario | Runs | Fallback | Failure | Weakness delay | Exposure/token | Cost/improvement |",
+    "|---|---|---:|---:|---:|---:|---:|---:|",
+  ];
+
+  for (const aggregate of report.aggregates) {
+    lines.push(
+      "| `" + aggregate.cellId + "`"
+      + " | " + aggregate.scenarioId
+      + " | " + aggregate.runCount
+      + " | " + formatNumber(aggregate.fallbackRate)
+      + " | " + formatNumber(aggregate.failureRate)
+      + " | " + formatNumber(aggregate.metrics.weaknessIdentificationDelayRounds.mean)
+      + " | " + formatNumber(aggregate.metrics.targetExposurePerToken.mean)
+      + " | " + formatNumber(aggregate.metrics.costPerLatentImprovement.mean)
+      + " |",
+    );
+  }
+
+  lines.push("", "## Limitations", "");
+  for (const limitation of report.limitations) lines.push("- " + limitation);
+  return lines.join("\n") + "\n";
 }
