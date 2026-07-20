@@ -20,6 +20,20 @@ With the baseline's configured minimum of three distinct training entries, 13 ex
 
 This is valid baseline behavior, not a defect to hide. The research question is whether alternative numeric policies produce a more useful transfer/evaluation boundary.
 
+## Current 49-entry observation
+
+The regression matrix runs all five policies against the same reviewed catalog and the same metric evaluator:
+
+| Policy | Training | Evaluation | Evaluation-only relations |
+| --- | ---: | ---: | ---: |
+| binding-preserving baseline | 44 | 5 | 3 transitions |
+| relation-support preserving, minimum 1 | 44 | 5 | 0 |
+| frequency-stratified, minimum 1 | 44 | 5 | 0 |
+| seeded maximum coverage, seed `20260720`, minimum 1 | 44 | 5 | 0 |
+| path novelty, minimum 1 | 44 | 5 | 0 |
+
+This establishes feasibility and replayability only. It does not establish that minimum support 1 is statistically sufficient or that any policy is better for human learning.
+
 ## Contract
 
 Every strategy accepts the same shared inputs:
@@ -49,7 +63,7 @@ Entry IDs in the final partitions are sorted. Selection order remains in `select
 ## Invariants
 
 1. An entry belongs to exactly one partition.
-2. Duplicate entry IDs are rejected.
+2. Duplicate entry IDs and duplicate lexical identities are rejected.
 3. Relation support uses distinct entry IDs; occurrence count alone never satisfies a support constraint.
 4. Exact transitions remain directional and within one syllable.
 5. Every candidate selection or rejection records a reason code.
@@ -71,7 +85,7 @@ All strategies use the same evaluator. It reports:
 - total-variation divergence between training and evaluation frequency bands;
 - token and exact-transition Jaccard overlap;
 - Han-character and tag Jaccard overlap;
-- evaluation novelty, defined transparently from relation, token, character, and tag non-overlap;
+- evaluation novelty, defined transparently from relation, token, character, and tag non-overlap; an empty evaluation partition has novelty `0`;
 - explicit unsatisfied constraints.
 
 Cross-seed comparison reports evaluation-set Jaccard stability, per-entry selection rates, and unique decision digests.
