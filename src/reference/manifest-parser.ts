@@ -20,7 +20,7 @@ function text(value: unknown, label: string): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new TypeError(`${label} must be a non-empty string`);
   }
-  return value;
+  return value.trim();
 }
 
 function nullableText(value: unknown, label: string): string | null {
@@ -44,7 +44,20 @@ function stringList(value: unknown, label: string): readonly string[] {
   if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
     throw new TypeError(`${label} must be a string array`);
   }
-  return value as string[];
+  return value.map((item) => item.trim()).filter((item) => item.length > 0);
+}
+
+function retrievalDate(value: unknown, label: string): string | null {
+  const source = nullableText(value, label);
+  if (source === null) return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/u.test(source)) {
+    throw new TypeError(`${label} must use YYYY-MM-DD`);
+  }
+  const parsed = new Date(`${source}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== source) {
+    throw new TypeError(`${label} must be a real calendar date`);
+  }
+  return source;
 }
 
 function manifest(value: unknown, index: number): ReferenceSourceManifest {
@@ -55,13 +68,6 @@ function manifest(value: unknown, index: number): ReferenceSourceManifest {
   );
   if (!REDISTRIBUTION.has(redistributionStatus as RedistributionStatus)) {
     throw new TypeError(`source manifest ${index}.redistributionStatus is invalid`);
-  }
-  const retrievedAt = nullableText(
-    source.retrievedAt,
-    `source manifest ${index}.retrievedAt`,
-  );
-  if (retrievedAt !== null && Number.isNaN(Date.parse(retrievedAt))) {
-    throw new TypeError(`source manifest ${index}.retrievedAt must be an ISO date`);
   }
   const checksumSha256 = nullableText(
     source.checksumSha256,
@@ -77,7 +83,10 @@ function manifest(value: unknown, index: number): ReferenceSourceManifest {
     version: text(source.version, `source manifest ${index}.version`),
     homepageUrl: url(source.homepageUrl, `source manifest ${index}.homepageUrl`),
     downloadUrl: nullableUrl(source.downloadUrl, `source manifest ${index}.downloadUrl`),
-    retrievedAt,
+    retrievedAt: retrievalDate(
+      source.retrievedAt,
+      `source manifest ${index}.retrievedAt`,
+    ),
     checksumSha256,
     licenseLabel: text(source.licenseLabel, `source manifest ${index}.licenseLabel`),
     redistributionStatus: redistributionStatus as RedistributionStatus,
