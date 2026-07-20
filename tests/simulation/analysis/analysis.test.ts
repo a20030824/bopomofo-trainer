@@ -51,6 +51,16 @@ describe("relational experiment analysis", () => {
       .reduce((sum, value) => sum + value, 0)).toBe(analysis.comparisons.length);
   });
 
+  it("keeps bootstrap fallbacks visible without treating all of them as blocking", async () => {
+    const analysis = analyzeRelationalExperiments(await smallReport());
+    expect(analysis.comparisons.some((item) =>
+      item.fallbackRate > item.blockingFallbackRate
+    )).toBe(true);
+    expect(analysis.comparisons.every((item) =>
+      item.blockingFallbackRate <= item.fallbackRate
+    )).toBe(true);
+  });
+
   it("is input-order invariant", async () => {
     const source = await smallReport();
     const reordered: RelationalExperimentReport = {
@@ -83,7 +93,11 @@ describe("relational experiment analysis", () => {
     const source = await smallReport();
     expect(() => analyzeRelationalExperiments(source, {
       ...RELATIONAL_ANALYSIS_POLICY,
-      maximumFallbackRate: -1,
-    })).toThrow("maximumFallbackRate must be between zero and one");
+      maximumBlockingFallbackRate: -1,
+    })).toThrow("maximumBlockingFallbackRate must be between zero and one");
+    expect(() => analyzeRelationalExperiments(source, {
+      ...RELATIONAL_ANALYSIS_POLICY,
+      nonBlockingObjectiveFallbackCodes: ["round-zero", "round-zero"],
+    })).toThrow("nonBlockingObjectiveFallbackCodes must not contain duplicates");
   });
 });
