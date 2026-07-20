@@ -152,9 +152,11 @@ export function evaluatePartitionMetrics(
     jaccard(lexicalCharacterSet(training), lexicalCharacterSet(evaluation)),
   );
   const tagsOverlap = rounded(jaccard(tagSet(training), tagSet(evaluation)));
-  const evaluationNovelty = rounded(
-    1 - mean([tokenOverlap, transitionOverlap, lexicalCharacterOverlap, tagsOverlap]),
-  );
+  const evaluationNovelty = evaluation.length === 0
+    ? 0
+    : rounded(
+      1 - mean([tokenOverlap, transitionOverlap, lexicalCharacterOverlap, tagsOverlap]),
+    );
   const bindingCoverage = relationCoverage(bindingSummaries);
   const transitionCoverage = relationCoverage(transitionSummaries);
   const unsatisfiedConstraintIds = constraintResults
