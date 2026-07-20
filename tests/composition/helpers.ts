@@ -101,8 +101,41 @@ export function transitionOccurrence(
   };
 }
 
-function emptySupport(): Readonly<Record<string, RelationSupportSummary>> {
-  return {};
+function supportSummary(
+  relation: RelationSupportSummary["relation"],
+  occurrences: readonly (BindingOccurrence | TransitionOccurrence)[],
+): RelationSupportSummary {
+  const training = occurrences.filter((occurrence) => occurrence.partition === "training");
+  const evaluation = occurrences.filter((occurrence) => occurrence.partition === "evaluation");
+  const trainingEntries = new Set(training.map((occurrence) => occurrence.entryId));
+  const evaluationEntries = new Set(evaluation.map((occurrence) => occurrence.entryId));
+  const frequencyBandCounts = {
+    1: occurrences.filter((occurrence) => occurrence.frequencyBand === 1).length,
+    2: occurrences.filter((occurrence) => occurrence.frequencyBand === 2).length,
+    3: occurrences.filter((occurrence) => occurrence.frequencyBand === 3).length,
+  } as const;
+  return {
+    relation,
+    occurrenceCount: occurrences.length,
+    distinctEntryCount: new Set(occurrences.map((occurrence) => occurrence.entryId)).size,
+    frequencyBandCounts,
+    commonEntryCount: new Set(occurrences
+      .filter((occurrence) => occurrence.frequencyBand === 1)
+      .map((occurrence) => occurrence.entryId)).size,
+    entryConcentration: occurrences.length === 0 ? 0 : 1,
+    trainingOccurrenceCount: training.length,
+    trainingDistinctEntryCount: trainingEntries.size,
+    trainingCommonEntryCount: new Set(training
+      .filter((occurrence) => occurrence.frequencyBand === 1)
+      .map((occurrence) => occurrence.entryId)).size,
+    trainingEntryConcentration: training.length === 0 ? 0 : 1,
+    evaluationOccurrenceCount: evaluation.length,
+    evaluationDistinctEntryCount: evaluationEntries.size,
+    evaluationCommonEntryCount: new Set(evaluation
+      .filter((occurrence) => occurrence.frequencyBand === 1)
+      .map((occurrence) => occurrence.entryId)).size,
+    supportState: training.length === 0 ? "unsupported" : "supported",
+  };
 }
 
 export function relationIndex(options: {
@@ -120,10 +153,30 @@ export function relationIndex(options: {
     const key = transitionRelationKey(occurrence.fromToken, occurrence.toToken);
     transitionOccurrences[key] = [...(transitionOccurrences[key] ?? []), occurrence];
   }
+  const support: Record<string, RelationSupportSummary> = {};
+  for (const [key, occurrences] of Object.entries(bindingOccurrences)) {
+    const tokenId = occurrences[0]!.tokenId;
+    support[key] = supportSummary({
+      kind: "binding",
+      scope: { mode: "guided", layoutId: "zhuyin-standard", tokenId },
+    }, occurrences);
+  }
+  for (const [key, occurrences] of Object.entries(transitionOccurrences)) {
+    const first = occurrences[0]!;
+    support[key] = supportSummary({
+      kind: "transition",
+      scope: {
+        mode: "guided",
+        layoutId: "zhuyin-standard",
+        fromToken: first.fromToken,
+        toToken: first.toToken,
+      },
+    }, occurrences);
+  }
   return {
     bindingOccurrences,
     transitionOccurrences,
-    support: emptySupport(),
+    support,
     confusionContrastPools: options.confusionPools ?? {},
   };
 }
