@@ -19,7 +19,7 @@
     "prebuild": "npm run app:catalog",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run build"
+    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run catalog:relations && npm run build"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
