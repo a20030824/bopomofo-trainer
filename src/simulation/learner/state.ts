@@ -110,8 +110,15 @@ export function validateSyntheticLearnerState(state: SyntheticLearnerState): voi
     );
     assertProbability(transition.learningRate, `transition ${key} learningRate`);
     assertProbability(transition.decayRatePerStep, `transition ${key} decayRatePerStep`);
+    const transferTargetKeys = new Set<string>();
     for (const transfer of transition.transfer) {
       assertProbability(transfer.factor, `transition ${key} transfer factor`);
+      if (transferTargetKeys.has(transfer.targetTransitionKey)) {
+        throw new Error(
+          `transition ${key} transfer target ${transfer.targetTransitionKey} is duplicated`,
+        );
+      }
+      transferTargetKeys.add(transfer.targetTransitionKey);
       if (transfer.targetTransitionKey === key) {
         throw new Error(`transition ${key} cannot transfer to itself`);
       }
