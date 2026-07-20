@@ -36,12 +36,23 @@ This establishes feasibility and replayability only. It does not establish that 
 
 ## Contract
 
-Every strategy accepts the same shared inputs:
+Every strategy accepts one `PartitionInput` with:
 
 - `CatalogEntry[]`;
-- `CatalogRelationIndex`;
-- `RelationalCatalogReport`;
+- one `RelationalCatalogReport` generated for those entries;
 - frequency bands, tags, and provenance IDs carried by catalog entries.
+
+`RelationalCatalogReport.index` is the only relation index accepted by the partition layer. `PartitionInput` does not carry a second `CatalogRelationIndex` alias.
+
+Before selection, guard evaluation, decision construction, or direct metric evaluation, the partition layer:
+
+1. derives the original entry partitions from the report's occurrences;
+2. rebuilds a report from the supplied entries using the report's `mode` and `layoutId`;
+3. canonicalizes object keys and order-insensitive report arrays;
+4. compares canonical index and report snapshot digests, including occurrences and support summaries;
+5. rejects any stale or mixed snapshot before producing a decision.
+
+Therefore entries, mode, layout, occurrences, support, and report totals must describe the same catalog snapshot. The report's legacy `determinismDigest` is not trusted as proof of equivalence; validation computes its own order-independent digest over the actual snapshot fields.
 
 Every strategy returns one replayable `PartitionDecision`:
 
@@ -71,6 +82,7 @@ Entry IDs in the final partitions are sorted. Selection order remains in `select
 7. Hard constraints are never silently weakened.
 8. No policy depends on JavaScript object iteration order.
 9. Equal inputs and seed produce byte-for-byte equal JSON output.
+10. A stale mode, layout, occurrence list, support summary, or report snapshot is rejected before a decision or metrics object exists.
 
 ## Shared metrics
 
@@ -149,6 +161,7 @@ Before handoff, inspect:
 - hidden dependence on original entry order or object key order;
 - occurrence counts mistaken for distinct-entry support;
 - transitions crossing syllable or entry boundaries;
+- stale entries, mode, layout, occurrences, or support crossing catalog snapshots;
 - unrecorded threshold relaxation;
 - seed or tie-break information omitted from output;
 - metrics computed by different evaluators per strategy;
