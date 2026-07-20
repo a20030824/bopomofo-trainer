@@ -40,12 +40,17 @@ describe("relational partition policies", () => {
     expect(new Set(
       decision.metrics.transitionCoverage.evaluationOnlyRelationKeys,
     )).toEqual(expected);
-    expect(decision.constraintResults).toContainEqual(expect.objectContaining({
-      id: "relation-training-support",
+    const supportDiagnostic = decision.constraintResults.find(
+      (constraint) => constraint.id === "relation-training-support",
+    );
+    expect(supportDiagnostic).toMatchObject({
       kind: "diagnostic",
       status: "unsatisfied",
-      actual: 3,
-    }));
+      actual: 13,
+    });
+    expect(new Set(supportDiagnostic?.relatedRelationKeys)).toEqual(
+      expect.objectContaining(expected),
+    );
     expect(decision.selectionTrace.at(-1)).toMatchObject({
       action: "stopped",
       reasonCode: "evaluation-target-reached",
