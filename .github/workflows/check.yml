@@ -71,5 +71,23 @@ jobs:
         with:
           name: relational-strategy-analysis
           path: analysis-artifacts
+      - name: Verify relational candidate confirmation
+        id: confirmation
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run confirmation:relational -- --output-dir confirmation-artifacts 2>&1 | tee confirmation.log
+      - name: Upload confirmation failure log
+        if: failure() && steps.confirmation.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: confirmation-failure-log
+          path: confirmation.log
+      - name: Upload relational candidate confirmation
+        if: steps.confirmation.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: relational-candidate-confirmation
+          path: confirmation-artifacts
       - name: Production build
         run: npm run build

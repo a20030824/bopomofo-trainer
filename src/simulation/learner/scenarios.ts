@@ -219,6 +219,39 @@ function scenario(
   };
 }
 
+function createHeterogeneousImprovementScenario(): SyntheticScenario {
+  let learner = replaceBinding(baseLearner(), u, {
+    errorProbability: 0.36,
+    learningRate: 0.015,
+  });
+  learner = replaceBinding(learner, bo, {
+    errorProbability: 0.24,
+    fallbackActualToken: zhi,
+    learningRate: 0.16,
+  });
+  learner = replaceTransition(learner, zhi, u, {
+    latency: { meanMs: 390, standardDeviationMs: 30 },
+    learningRate: 0.02,
+  });
+  learner = replaceTransition(learner, bo, po, {
+    latency: { meanMs: 250, standardDeviationMs: 20 },
+    learningRate: 0.14,
+  });
+  learner = addConfusion(learner, {
+    expectedToken: bo,
+    actualToken: po,
+    conditionalProbability: 0.58,
+    learningRate: 0.09,
+    decayRatePerStep: 0,
+  });
+  return scenario(
+    "heterogeneous-improvement",
+    "Binding, transition, and confusion relations improve at deliberately different rates.",
+    1110,
+    learner,
+  );
+}
+
 export function createSyntheticScenarios(): readonly SyntheticScenario[] {
   const weakBinding = replaceBinding(baseLearner(), u, {
     errorProbability: 0.48,
@@ -338,9 +371,15 @@ export function createSyntheticScenarios(): readonly SyntheticScenario[] {
 }
 
 export function getSyntheticScenario(id: SyntheticScenario["id"]): SyntheticScenario {
+  if (id === "heterogeneous-improvement") {
+    return createHeterogeneousImprovementScenario();
+  }
   const found = createSyntheticScenarios().find((candidate) => candidate.id === id);
   if (found === undefined) throw new Error(`unknown synthetic scenario ${id}`);
   return found;
 }
 
-export const SYNTHETIC_SCENARIO_IDS = createSyntheticScenarios().map((candidate) => candidate.id);
+export const SYNTHETIC_SCENARIO_IDS = [
+  ...createSyntheticScenarios().map((candidate) => candidate.id),
+  "heterogeneous-improvement",
+] as const;

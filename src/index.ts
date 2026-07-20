@@ -61,6 +61,12 @@ export * from "./simulation/analysis/report-types.js";
 export * from "./simulation/analysis/policy.js";
 export * from "./simulation/analysis/report.js";
 export * from "./simulation/analysis/serialize.js";
+export * from "./simulation/confirmation/types.js";
+export * from "./simulation/confirmation/candidates.js";
+export * from "./simulation/confirmation/plan.js";
+export * from "./simulation/confirmation/policy.js";
+export * from "./simulation/confirmation/report.js";
+export * from "./simulation/confirmation/serialize.js";
 export {
   SYNTHETIC_EXERCISE,
   SYNTHETIC_LAYOUT,

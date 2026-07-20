@@ -204,7 +204,8 @@ export interface SyntheticScenario {
     | "fast-inaccurate"
     | "slow-accurate"
     | "zero-learning"
-    | "retention-decay";
+    | "retention-decay"
+    | "heterogeneous-improvement";
   readonly description: string;
   readonly seed: number;
   readonly startedAtMs: number;

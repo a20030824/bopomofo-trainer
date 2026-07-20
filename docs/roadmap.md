@@ -214,24 +214,68 @@ Under policy `phase-7g-v2`, the committed cohort yields:
 - 0 zero-execution combinations;
 - 0 recorded failure clusters.
 
-The two candidates are:
+The two candidates were:
 
 1. asymmetric confusion: frequency-random objective, binding-preserving partition, fixed-six composer;
 2. weak binding: binding-only objective, relation-support-preserving partition, fixed-six composer.
 
-They are follow-up targets, not production winners. A frequency-stratified asymmetric-confusion combination was explicitly kept inconclusive because faster weakness identification coincided with materially worse confusion-estimation error.
+They were follow-up targets, not production winners. A frequency-stratified asymmetric-confusion combination was explicitly kept inconclusive because faster weakness identification coincided with materially worse confusion-estimation error.
 
 Exit condition: `npm run analysis:relational` reproduces the analysis artifacts and verifies `docs/research/strategy-findings.md` byte-for-byte; baseline identity cannot drift; axis groups remain balanced; contradictory primary evidence cannot be labeled a candidate.
 
-## Next research checkpoint — challenge candidate evidence
+## Phase 7H — Candidate confirmation and stress test
 
-Before resuming product work:
+Goal: challenge the two Phase 7G candidates before any browser, UI, auto-advance, or human-pilot work resumes.
 
-- rerun the two candidates with more seeds and more than two adaptive rounds;
-- add competing-weakness, noisy, retention, and heterogeneous-improvement scenarios;
-- verify whether fixed-six is genuinely robust or only advantaged by the small committed catalog and budget;
-- inspect why transition-aware shows zero blocking fallback but produces no current candidate;
-- decide whether catalog support or measurement identifiability must improve before strategy selection;
-- define a limited browser adapter experiment only after the synthetic result survives these challenges.
+Implemented deliverables:
+
+- an explicit selected-cell plan instead of rerunning an accidental axis cross-product;
+- the matrix-declared historical baseline, two Phase 7G candidates, six matched composer ablations, and two transition-aware objective diagnostics;
+- seven declared scenarios covering the original weaknesses, competing weaknesses, high noise, retention decay, and heterogeneous relation-specific improvement rates;
+- ten deterministic seeds and eight adaptive rounds;
+- compact per-round trajectories without committing the raw trace corpus;
+- per-seed `pass`, `no-improvement`, `missing-evidence`, and `rejected` decisions;
+- anchor-scenario and cross-scenario hypothesis decisions;
+- explicit total fallback, blocking fallback, failure, primary-regression, protected-regression, and material-trajectory-reversal reasons;
+- canonical JSON, seed-assessment CSV, survival CSV, trajectory CSV, and Markdown findings;
+- disk-backed byte-for-byte replay and committed-findings verification.
+
+The confirmatory cohort runs:
+
+```text
+11 selected strategy cells
+× 7 learner scenarios
+× 10 seeds
+= 770 runs
+× 8 rounds
+= 6,160 rounds
+```
+
+Under policy `phase-7h-v2`:
+
+- no hypothesis survives confirmation;
+- both Phase 7G candidates are rejected in their original anchor scenarios;
+- the asymmetric-confusion candidate passes 0/10 anchor seeds;
+- the weak-binding candidate passes 3/10 anchor seeds and rejects 7/10;
+- all six matched composer ablations are rejected in their anchor scenarios;
+- both transition-aware objective diagnostics are rejected in the weak-transition anchor;
+- one non-anchor scenario result is `scenario-limited`, which is insufficient to rescue its rejected anchor hypothesis;
+- material trajectory reversals are retained rather than hidden by final-only summaries.
+
+The result does not establish that fixed-six is superior. It shows that replacing fixed-six with the selected variable-length composers does not rescue either failed candidate under this cohort. No product strategy is selected.
+
+Exit condition: `npm run confirmation:relational` reproduces all confirmation artifacts twice and verifies `docs/research/strategy-confirmation.md` byte-for-byte; candidate identity and source Phase 7G digests cannot drift; matched ablations change exactly one axis; every seed and round remains traceable; and no candidate advances after an anchor rejection.
+
+## Next research checkpoint — identify support and measurement bottlenecks
+
+Before proposing another strategy or resuming product work:
+
+- quantify how much of the rejection pattern is caused by limited relation support, lexical concentration, and repeated-entry pressure in the committed catalog;
+- separate objective-selection failure from measurement identifiability by testing declared support/observation counterfactuals without leaking hidden truth into selectors;
+- inspect why cumulative estimation improvements frequently reverse or fail to remain sustained across eight rounds;
+- determine whether blocking fallbacks come from genuine unsupported demands or avoidable objective/composer interactions;
+- issue narrowly scoped catalog-expansion requests only when a missing relation or concentration bottleneck is numerically identified;
+- retain the historical baseline and rejected hypotheses as comparison evidence rather than silently replacing them;
+- define another synthetic checkpoint before considering a limited browser adapter experiment.
 
 Recall mode, alternate layouts, accounts, cloud sync, PR #18 auto-advance, human pilot, and further product refinement remain deferred.
