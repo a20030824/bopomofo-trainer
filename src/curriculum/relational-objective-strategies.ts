@@ -37,6 +37,19 @@ function relationKey(relation: RelationRef): string {
   return compositionRelationKey(relation);
 }
 
+function isRoundZero(context: ObjectiveSelectionContext): boolean {
+  return context.round === 0 && context.measurement.traceCount === 0;
+}
+
+function supportReason(
+  context: ObjectiveSelectionContext,
+  kind: "binding" | "transition" | "confusion",
+): string {
+  return isRoundZero(context)
+    ? `support-driven-round-zero-${kind}`
+    : `support-driven-unmeasured-${kind}`;
+}
+
 function recentRelationKeys(context: ObjectiveSelectionContext): ReadonlySet<string> {
   const result = new Set<string>();
   for (const objective of context.recentObjectives) {
@@ -95,10 +108,9 @@ function bindingRelations(
     const supportScore = summary.trainingCommonEntryCount * 2
       + summary.trainingDistinctEntryCount
       + summary.trainingOccurrenceCount / 1000;
-    const measuredScore = measurement.value === null ? null : measurement.value;
     const baseScore = mode === "frequency"
       ? supportScore
-      : measuredScore ?? 1 / Math.max(1, summary.trainingDistinctEntryCount);
+      : measurement.value ?? 1 / Math.max(1, summary.trainingDistinctEntryCount);
     const score = recent.has(relationKey(relation)) ? baseScore * 0.5 : baseScore;
     return {
       relation,
@@ -109,7 +121,7 @@ function bindingRelations(
       measurementValue: measurement.value,
       score,
       reason: measurement.value === null
-        ? "support-driven-round-zero-binding"
+        ? supportReason(context, "binding")
         : mode === "frequency"
           ? "frequency-support-weight"
           : "highest-cumulative-binding-error-rate",
@@ -128,10 +140,9 @@ function transitionRelations(
     const supportScore = summary.trainingCommonEntryCount * 2
       + summary.trainingDistinctEntryCount
       + summary.trainingOccurrenceCount / 1000;
-    const measuredScore = measurement.value;
     const baseScore = mode === "frequency"
       ? supportScore
-      : measuredScore ?? 1 / Math.max(1, summary.trainingDistinctEntryCount);
+      : measurement.value ?? 1 / Math.max(1, summary.trainingDistinctEntryCount);
     const score = recent.has(relationKey(relation)) ? baseScore * 0.5 : baseScore;
     return {
       relation,
@@ -142,7 +153,7 @@ function transitionRelations(
       measurementValue: measurement.value,
       score,
       reason: measurement.value === null
-        ? "support-driven-round-zero-transition"
+        ? supportReason(context, "transition")
         : mode === "frequency"
           ? "frequency-support-weight"
           : "highest-cumulative-transition-latency",
@@ -209,7 +220,7 @@ function confusionRelations(
         measurementValue,
         score,
         reason: measurementValue === null
-          ? "support-driven-round-zero-confusion"
+          ? supportReason(context, "confusion")
           : mode === "frequency"
             ? "frequency-support-weight"
             : "highest-cumulative-conditional-confusion-rate",
@@ -242,7 +253,10 @@ function ranked(candidates: readonly ScoredRelation[]): readonly ScoredRelation[
   );
 }
 
-function emptyDecision(kinds: readonly ("binding" | "transition" | "confusion")[], reason: string): ObjectiveDecision {
+function emptyDecision(
+  kinds: readonly ("binding" | "transition" | "confusion")[],
+  reason: string,
+): ObjectiveDecision {
   return {
     objective: { kind: "coverage", relationKinds: kinds },
     candidates: [],
@@ -251,6 +265,7 @@ function emptyDecision(kinds: readonly ("binding" | "transition" | "confusion")[
 }
 
 function singleDecision(
+  context: ObjectiveSelectionContext,
   kind: "binding" | "transition" | "confusion",
   candidates: readonly ScoredRelation[],
 ): ObjectiveDecision {
@@ -261,7 +276,9 @@ function singleDecision(
     objective: { kind, relation: selected.relation as never },
     candidates: ordered.map(candidateScore),
     fallbackReason: selected.measurementValue === null
-      ? `no-measurement-support-driven-${kind}`
+      ? isRoundZero(context)
+        ? `round-zero-support-driven-${kind}`
+        : `unmeasured-support-driven-${kind}`
       : null,
   };
 }
@@ -293,7 +310,7 @@ function weightedRandomDecision(context: ObjectiveSelectionContext): ObjectiveDe
   return {
     objective: { kind, relation: selected.relation as never },
     candidates: candidates.map(candidateScore),
-    fallbackReason: context.measurement.traceCount === 0
+    fallbackReason: isRoundZero(context)
       ? "round-zero-frequency-support-sampling"
       : null,
   };
@@ -334,7 +351,9 @@ function combinedDecision(context: ObjectiveSelectionContext): ObjectiveDecision
     },
     candidates: candidates.map(candidateScore),
     fallbackReason: selected.some((candidate) => candidate.measurementValue === null)
-      ? "combined-includes-support-driven-round-zero-demand"
+      ? isRoundZero(context)
+        ? "combined-includes-support-driven-round-zero-demand"
+        : "combined-includes-unmeasured-support-driven-demand"
       : selected.length < 3
         ? "combined-missing-one-or-more-relation-kinds"
         : null,
@@ -349,11 +368,11 @@ export function selectRelationalObjective(
     case "frequency-random":
       return weightedRandomDecision(context);
     case "binding-only-baseline":
-      return singleDecision("binding", bindingRelations(context, "binding"));
+      return singleDecision(context, "binding", bindingRelations(context, "binding"));
     case "transition-aware":
-      return singleDecision("transition", transitionRelations(context, "transition"));
+      return singleDecision(context, "transition", transitionRelations(context, "transition"));
     case "confusion-aware":
-      return singleDecision("confusion", confusionRelations(context, "confusion"));
+      return singleDecision(context, "confusion", confusionRelations(context, "confusion"));
     case "combined-relational":
       return combinedDecision(context);
   }
