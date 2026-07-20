@@ -9,11 +9,13 @@ import {
   partitionRelationSupportPreserving,
   partitionSeededMaximumCoverage,
   type PartitionDecision,
+  type PartitionInput,
 } from "../../../src/relations/partition/index.js";
 import { toneToken, zhuyinToken } from "../../../src/scheme/tokens.js";
 import {
   compileRealCatalog,
   createPartitionInput,
+  createStalePartitionInput,
   readPartitionFixture,
 } from "./helpers.js";
 
@@ -21,6 +23,16 @@ const THREE_ENTRY_OPTIONS = {
   evaluationEntryCount: 3,
   minimumTrainingDistinctEntries: 1,
 } as const;
+
+function captureError(run: () => unknown): string {
+  try {
+    run();
+  } catch (error) {
+    if (error instanceof Error) return error.message;
+    throw error;
+  }
+  throw new Error("expected operation to throw");
+}
 
 describe("relational partition policies", () => {
   it("reports the current 49-entry baseline's three evaluation-only transitions", async () => {
@@ -146,9 +158,9 @@ describe("relational partition policies", () => {
       minimumTrainingDistinctEntries: 1,
     });
 
-    expect(input.index.transitionOccurrences[repeatedKey]).toHaveLength(2);
-    expect(input.index.support[repeatedKey]?.distinctEntryCount).toBe(1);
-    expect(input.index.transitionOccurrences[crossSyllableKey]).toBeUndefined();
+    expect(input.report.index.transitionOccurrences[repeatedKey]).toHaveLength(2);
+    expect(input.report.index.support[repeatedKey]?.distinctEntryCount).toBe(1);
+    expect(input.report.index.transitionOccurrences[crossSyllableKey]).toBeUndefined();
     expect(decision.evaluationEntryIds).toEqual([]);
     expect(decision.metrics.evaluationNovelty).toBe(0);
     expect(decision.constraintResults).toContainEqual(expect.objectContaining({
@@ -180,6 +192,65 @@ describe("relational partition policies", () => {
 
     expect(() => partitionRelationSupportPreserving(input, THREE_ENTRY_OPTIONS))
       .toThrow(/duplicate catalog lexical identity/u);
+  });
+
+  it("deterministically rejects a stale occurrence index before decision or metrics", async () => {
+    const input = await createStalePartitionInput();
+    const runPolicy = () => partitionRelationSupportPreserving(input, THREE_ENTRY_OPTIONS);
+    const first = captureError(runPolicy);
+    const replay = captureError(runPolicy);
+    const metricError = captureError(() => evaluatePartitionMetrics(input, new Set(), []));
+
+    expect(first).toMatch(
+      /^partition relation index snapshot mismatch: canonical [0-9a-f]{8}, received [0-9a-f]{8}$/u,
+    );
+    expect(replay).toBe(first);
+    expect(metricError).toBe(first);
+  });
+
+  it("rejects mode, layout, and support from different catalog snapshots", async () => {
+    const input = createPartitionInput(await readPartitionFixture("feasible"));
+    const observedSupport = Object.entries(input.report.index.support)
+      .find(([, summary]) => summary.occurrenceCount > 0);
+    if (observedSupport === undefined) throw new Error("fixture has no observed support");
+    const [supportKey, supportSummary] = observedSupport;
+    const mismatchedInputs: readonly PartitionInput[] = [
+      {
+        entries: input.entries,
+        report: { ...input.report, mode: "recall" },
+      },
+      {
+        entries: input.entries,
+        report: { ...input.report, layoutId: "fixture:stale-layout" },
+      },
+      {
+        entries: input.entries,
+        report: {
+          ...input.report,
+          index: {
+            ...input.report.index,
+            support: {
+              ...input.report.index.support,
+              [supportKey]: {
+                ...supportSummary,
+                occurrenceCount: supportSummary.occurrenceCount + 1,
+              },
+            },
+          },
+        },
+      },
+    ];
+
+    for (const mismatched of mismatchedInputs) {
+      const first = captureError(() =>
+        partitionRelationSupportPreserving(mismatched, THREE_ENTRY_OPTIONS));
+      const replay = captureError(() =>
+        partitionRelationSupportPreserving(mismatched, THREE_ENTRY_OPTIONS));
+      expect(first).toMatch(
+        /^partition relation index snapshot mismatch: canonical [0-9a-f]{8}, received [0-9a-f]{8}$/u,
+      );
+      expect(replay).toBe(first);
+    }
   });
 
   it("replays every strategy independent of input entry order", async () => {
