@@ -44,5 +44,12 @@ jobs:
         run: npm run strategy:matrix
       - name: Verify seeded cohort experiments
         run: npm run experiment:relational
+      - name: Verify relational strategy analysis
+        run: npx tsx scripts/analyze-relational-experiments.ts --verify --output-dir analysis-artifacts
+      - name: Upload relational strategy analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: relational-strategy-analysis
+          path: analysis-artifacts
       - name: Production build
         run: npm run build
