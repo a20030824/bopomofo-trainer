@@ -24,6 +24,13 @@ function requiredText(name: string, value: string): string {
   return normalized;
 }
 
+function uniqueSortedStrings(name: string, values: readonly string[]): readonly string[] {
+  const normalized = values.map((value) => requiredText(name, value));
+  const unique = new Set(normalized);
+  if (unique.size !== normalized.length) throw new Error(`${name} must not contain duplicates`);
+  return [...unique].sort(compareText);
+}
+
 function canonicalCell(
   declaration: ConfirmationCellDeclaration,
 ): CanonicalConfirmationCellDeclaration {
@@ -35,6 +42,10 @@ function canonicalCell(
     hypothesisId,
     rationale,
     learnerModelId,
+    anchorScenarioIds: uniqueSortedStrings(
+      "confirmation anchorScenarioIds",
+      declaration.anchorScenarioIds,
+    ),
     matchedReferenceCellId: declaration.matchedReferenceCellId === null
       ? null
       : requiredText("matchedReferenceCellId", declaration.matchedReferenceCellId),
@@ -68,8 +79,10 @@ function changedAxes(
 function validateMatchedDeclarations(
   cells: readonly CanonicalConfirmationCellDeclaration[],
   baselineCellId: string,
+  scenarioIds: readonly string[],
 ): void {
   const byId = new Map(cells.map((item) => [item.cell.id, item] as const));
+  const scenarios = new Set(scenarioIds);
   const baselines = cells.filter((item) => item.role === "historical-baseline");
   if (baselines.length !== 1 || baselines[0]!.cell.id !== baselineCellId) {
     throw new Error("confirmation plan requires exactly the matrix-declared historical baseline");
@@ -77,9 +90,20 @@ function validateMatchedDeclarations(
   if (baselines[0]!.matchedReferenceCellId !== null) {
     throw new Error("historical baseline must not declare a matched reference");
   }
+  if (baselines[0]!.anchorScenarioIds.length !== 0) {
+    throw new Error("historical baseline must not declare anchor scenarios");
+  }
 
   for (const item of cells) {
+    for (const scenarioId of item.anchorScenarioIds) {
+      if (!scenarios.has(scenarioId)) {
+        throw new Error(`confirmation anchor scenario is not in the plan: ${scenarioId}`);
+      }
+    }
     if (item.role === "historical-baseline") continue;
+    if (item.anchorScenarioIds.length === 0) {
+      throw new Error(`${item.role} ${item.cell.id} requires an anchor scenario`);
+    }
     if (item.matchedReferenceCellId === null) {
       throw new Error(`${item.role} ${item.cell.id} requires a matched reference`);
     }
@@ -133,6 +157,8 @@ export function canonicalizeRelationalConfirmationPlan(
     "sourceFindingsPolicyVersion",
     input.sourceFindingsPolicyVersion,
   );
+  const sourceReportDigest = requiredText("sourceReportDigest", input.sourceReportDigest);
+  const sourceAnalysisDigest = requiredText("sourceAnalysisDigest", input.sourceAnalysisDigest);
   const experiment = confirmationExperimentPlan(input);
   if (input.cells.length === 0) throw new Error("confirmation plan requires selected cells");
   const cells = input.cells.map(canonicalCell).sort((left, right) =>
@@ -149,11 +175,13 @@ export function canonicalizeRelationalConfirmationPlan(
     hypotheses.add(item.hypothesisId);
   }
   const baselineCellId = createRelationalStrategyMatrix().baselineCellId;
-  validateMatchedDeclarations(cells, baselineCellId);
+  validateMatchedDeclarations(cells, baselineCellId, experiment.scenarioIds);
   return {
     schemaVersion: "relational-confirmation-plan-v1",
     id: experiment.id,
     sourceFindingsPolicyVersion,
+    sourceReportDigest,
+    sourceAnalysisDigest,
     catalog: experiment.catalog,
     confusionRelations: experiment.confusionRelations,
     cells,
