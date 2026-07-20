@@ -1,0 +1,49 @@
+{
+  "objective": {
+    "fromToken": "ㄓ",
+    "toToken": "ㄨ"
+  },
+  "entries": [
+    {
+      "id": "word:exact-adjacent",
+      "text": "中",
+      "syllables": [["ㄓ", "ㄨ", "ㄥ", "tone:1"]],
+      "frequencyBand": 1
+    },
+    {
+      "id": "word:same-syllable-nonadjacent",
+      "text": "假",
+      "syllables": [["ㄓ", "ㄣ", "ㄨ", "tone:3"]],
+      "frequencyBand": 1
+    },
+    {
+      "id": "word:cross-syllable",
+      "text": "假字",
+      "syllables": [["ㄓ", "tone:3"], ["ㄨ", "ㄣ", "tone:4"]],
+      "frequencyBand": 1
+    }
+  ],
+  "indexedOccurrences": [
+    {
+      "entryId": "word:exact-adjacent",
+      "syllableIndex": 0,
+      "fromTokenIndex": 0,
+      "fromToken": "ㄓ",
+      "toToken": "ㄨ"
+    },
+    {
+      "entryId": "word:same-syllable-nonadjacent",
+      "syllableIndex": 0,
+      "fromTokenIndex": 0,
+      "fromToken": "ㄓ",
+      "toToken": "ㄨ"
+    },
+    {
+      "entryId": "word:cross-syllable",
+      "syllableIndex": 0,
+      "fromTokenIndex": 0,
+      "fromToken": "ㄓ",
+      "toToken": "ㄨ"
+    }
+  ]
+}
