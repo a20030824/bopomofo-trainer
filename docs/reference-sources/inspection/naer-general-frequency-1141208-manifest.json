@@ -1,0 +1,44 @@
+{
+  "sourceId": "naer:coct-general-frequency",
+  "sourceVersion": "1141208",
+  "landingUrl": "https://coct.naer.edu.tw/page.jsp?ID=41",
+  "downloadUrl": "https://coct.naer.edu.tw/file/files/%E9%80%9A%E7%94%A8%E8%A9%9E%E9%A0%BB%E8%A1%A8%20-%20%E5%AE%9A%E7%A8%BF1141208.xlsx",
+  "observedFilename": "通用詞頻表 - 定稿1141208.xlsx",
+  "retrievedAt": "2026-07-21T11:54:32Z",
+  "byteSize": 17303267,
+  "checksumSha256": "bfd3b73938e115ae39a44c5e11c97135c09939cf598157cb2fe0b33c4302de75",
+  "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "redistributionStatus": "local-only-pending-license-review",
+  "inspectionStatus": "inspected",
+  "inspectionVersion": "naer-workbook-structure-v1",
+  "reportPath": "docs/reference-sources/inspection/naer-general-frequency-1141208-inspection.md",
+  "adapterDecision": {
+    "sufficientForFirstCommonnessScore": true,
+    "sourceRowId": "${sourceVersion}:${A}",
+    "lexicalIdentityColumn": "詞",
+    "spokenFrequencyColumn": "口語\n每百萬詞頻",
+    "writtenFrequencyColumn": "書面語\n每百萬詞頻",
+    "newsFrequencyColumn": "新聞\n每百萬詞頻",
+    "generalFrequencyColumn": "每百萬詞頻\n(平均)",
+    "commonnessV1Mapping": {
+      "spokenPerMillion": "G",
+      "writtenPerMillion": "D",
+      "ignoredForV1Score": [
+        "J",
+        "L"
+      ],
+      "reason": "commonness-v1 explicitly combines spoken and written channels; news is retained as source diagnostics and L is an unweighted three-channel mean"
+    },
+    "readingColumn": null,
+    "partOfSpeechColumn": null,
+    "levelColumn": null,
+    "domainColumn": null,
+    "identityReviewRequired": true,
+    "identityRule": "Match normalized lexical text to exactly one catalog entry; do not automatically split heteronyms or variants because the workbook has no reading column."
+  },
+  "unresolved": [
+    "redistribution permission",
+    "cross-version stability of general rank",
+    "manual review for heteronyms or multiple catalog readings sharing one text"
+  ]
+}
