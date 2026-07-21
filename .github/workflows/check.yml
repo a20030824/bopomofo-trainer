@@ -39,12 +39,12 @@ jobs:
         with:
           name: typecheck-failure-log
           path: typecheck.log
-      - name: Tests
+      - name: Fast tests
         id: tests
         shell: bash
         run: |
           set -o pipefail
-          npm test -- --reporter=verbose 2>&1 | tee vitest.log
+          npx vitest run --exclude 'tests/simulation/**' --reporter=verbose 2>&1 | tee vitest.log
       - name: Upload Vitest failure log
         if: failure() && steps.tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -70,6 +70,8 @@ jobs:
           cache-dependency-path: package.json
       - name: Install dependencies
         run: npm install --include=dev --ignore-scripts
+      - name: Simulation tests
+        run: npx vitest run tests/simulation --reporter=verbose --testTimeout=15000
       - name: Analyze relational catalog
         run: npm run catalog:relations
       - name: Verify relational integration replay
