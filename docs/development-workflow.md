@@ -9,7 +9,7 @@ This repository uses a local-first development workflow. GitHub Actions is a fin
 Install dependencies once for the working tree:
 
 ```bash
-npm install --include=dev --ignore-scripts
+npm ci --include=dev --ignore-scripts
 ```
 
 Before pushing an ordinary product, catalog, grammar, measurement, UI, persistence, or documentation change, run:
@@ -55,7 +55,7 @@ The research command is intentionally expensive. It is not a routine product mer
 
 ## Dependency lockfile
 
-The repository currently has no `package-lock.json`, so CI and local setup still use `npm install`. Generate and review a lockfile on a networked development machine before changing the workflow to `npm ci`. That change belongs in its own small pull request; do not hand-author a lockfile.
+The reviewed `package-lock.json` is the installation contract for local development and CI. Use `npm ci` for ordinary setup and verification. Update the lockfile with `npm install` only when intentionally changing dependencies, and review that change together with `package.json`.
 
 ## Actions quota exhaustion
 

@@ -162,14 +162,16 @@ Only explicit experimental seams are preserved:
 
 ## Current artifacts
 
-The relational importer, partition policies, variable-length composer, synthetic trace generator, and single-policy integration replay are implemented. The interaction spike, local product, pilot history, and auto-advance branch remain adapters around completed earlier work and stay paused while the strategy matrix and numeric experiment harness are developed.
+The browser product now composes complete grammar-valid utterances, selects them with reviewed commonness plus bounded learner evidence, persists schema-versioned local progress, keeps held-out evaluation isolated, and exports pilot diagnostics. The archived relational importer, partition policies, variable-length composer, synthetic learner, strategy matrix, cohort experiment, and confirmation harness remain reproducible research evidence rather than the production selection path.
+
+The data pipeline has also pinned the active-catalog commonness projection and produced a ranked NAER top-1,000 lexical review queue. Runtime vocabulary expansion remains review-gated: pronunciation resolution, lexical identity, grammar role, valency, and provenance must be accepted before an entry reaches the browser catalog.
 
 ## Deferred
 
-- strategy-matrix comparison across objective/partition/composer/learner combinations;
-- multiple seeds, cohorts, aggregate reports, and confidence/stability analysis;
-- browser presentation of variable-length sequences;
-- additional UI refinement and immediate human pilot;
+- runtime expansion beyond the 49 reviewed entries;
+- manual resolution of the 89 ambiguous or unmatched top-1,000 identities;
+- human pilot validation and evidence-based threshold changes;
+- sentence-variety refinement after the reviewed lexicon grows;
 - recall curriculum;
 - alternate layouts;
 - accounts, cloud sync, or telemetry;

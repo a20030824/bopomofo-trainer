@@ -41,11 +41,11 @@ Built:
 
 Neither candidate survived confirmation. No objective/composer combination was promoted to production. The research system remains reproducible and useful for diagnostics, but it no longer blocks browser product work.
 
-## Current product phase
+## Completed product phase
 
-# Phase 8 — Frequency-first grammatical practice
+### Phase 8 — Frequency-first grammatical practice
 
-## Phase 8A — Grammar-valid candidate universe
+#### Phase 8A — Grammar-valid candidate universe
 
 Status: complete.
 
@@ -62,9 +62,9 @@ Delivered:
 
 Exit condition: every multi-entry practice candidate matches one declared template, and no fallback returns an unrelated word list.
 
-## Phase 8B — Frequency-first utterance selection
+#### Phase 8B — Frequency-first utterance selection
 
-Status: in implementation.
+Status: complete.
 
 Product policy:
 
@@ -91,9 +91,11 @@ Deliverables:
 
 Exit condition: the browser never concatenates independently sampled words, reload reproduces the same next utterance, and exact-head CI is green.
 
-## Phase 8C — Reviewed commonness data
+#### Phase 8C — Reviewed commonness data
 
-Tracked separately:
+Status: complete for the active catalog.
+
+Delivered:
 
 - inspect and pin the current NAER workbook schema and checksum;
 - implement the smallest source-specific adapter after inspection;
@@ -104,12 +106,37 @@ Tracked separately:
 
 Exit condition: reviewed commonness evidence can replace coarse frequency bands without importing NAER-specific types into curriculum code.
 
-## Later product work
+## Current product phase
 
-After Phase 8B is manually verified in the browser:
+### Phase 9 — Reviewed lexicon expansion and human validation
+
+The next constraint is no longer selection architecture. It is the 49-entry content ceiling and the absence of human evidence.
+
+#### Phase 9A — Rank-ordered catalog expansion
+
+Use the committed NAER top-1,000 queue in bounded review batches. Start with ranks 1–250, because this prefix is common enough to improve sentence variety while keeping lexical-identity and grammar review tractable.
+
+For every candidate in the tranche:
+
+- accept one evidenced lexical identity and reading, or record an explicit exclusion reason;
+- review lexical role, standalone/formulaic status, and predicate valency where applicable;
+- retain source and decision provenance;
+- measure the added grammar-candidate variety and practice/evaluation support before merging;
+- never bulk-promote the 911 automatically resolvable readings without grammar review.
+
+Exit condition: ranks 1–250 have a complete include/exclude ledger, every included entry passes the existing catalog and grammar gates, and the browser's candidate universe shows materially lower repetition than the 49-entry baseline.
+
+#### Phase 9B — Local human pilot
+
+Run short, repeatable guided-mode sessions only after the first expansion tranche is browser-verified. Record task completion, wrong-key recovery, IME friction, hint usage, repetition complaints, and local diagnostic exports. Treat accuracy and latency as observations, not a mastery score.
+
+Exit condition: observed friction is reproducible across sessions, the default flow can be completed without developer assistance, and any proposed threshold or UI change cites a concrete pilot failure mode.
+
+#### Phase 9C — Evidence-based product refinement
+
+Only after Phase 9B:
 
 - reevaluate PR #18 auto-advance against utterance boundaries;
-- expand the reviewed vocabulary and grammar sidecar;
 - review stage thresholds from real local pilot data;
 - improve sentence variety without runtime LLM generation;
 - consider recall mode and alternate layouts as separate measurement scopes.

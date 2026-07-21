@@ -16,7 +16,7 @@ Selection order is:
 
 ## Frequency stages
 
-The current coarse catalog uses three bands:
+Three bands continue to control eligibility:
 
 - Stage 1: band 1 only;
 - Stage 2: bands 1–2;
@@ -24,7 +24,7 @@ The current coarse catalog uses three bands:
 
 A locked band cannot be admitted by a high error or latency score. Stage advancement requires a minimum number of completed practice utterances, enough mapped attempts, and an acceptable cumulative error rate within the current stage.
 
-A future reviewed NAER commonness projection may replace the coarse band weights without changing the learner-evidence contract.
+Within the unlocked set, reviewed NAER `commonness-v1` evidence supplies the entry's frequency weight. The coarse band weight remains the deterministic fallback when an entry has no reviewed commonness projection. This source-neutral boundary does not change the learner-evidence contract.
 
 ## Utterance score
 
@@ -38,9 +38,9 @@ utteranceWeight = frequencyBase
                 × recentTemplateFactor
 ```
 
-`frequencyBase` is the geometric mean of the versioned frequency weights of the entries in the utterance. The geometric mean avoids automatically rewarding or punishing a candidate merely because it has more words.
+`frequencyBase` is the geometric mean of the versioned frequency weights of the entries in the utterance. Each entry uses its reviewed `commonnessBase.selectionWeight` when available, then falls back to its band weight. The geometric mean avoids automatically rewarding or punishing a candidate merely because it has more words.
 
-The initial band weights are:
+The fallback band weights are:
 
 ```text
 band 1 = 1.00
@@ -48,7 +48,7 @@ band 2 = 0.50
 band 3 = 0.25
 ```
 
-The maximum combined learner boost is `1.50`. Therefore even a fully boosted band-2 item cannot outrank an otherwise equivalent unpenalized band-1 item solely because of one noisy weakness estimate.
+The maximum combined learner boost is `1.50`. Stage eligibility is still absolute: no learner boost can admit an entry from a locked band. Inside the unlocked set, learner evidence remains a bounded modifier of the reviewed frequency base.
 
 ## Expected-token evidence
 

@@ -1,6 +1,8 @@
 node_modules/
 dist/
 coverage/
+__pycache__/
+*.py[cod]
 data/external/
 data/reference-generated/
 data/generated/catalog.json
