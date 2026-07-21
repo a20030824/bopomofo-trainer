@@ -1,0 +1,17 @@
+{
+  "version": "manual-reading-overrides-v1",
+  "sourceVersion": "2026-07-22",
+  "provenanceId": "local:reading-review-v1",
+  "rows": [
+    {
+      "text": "東西",
+      "reading": "ㄉㄨㄥ1 ㄒㄧ5",
+      "reason": "Select the common noun reading 'thing; stuff'; MOE and CC-CEDICT both preserve competing readings, so the product meaning requires an explicit reviewed choice."
+    },
+    {
+      "text": "很好",
+      "reading": "ㄏㄣ3 ㄏㄠ3",
+      "reason": "The phrase is absent as an exact headword from the committed dictionary projections; retain the reviewed compositional reading from the sample catalog."
+    }
+  ]
+}

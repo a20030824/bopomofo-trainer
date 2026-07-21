@@ -5,6 +5,7 @@ data/external/
 data/reference-generated/
 data/generated/catalog.json
 data/generated/coverage.json
+data/generated/reading-resolution.json
 src/app/generated/catalog.ts
 *.log
 .DS_Store

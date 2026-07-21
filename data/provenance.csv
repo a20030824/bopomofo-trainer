@@ -1,5 +1,8 @@
 id,kind,title,license,notes
 local:sample-v1,manual,Bopomofo Trainer provisional sample,not-applicable,Hand-authored only for parser and interaction experiments; not authoritative pronunciation or frequency data.
 local:grammar-review-v1,manual,Bopomofo Trainer grammar sidecar v1,not-applicable,Hand-authored grammatical-role and predicate-frame review for deterministic template composition; not a comprehensive Mandarin grammar source.
+local:reading-review-v1,manual,Bopomofo Trainer reviewed reading overrides v1,not-applicable,Explicit product reading choices only where the committed external projections remain ambiguous or unmatched.
 moe:phonetic-symbols-manual,reference,國語注音符號手冊,CC BY-ND 3.0 TW,Official Ministry of Education reference used to define the syllable-table validation approach; no table content is redistributed verbatim.
-moe:revised-dictionary,reference,重編國語辭典修訂本,reference-only,Official Ministry of Education dictionary used only to confirm uncommon attested standalone syllables; definitions are not copied into runtime catalog data.
+moe:concised-dictionary,reference,國語辭典簡編本,CC BY-ND 3.0 TW,Official Taiwan Mandarin exact-headword readings; only candidate-scoped source evidence is committed.
+moe:revised-dictionary,reference,重編國語辭典修訂本,CC BY-ND 3.0 TW,Official dictionary used only as a provisional exact-headword fallback after the Concised Dictionary remains unresolved.
+cc-cedict:manual-release,reference,CC-CEDICT manually downloaded release,CC BY-SA 4.0,Traditional/simplified identity and numbered-pinyin fallback for candidates unresolved by both MOE sources; English definitions are not emitted.
