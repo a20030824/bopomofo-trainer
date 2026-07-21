@@ -1,0 +1,45 @@
+from __future__ import annotations
+
+import json
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+ARTIFACT = ROOT / "data" / "readings" / "moe-concised-2014_20260626-active-catalog.json"
+
+
+class MoeConcisedProjectionArtifactTest(unittest.TestCase):
+    def test_projection_is_small_sorted_and_self_consistent(self) -> None:
+        payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+        rows = payload["rows"]
+        diagnostics = payload["diagnostics"]
+
+        self.assertEqual(payload["adapterVersion"], "moe-concised-reading-adapter-v1")
+        self.assertEqual(payload["source"]["sourceVersion"], "2014_20260626")
+        self.assertEqual(payload["candidateSet"]["entryCount"], 49)
+        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], 49)
+        self.assertEqual(len(rows), diagnostics["acceptedCandidateCount"])
+        self.assertEqual(len(rows), 41)
+        self.assertEqual(
+            [row["lookupText"] for row in rows],
+            sorted(row["lookupText"] for row in rows),
+        )
+        self.assertEqual(diagnostics["multipleReadingTexts"], ["東西"])
+        self.assertEqual(
+            diagnostics["candidateScopedSourceRowCount"],
+            len(rows) + 2,
+        )
+        self.assertLess(ARTIFACT.stat().st_size, 100_000)
+
+    def test_projection_preserves_moe_neutral_tone_evidence(self) -> None:
+        payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+        rows = {row["lookupText"]: row for row in payload["rows"]}
+
+        self.assertEqual(rows["我們"]["sourceBopomofo"], "ㄨㄛˇ　˙ㄇㄣ")
+        self.assertEqual(rows["我們"]["trainerReading"], "ㄨㄛ3 ㄇㄣ5")
+        self.assertEqual(rows["媽媽"]["trainerReading"], "ㄇㄚ1 ㄇㄚ5")
+
+
+if __name__ == "__main__":
+    unittest.main()
