@@ -17,6 +17,7 @@
     "commonness:naer": "python scripts/project-naer-commonness.py",
     "readings:moe-concised": "python scripts/project-moe-concised-readings.py",
     "readings:moe-revised": "python scripts/project-moe-revised-readings.py",
+    "identity:cedict": "python scripts/project-cedict-identity-hints.py",
     "spike:catalog": "npm run app:catalog",
     "measurement:analyze": "tsx scripts/analyze-trace.ts",
     "curriculum:simulate": "tsx scripts/simulate-curriculum.ts",
