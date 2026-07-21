@@ -27,6 +27,11 @@ def run(*arguments: str) -> None:
     subprocess.run(arguments, cwd=ROOT, check=True)
 
 
+def canonicalize_text_file(path: Path) -> None:
+    normalized = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    path.write_bytes(normalized.replace(b"\n", b"\r\n"))
+
+
 def main() -> None:
     missing = [path for path in (NAER, CONCISED, REVISED, CEDICT) if not path.is_file()]
     if missing:
@@ -45,6 +50,8 @@ def main() -> None:
         "--manifest-output",
         str(MANIFEST),
     )
+    canonicalize_text_file(CANDIDATES)
+    canonicalize_text_file(MANIFEST)
     run(
         PYTHON,
         "scripts/project-moe-concised-readings.py",
@@ -55,6 +62,7 @@ def main() -> None:
         "--output",
         str(CONCISED_OUTPUT),
     )
+    canonicalize_text_file(CONCISED_OUTPUT)
     run(
         PYTHON,
         "scripts/project-moe-revised-readings.py",
@@ -67,6 +75,7 @@ def main() -> None:
         "--output",
         str(REVISED_OUTPUT),
     )
+    canonicalize_text_file(REVISED_OUTPUT)
     run(
         PYTHON,
         "scripts/project-cedict-identity-hints.py",
@@ -85,6 +94,7 @@ def main() -> None:
         "--output",
         str(CEDICT_OUTPUT),
     )
+    canonicalize_text_file(CEDICT_OUTPUT)
     run(
         PYTHON,
         "scripts/summarize-naer-reading-coverage.py",
@@ -99,6 +109,7 @@ def main() -> None:
         "--output",
         str(COVERAGE_OUTPUT),
     )
+    canonicalize_text_file(COVERAGE_OUTPUT)
 
 
 if __name__ == "__main__":
