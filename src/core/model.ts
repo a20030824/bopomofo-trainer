@@ -23,11 +23,27 @@ export interface Syllable {
   readonly tokens: readonly TokenId[];
 }
 
+export interface CatalogCommonnessBase {
+  readonly modelVersion: string;
+  readonly sourceId: string;
+  readonly sourceVersion: string;
+  readonly sourceRowId: string;
+  readonly spokenPerMillion: number | null;
+  readonly writtenPerMillion: number | null;
+  readonly spokenStrength: number | null;
+  readonly writtenStrength: number | null;
+  readonly score: number;
+  readonly selectionWeight: number;
+  readonly confidence: "reviewed";
+  readonly reasons: readonly string[];
+}
+
 export interface CatalogEntry {
   readonly id: string;
   readonly prompt: Prompt;
   readonly syllables: readonly Syllable[];
   readonly frequencyBand: FrequencyBand;
+  readonly commonnessBase?: CatalogCommonnessBase;
   readonly tags: readonly string[];
   readonly provenanceIds: readonly string[];
 }
