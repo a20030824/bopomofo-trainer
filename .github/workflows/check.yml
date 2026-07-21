@@ -5,7 +5,11 @@ on:
   push:
     branches:
       - main
-      - "agent/**"
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -13,11 +17,14 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package.json
       - name: Install dependencies
         run: npm install --include=dev --ignore-scripts
       - name: Typecheck
@@ -46,6 +53,23 @@ jobs:
           path: vitest.log
       - name: Validate catalog
         run: npm run catalog:validate
+      - name: Production build
+        run: npm run build
+
+  research:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package.json
+      - name: Install dependencies
+        run: npm install --include=dev --ignore-scripts
       - name: Analyze relational catalog
         run: npm run catalog:relations
       - name: Verify relational integration replay
@@ -89,5 +113,3 @@ jobs:
         with:
           name: relational-candidate-confirmation
           path: confirmation-artifacts
-      - name: Production build
-        run: npm run build
