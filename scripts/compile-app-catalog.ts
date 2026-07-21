@@ -9,9 +9,11 @@ import {
 } from "../src/commonness/naer-general-frequency.js";
 import { compileGrammarAnnotations } from "../src/grammar/compile-annotations.js";
 import { partitionCatalogForProduct } from "../src/product/catalog-partition.js";
+import { synchronizeRecordReadings } from "../src/readings/catalog-resolution.js";
+import { loadResolvedCatalogSource } from "./load-resolved-catalog-source.js";
 
-const [source, grammarSource, provenanceSource, commonnessSource] = await Promise.all([
-  readFile(new URL("../data/source/words.sample.csv", import.meta.url), "utf8"),
+const [resolvedSource, grammarSource, provenanceSource, commonnessSource] = await Promise.all([
+  loadResolvedCatalogSource(),
   readFile(new URL("../data/source/grammar.sample.csv", import.meta.url), "utf8"),
   readFile(new URL("../data/provenance.csv", import.meta.url), "utf8"),
   readFile(
@@ -28,15 +30,19 @@ if (provenance.errors.length > 0) {
   throw new Error(provenance.errors.map((error) => error.message).join("\n"));
 }
 
-const result = compileCatalog(parseCsv(source).records, provenance.ids);
+const result = compileCatalog(resolvedSource.records, provenance.ids);
 if (result.errors.length > 0) {
   throw new Error(
     result.errors.map((error) => `row ${error.rowNumber}: ${error.message}`).join("\n"),
   );
 }
 
-const grammar = compileGrammarAnnotations(
+const grammarRecords = synchronizeRecordReadings(
   parseCsv(grammarSource).records,
+  resolvedSource.report,
+);
+const grammar = compileGrammarAnnotations(
+  grammarRecords,
   result.entries,
   provenance.ids,
 );
@@ -80,6 +86,10 @@ const moduleSource = [
   'import type { CatalogEntry } from "../../core/model.js";',
   'import type { GrammarAnnotation } from "../../grammar/types.js";',
   "",
+  `export const READING_RESOLUTION_DIGEST = ${JSON.stringify(resolvedSource.report.determinismDigest)};`,
+  `export const READING_RESOLUTION_COUNTS = ${JSON.stringify(resolvedSource.report.counts)} as const;`,
+  `export const READING_RESOLUTION_CHANGED_TEXTS = ${JSON.stringify(resolvedSource.report.changedTexts)} as const;`,
+  "",
   `export const COMMONNESS_PROJECTION_DIGEST = ${JSON.stringify(commonness.projection.determinismDigest)};`,
   "",
   `export const PRACTICE_CATALOG: readonly CatalogEntry[] = ${JSON.stringify(partition.practice, null, 2)};`,
@@ -92,5 +102,5 @@ const moduleSource = [
 
 await writeFile(new URL("catalog.ts", outputUrl), moduleSource, "utf8");
 console.log(
-  `wrote ${partition.practice.length} practice and ${partition.evaluation.length} held-out entries with ${Object.keys(grammar.annotations).length} grammar annotations; applied commonness to ${appliedCommonness.appliedEntryIds.length} entries; ${commonness.exclusions.length} identity exclusions; ${commonness.unmatchedCatalogEntryIds.length} catalog fallbacks`,
+  `wrote ${partition.practice.length} practice and ${partition.evaluation.length} held-out entries with ${Object.keys(grammar.annotations).length} grammar annotations; resolved readings ${JSON.stringify(resolvedSource.report.counts)}; applied commonness to ${appliedCommonness.appliedEntryIds.length} entries; ${commonness.exclusions.length} identity exclusions; ${commonness.unmatchedCatalogEntryIds.length} catalog fallbacks`,
 );
