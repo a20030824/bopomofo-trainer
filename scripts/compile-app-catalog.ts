@@ -2,13 +2,25 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { compileCatalog } from "../src/catalog/compile-catalog.js";
 import { parseCsv } from "../src/catalog/csv.js";
 import { createProvenanceRegistry } from "../src/catalog/provenance.js";
+import { applyCommonnessProjection } from "../src/commonness/catalog-projection.js";
+import {
+  projectNaerActiveCatalogRows,
+  type NaerActiveCatalogRowsFile,
+} from "../src/commonness/naer-general-frequency.js";
 import { compileGrammarAnnotations } from "../src/grammar/compile-annotations.js";
 import { partitionCatalogForProduct } from "../src/product/catalog-partition.js";
 
-const [source, grammarSource, provenanceSource] = await Promise.all([
+const [source, grammarSource, provenanceSource, commonnessSource] = await Promise.all([
   readFile(new URL("../data/source/words.sample.csv", import.meta.url), "utf8"),
   readFile(new URL("../data/source/grammar.sample.csv", import.meta.url), "utf8"),
   readFile(new URL("../data/provenance.csv", import.meta.url), "utf8"),
+  readFile(
+    new URL(
+      "../data/commonness/naer-1141208-active-catalog-rows.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
 ]);
 
 const provenance = createProvenanceRegistry(parseCsv(provenanceSource).records);
@@ -36,7 +48,19 @@ if (grammar.errors.length > 0) {
   );
 }
 
-const partition = partitionCatalogForProduct(result.entries, 5);
+const commonnessRows = JSON.parse(commonnessSource) as NaerActiveCatalogRowsFile;
+const commonness = projectNaerActiveCatalogRows(commonnessRows, result.entries);
+const appliedCommonness = applyCommonnessProjection(
+  result.entries,
+  commonness.projection,
+);
+if (appliedCommonness.unusedProjectionEntryIds.length > 0) {
+  throw new Error(
+    `commonness projection contains unknown catalog entries: ${appliedCommonness.unusedProjectionEntryIds.join(", ")}`,
+  );
+}
+
+const partition = partitionCatalogForProduct(appliedCommonness.entries, 5);
 const practiceTokens = new Set(
   partition.practice.flatMap((entry) =>
     entry.syllables.flatMap((syllable) => syllable.tokens),
@@ -56,6 +80,8 @@ const moduleSource = [
   'import type { CatalogEntry } from "../../core/model.js";',
   'import type { GrammarAnnotation } from "../../grammar/types.js";',
   "",
+  `export const COMMONNESS_PROJECTION_DIGEST = ${JSON.stringify(commonness.projection.determinismDigest)};`,
+  "",
   `export const PRACTICE_CATALOG: readonly CatalogEntry[] = ${JSON.stringify(partition.practice, null, 2)};`,
   "",
   `export const EVALUATION_CATALOG: readonly CatalogEntry[] = ${JSON.stringify(partition.evaluation, null, 2)};`,
@@ -66,5 +92,5 @@ const moduleSource = [
 
 await writeFile(new URL("catalog.ts", outputUrl), moduleSource, "utf8");
 console.log(
-  `wrote ${partition.practice.length} practice and ${partition.evaluation.length} held-out entries with ${Object.keys(grammar.annotations).length} grammar annotations`,
+  `wrote ${partition.practice.length} practice and ${partition.evaluation.length} held-out entries with ${Object.keys(grammar.annotations).length} grammar annotations; applied commonness to ${appliedCommonness.appliedEntryIds.length} entries; ${commonness.exclusions.length} identity exclusions; ${commonness.unmatchedCatalogEntryIds.length} catalog fallbacks`,
 );

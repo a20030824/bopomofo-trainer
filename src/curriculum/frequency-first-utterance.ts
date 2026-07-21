@@ -4,6 +4,7 @@ import type {
   RandomSource,
   TokenId,
 } from "../core/model.js";
+import { catalogEntryFrequencyWeight } from "../commonness/catalog-projection.js";
 import {
   bindingScopeKey,
   transitionScopeKey,
@@ -262,7 +263,7 @@ function scoreCandidate(
   input: FrequencyFirstUtteranceInput,
 ): UtteranceCandidateScore {
   const frequencyBase = geometricMean(candidate.entries.map((entry) =>
-    input.policy.frequencyBandWeights[entry.frequencyBand]
+    catalogEntryFrequencyWeight(entry, input.policy.frequencyBandWeights)
   ));
   const expectedTrace = expectedTokenTrace(candidate, input);
   const transitions = transitionTrace(candidate, input);
@@ -381,7 +382,7 @@ export function selectFrequencyFirstUtterance(
     input.annotations,
     undefined,
     { maximumCandidates: input.policy.maximumGrammarCandidates },
-  );
+   );
   if (grammar.candidates.length === 0) {
     throw new Error(`no grammar-valid utterance candidate: ${grammar.fallbackReasons.join(",")}`);
   }
