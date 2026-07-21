@@ -1,0 +1,342 @@
+{
+  "adapterVersion": "naer-general-frequency-adapter-v1",
+  "source": {
+    "sourceId": "naer:coct-general-frequency",
+    "sourceVersion": "1141208",
+    "checksumSha256": "bfd3b73938e115ae39a44c5e11c97135c09939cf598157cb2fe0b33c4302de75",
+    "sheetName": "通用詞頻表",
+    "dimension": "A1:L163702",
+    "headers": [
+      "綜合\n序位",
+      "詞",
+      "書面語\n詞頻",
+      "書面語\n每百萬詞頻",
+      "書面語\n序位",
+      "口語\n詞頻",
+      "口語\n每百萬詞頻",
+      "口語\n序位",
+      "新聞\n詞頻",
+      "新聞\n每百萬詞頻",
+      "新聞\n序位",
+      "每百萬詞頻\n(平均)"
+    ],
+    "scoreColumns": {
+      "sourceRowId": "1141208:A",
+      "lexicalText": "B",
+      "writtenPerMillion": "D",
+      "spokenPerMillion": "G"
+    },
+    "ignoredForScore": [
+      "J",
+      "L"
+    ]
+  },
+  "catalog": {
+    "entryCount": 49,
+    "normalizedTextCount": 49,
+    "identityRule": "NFC(trim(text)) exact match; exactly one catalog identity required"
+  },
+  "rows": [
+    {
+      "generalRank": 14,
+      "lexicalText": "我們",
+      "writtenPerMillion": 3641.238117192062,
+      "spokenPerMillion": 14266.35199044469
+    },
+    {
+      "generalRank": 32,
+      "lexicalText": "可以",
+      "writtenPerMillion": 2212.777252450711,
+      "spokenPerMillion": 5035.798399752167
+    },
+    {
+      "generalRank": 82,
+      "lexicalText": "台灣",
+      "writtenPerMillion": 502.7458437875206,
+      "spokenPerMillion": 879.5091261092433
+    },
+    {
+      "generalRank": 85,
+      "lexicalText": "現在",
+      "writtenPerMillion": 804.7736737555948,
+      "spokenPerMillion": 2589.647517566845
+    },
+    {
+      "generalRank": 96,
+      "lexicalText": "知道",
+      "writtenPerMillion": 1357.854842553831,
+      "spokenPerMillion": 1782.473079838873
+    },
+    {
+      "generalRank": 107,
+      "lexicalText": "問題",
+      "writtenPerMillion": 1100.151794015257,
+      "spokenPerMillion": 1136.480217518195
+    },
+    {
+      "generalRank": 109,
+      "lexicalText": "開始",
+      "writtenPerMillion": 969.5316454623303,
+      "spokenPerMillion": 1522.312131873549
+    },
+    {
+      "generalRank": 127,
+      "lexicalText": "時間",
+      "writtenPerMillion": 839.6618223630692,
+      "spokenPerMillion": 1021.129375281136
+    },
+    {
+      "generalRank": 130,
+      "lexicalText": "工作",
+      "writtenPerMillion": 868.4004782312422,
+      "spokenPerMillion": 938.2400144706903
+    },
+    {
+      "generalRank": 131,
+      "lexicalText": "看到",
+      "writtenPerMillion": 624.1715280510857,
+      "spokenPerMillion": 1548.253171221696
+    },
+    {
+      "generalRank": 152,
+      "lexicalText": "東西",
+      "writtenPerMillion": 552.3427532724064,
+      "spokenPerMillion": 1461.470309026267
+    },
+    {
+      "generalRank": 156,
+      "lexicalText": "老師",
+      "writtenPerMillion": 345.4077571225884,
+      "spokenPerMillion": 1353.625011627731
+    },
+    {
+      "generalRank": 168,
+      "lexicalText": "學生",
+      "writtenPerMillion": 453.672971127417,
+      "spokenPerMillion": 313.4503163188417
+    },
+    {
+      "generalRank": 170,
+      "lexicalText": "媽媽",
+      "writtenPerMillion": 270.8198490619116,
+      "spokenPerMillion": 1187.236464488711
+    },
+    {
+      "generalRank": 174,
+      "lexicalText": "今天",
+      "writtenPerMillion": 272.1617009314298,
+      "spokenPerMillion": 1263.886841152133
+    },
+    {
+      "generalRank": 222,
+      "lexicalText": "一起",
+      "writtenPerMillion": 313.9814275394334,
+      "spokenPerMillion": 759.8425955900328
+    },
+    {
+      "generalRank": 257,
+      "lexicalText": "使用",
+      "writtenPerMillion": 390.3796446311762,
+      "spokenPerMillion": 356.888657071797
+    },
+    {
+      "generalRank": 293,
+      "lexicalText": "朋友",
+      "writtenPerMillion": 397.2238831609084,
+      "spokenPerMillion": 487.4382276068669
+    },
+    {
+      "generalRank": 298,
+      "lexicalText": "學習",
+      "writtenPerMillion": 411.5634362754051,
+      "spokenPerMillion": 391.554892294728
+    },
+    {
+      "generalRank": 353,
+      "lexicalText": "設計",
+      "writtenPerMillion": 232.2912325125785,
+      "spokenPerMillion": 199.366034773283
+    },
+    {
+      "generalRank": 379,
+      "lexicalText": "想要",
+      "writtenPerMillion": 248.0480670395546,
+      "spokenPerMillion": 511.6905193663463
+    },
+    {
+      "generalRank": 386,
+      "lexicalText": "選擇",
+      "writtenPerMillion": 295.382090235608,
+      "spokenPerMillion": 244.6807617358693
+    },
+    {
+      "generalRank": 420,
+      "lexicalText": "方法",
+      "writtenPerMillion": 389.6174092496747,
+      "spokenPerMillion": 311.6208397644517
+    },
+    {
+      "generalRank": 460,
+      "lexicalText": "謝謝",
+      "writtenPerMillion": 63.07497781924815,
+      "spokenPerMillion": 617.2372436580844
+    },
+    {
+      "generalRank": 461,
+      "lexicalText": "系統",
+      "writtenPerMillion": 265.0911737728144,
+      "spokenPerMillion": 158.4608154033295
+    },
+    {
+      "generalRank": 473,
+      "lexicalText": "簡單",
+      "writtenPerMillion": 204.8467888025796,
+      "spokenPerMillion": 387.9428488411885
+    },
+    {
+      "generalRank": 527,
+      "lexicalText": "兒子",
+      "writtenPerMillion": 237.2854622517914,
+      "spokenPerMillion": 142.6053519319484
+    },
+    {
+      "generalRank": 550,
+      "lexicalText": "女兒",
+      "writtenPerMillion": 180.3520372199537,
+      "spokenPerMillion": 157.7102609194771
+    },
+    {
+      "generalRank": 587,
+      "lexicalText": "資料",
+      "writtenPerMillion": 206.3990493971999,
+      "spokenPerMillion": 133.7863367466831
+    },
+    {
+      "generalRank": 624,
+      "lexicalText": "聽到",
+      "writtenPerMillion": 238.6908337364348,
+      "spokenPerMillion": 191.4852126928333
+    },
+    {
+      "generalRank": 715,
+      "lexicalText": "困難",
+      "writtenPerMillion": 148.175382183133,
+      "spokenPerMillion": 211.7970934120877
+    },
+    {
+      "generalRank": 727,
+      "lexicalText": "建築",
+      "writtenPerMillion": 122.5610973839268,
+      "spokenPerMillion": 137.3983802002226
+    },
+    {
+      "generalRank": 735,
+      "lexicalText": "工程",
+      "writtenPerMillion": 56.07988020359385,
+      "spokenPerMillion": 79.18349804642395
+    },
+    {
+      "generalRank": 846,
+      "lexicalText": "電腦",
+      "writtenPerMillion": 149.5053241248153,
+      "spokenPerMillion": 127.7819008758642
+    },
+    {
+      "generalRank": 1098,
+      "lexicalText": "正確",
+      "writtenPerMillion": 143.42729095253,
+      "spokenPerMillion": 101.9815904934394
+    },
+    {
+      "generalRank": 1208,
+      "lexicalText": "速度",
+      "writtenPerMillion": 105.0654133929004,
+      "spokenPerMillion": 97.75972152176986
+    },
+    {
+      "generalRank": 1226,
+      "lexicalText": "練習",
+      "writtenPerMillion": 91.86127339876528,
+      "spokenPerMillion": 114.1311912007994
+    },
+    {
+      "generalRank": 1362,
+      "lexicalText": "文字",
+      "writtenPerMillion": 123.1804136313968,
+      "spokenPerMillion": 68.0190000991201
+    },
+    {
+      "generalRank": 1514,
+      "lexicalText": "明天",
+      "writtenPerMillion": 72.34487165157094,
+      "spokenPerMillion": 91.98983392715485
+    },
+    {
+      "generalRank": 1873,
+      "lexicalText": "沒關係",
+      "writtenPerMillion": 27.40871392649101,
+      "spokenPerMillion": 137.1638319240188
+    },
+    {
+      "generalRank": 2469,
+      "lexicalText": "中文",
+      "writtenPerMillion": 38.19513856992614,
+      "spokenPerMillion": 33.39967453143001
+    },
+    {
+      "generalRank": 2522,
+      "lexicalText": "測試",
+      "writtenPerMillion": 41.86339634340204,
+      "spokenPerMillion": 34.85387384389396
+    },
+    {
+      "generalRank": 2812,
+      "lexicalText": "對不起",
+      "writtenPerMillion": 36.6786077588138,
+      "spokenPerMillion": 61.45164836541196
+    },
+    {
+      "generalRank": 5012,
+      "lexicalText": "月亮",
+      "writtenPerMillion": 26.49561945906736,
+      "spokenPerMillion": 17.731849681012
+    },
+    {
+      "generalRank": 6337,
+      "lexicalText": "輸入",
+      "writtenPerMillion": 18.71843658218498,
+      "spokenPerMillion": 5.863706905096562
+    },
+    {
+      "generalRank": 11978,
+      "lexicalText": "鍵盤",
+      "writtenPerMillion": 7.932011938749862,
+      "spokenPerMillion": 3.565133798298709
+    },
+    {
+      "generalRank": 16093,
+      "lexicalText": "聲調",
+      "writtenPerMillion": 9.80981056088634,
+      "spokenPerMillion": 1.172741381019312
+    },
+    {
+      "generalRank": 18091,
+      "lexicalText": "注音",
+      "writtenPerMillion": 2.100117275074413,
+      "spokenPerMillion": 4.831694489799566
+    },
+    {
+      "generalRank": 159890,
+      "lexicalText": "很好",
+      "writtenPerMillion": 0.0238198556719215,
+      "spokenPerMillion": 0
+    }
+  ],
+  "diagnostics": {
+    "sourceRowCount": 163701,
+    "catalogScopedSourceRowCount": 49,
+    "unmatchedCatalogTexts": [],
+    "ambiguousCatalogTexts": [],
+    "omittedNonCatalogSourceRowCount": 163652
+  }
+}
