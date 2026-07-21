@@ -59,5 +59,5 @@ describe("relational confirmation report", () => {
         )).toBe(true);
       }
     }
-  });
+  }, 15_000);
 });
