@@ -6,3 +6,4 @@ moe:phonetic-symbols-manual,reference,國語注音符號手冊,CC BY-ND 3.0 TW,O
 moe:concised-dictionary,reference,國語辭典簡編本,CC BY-ND 3.0 TW,Official Taiwan Mandarin exact-headword readings; only candidate-scoped source evidence is committed.
 moe:revised-dictionary,reference,重編國語辭典修訂本,CC BY-ND 3.0 TW,Official dictionary used only as a provisional exact-headword fallback after the Concised Dictionary remains unresolved.
 cc-cedict:manual-release,reference,CC-CEDICT manually downloaded release,CC BY-SA 4.0,Traditional/simplified identity and numbered-pinyin fallback for candidates unresolved by both MOE sources; English definitions are not emitted.
+ud:chinese-gsd-r2.18,reference,Universal Dependencies Chinese GSD r2.18,CC BY-SA 4.0,Candidate-scoped aggregate syntax evidence only; complete CoNLL-U files source sentences and non-candidate lemma strings remain local.
