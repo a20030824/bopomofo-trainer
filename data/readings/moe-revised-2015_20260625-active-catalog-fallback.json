@@ -1,0 +1,113 @@
+{
+  "adapterVersion": "moe-revised-reading-fallback-adapter-v1",
+  "source": {
+    "sourceId": "moe:revised-dictionary",
+    "sourceVersion": "2015_20260625",
+    "landingUrl": "https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/dict_reviseddict_download.html",
+    "downloadUrl": "https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/download/dict_revised_2015_20260625.zip",
+    "archiveChecksumSha256": "64003a98fcc7097940e5a536c999bc08ba7c07e2c1be66448f01bf1ae10a53fc",
+    "archiveMembers": {
+      "mainWorkbook": {
+        "name": "dict_revised_2015_20260625.xlsx",
+        "size": 31186920,
+        "checksumSha256": "df94ae4384ae3f33f573ded5c2f142041ea7530d381a285163593d6252ea4a9a"
+      },
+      "fieldGuide": {
+        "name": "dict_revised_2015_20260625_欄位說明.xlsx",
+        "size": 9504,
+        "checksumSha256": "1b36941248151516473f74f39db1f1095a22ba9367462c685d01a6ba03b191ca"
+      }
+    },
+    "sheetName": "1150625辭典匯出",
+    "dimension": "A1:R163921",
+    "headers": [
+      "字詞名",
+      "辭條別名",
+      "字數",
+      "字詞號",
+      "部首字",
+      "總筆畫數",
+      "部首外筆畫數",
+      "多音排序",
+      "注音一式",
+      "變體類型 1:變 2:又音 3:語音 4:讀音",
+      "變體注音",
+      "漢語拼音",
+      "變體漢語拼音",
+      "相似詞",
+      "相反詞",
+      "釋義",
+      "多音參見訊息",
+      "異體字"
+    ],
+    "selectedColumns": {
+      "sourceHeadword": "A:字詞名",
+      "sourceEntryId": "D:字詞號",
+      "multiReadingOrder": "H:多音排序",
+      "sourceBopomofo": "I:注音一式",
+      "multiReadingReference": "Q:多音參見訊息"
+    },
+    "license": "CC BY-ND 3.0 TW",
+    "authorityBoundary": "provisional fallback only for MOE Concised-unresolved candidates; historical or traditional readings are never chosen automatically"
+  },
+  "fallbackBasis": {
+    "concisedAdapterVersion": "moe-concised-reading-adapter-v1",
+    "concisedSourceVersion": "2014_20260626",
+    "concisedProjectionChecksumSha256": "4bf2266d778e1ff3d7be03437b5d82a8b77e862824b397c6b8f49c34b6099b88",
+    "concisedAcceptedCandidateCount": 41,
+    "fallbackCandidateCount": 8,
+    "fallbackCandidateTexts": [
+      "中文",
+      "台灣",
+      "很好",
+      "想要",
+      "東西",
+      "看到",
+      "聽到",
+      "謝謝"
+    ],
+    "identityRule": "exact NFC(trim(headword)); accepted Concised identities are protected"
+  },
+  "rows": [
+    {
+      "lookupText": "中文",
+      "sourceHeadword": "中文",
+      "sourceEntryId": "081300578",
+      "sourcePhysicalRow": 118483,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨㄥ ㄨㄣˊ",
+      "trainerReading": "ㄓㄨㄥ1 ㄨㄣ2",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "謝謝",
+      "sourceHeadword": "謝謝",
+      "sourceEntryId": "069750032",
+      "sourcePhysicalRow": 104863,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄝˋ ˙ㄒㄧㄝ",
+      "trainerReading": "ㄒㄧㄝ4 ㄒㄧㄝ5",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    }
+  ],
+  "diagnostics": {
+    "sourceRowCount": 163920,
+    "candidateScopedSourceRowCount": 4,
+    "acceptedFallbackCount": 2,
+    "unmatchedFallbackTexts": [
+      "台灣",
+      "很好",
+      "想要",
+      "看到",
+      "聽到"
+    ],
+    "duplicateSourceIdentityTexts": [],
+    "multipleReadingTexts": [
+      "東西"
+    ],
+    "invalidReadings": [],
+    "omittedNonFallbackSourceRowCount": 163916
+  }
+}
