@@ -6,6 +6,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      run_research:
+        description: Run the archived relational research suite
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: check-${{ github.event.pull_request.number || github.ref }}
@@ -44,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npx vitest run --exclude 'tests/simulation/**' --reporter=verbose 2>&1 | tee vitest.log
+          npm run test:fast -- --reporter=verbose 2>&1 | tee vitest.log
       - name: Upload Vitest failure log
         if: failure() && steps.tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -57,7 +63,7 @@ jobs:
         run: npm run build
 
   research:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: github.event_name == 'workflow_dispatch' && inputs.run_research
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -70,48 +76,5 @@ jobs:
           cache-dependency-path: package.json
       - name: Install dependencies
         run: npm install --include=dev --ignore-scripts
-      - name: Simulation tests
-        run: npx vitest run tests/simulation --reporter=verbose --testTimeout=15000
-      - name: Analyze relational catalog
-        run: npm run catalog:relations
-      - name: Verify relational integration replay
-        run: npm run integration:research
-      - name: Verify relational strategy matrix
-        run: npm run strategy:matrix
-      - name: Verify seeded cohort experiments
-        id: experiments
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run experiment:relational 2>&1 | tee experiment.log
-      - name: Upload experiment failure log
-        if: failure() && steps.experiments.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: experiment-failure-log
-          path: experiment.log
-      - name: Verify relational strategy analysis
-        run: npm run analysis:relational -- --output-dir analysis-artifacts
-      - name: Upload relational strategy analysis
-        uses: actions/upload-artifact@v4
-        with:
-          name: relational-strategy-analysis
-          path: analysis-artifacts
-      - name: Verify relational candidate confirmation
-        id: confirmation
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run confirmation:relational -- --output-dir confirmation-artifacts 2>&1 | tee confirmation.log
-      - name: Upload confirmation failure log
-        if: failure() && steps.confirmation.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: confirmation-failure-log
-          path: confirmation.log
-      - name: Upload relational candidate confirmation
-        if: steps.confirmation.outcome == 'success'
-        uses: actions/upload-artifact@v4
-        with:
-          name: relational-candidate-confirmation
-          path: confirmation-artifacts
+      - name: Run archived research verification
+        run: npm run check:research

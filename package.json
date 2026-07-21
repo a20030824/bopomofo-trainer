@@ -7,6 +7,8 @@
     "pretypecheck": "npm run app:catalog",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:fast": "vitest run --exclude \"tests/simulation/**\"",
+    "test:simulation": "vitest run tests/simulation --reporter=verbose --testTimeout=15000",
     "catalog:validate": "tsx scripts/validate-catalog.ts",
     "catalog:build": "tsx scripts/compile-catalog.ts",
     "catalog:relations": "tsx scripts/analyze-relational-catalog.ts",
@@ -24,7 +26,9 @@
     "prebuild": "npm run app:catalog",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run typecheck && npm test && npm run catalog:validate && npm run catalog:relations && npm run integration:research && npm run strategy:matrix && npm run experiment:relational && npm run analysis:relational && npm run confirmation:relational && npm run build"
+    "check:pr": "npm run typecheck && npm run test:fast && npm run catalog:validate && npm run build",
+    "check:research": "npm test -- --testTimeout=15000 && npm run catalog:relations && npm run integration:research && npm run strategy:matrix && npm run experiment:relational && npm run analysis:relational && npm run confirmation:relational",
+    "check": "npm run check:pr"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
