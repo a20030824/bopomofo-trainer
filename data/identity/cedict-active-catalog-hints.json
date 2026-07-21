@@ -1,0 +1,184 @@
+{
+  "adapterVersion": "cedict-identity-hints-adapter-v1",
+  "source": {
+    "sourceId": "cc-cedict:manual-release",
+    "sourceVersion": "2026-07-21T11:22:36Z",
+    "sourceChecksumSha256": "a20e3d9a5d5c3ae42d7539b9955cf2c545611f361e1be4515c560e04505eecf2",
+    "sourceByteSize": 3965480,
+    "archiveMember": "cedict_ts.u8",
+    "dictionaryByteSize": 9823881,
+    "license": "CC BY-SA 4.0",
+    "acquisitionBoundary": "manual local download only; automated MDBG access is not performed",
+    "format": {
+      "supportedVersions": [
+        1,
+        2
+      ],
+      "physicalLineCount": 124763,
+      "commentLineCount": 30,
+      "blankLineCount": 0,
+      "entryLineCount": 124733,
+      "v1EntryCount": 124733,
+      "v2EntryCount": 0
+    },
+    "emittedFields": "traditional/simplified/pinyin and structured identity hints only; English definitions are not emitted"
+  },
+  "resolutionBasis": {
+    "candidateEntryCount": 49,
+    "moeConcisedAdapterVersion": "moe-concised-reading-adapter-v1",
+    "moeConcisedSourceVersion": "2014_20260626",
+    "moeRevisedAdapterVersion": "moe-revised-reading-fallback-adapter-v1",
+    "moeRevisedSourceVersion": "2015_20260625",
+    "moeAcceptedCandidateCount": 43,
+    "cedictTargetCount": 6,
+    "cedictTargetTexts": [
+      "台灣",
+      "很好",
+      "想要",
+      "東西",
+      "看到",
+      "聽到"
+    ],
+    "authorityRule": "CC-CEDICT targets only identities unresolved after both MOE projections"
+  },
+  "rows": [
+    {
+      "lookupText": "台灣",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 19289,
+          "formatVersion": 1,
+          "traditional": "台灣",
+          "simplified": "台湾",
+          "pinyin": "Tai2 wan1",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [
+            {
+              "traditional": "臺灣",
+              "simplified": "台湾",
+              "pinyin": "Tai2 wan1"
+            }
+          ],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        }
+      ]
+    },
+    {
+      "lookupText": "想要",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 42400,
+          "formatVersion": 1,
+          "traditional": "想要",
+          "simplified": "想要",
+          "pinyin": "xiang3 yao4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "東西",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 56247,
+          "formatVersion": 1,
+          "traditional": "東西",
+          "simplified": "东西",
+          "pinyin": "dong1 xi1",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 56248,
+          "formatVersion": 1,
+          "traditional": "東西",
+          "simplified": "东西",
+          "pinyin": "dong1 xi5",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": true,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "看到",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 77934,
+          "formatVersion": 1,
+          "traditional": "看到",
+          "simplified": "看到",
+          "pinyin": "kan4 dao4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "聽到",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 89340,
+          "formatVersion": 1,
+          "traditional": "聽到",
+          "simplified": "听到",
+          "pinyin": "ting1 dao4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "uniqueRecordTexts": [
+      "台灣",
+      "想要",
+      "看到",
+      "聽到"
+    ],
+    "ambiguousRecordTexts": [
+      "東西"
+    ],
+    "unmatchedTexts": [
+      "很好"
+    ],
+    "matchedTargetCount": 5,
+    "omittedNonTargetEntryCount": 124727
+  }
+}
