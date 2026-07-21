@@ -23,8 +23,13 @@ DEFAULT_CEDICT = Path("data/identity/cedict-2026-07-21-naer-top-1000-hints.json"
 DEFAULT_OUTPUT = Path("data/lexicon/naer-1141208-top-1000-reading-coverage.json")
 
 
+def canonical_text_bytes(path: Path) -> bytes:
+    normalized = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return normalized.replace(b"\n", b"\r\n")
+
+
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(canonical_text_bytes(path)).hexdigest()
 
 
 def display_path(path: Path) -> str:
