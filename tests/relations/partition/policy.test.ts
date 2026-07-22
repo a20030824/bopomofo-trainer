@@ -35,18 +35,18 @@ function captureError(run: () => unknown): string {
 }
 
 describe("relational partition policies", () => {
-  it("reports the current 60-entry baseline's support diagnostics", async () => {
+  it("reports the current 80-entry baseline's support diagnostics", async () => {
     const entries = await compileRealCatalog();
     const input = createPartitionInput(entries);
     const decision = partitionBindingPreservingBaseline(input);
 
-    expect(entries).toHaveLength(60);
-    expect(decision.trainingEntryIds).toHaveLength(55);
+    expect(entries).toHaveLength(80);
+    expect(decision.trainingEntryIds).toHaveLength(75);
     expect(decision.evaluationEntryIds).toHaveLength(5);
     expect(new Set([
       ...decision.trainingEntryIds,
       ...decision.evaluationEntryIds,
-    ]).size).toBe(60);
+    ]).size).toBe(80);
     expect(decision.metrics.bindingCoverage.evaluationOnlyRelationCount).toBe(0);
     expect(decision.metrics.transitionCoverage.evaluationOnlyRelationKeys)
       .toHaveLength(decision.metrics.transitionCoverage.evaluationOnlyRelationCount);
@@ -61,7 +61,7 @@ describe("relational partition policies", () => {
     });
   });
 
-  it("runs all five strategies on the current 60-entry catalog", async () => {
+  it("runs all five strategies on the current 80-entry catalog", async () => {
     const input = createPartitionInput(await compileRealCatalog());
     const options = {
       evaluationEntryCount: 5,
@@ -80,7 +80,7 @@ describe("relational partition policies", () => {
 
     expect(new Set(decisions.map((decision) => decision.policyId)).size).toBe(5);
     for (const decision of decisions) {
-      expect(decision.trainingEntryIds).toHaveLength(55);
+      expect(decision.trainingEntryIds).toHaveLength(75);
       expect(decision.evaluationEntryIds).toHaveLength(5);
       expect(decision.constraintResults.filter(
         (constraint) => constraint.kind === "hard" && constraint.status === "unsatisfied",

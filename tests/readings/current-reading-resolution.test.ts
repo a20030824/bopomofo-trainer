@@ -6,13 +6,13 @@ import { createProvenanceRegistry } from "../../src/catalog/provenance.js";
 import { loadResolvedCatalogSource } from "../../scripts/load-resolved-catalog-source.js";
 
 describe("current catalog reading resolution", () => {
-  it("resolves all 60 entries with the locked 52/2/4/2 authority distribution", async () => {
+  it("resolves all 80 entries with the locked 70/4/4/2 authority distribution", async () => {
     const result = await loadResolvedCatalogSource();
 
-    expect(result.report.candidateCount).toBe(60);
+    expect(result.report.candidateCount).toBe(80);
     expect(result.report.counts).toEqual({
-      "moe-concised": 52,
-      "moe-revised": 2,
+      "moe-concised": 70,
+      "moe-revised": 4,
       cedict: 4,
       manual: 2,
     });
@@ -25,6 +25,8 @@ describe("current catalog reading resolution", () => {
     expect(rows.get("很好")?.sourceKind).toBe("manual");
     expect(rows.get("我")?.sourceKind).toBe("moe-concised");
     expect(rows.get("不會")?.sourceKind).toBe("moe-concised");
+    expect(rows.get("美國")?.sourceKind).toBe("moe-revised");
+    expect(rows.get("中國")?.sourceKind).toBe("moe-revised");
   });
 
   it("compiles IDs, syllables, and provenance from resolved readings", async () => {
@@ -37,7 +39,7 @@ describe("current catalog reading resolution", () => {
 
     const compiled = compileCatalog(resolved.records, provenance.ids);
     expect(compiled.errors).toEqual([]);
-    expect(compiled.entries).toHaveLength(60);
+    expect(compiled.entries).toHaveLength(80);
     const entries = new Map(compiled.entries.map((entry) => [entry.prompt.text, entry]));
     expect(entries.get("我們")?.id).toBe("word:我們:ㄨㄛ3-ㄇㄣ5");
     expect(entries.get("我們")?.provenanceIds).toContain("moe:concised-dictionary");
@@ -46,5 +48,7 @@ describe("current catalog reading resolution", () => {
     expect(entries.get("東西")?.provenanceIds).toContain("local:reading-review-v1");
     expect(entries.get("我")?.provenanceIds).toContain("local:activation-review-v1");
     expect(entries.get("我")?.provenanceIds).toContain("moe:concised-dictionary");
+    expect(entries.get("美國")?.provenanceIds).toContain("local:activation-review-v2");
+    expect(entries.get("美國")?.provenanceIds).toContain("moe:revised-dictionary");
   });
 });

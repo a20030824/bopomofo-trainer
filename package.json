@@ -21,6 +21,7 @@
     "lexicon:activation-review-batch": "python scripts/project-activation-review-batch.py",
     "review:activation-first-25": "python scripts/validate_activation_review_decisions.py",
     "catalog:activate-reviewed-11": "python scripts/activate_reviewed_catalog_entries.py",
+    "catalog:activate-reviewed-20": "python scripts/activate_reviewed_catalog_entries_26_50.py",
     "grammar:ud-evidence": "python scripts/project-ud-grammar-evidence.py",
     "readings:moe-concised": "python scripts/project-moe-concised-readings.py",
     "readings:moe-revised": "python scripts/project-moe-revised-readings.py",

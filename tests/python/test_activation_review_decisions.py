@@ -145,14 +145,14 @@ class ActivationReviewDecisionsTest(unittest.TestCase):
             for row in first_decisions
             if row["decision"] != "approved-existing-schema"
         }
-        second_texts = {row["text"] for row in self.load_second_decisions()}
         active_words, active_grammar = self.active_catalog_texts()
 
         self.assertEqual(active_words, active_grammar)
         self.assertTrue(FIRST_APPROVED_TEXTS.issubset(active_words))
+        self.assertTrue(SECOND_APPROVED_TEXTS.issubset(active_words))
         self.assertTrue(first_held.isdisjoint(active_words))
-        self.assertTrue(second_texts.isdisjoint(active_words))
-        self.assertTrue(second_texts.isdisjoint(active_grammar))
+        self.assertTrue(SECOND_HELD_TEXTS.isdisjoint(active_words))
+        self.assertTrue(SECOND_HELD_TEXTS.isdisjoint(active_grammar))
 
     def test_validator_rejects_latent_annotation_on_held_row(self) -> None:
         decisions = self.load_second_decisions()

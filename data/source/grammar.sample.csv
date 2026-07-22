@@ -59,3 +59,23 @@ text,reading,roles,predicate_frame,standalone_kind,provenance_ids
 孩子,ㄏㄞ2 ㄗ5,subject;object,none,lexical-prompt,local:activation-review-v1
 一樣,ㄧ1 ㄧㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v1
 不會,ㄅㄨ4 ㄏㄨㄟ4,modal,modal,lexical-prompt,local:activation-review-v1
+重要,ㄓㄨㄥ4 ㄧㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v2
+美國,ㄇㄟ3 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v2
+中國,ㄓㄨㄥ1 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v2
+政府,ㄓㄥ4 ㄈㄨ3,subject;object,none,lexical-prompt,local:activation-review-v2
+社會,ㄕㄜ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v2
+世界,ㄕ4 ㄐㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v2
+活動,ㄏㄨㄛ2 ㄉㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
+公司,ㄍㄨㄥ1 ㄙ1,subject;object,none,lexical-prompt,local:activation-review-v2
+民眾,ㄇㄧㄣ2 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
+不同,ㄅㄨ4 ㄊㄨㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v2
+關係,ㄍㄨㄢ1 ㄒㄧ4,subject;object,none,lexical-prompt,local:activation-review-v2
+能夠,ㄋㄥ2 ㄍㄡ4,modal,modal,lexical-prompt,local:activation-review-v2
+不能,ㄅㄨ4 ㄋㄥ2,modal,modal,lexical-prompt,local:activation-review-v2
+事情,ㄕ4 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:activation-review-v2
+最後,ㄗㄨㄟ4 ㄏㄡ4,temporal,none,lexical-prompt,local:activation-review-v2
+國家,ㄍㄨㄛ2 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:activation-review-v2
+方式,ㄈㄤ1 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v2
+必須,ㄅㄧ4 ㄒㄩ1,modal,modal,lexical-prompt,local:activation-review-v2
+走,ㄗㄡ3,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v2
+環境,ㄏㄨㄢ2 ㄐㄧㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
