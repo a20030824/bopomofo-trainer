@@ -1,53 +1,104 @@
-.utterance-overview {
+.utterance-runway {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 14px;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  background: var(--paper-soft);
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  row-gap: 22px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
 }
 
-.utterance-overview > div {
-  min-width: 0;
+.practice-glyph {
+  display: inline-flex;
+  min-width: .98em;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ink-faint);
+  transition: color 90ms ease, opacity 90ms ease;
+}
+.practice-glyph.done { color: var(--ink); }
+.practice-glyph.current { color: var(--ink); }
+.practice-glyph.upcoming { color: var(--ink-faint); }
+
+.han-character {
+  min-height: 1.12em;
+  padding: 0 .015em;
+  font-size: clamp(42px, 6.2vw, 66px);
+  font-weight: 540;
+  letter-spacing: -.025em;
+  line-height: 1.06;
+  white-space: nowrap;
 }
 
-.utterance-overview span,
-.utterance-overview small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+.syllable-reading {
+  display: inline-flex;
+  min-height: 1.55em;
+  margin-top: 12px;
+  justify-content: center;
+  white-space: nowrap;
 }
 
-.utterance-overview strong {
-  display: block;
-  margin-top: 7px;
-  font-size: clamp(24px, 4vw, 42px);
-  font-weight: 900;
-  letter-spacing: .05em;
-  line-height: 1.25;
+.reading-token {
+  position: relative;
+  display: inline-grid;
+  min-width: .84em;
+  place-items: start center;
+  color: var(--ink-faint);
+  font-size: clamp(20px, 2.8vw, 29px);
+  font-weight: 470;
+  line-height: 1.15;
+  transition: color 80ms ease, transform 80ms ease;
+}
+.reading-token.done { color: var(--ink); }
+.reading-token.current {
+  color: var(--ink);
+  font-weight: 620;
+  transform: translateY(-1px);
+}
+.reading-token.current::after {
+  position: absolute;
+  right: .08em;
+  bottom: -.38em;
+  left: .08em;
+  height: 2px;
+  background: var(--accent);
+  content: "";
+  animation: current-token-in 90ms ease-out both;
+}
+.reading-token.current.error {
+  color: var(--danger);
+  animation: token-nudge 120ms ease-in-out 1;
+}
+.reading-token.current.error::after { background: var(--danger); }
+
+.utterance-punctuation {
+  align-self: flex-start;
+  margin-left: .04em;
+  color: var(--ink-faint);
+  font-size: clamp(42px, 6.2vw, 66px);
+  font-weight: 500;
+  line-height: 1.06;
 }
 
-.utterance-overview small {
-  flex: 0 0 auto;
-  max-width: 34ch;
-  text-align: right;
-  text-transform: none;
+@keyframes current-token-in {
+  from { transform: scaleX(.45); opacity: .25; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+@keyframes token-nudge {
+  0%, 100% { transform: translateX(0) translateY(-1px); }
+  45% { transform: translateX(3px) translateY(-1px); }
 }
 
 @media (max-width: 720px) {
-  .utterance-overview {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .utterance-runway { row-gap: 18px; }
+  .han-character,
+  .utterance-punctuation { font-size: clamp(34px, 10vw, 48px); }
+  .syllable-reading { margin-top: 9px; }
+  .reading-token { font-size: clamp(18px, 5.5vw, 24px); }
+}
 
-  .utterance-overview small {
-    max-width: none;
-    text-align: left;
-  }
+@media (max-width: 400px) {
+  .han-character,
+  .utterance-punctuation { font-size: clamp(31px, 9.8vw, 41px); }
+  .reading-token { font-size: clamp(17px, 5.1vw, 22px); }
 }
