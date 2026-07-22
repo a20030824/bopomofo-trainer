@@ -17,10 +17,10 @@ class MoeConcisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-concised-reading-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2014_20260626")
-        self.assertEqual(payload["candidateSet"]["entryCount"], 49)
-        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], 49)
+        self.assertEqual(payload["candidateSet"]["entryCount"], 60)
+        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], 60)
         self.assertEqual(len(rows), diagnostics["acceptedCandidateCount"])
-        self.assertEqual(len(rows), 41)
+        self.assertEqual(len(rows), 52)
         self.assertEqual(
             [row["lookupText"] for row in rows],
             sorted(row["lookupText"] for row in rows),
@@ -39,6 +39,7 @@ class MoeConcisedProjectionArtifactTest(unittest.TestCase):
         self.assertEqual(rows["我們"]["sourceBopomofo"], "ㄨㄛˇ　˙ㄇㄣ")
         self.assertEqual(rows["我們"]["trainerReading"], "ㄨㄛ3 ㄇㄣ5")
         self.assertEqual(rows["媽媽"]["trainerReading"], "ㄇㄚ1 ㄇㄚ5")
+        self.assertEqual(rows["不會"]["trainerReading"], "ㄅㄨ4 ㄏㄨㄟ4")
 
 
 if __name__ == "__main__":
