@@ -18,10 +18,13 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
-        self.assertEqual(basis["concisedAcceptedCandidateCount"], 52)
-        self.assertEqual(basis["fallbackCandidateCount"], 8)
+        self.assertEqual(basis["concisedAcceptedCandidateCount"], 70)
+        self.assertEqual(basis["fallbackCandidateCount"], 10)
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
-        self.assertEqual([row["lookupText"] for row in rows], ["中文", "謝謝"])
+        self.assertEqual(
+            [row["lookupText"] for row in rows],
+            ["中國", "中文", "美國", "謝謝"],
+        )
         self.assertTrue(all(row["fallbackStatus"] == "provisional" for row in rows))
         self.assertEqual(diagnostics["multipleReadingTexts"], ["東西"])
         self.assertEqual(
@@ -36,6 +39,10 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(rows["中文"]["sourceBopomofo"], "ㄓㄨㄥ ㄨㄣˊ")
         self.assertEqual(rows["中文"]["trainerReading"], "ㄓㄨㄥ1 ㄨㄣ2")
+        self.assertEqual(rows["中國"]["sourceBopomofo"], "ㄓㄨㄥ ㄍㄨㄛˊ")
+        self.assertEqual(rows["中國"]["trainerReading"], "ㄓㄨㄥ1 ㄍㄨㄛ2")
+        self.assertEqual(rows["美國"]["sourceBopomofo"], "ㄇㄟˇ ㄍㄨㄛˊ")
+        self.assertEqual(rows["美國"]["trainerReading"], "ㄇㄟ3 ㄍㄨㄛ2")
         self.assertEqual(rows["謝謝"]["sourceBopomofo"], "ㄒㄧㄝˋ ˙ㄒㄧㄝ")
         self.assertEqual(rows["謝謝"]["trainerReading"], "ㄒㄧㄝ4 ㄒㄧㄝ5")
 
