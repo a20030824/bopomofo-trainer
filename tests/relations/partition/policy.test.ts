@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { transitionRelationKey } from "../../../src/relations/catalog-occurrences.js";
 import {
   comparePartitionStability,
   evaluatePartitionMetrics,
@@ -10,6 +11,7 @@ import {
   type PartitionDecision,
   type PartitionInput,
 } from "../../../src/relations/partition/index.js";
+import { toneToken, zhuyinToken } from "../../../src/scheme/tokens.js";
 import {
   compileRealCatalog,
   createPartitionInput,
@@ -127,8 +129,14 @@ describe("relational partition policies", () => {
 
   it("counts repeated occurrences as one distinct supporting entry", async () => {
     const input = createPartitionInput(await readPartitionFixture("infeasible"));
-    const repeatedKey = "transition:zhuyin:ㄅ>zhuyin:ㄚ";
-    const crossSyllableKey = "transition:tone:1>zhuyin:ㄅ";
+    const repeatedKey = transitionRelationKey(
+      zhuyinToken("ㄅ"),
+      zhuyinToken("ㄚ"),
+    );
+    const crossSyllableKey = transitionRelationKey(
+      toneToken(1),
+      zhuyinToken("ㄅ"),
+    );
     const decision = partitionRelationSupportPreserving(input, {
       evaluationEntryCount: 1,
       minimumTrainingDistinctEntries: 1,
