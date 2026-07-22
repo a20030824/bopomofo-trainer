@@ -92,12 +92,9 @@ describe("commonness-backed utterance selection", () => {
       entry("projected", 3, 0.8),
       entry("fallback", 2),
     ]);
-    const projected = result.candidates.find(
-      (item) => item.entryIds[0] === "projected",
-    )!;
-    const fallback = result.candidates.find(
-      (item) => item.entryIds[0] === "fallback",
-    )!;
+    const candidates = result.slotSelections[0]?.candidates ?? [];
+    const projected = candidates.find((item) => item.entryId === "projected")!;
+    const fallback = candidates.find((item) => item.entryId === "fallback")!;
     expect(projected.frequencyBase).toBe(0.8);
     expect(fallback.frequencyBase).toBe(0.5);
   });
@@ -107,7 +104,7 @@ describe("commonness-backed utterance selection", () => {
       entry("locked", 3, 1),
       entry("eligible", 1, 0.05),
     ], 1);
-    expect(result.candidates.map((item) => item.entryIds[0]))
+    expect(result.slotSelections[0]?.candidates.map((item) => item.entryId))
       .toEqual(["eligible"]);
   });
 });

@@ -10,14 +10,21 @@ import {
   transitionScopeKey,
 } from "../measurement/aggregate.js";
 import type { MeasurementSummary } from "../measurement/types.js";
-import { composeGrammarCandidates } from "../grammar/compose.js";
 import type {
   GrammarAnnotation,
+  GrammarRole,
+  GrammarTemplate,
   GrammarUtteranceCandidate,
 } from "../grammar/types.js";
-import { weightedPick } from "./random.js";
+import {
+  generateSlotWeightedGrammar,
+  type GrammarSlotSelectionTrace,
+  type SlotWeightedGrammarGeneration,
+} from "./slot-weighted-grammar.js";
 
 export type FrequencyStage = 1 | 2 | 3;
+
+const MAXIMUM_RECENT_UTTERANCE_ATTEMPTS = 4;
 
 export interface FrequencyFirstUtterancePolicy {
   readonly version: string;
@@ -34,7 +41,6 @@ export interface FrequencyFirstUtterancePolicy {
   readonly recentEntryPenalty: number;
   readonly recentUtterancePenalty: number;
   readonly recentTemplatePenalty: number;
-  readonly maximumGrammarCandidates: number;
   readonly minimumStagePracticeRounds: number;
   readonly minimumStageAttempts: number;
   readonly maximumStageErrorRate: number;
@@ -57,7 +63,6 @@ export const FREQUENCY_FIRST_UTTERANCE_POLICY: FrequencyFirstUtterancePolicy = {
   recentEntryPenalty: 0.72,
   recentUtterancePenalty: 0.3,
   recentTemplatePenalty: 0.78,
-  maximumGrammarCandidates: 2_000,
   minimumStagePracticeRounds: 3,
   minimumStageAttempts: 40,
   maximumStageErrorRate: 0.15,
@@ -99,6 +104,31 @@ export interface TransitionBoostTrace {
   readonly boost: number;
 }
 
+export interface EntrySelectionScore {
+  readonly entryId: string;
+  readonly frequencyBase: number;
+  readonly expectedTokenBoost: number;
+  readonly transitionBoost: number;
+  readonly combinedLearnerBoost: number;
+  readonly recentEntryFactor: number;
+  readonly totalWeight: number;
+  readonly expectedTokenTrace: readonly ExpectedTokenBoostTrace[];
+  readonly transitionTrace: readonly TransitionBoostTrace[];
+}
+
+export interface TemplateSelectionScore {
+  readonly templateId: string;
+  readonly recentTemplateFactor: number;
+  readonly totalWeight: number;
+}
+
+export interface SlotSelectionScore {
+  readonly slotKey: string;
+  readonly role: GrammarRole;
+  readonly selectedEntryId: string;
+  readonly candidates: readonly EntrySelectionScore[];
+}
+
 export interface UtteranceCandidateScore {
   readonly utteranceId: string;
   readonly templateId: string | null;
@@ -120,7 +150,9 @@ export interface FrequencyFirstUtteranceSelection {
   readonly stage: FrequencyStage;
   readonly utterance: GrammarUtteranceCandidate;
   readonly score: UtteranceCandidateScore;
-  readonly candidates: readonly UtteranceCandidateScore[];
+  readonly templateCandidates: readonly TemplateSelectionScore[];
+  readonly slotSelections: readonly SlotSelectionScore[];
+  readonly generationAttempts: number;
   readonly grammarFallbackReasons: readonly string[];
 }
 
@@ -149,19 +181,19 @@ function geometricMean(values: readonly number[]): number {
   return Math.exp(values.reduce((sum, value) => sum + Math.log(value), 0) / values.length);
 }
 
-function uniqueTokens(candidate: GrammarUtteranceCandidate): readonly TokenId[] {
+function uniqueTokens(entries: readonly CatalogEntry[]): readonly TokenId[] {
   return [...new Set(
-    candidate.entries.flatMap((entry) =>
+    entries.flatMap((entry) =>
       entry.syllables.flatMap((syllable) => syllable.tokens),
     ),
   )].sort(compareText);
 }
 
 function exactTransitions(
-  candidate: GrammarUtteranceCandidate,
+  entries: readonly CatalogEntry[],
 ): readonly { readonly fromToken: TokenId; readonly toToken: TokenId }[] {
   const keys = new Map<string, { fromToken: TokenId; toToken: TokenId }>();
-  for (const entry of candidate.entries) {
+  for (const entry of entries) {
     for (const syllable of entry.syllables) {
       for (let index = 1; index < syllable.tokens.length; index += 1) {
         const fromToken = syllable.tokens[index - 1]!;
@@ -177,10 +209,10 @@ function exactTransitions(
 }
 
 function expectedTokenTrace(
-  candidate: GrammarUtteranceCandidate,
+  entries: readonly CatalogEntry[],
   input: FrequencyFirstUtteranceInput,
 ): readonly ExpectedTokenBoostTrace[] {
-  return uniqueTokens(candidate).map((tokenId) => {
+  return uniqueTokens(entries).map((tokenId) => {
     const aggregate = input.measurement.bindings[bindingScopeKey({
       mode: input.mode,
       layoutId: input.layoutId,
@@ -227,10 +259,10 @@ function expectedTokenTrace(
 }
 
 function transitionTrace(
-  candidate: GrammarUtteranceCandidate,
+  entries: readonly CatalogEntry[],
   input: FrequencyFirstUtteranceInput,
 ): readonly TransitionBoostTrace[] {
-  return exactTransitions(candidate).map(({ fromToken, toToken }) => {
+  return exactTransitions(entries).map(({ fromToken, toToken }) => {
     const aggregate = input.measurement.transitions[transitionScopeKey({
       mode: input.mode,
       layoutId: input.layoutId,
@@ -258,6 +290,52 @@ function transitionTrace(
   });
 }
 
+function scoreEntry(
+  entry: CatalogEntry,
+  input: FrequencyFirstUtteranceInput,
+): EntrySelectionScore {
+  const frequencyBase = catalogEntryFrequencyWeight(
+    entry,
+    input.policy.frequencyBandWeights,
+  );
+  const expectedTrace = expectedTokenTrace([entry], input);
+  const transitions = transitionTrace([entry], input);
+  const expectedTokenBoost = Math.max(1, ...expectedTrace.map((item) => item.boost));
+  const transitionBoost = Math.max(1, ...transitions.map((item) => item.boost));
+  const combinedLearnerBoost = Math.min(
+    input.policy.maximumCombinedLearnerBoost,
+    expectedTokenBoost * transitionBoost,
+  );
+  const recentEntryFactor = input.history.recentEntryIds.includes(entry.id)
+    ? input.policy.recentEntryPenalty
+    : 1;
+  return {
+    entryId: entry.id,
+    frequencyBase,
+    expectedTokenBoost,
+    transitionBoost,
+    combinedLearnerBoost,
+    recentEntryFactor,
+    totalWeight: frequencyBase * combinedLearnerBoost * recentEntryFactor,
+    expectedTokenTrace: expectedTrace,
+    transitionTrace: transitions,
+  };
+}
+
+function scoreTemplate(
+  template: GrammarTemplate,
+  input: FrequencyFirstUtteranceInput,
+): TemplateSelectionScore {
+  const recentTemplateFactor = input.history.recentTemplateIds.includes(template.id)
+    ? input.policy.recentTemplatePenalty
+    : 1;
+  return {
+    templateId: template.id,
+    recentTemplateFactor,
+    totalWeight: recentTemplateFactor,
+  };
+}
+
 function scoreCandidate(
   candidate: GrammarUtteranceCandidate,
   input: FrequencyFirstUtteranceInput,
@@ -265,8 +343,8 @@ function scoreCandidate(
   const frequencyBase = geometricMean(candidate.entries.map((entry) =>
     catalogEntryFrequencyWeight(entry, input.policy.frequencyBandWeights)
   ));
-  const expectedTrace = expectedTokenTrace(candidate, input);
-  const transitions = transitionTrace(candidate, input);
+  const expectedTrace = expectedTokenTrace(candidate.entries, input);
+  const transitions = transitionTrace(candidate.entries, input);
   const expectedTokenBoost = Math.max(1, ...expectedTrace.map((item) => item.boost));
   const transitionBoost = Math.max(1, ...transitions.map((item) => item.boost));
   const combinedLearnerBoost = Math.min(
@@ -307,6 +385,54 @@ function scoreCandidate(
   };
 }
 
+function enrichSlotSelections(
+  traces: readonly GrammarSlotSelectionTrace[],
+  entriesById: ReadonlyMap<string, CatalogEntry>,
+  input: FrequencyFirstUtteranceInput,
+): readonly SlotSelectionScore[] {
+  return traces.map((trace) => ({
+    slotKey: trace.slotKey,
+    role: trace.role,
+    selectedEntryId: trace.selectedEntryId,
+    candidates: trace.candidates.map((candidate) => {
+      const entry = entriesById.get(candidate.entryId);
+      if (entry === undefined) throw new Error(`slot candidate disappeared: ${candidate.entryId}`);
+      const score = scoreEntry(entry, input);
+      if (score.totalWeight !== candidate.weight) {
+        throw new Error(`slot candidate weight drift: ${candidate.entryId}`);
+      }
+      return score;
+    }),
+  }));
+}
+
+function generateOnce(
+  eligibleEntries: readonly CatalogEntry[],
+  input: FrequencyFirstUtteranceInput,
+): SlotWeightedGrammarGeneration {
+  const entryScores = new Map<string, EntrySelectionScore>();
+  const templateScores = new Map<string, TemplateSelectionScore>();
+  return generateSlotWeightedGrammar({
+    entries: eligibleEntries,
+    annotations: input.annotations,
+    random: input.random,
+    entryWeight: (entry) => {
+      const existing = entryScores.get(entry.id);
+      if (existing !== undefined) return existing.totalWeight;
+      const score = scoreEntry(entry, input);
+      entryScores.set(entry.id, score);
+      return score.totalWeight;
+    },
+    templateWeight: (template) => {
+      const existing = templateScores.get(template.id);
+      if (existing !== undefined) return existing.totalWeight;
+      const score = scoreTemplate(template, input);
+      templateScores.set(template.id, score);
+      return score.totalWeight;
+    },
+  });
+}
+
 export function validateFrequencyFirstUtterancePolicy(
   policy: FrequencyFirstUtterancePolicy,
 ): void {
@@ -325,7 +451,6 @@ export function validateFrequencyFirstUtterancePolicy(
     policy.minimumBindingAttempts,
     policy.minimumBindingTimingSamples,
     policy.minimumTransitionTimingSamples,
-    policy.maximumGrammarCandidates,
     policy.minimumStagePracticeRounds,
     policy.minimumStageAttempts,
     policy.recentUtteranceLimit,
@@ -377,36 +502,48 @@ export function selectFrequencyFirstUtterance(
 ): FrequencyFirstUtteranceSelection {
   validateFrequencyFirstUtterancePolicy(input.policy);
   const eligibleEntries = input.entries.filter((entry) => entry.frequencyBand <= input.stage);
-  const grammar = composeGrammarCandidates(
-    eligibleEntries,
-    input.annotations,
-    undefined,
-    { maximumCandidates: input.policy.maximumGrammarCandidates },
-   );
-  if (grammar.candidates.length === 0) {
-    throw new Error(`no grammar-valid utterance candidate: ${grammar.fallbackReasons.join(",")}`);
+  const entriesById = new Map(eligibleEntries.map((entry) => [entry.id, entry]));
+  let generation: SlotWeightedGrammarGeneration | null = null;
+  let score: UtteranceCandidateScore | null = null;
+  let generationAttempts = 0;
+
+  while (generationAttempts < MAXIMUM_RECENT_UTTERANCE_ATTEMPTS) {
+    generationAttempts += 1;
+    generation = generateOnce(eligibleEntries, input);
+    if (generation.candidate === null) {
+      throw new Error(`no grammar-valid utterance candidate: ${generation.fallbackReasons.join(",")}`);
+    }
+    score = scoreCandidate(generation.candidate, input);
+    if (score.recentUtteranceFactor === 1
+      || generationAttempts >= MAXIMUM_RECENT_UTTERANCE_ATTEMPTS
+      || input.random.next() < score.recentUtteranceFactor) {
+      break;
+    }
   }
-  const candidateById = new Map(grammar.candidates.map((candidate) => [candidate.id, candidate]));
-  const scored = grammar.candidates.map((candidate) => scoreCandidate(candidate, input));
-  const selectedId = weightedPick(
-    scored.map((score) => ({ value: score.utteranceId, weight: score.totalWeight })),
-    input.random,
-  );
-  const utterance = candidateById.get(selectedId);
-  const score = scored.find((candidate) => candidate.utteranceId === selectedId);
-  if (utterance === undefined || score === undefined) {
-    throw new Error("selected utterance disappeared from canonical candidate set");
+
+  if (generation?.candidate === null || generation === null || score === null) {
+    throw new Error("slot-weighted utterance generation did not produce a candidate");
   }
   return {
     policyVersion: input.policy.version,
     stage: input.stage,
-    utterance,
+    utterance: generation.candidate,
     score,
-    candidates: [...scored].sort((left, right) =>
-      right.totalWeight - left.totalWeight
-      || compareText(left.utteranceId, right.utteranceId)
-    ),
-    grammarFallbackReasons: grammar.fallbackReasons,
+    templateCandidates: generation.templateCandidates.map((candidate) => {
+      const template: GrammarTemplate = {
+        id: candidate.templateId,
+        slots: [],
+        punctuation: null,
+      };
+      const templateScore = scoreTemplate(template, input);
+      if (templateScore.totalWeight !== candidate.weight) {
+        throw new Error(`template candidate weight drift: ${candidate.templateId}`);
+      }
+      return templateScore;
+    }),
+    slotSelections: enrichSlotSelections(generation.slotSelections, entriesById, input),
+    generationAttempts,
+    grammarFallbackReasons: generation.fallbackReasons,
   };
 }
 
