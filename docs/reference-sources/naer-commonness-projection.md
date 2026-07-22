@@ -29,13 +29,10 @@ The committed active-catalog artifact is deliberately small and versioned. It is
 
 ## Current catalog result
 
-For the current 49-entry catalog:
-
-- reviewed exact matches: `49`;
-- ambiguous identities: `0`;
-- unmatched catalog identities: `0`;
-- omitted non-catalog NAER rows: `163,652`;
-- `commonness-v1` determinism digest: `65cd94c9dc0b927a4fa1e08edeeb85fad0293e5821146b950beb0adfd5c44b2f`.
+Match/exclusion counts and the determinism digest grow and change with every
+activation batch; `npm run app:catalog`'s printed summary and
+`npm run catalog:validate`'s output are the source of truth for the current
+numbers rather than a snapshot recorded here.
 
 Normalization and scoring remain unchanged from `commonness-v1`: accepted evidence supplies the spoken and written maxima, channels use log strength, spoken/written weights remain 0.60/0.40, and selection weight remains in `[0.05, 1]`.
 

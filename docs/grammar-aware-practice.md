@@ -6,6 +6,39 @@ Practice content must not be produced by selecting several independently scored 
 
 Semantic plausibility is intentionally not guaranteed. A sequence may be surprising, but every emitted multi-entry candidate must match one reviewed Mandarin template.
 
+## Hard semantic exclusion
+
+Practice-content processing must not consider word meaning or semantics at any
+stage. This is a strict product boundary, not a quality target or a temporary
+implementation limitation.
+
+The catalog, grammar annotation, template composition, candidate filtering,
+ranking, validation, and evaluation paths must not:
+
+- store or consume definitions, glosses, senses, semantic classes, semantic
+  roles, selectional restrictions, animacy, sentiment, topic, intent, or world
+  knowledge;
+- judge whether a word combination is meaningful, plausible, coherent,
+  idiomatic, appropriate, or factually sensible;
+- use lexical meaning to choose among grammatical roles, predicate frames,
+  readings, templates, or candidates;
+- use embeddings, language-model judgments, knowledge graphs, semantic
+  similarity, collocation meaning, or any equivalent semantic proxy;
+- add a semantic repair, reranking, rejection, or fallback stage, whether at
+  build time or runtime.
+
+Permitted evidence is limited to non-semantic form and syntax: written form,
+pronunciation records, corpus frequency, part-of-speech and morphosyntactic
+labels, dependency relations, observed surface position, predicate valency,
+declared grammar roles, and template compatibility. When the available
+non-semantic evidence cannot resolve an annotation or reading, processing must
+retain every otherwise valid form or fail closed according to the relevant data
+contract; it must never resolve the case by interpreting meaning.
+
+Consequently, grammar validity means only that a candidate satisfies declared
+formal constraints. It makes no claim about meaning or semantic naturalness,
+and semantic oddity is not a defect under this specification.
+
 ## Data boundary
 
 Grammar evidence is stored in `data/source/grammar.sample.csv` as a sidecar to the lexical catalog. Domain tags such as `general`, `typing`, and `education` are not grammatical evidence.

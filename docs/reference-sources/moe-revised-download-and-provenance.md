@@ -150,27 +150,34 @@ A Revised candidate is accepted only when:
 No `辭條別名`, traditional/modern classification, or definition-based heuristic
 is used.
 
-## Current 49-candidate result
+## First activation result (illustrative, now superseded by later batches)
 
-The Concised projection left eight unresolved candidates:
+Against the original 49-entry catalog, the Concised projection left eight
+unresolved candidates:
 
 ```text
 中文、台灣、很好、想要、東西、看到、聽到、謝謝
 ```
 
-The pinned Revised source produces:
+The pinned Revised source produced:
 
 - accepted provisional fallback: `中文`, `謝謝`;
-- still multiple-reading: `東西`;
+- multiple-reading (later resolved by manual review): `東西`;
 - exact headword absent: `台灣`, `很好`, `想要`, `看到`, `聽到`;
 - duplicate or malformed readings: none.
 
-This means the current two-tier MOE coverage is 43 of 49 catalog entries:
-41 authoritative Concised readings plus 2 provisional Revised readings.
+That gave two-tier MOE coverage of 43 of 49 catalog entries at the time
+(41 authoritative Concised readings plus 2 provisional Revised readings). The
+Concised/Revised split has grown with every later activation batch; check
+`npm run app:catalog`'s printed summary for the current counts rather than a
+number recorded here.
 
-The remaining gaps are primarily identity/lexicalization problems. A later
-CC-CEDICT integration should first contribute aliases and variant relationships;
-it should not replace MOE readings.
+The remaining gaps are primarily identity/lexicalization problems. CC-CEDICT
+now covers them: it contributes aliases and variant relationships without
+replacing MOE readings, and (per `docs/reference-sources/cedict-local-identity-hints.md`)
+real heteronyms with several CC-CEDICT readings are activated with every
+reading as its own entry rather than picked down to one, unless a human
+already reviewed and chose a single sense (as `東西` was).
 
 ## License and redistribution boundary
 

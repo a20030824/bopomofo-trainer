@@ -7,7 +7,11 @@ committed source evidence before catalog compilation.
 
 ## Authority order
 
-The resolver applies exactly one source to every active catalog text:
+The resolver applies exactly one source to every active catalog *row*. A text
+has more than one active row when it is a real heteronym (more than one valid
+reading for the same hanzi, e.g. `了`, `個`, `要`); each reading variant is
+its own row and is resolved independently, so a heteronym's variants can come
+from different authorities.
 
 1. `moe-concised` — unique exact-headword reading from the Ministry of
    Education 《國語辭典簡編本》;
@@ -23,24 +27,20 @@ level. Overlap is a build error rather than a tie to be broken.
 
 ## Current distribution
 
-The 49-entry sample catalog resolves as follows:
+The active catalog's per-source row counts grow with every activation batch;
+check `npm run app:catalog`'s own printed summary
+(`resolved readings {...}`) for the current split rather than a number
+recorded here.
 
-| Source | Count | Notes |
-|---|---:|---|
-| MOE Concised | 41 | authoritative Taiwan Mandarin readings |
-| MOE Revised | 2 | `中文`, `謝謝`; provisional fallback |
-| CC-CEDICT | 4 | `台灣`, `想要`, `看到`, `聽到` |
-| Manual review | 2 | `東西`, `很好` |
-
-The only current difference from the provisional CSV reading column is:
-
-```text
-我們: ㄨㄛ3 ㄇㄣ2 → ㄨㄛ3 ㄇㄣ5
-```
+One illustrative correction the resolver makes: the CSV's own provisional
+reading for `我們` was `ㄨㄛ3 ㄇㄣ2`; MOE Concised evidence corrects the
+second syllable's tone to neutral (`ㄨㄛ3 ㄇㄣ5`).
 
 The manual reading for `東西` selects the common noun meaning “thing; stuff”
-and therefore uses the neutral-tone second syllable. The external projections
-retain competing readings and are not allowed to guess the product meaning.
+and therefore uses the neutral-tone second syllable — this is a genuine
+heteronym where a human explicitly chose one sense over including both
+readings (see `docs/reference-sources/cedict-local-identity-hints.md` for the
+newer default of including every reading instead).
 
 ## Inputs
 
@@ -104,7 +104,8 @@ catalog entry ID.
 
 Compilation fails when any of these occur:
 
-- duplicate active catalog text;
+- duplicate active catalog (text, reading) row — a text may legitimately
+  repeat across rows as a heteronym, but never with the same reading twice;
 - projection adapter-version mismatch;
 - candidate-count mismatch;
 - source evidence outside the active catalog;
@@ -112,7 +113,10 @@ Compilation fails when any of these occur:
 - Revised evidence outside its recorded fallback basis;
 - CEDICT targets that no longer equal the MOE-unresolved set;
 - duplicate or malformed CEDICT rows;
-- promotion of an ambiguous CEDICT record;
+- a single-reading authority (MOE, CEDICT-unique) resolving a text that has
+  more than one active row — that shape is only valid for the heteronym path,
+  which activates every CEDICT-ambiguous reading explicitly rather than
+  picking one (see `docs/reference-sources/cedict-local-identity-hints.md`);
 - unsupported or unnumbered pinyin;
 - stale, missing, duplicate, or extra manual overrides;
 - incomplete resolution;

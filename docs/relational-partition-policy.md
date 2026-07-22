@@ -10,7 +10,7 @@ Tracking issue: #26.
 
 A reviewed catalog must be split into disjoint training and evaluation entries. Evaluation should retain unfamiliar lexical paths, but a held-out entry must not silently remove all training evidence for a binding or directional transition that the experiment expects the learner to acquire.
 
-The current product partition protects token-level raw, binding, and motor contexts. On the 49-entry catalog it leaves three exact transitions in evaluation only:
+The product partition protects token-level raw, binding, and motor contexts. On the original 49-entry catalog (the example below; the same policy applies unchanged to the current, larger catalog) it left three exact transitions in evaluation only:
 
 - `ㄎ → ㄜ`;
 - `ㄜ → tone:3`;
@@ -20,7 +20,7 @@ With the baseline's configured minimum of three distinct training entries, 13 ex
 
 This is valid baseline behavior, not a defect to hide. The research question is whether alternative numeric policies produce a more useful transfer/evaluation boundary.
 
-## Current 49-entry observation
+## Original 49-entry observation (illustrative baseline)
 
 The regression matrix runs all five policies against the same reviewed catalog and the same metric evaluator:
 

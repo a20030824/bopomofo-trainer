@@ -166,6 +166,15 @@ The browser product now composes complete grammar-valid utterances, selects them
 
 The data pipeline has also pinned the active-catalog commonness projection and produced a ranked NAER top-1,000 lexical review queue. Runtime vocabulary expansion remains review-gated: pronunciation resolution, lexical identity, grammar role, valency, and provenance must be accepted before an entry reaches the browser catalog.
 
+Word meaning and semantics are outside the architecture boundary. Catalog
+processing, annotation, composition, selection, validation, and evaluation may
+use form, pronunciation records, frequency, morphosyntactic tags, dependency
+evidence, surface distribution, valency, and declared templates, but must not
+consume or infer definitions, senses, semantic roles, plausibility, world
+knowledge, embeddings, language-model judgments, or semantic proxies. An
+unresolved case must retain every otherwise valid form or fail closed; semantic
+interpretation must never decide it.
+
 ## Deferred
 
 - runtime expansion beyond the 49 reviewed entries;

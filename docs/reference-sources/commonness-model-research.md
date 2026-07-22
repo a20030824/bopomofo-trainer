@@ -244,9 +244,9 @@ Required policy:
 
 - retain source-row evidence unchanged;
 - route unresolved alternatives through review;
-- after review, either preserve one aggregate source identity with an explicit rule or allocate evidence only when the source documents the allocation;
-- never duplicate one aggregate frequency onto every split variant;
-- never add split variant frequencies back together if they originated from the same aggregate measurement.
+- after review, either preserve one aggregate source identity with an explicit rule, or allocate evidence only when the source documents the allocation, or -- the reviewed rule adopted for real heteronyms (a shared source text with several distinct active readings, e.g. `了`) -- duplicate the one aggregate frequency onto every reading variant, since the figure describes the written/spoken word and not a specific pronunciation (see `commonness-model-v1.md`'s "Input boundary");
+- never add split variant frequencies back together if they originated from the same aggregate measurement;
+- never duplicate an aggregate frequency onto variants that are not reading variants of the same reviewed text (e.g. genuinely different words that happen to share a source row by data error).
 
 ## Confidence and completeness
 

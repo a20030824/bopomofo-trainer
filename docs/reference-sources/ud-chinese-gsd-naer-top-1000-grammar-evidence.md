@@ -158,8 +158,10 @@ The command does not download data and is safe for offline repetition.
 
 This projection does not:
 
-- change the 49-entry runtime catalog;
-- resolve the 89 reading-review candidates;
+- change the runtime catalog directly (activation batches do that separately,
+  consuming this evidence);
+- resolve reading-review candidates itself (that count changes with every
+  batch; CC-CEDICT identity hints and heteronym activation own that step);
 - assign product grammar roles or predicate frames;
 - create new templates for particles, conjunctions, determiners, classifiers,
   or other function words;

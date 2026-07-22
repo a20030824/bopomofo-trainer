@@ -24,9 +24,15 @@ The projection excludes:
 - negative or non-finite frequencies;
 - rows with both frequency channels missing;
 - duplicate evidence for one catalog identity;
-- one source row mapped to multiple catalog identities.
+- one source row mapped to more than one catalog identity, *unless* every one
+  of those identities shares the same catalog text -- that shape is a
+  reviewed heteronym (several active readings for one hanzi), and the source
+  row's frequency figure describes the written/spoken word regardless of
+  which reading is practiced, so it is intentionally donated to every
+  reading variant rather than excluded.
 
-The last rule prevents a variant or heteronym row from silently donating the same frequency to several entries.
+This still rejects the case the original rule was meant to catch: one source
+row accidentally mapped to genuinely different, unrelated catalog texts.
 
 ## Normalization
 
@@ -72,7 +78,6 @@ This model does not include:
 - domain breadth;
 - pedagogical level;
 - cross-source agreement;
-- automatic variant or heteronym splitting;
 - automatic catalog approval;
 - claims that corpus frequency alone determines teaching value.
 

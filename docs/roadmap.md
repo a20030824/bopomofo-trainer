@@ -110,21 +110,17 @@ Exit condition: reviewed commonness evidence can replace coarse frequency bands 
 
 ### Phase 9 — Reviewed lexicon expansion and human validation
 
-The next constraint is no longer selection architecture. It is the 49-entry content ceiling and the absence of human evidence.
+The next constraint is no longer selection architecture. It is catalog size and the absence of human evidence. The catalog has grown across several activation waves (49 → 114 → 291 → 321 entries) using the committed NAER top-1,000 queue, in bounded review batches.
 
 #### Phase 9A — Rank-ordered catalog expansion
 
-Use the committed NAER top-1,000 queue in bounded review batches. Start with ranks 1–250, because this prefix is common enough to improve sentence variety while keeping lexical-identity and grammar review tractable.
+Status: in progress; the review-rigor policy below changed partway through.
 
-For every candidate in the tranche:
+The first waves reviewed every candidate by hand: accept one evidenced lexical identity and reading, or record an explicit exclusion reason; review lexical role, standalone/formulaic status, and predicate valency; retain source and decision provenance; measure added grammar-candidate variety before merging.
 
-- accept one evidenced lexical identity and reading, or record an explicit exclusion reason;
-- review lexical role, standalone/formulaic status, and predicate valency where applicable;
-- retain source and decision provenance;
-- measure the added grammar-candidate variety and practice/evaluation support before merging;
-- never bulk-promote the 911 automatically resolvable readings without grammar review.
+Product decision (this changed the rule below): later waves explicitly traded manual grammar review for lexicon growth speed. `scripts/auto_classify_activation_batch.py` approves grammar roles directly from UD evidence with no per-word human review, and separately, CC-CEDICT heteronyms (words with more than one valid reading) are activated with every distinct reading as its own entry rather than picking one — see `docs/reference-sources/cedict-local-identity-hints.md`. Both carry an accepted, unmeasured error rate with no planned correction pass. A word's own identity/reading resolution (which authority a word's Bopomofo comes from) still fails closed on ambiguity; only the *grammar role* assignment and *heteronym reading inclusion* steps were loosened.
 
-Exit condition: ranks 1–250 have a complete include/exclude ledger, every included entry passes the existing catalog and grammar gates, and the browser's candidate universe shows materially lower repetition than the 49-entry baseline.
+Exit condition: the full top-1,000 queue has a complete include/exclude ledger, every included entry passes the existing catalog and grammar gates, and the browser's candidate universe shows materially lower repetition than the original 49-entry baseline.
 
 #### Phase 9B — Local human pilot
 
@@ -145,6 +141,13 @@ Accounts, backend, telemetry, cloud sync, and learning-effectiveness claims rema
 
 ## Guardrails
 
+- Word meaning and semantics are forbidden inputs throughout catalog
+  processing, grammar annotation, composition, selection, validation, and
+  evaluation. No definition, sense, semantic role, plausibility judgment,
+  world knowledge, embedding, language model, or semantic proxy may filter,
+  rank, repair, or reject a candidate. Only non-semantic form, frequency, and
+  syntactic evidence may be used; unresolved cases retain every otherwise
+  valid form or fail closed rather than being resolved by meaning.
 - Frequency eligibility cannot be bypassed by a weakness score.
 - Part of speech alone is insufficient; predicate frame remains explicit.
 - Formulaic utterances cannot fill ordinary subject/predicate/object slots.

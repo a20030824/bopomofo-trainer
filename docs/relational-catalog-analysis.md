@@ -4,7 +4,7 @@
 
 The analyzer answers what the current text data can support before a curriculum selects objectives or a composer builds practice sequences. It does not decide that every grammar-supported relation deserves equal training priority.
 
-The current snapshot uses 49 provisional entries, the existing deterministic 44/5 training/evaluation partition, guided mode, and the Taiwan Standard layout.
+The first snapshot below used the original 49-entry provisional catalog and its deterministic 44/5 training/evaluation partition; the analyzer works the same way against the current, much larger catalog, guided mode, and the Taiwan Standard layout, but the specific counts are not re-recorded here as the catalog grows.
 
 ## Exact occurrence rules
 

@@ -115,21 +115,28 @@ structured `variant of` record may expose its target. These are hints for a late
 identity resolver, not automatic reading replacements.
 
 Multiple records, including one headword with multiple pinyin readings, remain
-`ambiguous-records`. For example, `東西` may have distinct readings and must not
-be collapsed automatically.
+`ambiguous-records` at this adapter layer -- it only classifies unique vs.
+ambiguous and never guesses a single reading itself. What happens to an
+`ambiguous-records` word is a separate, later decision:
+
+- a human can pick one sense with a documented reason (e.g. `東西`, resolved
+  via `data/readings/manual-reading-overrides.json`); or
+- `scripts/activate_cedict_heteronym_readings.py` can activate every distinct
+  converted reading as its own practice entry, when the word is a genuine
+  heteronym (multiple valid pronunciations) rather than a source-data
+  artifact -- this is now the default path for eligible candidates, per the
+  product decision that the trainer practices pronunciation, not word-sense
+  disambiguation.
 
 ## Current target set
 
-The two committed MOE projections resolve 43 of the current 49 catalog entries.
-The six remaining CEDICT targets are:
-
-```text
-台灣、很好、想要、東西、看到、聽到
-```
-
-This PR defines and tests the parser but does not commit a real CC-CEDICT-derived
-projection, because no release file was downloaded manually and checksum-pinned
-for this repository session.
+The CEDICT target set (candidates left unresolved after both MOE projections)
+grows with every activation batch. Check
+`data/identity/cedict-active-catalog-hints.json`'s own
+`resolutionBasis.cedictTargetTexts` for the current set rather than a number
+recorded here. A real CC-CEDICT-derived projection is committed and
+regenerated locally via the command below whenever the active catalog
+changes.
 
 ## Local command
 
@@ -151,8 +158,13 @@ source version, and committed MOE projections.
 
 ## Deferred
 
-- manually pinning a verified MDBG release and committing its six-target result;
-- pinyin-to-Bopomofo conversion for identities still unresolved by MOE;
-- choosing among multiple pinyin records;
-- applying alias hints to generated catalog entries;
-- grammar-role inference.
+- applying alias hints (`canonicalTraditionalHint`, `variantTargets`) to
+  generated catalog entries;
+- grammar-role inference from CEDICT glosses -- still deliberately forbidden;
+  grammar roles come only from UD evidence, never from CC-CEDICT definitions.
+
+Done, no longer deferred: a verified MDBG release is pinned and committed;
+pinyin-to-Bopomofo conversion runs automatically
+(`src/readings/pinyin-to-bopomofo.ts`); and CEDICT's `ambiguous-records`
+candidates are activated with every distinct reading rather than requiring a
+human to choose one (see "Identity behavior" above).
