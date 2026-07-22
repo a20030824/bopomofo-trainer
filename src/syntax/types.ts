@@ -1,3 +1,9 @@
+import type {
+  FORMAL_GRAMMAR_VERSION,
+  SYNTAX_CATEGORIES,
+  SYNTAX_FEATURE_NAMES,
+} from "./features.js";
+
 export const UPOS_VALUES = [
   "ADJ",
   "ADP",
@@ -114,4 +120,95 @@ export interface SyntaxProfileProjectionResult {
   readonly profilesByEntryId: Readonly<Record<string, readonly SyntaxProfile[]>>;
   readonly noUdEvidenceEntryIds: readonly string[];
   readonly projectionDigest: string;
+}
+
+export type FormalGrammarVersion = typeof FORMAL_GRAMMAR_VERSION;
+export type SyntaxCategory = (typeof SYNTAX_CATEGORIES)[number];
+export type SyntaxFeatureName = (typeof SYNTAX_FEATURE_NAMES)[number];
+export type SyntaxFeatureValue = string | number | boolean;
+export type SyntaxFeatureSet = Readonly<Partial<Record<SyntaxFeatureName, SyntaxFeatureValue>>>;
+
+export interface DerivationBounds {
+  readonly maximumPhraseDepth: number;
+  readonly maximumClauseNesting: number;
+  readonly maximumClausesPerSentence: number;
+  readonly maximumCoordinationItems: number;
+  readonly maximumConsecutiveModifiers: number;
+  readonly maximumComplementsPerPredicate: number;
+  readonly maximumLexicalEntriesPerUtterance: number;
+}
+
+export interface ProductionConstituent {
+  readonly key: string;
+  readonly category: SyntaxCategory;
+  readonly minimum: number;
+  readonly maximum: number;
+  readonly recursive: boolean;
+  readonly allowedUpos: readonly Upos[];
+  readonly requiredFunctions: readonly SyntacticFunction[];
+  readonly requiredValencyFrames: readonly ValencyFrame[];
+  readonly requiredFeatures: SyntaxFeatureSet;
+}
+
+export interface SurfaceOrder {
+  readonly id: string;
+  readonly constituentKeys: readonly string[];
+}
+
+export type ProductionConstraint =
+  | {
+      readonly kind: "feature-equals" | "feature-not-equals";
+      readonly constituentKey: string;
+      readonly feature: SyntaxFeatureName;
+      readonly value: SyntaxFeatureValue;
+    }
+  | {
+      readonly kind: "requires-constituent" | "forbids-cooccurrence";
+      readonly ifPresentKey: string;
+      readonly targetKey: string;
+    };
+
+export interface ProductionRule {
+  readonly id: string;
+  readonly grammarVersion: FormalGrammarVersion;
+  readonly output: SyntaxCategory;
+  readonly constituents: readonly ProductionConstituent[];
+  readonly surfaceOrders: readonly SurfaceOrder[];
+  readonly constraints: readonly ProductionConstraint[];
+  readonly positiveFixtureIds: readonly string[];
+  readonly negativeFixtureIds: readonly string[];
+}
+
+export interface SyntaxNode {
+  readonly id: string;
+  readonly category: SyntaxCategory;
+  readonly features: SyntaxFeatureSet;
+  readonly productionRuleId: string | null;
+  readonly syntaxProfileId: string | null;
+  readonly children: readonly SyntaxNode[];
+}
+
+export interface Derivation {
+  readonly id: string;
+  readonly grammarVersion: FormalGrammarVersion;
+  readonly root: SyntaxNode;
+  readonly productionRulePath: readonly string[];
+  readonly syntaxProfileIds: readonly string[];
+}
+
+export interface SurfaceToken {
+  readonly kind: "lexical-entry" | "punctuation";
+  readonly value: string;
+  readonly entryId: string | null;
+  readonly syntaxProfileId: string | null;
+}
+
+export interface SurfaceRealization {
+  readonly id: string;
+  readonly grammarVersion: FormalGrammarVersion;
+  readonly derivationId: string;
+  readonly productionRulePath: readonly string[];
+  readonly entryIds: readonly string[];
+  readonly syntaxProfileIds: readonly string[];
+  readonly tokens: readonly SurfaceToken[];
 }
