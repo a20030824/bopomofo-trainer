@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -70,13 +70,15 @@ jobs:
   generate_activation_82:
     if: >-
       github.event_name == 'pull_request' &&
-      github.head_ref == 'agent/issue-82-activate-reviewed-20'
+      github.head_ref == 'agent/issue-82-activate-reviewed-20' &&
+      github.actor != 'github-actions[bot]'
     needs: check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           ref: agent/issue-82-activate-reviewed-20
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -88,19 +90,26 @@ jobs:
       - run: npm ci --include=dev --ignore-scripts
       - run: npm run catalog:activate-reviewed-20
       - run: npm run app:catalog
-      - uses: actions/upload-artifact@v4
-        with:
-          name: activation-82-generated
-          path: |
-            data/source/words.sample.csv
-            data/source/grammar.sample.csv
-            data/provenance.csv
-            data/commonness/naer-1141208-active-catalog-rows.json
-            data/readings/moe-concised-2014_20260626-active-catalog.json
-            data/readings/moe-revised-2015_20260625-active-catalog-fallback.json
-            data/identity/cedict-active-catalog-hints.json
-            data/grammar/naer-reviewed-catalog-activation-2-report.json
+      - name: Commit and push generated activation outputs
+        env:
+          GH_PUSH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            data/source/words.sample.csv \
+            data/source/grammar.sample.csv \
+            data/provenance.csv \
+            data/commonness/naer-1141208-active-catalog-rows.json \
+            data/readings/moe-concised-2014_20260626-active-catalog.json \
+            data/readings/moe-revised-2015_20260625-active-catalog-fallback.json \
+            data/identity/cedict-active-catalog-hints.json \
+            data/grammar/naer-reviewed-catalog-activation-2-report.json \
             src/app/generated/catalog.ts
+          git status --short
+          git commit --no-verify -m "chore(catalog): generate reviewed-20 activation outputs"
+          git push "https://x-access-token:${GH_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            HEAD:refs/heads/agent/issue-82-activate-reviewed-20
 
   research:
     if: github.event_name == 'workflow_dispatch' && inputs.run_research
