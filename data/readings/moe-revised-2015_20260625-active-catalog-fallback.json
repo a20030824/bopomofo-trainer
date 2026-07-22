@@ -53,17 +53,20 @@
   "fallbackBasis": {
     "concisedAdapterVersion": "moe-concised-reading-adapter-v1",
     "concisedSourceVersion": "2014_20260626",
-    "concisedProjectionChecksumSha256": "3970baa3297511d4f846082f1e4e6c52d46c0ff4c341476717027522653bb083",
-    "concisedAcceptedCandidateCount": 70,
-    "fallbackCandidateCount": 10,
+    "concisedProjectionChecksumSha256": "b3d20c64c6eab62d52ff2480a87b68d5c06e8cc33fe9a6dd8a5649e648eab6a6",
+    "concisedAcceptedCandidateCount": 101,
+    "fallbackCandidateCount": 13,
     "fallbackCandidateTexts": [
       "中國",
       "中文",
       "台灣",
+      "大陸",
       "很好",
       "想要",
+      "日本",
       "東西",
       "看到",
+      "總統",
       "美國",
       "聽到",
       "謝謝"
@@ -94,6 +97,39 @@
       "fallbackStatus": "provisional"
     },
     {
+      "lookupText": "大陸",
+      "sourceHeadword": "大陸",
+      "sourceEntryId": "019130460",
+      "sourcePhysicalRow": 40531,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄚˋ ㄌㄨˋ",
+      "trainerReading": "ㄉㄚ4 ㄌㄨ4",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "日本",
+      "sourceHeadword": "日本",
+      "sourceEntryId": "091770004",
+      "sourcePhysicalRow": 133134,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖˋ ㄅㄣˇ",
+      "trainerReading": "ㄖ4 ㄅㄣ3",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "總統",
+      "sourceHeadword": "總統",
+      "sourceEntryId": "096780022",
+      "sourcePhysicalRow": 138382,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗㄨㄥˇ ㄊㄨㄥˇ",
+      "trainerReading": "ㄗㄨㄥ3 ㄊㄨㄥ3",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
       "lookupText": "美國",
       "sourceHeadword": "美國",
       "sourceEntryId": "011380044",
@@ -118,8 +154,8 @@
   ],
   "diagnostics": {
     "sourceRowCount": 163920,
-    "candidateScopedSourceRowCount": 6,
-    "acceptedFallbackCount": 4,
+    "candidateScopedSourceRowCount": 9,
+    "acceptedFallbackCount": 7,
     "unmatchedFallbackTexts": [
       "台灣",
       "很好",
@@ -132,6 +168,6 @@
       "東西"
     ],
     "invalidReadings": [],
-    "omittedNonFallbackSourceRowCount": 163914
+    "omittedNonFallbackSourceRowCount": 163911
   }
 }

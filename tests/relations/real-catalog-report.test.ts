@@ -38,7 +38,7 @@ function sumCounts(counts: RelationStateCountShape): number {
 }
 
 describe("real relational catalog report", () => {
-  it("reconciles and classifies the complete 80-entry snapshot", async () => {
+  it("reconciles and classifies the complete 114-entry snapshot", async () => {
     const entries = await compileRealCatalog();
     const partition = partitionCatalogForProduct(entries, 5, 3);
     const evaluationIds = new Set(partition.evaluation.map((entry) => entry.id));
@@ -73,10 +73,10 @@ describe("real relational catalog report", () => {
       0,
     );
 
-    expect(entries).toHaveLength(80);
+    expect(entries).toHaveLength(114);
     expect(report.totals).toMatchObject({
-      entries: 80,
-      trainingEntries: 75,
+      entries: 114,
+      trainingEntries: 109,
       evaluationEntries: 5,
       syllables: expectedSyllables,
       tokenOccurrences: expectedTokens,
@@ -96,7 +96,7 @@ describe("real relational catalog report", () => {
     const entryInitialCount = Object.values(report.index.bindingOccurrences)
       .flat()
       .filter((occurrence) => occurrence.entryInitial).length;
-    expect(entryInitialCount).toBe(80);
+    expect(entryInitialCount).toBe(114);
 
     expect(new Set(report.partitionSupportLossKeys).size)
       .toBe(report.partitionSupportLossKeys.length);
@@ -127,7 +127,7 @@ describe("real relational catalog report", () => {
       .filter((text): text is string => text !== undefined)
       .sort();
 
-    expect(texts).toEqual(["中國", "中文", "建築", "民眾", "注音", "重要"]);
+    expect(texts).toEqual(["中國", "中心", "中文", "建築", "民眾", "注音", "狀況", "重要"]);
     expect(occurrences.every((occurrence) => occurrence.fromTokenIndex === 0)).toBe(true);
   });
 });

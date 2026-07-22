@@ -6,13 +6,13 @@ import { createProvenanceRegistry } from "../../src/catalog/provenance.js";
 import { loadResolvedCatalogSource } from "../../scripts/load-resolved-catalog-source.js";
 
 describe("current catalog reading resolution", () => {
-  it("resolves all 80 entries with the locked 70/4/4/2 authority distribution", async () => {
+  it("resolves all 114 entries with the locked 101/7/4/2 authority distribution", async () => {
     const result = await loadResolvedCatalogSource();
 
-    expect(result.report.candidateCount).toBe(80);
+    expect(result.report.candidateCount).toBe(114);
     expect(result.report.counts).toEqual({
-      "moe-concised": 70,
-      "moe-revised": 4,
+      "moe-concised": 101,
+      "moe-revised": 7,
       cedict: 4,
       manual: 2,
     });
@@ -39,7 +39,7 @@ describe("current catalog reading resolution", () => {
 
     const compiled = compileCatalog(resolved.records, provenance.ids);
     expect(compiled.errors).toEqual([]);
-    expect(compiled.entries).toHaveLength(80);
+    expect(compiled.entries).toHaveLength(114);
     const entries = new Map(compiled.entries.map((entry) => [entry.prompt.text, entry]));
     expect(entries.get("我們")?.id).toBe("word:我們:ㄨㄛ3-ㄇㄣ5");
     expect(entries.get("我們")?.provenanceIds).toContain("moe:concised-dictionary");
@@ -50,5 +50,8 @@ describe("current catalog reading resolution", () => {
     expect(entries.get("我")?.provenanceIds).toContain("moe:concised-dictionary");
     expect(entries.get("美國")?.provenanceIds).toContain("local:activation-review-v2");
     expect(entries.get("美國")?.provenanceIds).toContain("moe:revised-dictionary");
+    expect(entries.get("進入")?.provenanceIds).toContain("local:activation-review-v3");
+    expect(entries.get("進入")?.provenanceIds).toContain("moe:concised-dictionary");
+    expect(entries.get("總統")?.provenanceIds).toContain("moe:revised-dictionary");
   });
 });

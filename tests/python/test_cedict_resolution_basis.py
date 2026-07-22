@@ -35,8 +35,8 @@ class CedictResolutionBasisTest(unittest.TestCase):
             REVISED,
         )
 
-        self.assertEqual(candidate_count, 80)
-        self.assertEqual(len(accepted), 74)
+        self.assertEqual(candidate_count, 114)
+        self.assertEqual(len(accepted), 108)
         self.assertEqual(
             unresolved,
             ["台灣", "很好", "想要", "東西", "看到", "聽到"],

@@ -18,12 +18,12 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
-        self.assertEqual(basis["concisedAcceptedCandidateCount"], 70)
-        self.assertEqual(basis["fallbackCandidateCount"], 10)
+        self.assertEqual(basis["concisedAcceptedCandidateCount"], 101)
+        self.assertEqual(basis["fallbackCandidateCount"], 13)
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
         self.assertEqual(
             [row["lookupText"] for row in rows],
-            ["中國", "中文", "美國", "謝謝"],
+            ["中國", "中文", "大陸", "日本", "總統", "美國", "謝謝"],
         )
         self.assertTrue(all(row["fallbackStatus"] == "provisional" for row in rows))
         self.assertEqual(diagnostics["multipleReadingTexts"], ["東西"])

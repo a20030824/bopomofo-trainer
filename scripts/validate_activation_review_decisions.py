@@ -16,10 +16,12 @@ DEFAULT_BATCH = ROOT / "data/grammar/naer-top-1000-activation-review-batch-1.csv
 DEFAULT_REPORT = ROOT / "data/grammar/naer-top-1000-activation-review-batch-1-report.json"
 DEFAULT_DECISIONS = ROOT / "data/grammar/naer-activation-review-batch-1-decisions-1-25.csv"
 SECOND_DECISIONS = ROOT / "data/grammar/naer-activation-review-batch-1-decisions-26-50.csv"
+THIRD_DECISIONS = ROOT / "data/grammar/naer-activation-review-batch-1-decisions-51-100.csv"
 
 EXPECTED_REPORT_DIGEST = "bfd7022c957ac03e4263843753b2979b5e6d8c09ff54e1c55302b59404c19d4b"
 EXPECTED_DECISION_DIGEST = "1e0198d15281bceb0b47a9b45064025bb747153a49acf1bde8ca7115d5d78e53"
 SECOND_EXPECTED_DECISION_DIGEST = "5cf787b91d5dcaaa4a81cd13393e9fdaaf1be8a8c1a399e3525405b21e469743"
+THIRD_EXPECTED_DECISION_DIGEST = "ac83f086ff4a1ed7dea989079d41215a19846845296c347b337533d0a79ce0b2"
 EXPECTED_TEXTS = [
     "我", "他", "你", "她", "它", "讓", "年", "自己", "他們", "被",
     "什麼", "時候", "等", "次", "覺得", "天", "月", "一些", "元", "地方",
@@ -29,6 +31,13 @@ SECOND_EXPECTED_TEXTS = [
     "名", "認為", "重要", "美國", "其", "中國", "政府", "社會", "世界", "活動",
     "公司", "民眾", "不同", "關係", "能夠", "不能", "事情", "最後", "國家", "方式",
     "必須", "件", "請", "走", "環境",
+]
+THIRD_EXPECTED_TEXTS = [
+    "文化", "大陸", "大學", "目前", "部分", "無法", "日本", "未來", "學校", "經濟",
+    "當時", "過程", "感覺", "結果", "指出", "後來", "機會", "條", "放", "故事",
+    "變成", "其中", "先生", "同時", "使", "決定", "市場", "中心", "國際", "狀況",
+    "身體", "項", "生命", "起來", "誰", "歷史", "電影", "人員", "隻", "令",
+    "家庭", "經驗", "是否", "塊", "能力", "小時", "政治", "企業", "總統", "進入",
 ]
 ALLOWED_DECISIONS = {
     "approved-existing-schema",
@@ -119,7 +128,17 @@ SECOND_REVIEW_SLICE = ReviewSlice(
     expected_approved=20,
     expected_held=5,
 )
-REVIEW_SLICES = (FIRST_REVIEW_SLICE, SECOND_REVIEW_SLICE)
+THIRD_REVIEW_SLICE = ReviewSlice(
+    name="orders-51-100",
+    first_order=51,
+    last_order=100,
+    decisions_path=THIRD_DECISIONS,
+    expected_texts=tuple(THIRD_EXPECTED_TEXTS),
+    expected_digest=THIRD_EXPECTED_DECISION_DIGEST,
+    expected_approved=34,
+    expected_held=16,
+)
+REVIEW_SLICES = (FIRST_REVIEW_SLICE, SECOND_REVIEW_SLICE, THIRD_REVIEW_SLICE)
 
 
 def canonical_digest(value: Any) -> str:
@@ -193,6 +212,11 @@ def validate_approved(row: dict[str, str]) -> None:
         if roles != ["intransitive-predicate"]:
             raise ValueError(
                 f"intransitive frame requires intransitive-predicate: {row['text']}"
+            )
+    elif frame == "transitive":
+        if roles != ["transitive-predicate"]:
+            raise ValueError(
+                f"transitive frame requires transitive-predicate: {row['text']}"
             )
     else:
         raise ValueError(
@@ -310,6 +334,15 @@ def validate_second_files(
 ) -> dict[str, Any]:
     batch_rows, _ = load_locked_inputs(batch_path, report_path)
     return validate_review_slice(batch_rows, SECOND_REVIEW_SLICE, decisions_path)
+
+
+def validate_third_files(
+    batch_path: Path = DEFAULT_BATCH,
+    report_path: Path = DEFAULT_REPORT,
+    decisions_path: Path = THIRD_DECISIONS,
+) -> dict[str, Any]:
+    batch_rows, _ = load_locked_inputs(batch_path, report_path)
+    return validate_review_slice(batch_rows, THIRD_REVIEW_SLICE, decisions_path)
 
 
 def validate_all_files(

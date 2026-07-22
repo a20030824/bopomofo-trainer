@@ -32,8 +32,8 @@
     ]
   },
   "catalog": {
-    "entryCount": 80,
-    "normalizedTextCount": 80,
+    "entryCount": 114,
+    "normalizedTextCount": 114,
     "identityRule": "NFC(trim(text)) exact match; exactly one catalog identity required"
   },
   "rows": [
@@ -320,10 +320,100 @@
       "spokenPerMillion": 637.8305823087835
     },
     {
+      "generalRank": 235,
+      "lexicalText": "文化",
+      "writtenPerMillion": 454.2883173989417,
+      "spokenPerMillion": 280.2851900636156
+    },
+    {
+      "generalRank": 239,
+      "lexicalText": "大陸",
+      "writtenPerMillion": 105.8673485338551,
+      "spokenPerMillion": 121.8712843155269
+    },
+    {
+      "generalRank": 245,
+      "lexicalText": "大學",
+      "writtenPerMillion": 330.0915899255428,
+      "spokenPerMillion": 228.5907499882843
+    },
+    {
+      "generalRank": 248,
+      "lexicalText": "目前",
+      "writtenPerMillion": 181.9400275980817,
+      "spokenPerMillion": 294.3580866358473
+    },
+    {
+      "generalRank": 249,
+      "lexicalText": "部分",
+      "writtenPerMillion": 325.5261175884246,
+      "spokenPerMillion": 558.5063552966371
+    },
+    {
       "generalRank": 257,
       "lexicalText": "使用",
       "writtenPerMillion": 390.3796446311762,
       "spokenPerMillion": 356.888657071797
+    },
+    {
+      "generalRank": 258,
+      "lexicalText": "日本",
+      "writtenPerMillion": 405.9141605052144,
+      "spokenPerMillion": 229.2943948168959
+    },
+    {
+      "generalRank": 262,
+      "lexicalText": "未來",
+      "writtenPerMillion": 212.3857731227428,
+      "spokenPerMillion": 249.0902693285019
+    },
+    {
+      "generalRank": 269,
+      "lexicalText": "學校",
+      "writtenPerMillion": 292.420488180399,
+      "spokenPerMillion": 422.9843613060455
+    },
+    {
+      "generalRank": 275,
+      "lexicalText": "經濟",
+      "writtenPerMillion": 326.9672188565759,
+      "spokenPerMillion": 231.9682451656199
+    },
+    {
+      "generalRank": 278,
+      "lexicalText": "當時",
+      "writtenPerMillion": 458.7982100728255,
+      "spokenPerMillion": 355.1529998278885
+    },
+    {
+      "generalRank": 283,
+      "lexicalText": "過程",
+      "writtenPerMillion": 346.6463896175284,
+      "spokenPerMillion": 529.1409111159136
+    },
+    {
+      "generalRank": 284,
+      "lexicalText": "感覺",
+      "writtenPerMillion": 359.5567513917098,
+      "spokenPerMillion": 645.8990430101964
+    },
+    {
+      "generalRank": 287,
+      "lexicalText": "結果",
+      "writtenPerMillion": 427.5108296477566,
+      "spokenPerMillion": 394.4632909196558
+    },
+    {
+      "generalRank": 291,
+      "lexicalText": "後來",
+      "writtenPerMillion": 335.5701567300849,
+      "spokenPerMillion": 587.4965222354347
+    },
+    {
+      "generalRank": 292,
+      "lexicalText": "機會",
+      "writtenPerMillion": 321.1035643853378,
+      "spokenPerMillion": 342.8157604995653
     },
     {
       "generalRank": 293,
@@ -338,10 +428,82 @@
       "spokenPerMillion": 391.554892294728
     },
     {
+      "generalRank": 311,
+      "lexicalText": "故事",
+      "writtenPerMillion": 395.4215140817329,
+      "spokenPerMillion": 399.998630238067
+    },
+    {
+      "generalRank": 313,
+      "lexicalText": "變成",
+      "writtenPerMillion": 289.1293781217286,
+      "spokenPerMillion": 598.4264719065346
+    },
+    {
+      "generalRank": 320,
+      "lexicalText": "先生",
+      "writtenPerMillion": 630.5195195876529,
+      "spokenPerMillion": 280.3790093740971
+    },
+    {
+      "generalRank": 322,
+      "lexicalText": "同時",
+      "writtenPerMillion": 439.2024088067247,
+      "spokenPerMillion": 213.0636541035886
+    },
+    {
+      "generalRank": 327,
+      "lexicalText": "市場",
+      "writtenPerMillion": 255.0312547273729,
+      "spokenPerMillion": 107.1885622251651
+    },
+    {
+      "generalRank": 328,
+      "lexicalText": "中心",
+      "writtenPerMillion": 181.5271500997685,
+      "spokenPerMillion": 157.3349836775509
+    },
+    {
+      "generalRank": 334,
+      "lexicalText": "狀況",
+      "writtenPerMillion": 174.7464311851615,
+      "spokenPerMillion": 566.9500932399762
+    },
+    {
+      "generalRank": 337,
+      "lexicalText": "身體",
+      "writtenPerMillion": 385.0876666960643,
+      "spokenPerMillion": 415.6195454332442
+    },
+    {
+      "generalRank": 348,
+      "lexicalText": "生命",
+      "writtenPerMillion": 361.9307970070113,
+      "spokenPerMillion": 385.9257336658352
+    },
+    {
       "generalRank": 353,
       "lexicalText": "設計",
       "writtenPerMillion": 232.2912325125785,
       "spokenPerMillion": 199.366034773283
+    },
+    {
+      "generalRank": 354,
+      "lexicalText": "歷史",
+      "writtenPerMillion": 374.6823597433799,
+      "spokenPerMillion": 204.9013740916942
+    },
+    {
+      "generalRank": 369,
+      "lexicalText": "電影",
+      "writtenPerMillion": 450.4215608281997,
+      "spokenPerMillion": 70.5521214821218
+    },
+    {
+      "generalRank": 372,
+      "lexicalText": "人員",
+      "writtenPerMillion": 194.3819322107154,
+      "spokenPerMillion": 159.8681050605526
     },
     {
       "generalRank": 379,
@@ -350,16 +512,58 @@
       "spokenPerMillion": 511.6905193663463
     },
     {
+      "generalRank": 385,
+      "lexicalText": "家庭",
+      "writtenPerMillion": 237.305312131518,
+      "spokenPerMillion": 317.6252756352705
+    },
+    {
       "generalRank": 386,
       "lexicalText": "選擇",
       "writtenPerMillion": 295.382090235608,
       "spokenPerMillion": 244.6807617358693
     },
     {
+      "generalRank": 391,
+      "lexicalText": "經驗",
+      "writtenPerMillion": 341.9102083147613,
+      "spokenPerMillion": 256.1736272698585
+    },
+    {
+      "generalRank": 405,
+      "lexicalText": "能力",
+      "writtenPerMillion": 368.1160195298203,
+      "spokenPerMillion": 197.114371321726
+    },
+    {
+      "generalRank": 413,
+      "lexicalText": "政治",
+      "writtenPerMillion": 312.6276657420791,
+      "spokenPerMillion": 60.98255181300423
+    },
+    {
+      "generalRank": 417,
+      "lexicalText": "企業",
+      "writtenPerMillion": 255.5870513597177,
+      "spokenPerMillion": 63.32803457504286
+    },
+    {
+      "generalRank": 418,
+      "lexicalText": "總統",
+      "writtenPerMillion": 91.3928162372175,
+      "spokenPerMillion": 57.98033387759479
+    },
+    {
       "generalRank": 420,
       "lexicalText": "方法",
       "writtenPerMillion": 389.6174092496747,
       "spokenPerMillion": 311.6208397644517
+    },
+    {
+      "generalRank": 421,
+      "lexicalText": "進入",
+      "writtenPerMillion": 261.9350428962848,
+      "spokenPerMillion": 174.7853754271183
     },
     {
       "generalRank": 460,
@@ -520,9 +724,9 @@
   ],
   "diagnostics": {
     "sourceRowCount": 163701,
-    "catalogScopedSourceRowCount": 80,
+    "catalogScopedSourceRowCount": 114,
     "unmatchedCatalogTexts": [],
     "ambiguousCatalogTexts": [],
-    "omittedNonCatalogSourceRowCount": 163621
+    "omittedNonCatalogSourceRowCount": 163587
   }
 }
