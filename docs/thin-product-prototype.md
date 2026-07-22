@@ -19,9 +19,10 @@ It remains a single-page Vanilla TypeScript + Vite product with no account, back
 9. Append eligible practice observations once; evaluation remains isolated.
 10. Update frequency-stage counters and recent utterance/template history once.
 11. Save progress, Pilot history, and a compact summary.
-12. Reproduce the same next utterance after reload.
+12. Immediately create the deterministic next utterance after a completed final token.
+13. Reproduce that same next utterance after reload.
 
-The browser never independently selects several words and concatenates them. One exercise is the ordered entry sequence of one grammar candidate.
+The browser never independently selects several words and concatenates them. One exercise is the ordered entry sequence of one grammar candidate. The display joins those entries into one continuous utterance and does not expose internal word boundaries as interaction units.
 
 ## Selection boundary
 
@@ -49,6 +50,8 @@ All active product entries require reviewed grammar annotations. Candidate compo
 - fallback reasons.
 
 Fallback order is complete template, standalone utterance, standalone lexical prompt, then explicit failure. There is no random-word fallback.
+
+The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface.
 
 ## Persistence boundary
 
@@ -90,30 +93,39 @@ After every five practice utterances, evaluation:
 - records attempts, errors, and clean timing for the round summary;
 - does not update cumulative measurements, frequency stage, recent utterances, recent templates, or legacy curriculum diagnostics.
 
-This is an observation adapter, not a validated learning assessment.
+This is an observation adapter, not a validated learning assessment. Evaluation identity is available in the information dialog and local history without interrupting the continuous keyboard flow.
 
 ## Browser behavior
 
-The page keeps the hidden textarea capture target so real IME composition events remain observable. Space and Tab are prevented from moving the page while active input is expected.
+The page keeps the hidden textarea capture target so real IME composition events remain observable. Space and Tab are prevented from moving the page while active practice input is expected.
 
 The primary UI shows:
 
-- the complete utterance before its individual words;
+- one continuous complete utterance with no visible word or catalog-entry separation;
+- one reviewed Bopomofo syllable beneath each displayed character;
+- completed, current, upcoming, and wrong-token states;
+- optional next physical-key guidance;
+- compact current-round accuracy and overall utterance progress;
+- a blocking, keyboard-dismissable IME warning;
+- immediate save-and-advance after the final correct token.
+
+`Escape` opens a native information dialog containing:
+
 - current frequency stage and selection boundary;
 - sentence-template or standalone type;
-- active word and complete Bopomofo reading;
-- current token and optional physical-key hint;
-- overall utterance progress;
-- completion accuracy, mapped attempts, and clean timing count;
-- local history and Pilot export;
-- raw diagnostics under a collapsed disclosure.
+- optional physical-key hint control;
+- local Pilot history and deterministic Pilot export;
+- raw diagnostics under a collapsed disclosure;
+- destructive local reset.
+
+There is no completion card or next-round button. Key repeat remains an ignored interaction outcome, so holding the final key cannot become accepted input in the next round. The previous round's compact result may remain briefly visible after the next sentence is already active.
 
 No UI element labels error/timing evidence as confidence, mastery, or learning effectiveness.
 
 ## Known limitations
 
-- The current catalog and grammar review are small and provisional.
-- Grammar templates ensure declared structure, not semantic naturalness.
-- Coarse frequency bands remain until reviewed NAER commonness evidence is imported.
+- The current catalog and grammar review are provisional.
+- Grammar structure does not establish semantic naturalness.
 - Reload resets unfinished-round timing traces, although completed progress and deterministic next selection persist.
 - There is no fatigue model, timing-outlier policy, recall mode, alternate layout, account, or cross-device synchronization.
+- Character-to-syllable display assumes reviewed catalog entries preserve their declared surface order; a malformed mismatch is rendered fail-soft rather than changing product identity.
