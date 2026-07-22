@@ -25,7 +25,7 @@ describe("curriculum simulator CLI integration", () => {
       "2",
     ]) as CliOutput;
 
-    expect(output.catalog.entries).toBe(60);
+    expect(output.catalog.entries).toBe(80);
     expect(output.catalog.supportedBindings).toBeGreaterThan(0);
     expect(output.reports.map((report) => report.scenario)).toEqual([
       "new-learner",
