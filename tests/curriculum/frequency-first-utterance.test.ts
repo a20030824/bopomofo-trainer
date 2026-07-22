@@ -5,6 +5,8 @@ import {
   createFrequencyFirstSelectionState,
   selectFrequencyFirstUtterance,
   updateFrequencyFirstSelectionState,
+  type EntrySelectionScore,
+  type FrequencyFirstUtteranceSelection,
 } from "../../src/curriculum/frequency-first-utterance.js";
 import { bindingScopeKey, confusionScopeKey, transitionScopeKey } from "../../src/measurement/aggregate.js";
 import type { MeasurementSummary } from "../../src/measurement/types.js";
@@ -88,6 +90,17 @@ function input(
   } as const;
 }
 
+function slotCandidate(
+  selection: FrequencyFirstUtteranceSelection,
+  entryId: string,
+): EntrySelectionScore {
+  const candidate = selection.slotSelections
+    .flatMap((slot) => slot.candidates)
+    .find((item) => item.entryId === entryId);
+  if (candidate === undefined) throw new Error(`missing slot candidate: ${entryId}`);
+  return candidate;
+}
+
 function weakLessCommonMeasurement(): MeasurementSummary {
   const tokenId = "zhuyin:ㄗ";
   const bindingKey = bindingScopeKey({ mode, layoutId, tokenId });
@@ -137,16 +150,18 @@ function weakLessCommonMeasurement(): MeasurementSummary {
 }
 
 describe("frequency-first grammatical utterance policy", () => {
-  it("keeps locked frequency bands out of the candidate universe", () => {
+  it("keeps locked frequency bands out of the slot candidate universe", () => {
     const selection = selectFrequencyFirstUtterance(input(1, weakLessCommonMeasurement()));
-    expect(selection.candidates).toHaveLength(1);
+    expect(selection.slotSelections).toHaveLength(1);
+    expect(selection.slotSelections[0]?.candidates.map((candidate) => candidate.entryId))
+      .toEqual(["common"]);
     expect(selection.utterance.entries.map((candidate) => candidate.id)).toEqual(["common"]);
   });
 
   it("adds bounded expected-token and exact-transition weight without erasing frequency priority", () => {
     const selection = selectFrequencyFirstUtterance(input(2, weakLessCommonMeasurement()));
-    const commonScore = selection.candidates.find((candidate) => candidate.entryIds[0] === "common")!;
-    const weakScore = selection.candidates.find((candidate) => candidate.entryIds[0] === "less-common")!;
+    const commonScore = slotCandidate(selection, "common");
+    const weakScore = slotCandidate(selection, "less-common");
     expect(weakScore.expectedTokenBoost).toBeGreaterThan(1);
     expect(weakScore.transitionBoost).toBeGreaterThan(1);
     expect(weakScore.combinedLearnerBoost)
@@ -178,23 +193,25 @@ describe("frequency-first grammatical utterance policy", () => {
         },
       },
     };
-    expect(selectFrequencyFirstUtterance(input(2, withConfusion)).candidates)
-      .toEqual(selectFrequencyFirstUtterance(input(2, measurement)).candidates);
+    expect(selectFrequencyFirstUtterance(input(2, withConfusion)).slotSelections)
+      .toEqual(selectFrequencyFirstUtterance(input(2, measurement)).slotSelections);
   });
 
   it("penalizes recent utterances without making them invalid", () => {
-    const baseline = selectFrequencyFirstUtterance(input(2));
-    const target = baseline.candidates.find((candidate) => candidate.entryIds[0] === "common")!;
+    const baseline = selectFrequencyFirstUtterance(input(1));
     const repeated = selectFrequencyFirstUtterance({
-      ...input(2),
+      ...input(1),
       history: {
         recentEntryIds: ["common"],
-        recentUtteranceIds: [target.utteranceId],
-        recentTemplateIds: [target.templateId!],
+        recentUtteranceIds: [baseline.utterance.id],
+        recentTemplateIds: [baseline.utterance.templateId!],
       },
     });
-    const repeatedScore = repeated.candidates.find((candidate) => candidate.utteranceId === target.utteranceId)!;
-    expect(repeatedScore.totalWeight).toBeLessThan(target.totalWeight);
+    expect(repeated.utterance.id).toBe(baseline.utterance.id);
+    expect(repeated.score.recentEntryFactor).toBeLessThan(1);
+    expect(repeated.score.recentUtteranceFactor).toBeLessThan(1);
+    expect(repeated.score.recentTemplateFactor).toBeLessThan(1);
+    expect(repeated.score.totalWeight).toBeLessThan(baseline.score.totalWeight);
   });
 
   it("replays identically after reversing catalog and annotation order", () => {
