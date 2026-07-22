@@ -134,6 +134,13 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
             {"none": 2, "nsubj=1|obj=1": 1, "obj=1": 1},
         )
         self.assertEqual(rows["乙"]["uposCounts"], {"ADJ": 2, "NOUN": 2})
+        profiles = {
+            row["upos"]: row for row in rows["乙"]["syntaxProfileEvidence"]
+        }
+        self.assertEqual(profiles["ADJ"]["occurrenceCount"], 2)
+        self.assertEqual(profiles["ADJ"]["dependencyRelationCounts"], {"advmod": 2})
+        self.assertEqual(profiles["NOUN"]["occurrenceCount"], 2)
+        self.assertEqual(profiles["NOUN"]["dependencyRelationCounts"], {"obj": 2})
         self.assertEqual(rows["乙"]["parentUposCounts"], {"VERB": 4})
         self.assertEqual(rows["乙"]["headDirectionCounts"], {"head-left": 4})
         self.assertEqual(rows["乙"]["lemmaDiagnostics"]["mismatchCount"], 2)
@@ -147,6 +154,7 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
         self.assertNotIn("我", serialized)
         self.assertNotIn("別", serialized)
         self.assertIn('"anonymousDependencySkeletons"', serialized)
+        self.assertIn('"syntaxProfileEvidence"', serialized)
         self.assertIn('"upos": "VERB"', serialized)
 
     def test_rejects_candidate_checksum_drift(self) -> None:

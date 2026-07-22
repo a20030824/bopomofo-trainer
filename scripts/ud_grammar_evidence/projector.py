@@ -29,6 +29,7 @@ from .common import (
     Candidate,
     Observation,
     SourceStats,
+    SyntaxProfileObservation,
     Token,
     canonical_digest,
     canonical_json,
@@ -106,6 +107,54 @@ def skeleton_node(
     return node
 
 
+def record_syntax_shape(
+    target: SyntaxProfileObservation,
+    *,
+    token: Token,
+    parent: Token | None,
+    token_dependents: list[Token],
+    dependents: Mapping[int, list[Token]],
+    position: str,
+) -> None:
+    target.occurrence_count += 1
+    target.deprel[token.deprel] += 1
+    if token.feats != "_":
+        for feature in token.feats.split("|"):
+            target.features[feature] += 1
+    target.parent_upos[parent.upos if parent is not None else "ROOT"] += 1
+    target.head_directions[head_direction(token, parent)] += 1
+    target.surface_positions[position] += 1
+
+    child_relation_counter: Counter[str] = Counter()
+    valency_counter: Counter[str] = Counter()
+    for child in token_dependents:
+        base = relation_base(child.deprel)
+        child_relation_counter[base] += 1
+        target.child_relations[base] += 1
+        target.child_direction_relations[
+            f"{child_direction(token, child)}:{base}"
+        ] += 1
+        if base in VALENCY_RELATIONS:
+            valency_counter[base] += 1
+            target.valency_relations[base] += 1
+        if base in STRUCTURAL_RELATIONS:
+            target.construction_relations[f"child:{base}"] += 1
+    own_relation = relation_base(token.deprel)
+    if own_relation in STRUCTURAL_RELATIONS:
+        target.construction_relations[f"self:{own_relation}"] += 1
+    target.child_relation_multisets[relation_signature(child_relation_counter)] += 1
+    target.valency_signatures[relation_signature(valency_counter)] += 1
+    target.anonymous_skeletons[canonical_json(skeleton_node(
+        token,
+        dependents,
+        direction=head_direction(token, parent),
+        remaining_depth=3,
+        visited=frozenset(),
+    ))] += 1
+    if token.head == 0 or token.deprel == "root":
+        target.root_count += 1
+
+
 def record_sentence(
     sentence: list[Token],
     split: str,
@@ -128,57 +177,40 @@ def record_sentence(
         stats.candidate_match_count += 1
         stats.observed_candidates.add(token.form)
         observation = observations[token.form]
-        observation.occurrence_count += 1
         observation.source_occurrences[split] += 1
         observation.upos[token.upos] += 1
         observation.xpos[token.xpos] += 1
-        observation.deprel[token.deprel] += 1
-        if token.feats != "_":
-            for feature in token.feats.split("|"):
-                observation.features[feature] += 1
 
         parent = tokens_by_id.get(token.head)
-        observation.parent_upos[parent.upos if parent is not None else "ROOT"] += 1
-        observation.head_directions[head_direction(token, parent)] += 1
-        observation.surface_positions[
-            surface_position(position_by_id[token.identifier], len(ordered_sentence))
-        ] += 1
-
         token_dependents = sorted(
             dependents.get(token.identifier, []),
             key=lambda item: (item.identifier, item.upos, item.deprel),
         )
-        child_relation_counter: Counter[str] = Counter()
-        valency_counter: Counter[str] = Counter()
-        for child in token_dependents:
-            base = relation_base(child.deprel)
-            child_relation_counter[base] += 1
-            observation.child_relations[base] += 1
-            observation.child_direction_relations[
-                f"{child_direction(token, child)}:{base}"
-            ] += 1
-            if base in VALENCY_RELATIONS:
-                valency_counter[base] += 1
-                observation.valency_relations[base] += 1
-            if base in STRUCTURAL_RELATIONS:
-                observation.construction_relations[f"child:{base}"] += 1
-        own_relation = relation_base(token.deprel)
-        if own_relation in STRUCTURAL_RELATIONS:
-            observation.construction_relations[f"self:{own_relation}"] += 1
-        observation.child_relation_multisets[
-            relation_signature(child_relation_counter)
-        ] += 1
-        observation.valency_signatures[relation_signature(valency_counter)] += 1
-        observation.anonymous_skeletons[canonical_json(skeleton_node(
-            token,
-            dependents,
-            direction=head_direction(token, parent),
-            remaining_depth=3,
-            visited=frozenset(),
-        ))] += 1
+        position = surface_position(
+            position_by_id[token.identifier],
+            len(ordered_sentence),
+        )
+        record_syntax_shape(
+            observation,
+            token=token,
+            parent=parent,
+            token_dependents=token_dependents,
+            dependents=dependents,
+            position=position,
+        )
+        profile = observation.profile_observations.setdefault(
+            token.upos,
+            SyntaxProfileObservation(),
+        )
+        record_syntax_shape(
+            profile,
+            token=token,
+            parent=parent,
+            token_dependents=token_dependents,
+            dependents=dependents,
+            position=position,
+        )
 
-        if token.head == 0 or token.deprel == "root":
-            observation.root_count += 1
         if token.lemma == "_":
             observation.lemma_missing_count += 1
         else:
@@ -250,27 +282,18 @@ def mixed_object_evidence_is_significant(observation: Observation) -> bool:
     )
 
 
-def skeleton_rows(observation: Observation) -> list[dict[str, Any]]:
+def skeleton_rows(observation: SyntaxProfileObservation) -> list[dict[str, Any]]:
     return [
         {"count": observation.anonymous_skeletons[key], "skeleton": json.loads(key)}
         for key in sorted(observation.anonymous_skeletons)
     ]
 
 
-def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, Any]:
-    row: dict[str, Any] = {
-        "generalRank": candidate.general_rank,
-        "text": candidate.text,
-        "observed": observation.occurrence_count > 0,
+def syntax_evidence_fields(
+    observation: SyntaxProfileObservation,
+) -> dict[str, Any]:
+    result: dict[str, Any] = {
         "occurrenceCount": observation.occurrence_count,
-    }
-    if observation.occurrence_count == 0:
-        return row
-    row.update({
-        "sourceOccurrenceCounts": sorted_counter(observation.source_occurrences),
-        "uposCounts": sorted_counter(observation.upos),
-        "dominantUpos": dominant_upos(observation),
-        "xposCounts": sorted_counter(observation.xpos),
         "dependencyRelationCounts": sorted_counter(observation.deprel),
         "parentUposCounts": sorted_counter(observation.parent_upos),
         "headDirectionCounts": sorted_counter(observation.head_directions),
@@ -288,6 +311,40 @@ def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, An
             observation.construction_relations
         ),
         "anonymousDependencySkeletons": skeleton_rows(observation),
+    }
+    if observation.features:
+        result["morphologicalFeatureCounts"] = sorted_counter(observation.features)
+    if observation.root_count:
+        result["rootCount"] = observation.root_count
+    return result
+
+
+def syntax_profile_rows(observation: Observation) -> list[dict[str, Any]]:
+    return [
+        {
+            "upos": upos,
+            **syntax_evidence_fields(observation.profile_observations[upos]),
+        }
+        for upos in sorted(observation.profile_observations)
+    ]
+
+
+def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "generalRank": candidate.general_rank,
+        "text": candidate.text,
+        "observed": observation.occurrence_count > 0,
+        "occurrenceCount": observation.occurrence_count,
+    }
+    if observation.occurrence_count == 0:
+        return row
+    row.update({
+        "sourceOccurrenceCounts": sorted_counter(observation.source_occurrences),
+        "uposCounts": sorted_counter(observation.upos),
+        "dominantUpos": dominant_upos(observation),
+        "xposCounts": sorted_counter(observation.xpos),
+        **syntax_evidence_fields(observation),
+        "syntaxProfileEvidence": syntax_profile_rows(observation),
         "lemmaDiagnostics": {
             "agreementCount": observation.lemma_agreement_count,
             "mismatchCount": observation.lemma_mismatch_count,
@@ -295,10 +352,6 @@ def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, An
             "distinctObservedLemmaCount": len(observation.lemmas),
         },
     })
-    if observation.features:
-        row["morphologicalFeatureCounts"] = sorted_counter(observation.features)
-    if observation.root_count:
-        row["rootCount"] = observation.root_count
     if observation.verbal_occurrence_count:
         row["verbEvidence"] = {
             "verbalOccurrenceCount": observation.verbal_occurrence_count,
@@ -404,6 +457,8 @@ def project(
             "sourceSentenceEmission": "forbidden",
             "nonCandidateLexicalStringEmission": "forbidden",
             "anonymousSkeletonMaximumDepth": 3,
+            "profilePartitionField": "UPOS",
+            "dominantUposReduction": "forbidden",
         },
     }
 

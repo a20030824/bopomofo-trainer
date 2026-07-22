@@ -152,11 +152,8 @@ class Token:
 
 
 @dataclass
-class Observation:
+class SyntaxProfileObservation:
     occurrence_count: int = 0
-    source_occurrences: Counter[str] = field(default_factory=Counter)
-    upos: Counter[str] = field(default_factory=Counter)
-    xpos: Counter[str] = field(default_factory=Counter)
     deprel: Counter[str] = field(default_factory=Counter)
     features: Counter[str] = field(default_factory=Counter)
     parent_upos: Counter[str] = field(default_factory=Counter)
@@ -170,6 +167,14 @@ class Observation:
     construction_relations: Counter[str] = field(default_factory=Counter)
     anonymous_skeletons: Counter[str] = field(default_factory=Counter)
     root_count: int = 0
+
+
+@dataclass
+class Observation(SyntaxProfileObservation):
+    source_occurrences: Counter[str] = field(default_factory=Counter)
+    upos: Counter[str] = field(default_factory=Counter)
+    xpos: Counter[str] = field(default_factory=Counter)
+    profile_observations: dict[str, SyntaxProfileObservation] = field(default_factory=dict)
     lemma_agreement_count: int = 0
     lemma_mismatch_count: int = 0
     lemma_missing_count: int = 0
