@@ -21,8 +21,20 @@ async function compileRealCatalog() {
   return compiled.entries;
 }
 
-function sumCounts(counts: Readonly<Record<string, number>>): number {
-  return Object.values(counts).reduce((total, count) => total + count, 0);
+interface RelationStateCountShape {
+  readonly unsupported: number;
+  readonly evaluationOnly: number;
+  readonly rareOnly: number;
+  readonly concentrated: number;
+  readonly supported: number;
+}
+
+function sumCounts(counts: RelationStateCountShape): number {
+  return counts.unsupported
+    + counts.evaluationOnly
+    + counts.rareOnly
+    + counts.concentrated
+    + counts.supported;
 }
 
 describe("real relational catalog report", () => {
