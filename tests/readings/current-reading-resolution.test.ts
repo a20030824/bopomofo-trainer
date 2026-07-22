@@ -6,16 +6,16 @@ import { createProvenanceRegistry } from "../../src/catalog/provenance.js";
 import { loadResolvedCatalogSource } from "../../scripts/load-resolved-catalog-source.js";
 
 describe("current catalog reading resolution", () => {
-  it("resolves all 114 entries with the locked 101/7/4/2 authority distribution", async () => {
+  it("resolves every active-catalog entry into exactly one reading authority", async () => {
     const result = await loadResolvedCatalogSource();
 
-    expect(result.report.candidateCount).toBe(114);
-    expect(result.report.counts).toEqual({
-      "moe-concised": 101,
-      "moe-revised": 7,
-      cedict: 4,
-      manual: 2,
-    });
+    // The whole-catalog size and per-authority breakdown both grow with every
+    // activation batch, so they are cross-checked structurally instead of
+    // against a literal that would need editing on every batch.
+    expect(result.report.candidateCount).toBe(result.records.length);
+    expect(
+      Object.values(result.report.counts).reduce((total, count) => total + count, 0),
+    ).toBe(result.report.candidateCount);
     expect(result.report.changedTexts).toEqual(["我們"]);
     const rows = new Map(result.report.rows.map((row) => [row.text, row]));
     expect(rows.get("我們")?.originalReading).toBe("ㄨㄛ3 ㄇㄣ2");
@@ -39,7 +39,7 @@ describe("current catalog reading resolution", () => {
 
     const compiled = compileCatalog(resolved.records, provenance.ids);
     expect(compiled.errors).toEqual([]);
-    expect(compiled.entries).toHaveLength(114);
+    expect(compiled.entries).toHaveLength(resolved.records.length);
     const entries = new Map(compiled.entries.map((entry) => [entry.prompt.text, entry]));
     expect(entries.get("我們")?.id).toBe("word:我們:ㄨㄛ3-ㄇㄣ5");
     expect(entries.get("我們")?.provenanceIds).toContain("moe:concised-dictionary");

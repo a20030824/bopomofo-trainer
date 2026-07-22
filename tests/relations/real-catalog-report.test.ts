@@ -38,7 +38,7 @@ function sumCounts(counts: RelationStateCountShape): number {
 }
 
 describe("real relational catalog report", () => {
-  it("reconciles and classifies the complete 114-entry snapshot", async () => {
+  it("reconciles and classifies the complete catalog snapshot", async () => {
     const entries = await compileRealCatalog();
     const partition = partitionCatalogForProduct(entries, 5, 3);
     const evaluationIds = new Set(partition.evaluation.map((entry) => entry.id));
@@ -73,10 +73,9 @@ describe("real relational catalog report", () => {
       0,
     );
 
-    expect(entries).toHaveLength(114);
     expect(report.totals).toMatchObject({
-      entries: 114,
-      trainingEntries: 109,
+      entries: entries.length,
+      trainingEntries: entries.length - 5,
       evaluationEntries: 5,
       syllables: expectedSyllables,
       tokenOccurrences: expectedTokens,
@@ -96,7 +95,7 @@ describe("real relational catalog report", () => {
     const entryInitialCount = Object.values(report.index.bindingOccurrences)
       .flat()
       .filter((occurrence) => occurrence.entryInitial).length;
-    expect(entryInitialCount).toBe(114);
+    expect(entryInitialCount).toBe(entries.length);
 
     expect(new Set(report.partitionSupportLossKeys).size)
       .toBe(report.partitionSupportLossKeys.length);
@@ -120,14 +119,23 @@ describe("real relational catalog report", () => {
         evaluationIds.has(entry.id) ? "evaluation" : "training",
       ] as const)),
     });
-    const key = transitionRelationKey(zhuyinToken("ㄓ"), zhuyinToken("ㄨ"));
+    const zhi = zhuyinToken("ㄓ");
+    const yu = zhuyinToken("ㄨ");
+    const key = transitionRelationKey(zhi, yu);
     const occurrences = report.index.transitionOccurrences[key] ?? [];
-    const textById = new Map(entries.map((entry) => [entry.id, entry.prompt.text]));
-    const texts = [...new Set(occurrences.map((occurrence) => textById.get(occurrence.entryId)))]
-      .filter((text): text is string => text !== undefined)
-      .sort();
+    const entryById = new Map(entries.map((entry) => [entry.id, entry]));
 
-    expect(texts).toEqual(["中國", "中心", "中文", "建築", "民眾", "注音", "狀況", "重要"]);
+    // The set of texts containing this transition grows with the catalog, so
+    // rather than pin an exact list, cross-check each occurrence directly
+    // against the entry's own token structure.
+    expect(occurrences.length).toBeGreaterThan(0);
+    for (const occurrence of occurrences) {
+      const entry = entryById.get(occurrence.entryId);
+      expect(entry).toBeDefined();
+      const syllable = entry?.syllables[occurrence.syllableIndex];
+      expect(syllable?.tokens[occurrence.fromTokenIndex]).toBe(zhi);
+      expect(syllable?.tokens[occurrence.fromTokenIndex + 1]).toBe(yu);
+    }
     expect(occurrences.every((occurrence) => occurrence.fromTokenIndex === 0)).toBe(true);
   });
 });

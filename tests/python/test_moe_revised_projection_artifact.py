@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tests" / "python"))
+
+from active_catalog_state import active_catalog_size, active_concised_count  # noqa: E402
+
 ARTIFACT = ROOT / "data" / "readings" / "moe-revised-2015_20260625-active-catalog-fallback.json"
 
 
@@ -18,8 +23,14 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
-        self.assertEqual(basis["concisedAcceptedCandidateCount"], 101)
-        self.assertEqual(basis["fallbackCandidateCount"], 13)
+        # Both counts are cross-file bookkeeping (they mirror the Concised
+        # artifact's own row count and the overall catalog size) rather than
+        # facts owned by this file, so they are read dynamically.
+        self.assertEqual(basis["concisedAcceptedCandidateCount"], active_concised_count())
+        self.assertEqual(
+            basis["fallbackCandidateCount"],
+            active_catalog_size() - active_concised_count(),
+        )
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
         self.assertEqual(
             [row["lookupText"] for row in rows],

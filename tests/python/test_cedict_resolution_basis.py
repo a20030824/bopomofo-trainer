@@ -7,6 +7,14 @@ from pathlib import Path
 from types import ModuleType
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tests" / "python"))
+
+from active_catalog_state import (  # noqa: E402
+    active_catalog_size,
+    active_concised_count,
+    active_revised_count,
+)
+
 SCRIPT = ROOT / "scripts" / "project-cedict-identity-hints.py"
 CANDIDATES = ROOT / "data" / "source" / "words.sample.csv"
 CONCISED = ROOT / "data" / "readings" / "moe-concised-2014_20260626-active-catalog.json"
@@ -35,8 +43,8 @@ class CedictResolutionBasisTest(unittest.TestCase):
             REVISED,
         )
 
-        self.assertEqual(candidate_count, 114)
-        self.assertEqual(len(accepted), 108)
+        self.assertEqual(candidate_count, active_catalog_size())
+        self.assertEqual(len(accepted), active_concised_count() + active_revised_count())
         self.assertEqual(
             unresolved,
             ["台灣", "很好", "想要", "東西", "看到", "聽到"],

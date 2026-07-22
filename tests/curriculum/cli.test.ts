@@ -1,5 +1,15 @@
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
+import { parseCsv } from "../../src/catalog/csv.js";
 import { createCurriculumSimulationOutput } from "../../src/curriculum/cli.js";
+
+async function activeCatalogSize(): Promise<number> {
+  const source = await readFile(
+    new URL("../../data/source/words.sample.csv", import.meta.url),
+    "utf8",
+  );
+  return parseCsv(source).records.length;
+}
 
 interface CliOutput {
   readonly catalog: {
@@ -25,7 +35,7 @@ describe("curriculum simulator CLI integration", () => {
       "2",
     ]) as CliOutput;
 
-    expect(output.catalog.entries).toBe(114);
+    expect(output.catalog.entries).toBe(await activeCatalogSize());
     expect(output.catalog.supportedBindings).toBeGreaterThan(0);
     expect(output.reports.map((report) => report.scenario)).toEqual([
       "new-learner",

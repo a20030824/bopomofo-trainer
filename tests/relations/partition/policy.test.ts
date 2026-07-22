@@ -35,18 +35,17 @@ function captureError(run: () => unknown): string {
 }
 
 describe("relational partition policies", () => {
-  it("reports the current 114-entry baseline's support diagnostics", async () => {
+  it("reports the current catalog baseline's support diagnostics", async () => {
     const entries = await compileRealCatalog();
     const input = createPartitionInput(entries);
     const decision = partitionBindingPreservingBaseline(input);
 
-    expect(entries).toHaveLength(114);
-    expect(decision.trainingEntryIds).toHaveLength(109);
+    expect(decision.trainingEntryIds).toHaveLength(entries.length - 5);
     expect(decision.evaluationEntryIds).toHaveLength(5);
     expect(new Set([
       ...decision.trainingEntryIds,
       ...decision.evaluationEntryIds,
-    ]).size).toBe(114);
+    ]).size).toBe(entries.length);
     expect(decision.metrics.bindingCoverage.evaluationOnlyRelationCount).toBe(0);
     expect(decision.metrics.transitionCoverage.evaluationOnlyRelationKeys)
       .toHaveLength(decision.metrics.transitionCoverage.evaluationOnlyRelationCount);
@@ -61,8 +60,9 @@ describe("relational partition policies", () => {
     });
   });
 
-  it("runs all five strategies on the current 114-entry catalog", async () => {
-    const input = createPartitionInput(await compileRealCatalog());
+  it("runs all five strategies on the current catalog", async () => {
+    const entries = await compileRealCatalog();
+    const input = createPartitionInput(entries);
     const options = {
       evaluationEntryCount: 5,
       minimumTrainingDistinctEntries: 1,
@@ -80,7 +80,7 @@ describe("relational partition policies", () => {
 
     expect(new Set(decisions.map((decision) => decision.policyId)).size).toBe(5);
     for (const decision of decisions) {
-      expect(decision.trainingEntryIds).toHaveLength(109);
+      expect(decision.trainingEntryIds).toHaveLength(entries.length - 5);
       expect(decision.evaluationEntryIds).toHaveLength(5);
       expect(decision.constraintResults.filter(
         (constraint) => constraint.kind === "hard" && constraint.status === "unsatisfied",
