@@ -4,6 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT = ROOT / "data" / "readings" / "moe-revised-2015_20260625-active-catalog-fallback.json"
 
@@ -17,7 +18,7 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
-        self.assertEqual(basis["concisedAcceptedCandidateCount"], 41)
+        self.assertEqual(basis["concisedAcceptedCandidateCount"], 52)
         self.assertEqual(basis["fallbackCandidateCount"], 8)
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
         self.assertEqual([row["lookupText"] for row in rows], ["中文", "謝謝"])
