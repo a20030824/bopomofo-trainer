@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   check:
@@ -66,94 +66,6 @@ jobs:
         run: npm run catalog:validate
       - name: Production build
         run: npm run build
-
-  generate_activation_82:
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.head_ref == 'agent/issue-82-activate-reviewed-20' &&
-      github.actor != 'github-actions[bot]'
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: agent/issue-82-activate-reviewed-20
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - run: npm ci --include=dev --ignore-scripts
-      - run: npm run catalog:activate-reviewed-20
-      - run: npm run app:catalog
-      - name: Write generated files to branch
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_BRANCH: agent/issue-82-activate-reviewed-20
-        run: |
-          python - <<'PY'
-          import base64
-          import json
-          import os
-          import urllib.error
-          import urllib.parse
-          import urllib.request
-
-          repository = os.environ["GITHUB_REPOSITORY"]
-          branch = os.environ["TARGET_BRANCH"]
-          token = os.environ["GH_TOKEN"]
-          paths = [
-              "data/source/words.sample.csv",
-              "data/source/grammar.sample.csv",
-              "data/provenance.csv",
-              "data/commonness/naer-1141208-active-catalog-rows.json",
-              "data/readings/moe-concised-2014_20260626-active-catalog.json",
-              "data/readings/moe-revised-2015_20260625-active-catalog-fallback.json",
-              "data/identity/cedict-active-catalog-hints.json",
-              "data/grammar/naer-reviewed-catalog-activation-2-report.json",
-              "src/app/generated/catalog.ts",
-          ]
-          headers = {
-              "Accept": "application/vnd.github+json",
-              "Authorization": f"Bearer {token}",
-              "X-GitHub-Api-Version": "2022-11-28",
-              "User-Agent": "activation-82-generator",
-          }
-
-          def call(method, url, payload=None):
-              body = None if payload is None else json.dumps(payload).encode("utf-8")
-              request = urllib.request.Request(
-                  url,
-                  data=body,
-                  method=method,
-                  headers={**headers, **({"Content-Type": "application/json"} if body else {})},
-              )
-              with urllib.request.urlopen(request) as response:
-                  return json.load(response)
-
-          for path in paths:
-              encoded_path = urllib.parse.quote(path, safe="/")
-              url = f"https://api.github.com/repos/{repository}/contents/{encoded_path}"
-              sha = None
-              try:
-                  current = call("GET", f"{url}?ref={urllib.parse.quote(branch, safe='')}")
-                  sha = current["sha"]
-              except urllib.error.HTTPError as error:
-                  if error.code != 404:
-                      raise
-              payload = {
-                  "message": "chore(catalog): generate reviewed-20 activation outputs",
-                  "content": base64.b64encode(open(path, "rb").read()).decode("ascii"),
-                  "branch": branch,
-              }
-              if sha is not None:
-                  payload["sha"] = sha
-              result = call("PUT", url, payload)
-              print(path, result["commit"]["sha"])
-          PY
 
   research:
     if: github.event_name == 'workflow_dispatch' && inputs.run_research
