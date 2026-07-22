@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping
@@ -7,6 +8,7 @@ from typing import Any, Mapping
 from .common import (
     ADAPTER_VERSION,
     DEFAULT_CANDIDATES,
+    EVIDENCE_SCHEMA_VERSION,
     EXPECTED_CANDIDATE_CANONICAL_SHA256,
     EXPECTED_CANDIDATE_COUNT,
     EXPECTED_FILES,
@@ -20,12 +22,16 @@ from .common import (
     SOURCE_LICENSE,
     SOURCE_RELEASE,
     SOURCE_REPOSITORY,
+    STRUCTURAL_RELATIONS,
     SUBJECT_RELATIONS,
+    SUPPORTED_UPOS,
+    VALENCY_RELATIONS,
     Candidate,
     Observation,
     SourceStats,
     Token,
     canonical_digest,
+    canonical_json,
     canonical_text_sha256,
     iter_sentences,
     load_candidates,
@@ -39,6 +45,67 @@ def relation_base(deprel: str) -> str:
     return deprel.split(":", 1)[0]
 
 
+def head_direction(token: Token, parent: Token | None) -> str:
+    if token.head == 0 or parent is None:
+        return "root"
+    return "head-left" if parent.identifier < token.identifier else "head-right"
+
+
+def child_direction(parent: Token, child: Token) -> str:
+    return "child-left" if child.identifier < parent.identifier else "child-right"
+
+
+def surface_position(index: int, total: int) -> str:
+    if total <= 1:
+        return "singleton"
+    if index == 0:
+        return "initial"
+    if index == total - 1:
+        return "final"
+    return "medial"
+
+
+def relation_signature(counter: Counter[str]) -> str:
+    if not counter:
+        return "none"
+    return "|".join(f"{key}={counter[key]}" for key in sorted(counter))
+
+
+def skeleton_node(
+    token: Token,
+    dependents: Mapping[int, list[Token]],
+    *,
+    direction: str,
+    remaining_depth: int,
+    visited: frozenset[int],
+) -> dict[str, Any]:
+    node: dict[str, Any] = {
+        "upos": token.upos,
+        "relation": relation_base(token.deprel),
+        "direction": direction,
+    }
+    if remaining_depth <= 0 or token.identifier in visited:
+        return node
+    next_visited = visited | {token.identifier}
+    children = [
+        skeleton_node(
+            child,
+            dependents,
+            direction=child_direction(token, child),
+            remaining_depth=remaining_depth - 1,
+            visited=next_visited,
+        )
+        for child in sorted(
+            dependents.get(token.identifier, []),
+            key=lambda item: (item.identifier, item.upos, item.deprel),
+        )
+        if child.identifier not in next_visited
+    ]
+    if children:
+        node["children"] = children
+    return node
+
+
 def record_sentence(
     sentence: list[Token],
     split: str,
@@ -47,8 +114,14 @@ def record_sentence(
     stats: SourceStats,
 ) -> None:
     dependents: dict[int, list[Token]] = defaultdict(list)
+    tokens_by_id = {token.identifier: token for token in sentence}
+    ordered_sentence = sorted(sentence, key=lambda item: item.identifier)
+    position_by_id = {
+        token.identifier: index for index, token in enumerate(ordered_sentence)
+    }
     for token in sentence:
         dependents[token.head].append(token)
+
     for token in sentence:
         if token.form not in candidate_set:
             continue
@@ -63,6 +136,47 @@ def record_sentence(
         if token.feats != "_":
             for feature in token.feats.split("|"):
                 observation.features[feature] += 1
+
+        parent = tokens_by_id.get(token.head)
+        observation.parent_upos[parent.upos if parent is not None else "ROOT"] += 1
+        observation.head_directions[head_direction(token, parent)] += 1
+        observation.surface_positions[
+            surface_position(position_by_id[token.identifier], len(ordered_sentence))
+        ] += 1
+
+        token_dependents = sorted(
+            dependents.get(token.identifier, []),
+            key=lambda item: (item.identifier, item.upos, item.deprel),
+        )
+        child_relation_counter: Counter[str] = Counter()
+        valency_counter: Counter[str] = Counter()
+        for child in token_dependents:
+            base = relation_base(child.deprel)
+            child_relation_counter[base] += 1
+            observation.child_relations[base] += 1
+            observation.child_direction_relations[
+                f"{child_direction(token, child)}:{base}"
+            ] += 1
+            if base in VALENCY_RELATIONS:
+                valency_counter[base] += 1
+                observation.valency_relations[base] += 1
+            if base in STRUCTURAL_RELATIONS:
+                observation.construction_relations[f"child:{base}"] += 1
+        own_relation = relation_base(token.deprel)
+        if own_relation in STRUCTURAL_RELATIONS:
+            observation.construction_relations[f"self:{own_relation}"] += 1
+        observation.child_relation_multisets[
+            relation_signature(child_relation_counter)
+        ] += 1
+        observation.valency_signatures[relation_signature(valency_counter)] += 1
+        observation.anonymous_skeletons[canonical_json(skeleton_node(
+            token,
+            dependents,
+            direction=head_direction(token, parent),
+            remaining_depth=3,
+            visited=frozenset(),
+        ))] += 1
+
         if token.head == 0 or token.deprel == "root":
             observation.root_count += 1
         if token.lemma == "_":
@@ -73,10 +187,10 @@ def record_sentence(
                 observation.lemma_agreement_count += 1
             else:
                 observation.lemma_mismatch_count += 1
+
         if token.upos != "VERB":
             continue
         observation.verbal_occurrence_count += 1
-        token_dependents = dependents.get(token.identifier, [])
         subjects = [
             item for item in token_dependents
             if relation_base(item.deprel) in SUBJECT_RELATIONS
@@ -136,6 +250,13 @@ def mixed_object_evidence_is_significant(observation: Observation) -> bool:
     )
 
 
+def skeleton_rows(observation: Observation) -> list[dict[str, Any]]:
+    return [
+        {"count": observation.anonymous_skeletons[key], "skeleton": json.loads(key)}
+        for key in sorted(observation.anonymous_skeletons)
+    ]
+
+
 def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, Any]:
     row: dict[str, Any] = {
         "generalRank": candidate.general_rank,
@@ -151,6 +272,22 @@ def evidence_row(candidate: Candidate, observation: Observation) -> dict[str, An
         "dominantUpos": dominant_upos(observation),
         "xposCounts": sorted_counter(observation.xpos),
         "dependencyRelationCounts": sorted_counter(observation.deprel),
+        "parentUposCounts": sorted_counter(observation.parent_upos),
+        "headDirectionCounts": sorted_counter(observation.head_directions),
+        "surfacePositionCounts": sorted_counter(observation.surface_positions),
+        "childRelationCounts": sorted_counter(observation.child_relations),
+        "childDirectionRelationCounts": sorted_counter(
+            observation.child_direction_relations
+        ),
+        "childRelationMultisetCounts": sorted_counter(
+            observation.child_relation_multisets
+        ),
+        "valencyRelationCounts": sorted_counter(observation.valency_relations),
+        "valencySignatureCounts": sorted_counter(observation.valency_signatures),
+        "constructionRelationCounts": sorted_counter(
+            observation.construction_relations
+        ),
+        "anonymousDependencySkeletons": skeleton_rows(observation),
         "lemmaDiagnostics": {
             "agreementCount": observation.lemma_agreement_count,
             "mismatchCount": observation.lemma_mismatch_count,
@@ -223,9 +360,14 @@ def project(
         source_stats.append(stats)
 
     rows = [evidence_row(item, observations[item.text]) for item in candidates]
-    evidence_core = {"candidateCount": len(candidates), "rows": rows}
+    evidence_core = {
+        "schemaVersion": EVIDENCE_SCHEMA_VERSION,
+        "candidateCount": len(candidates),
+        "rows": rows,
+    }
     evidence = {
         "adapterVersion": ADAPTER_VERSION,
+        "schemaVersion": EVIDENCE_SCHEMA_VERSION,
         "source": {
             "sourceId": SOURCE_ID,
             "release": SOURCE_RELEASE,
@@ -245,8 +387,8 @@ def project(
             } for stats in source_stats],
             "redistributionBoundary": (
                 "complete CoNLL-U files and source sentences remain local; committed "
-                "outputs contain only aggregate evidence for the pinned NAER top-1,000 "
-                "candidate identities"
+                "outputs contain only aggregate anonymous syntax evidence for the "
+                "pinned NAER top-1,000 candidate identities"
             ),
         },
         "candidateSource": {
@@ -260,15 +402,25 @@ def project(
             "automaticProductGrammarRoleAssignment": "forbidden",
             "dictionaryGlossInference": "forbidden",
             "sourceSentenceEmission": "forbidden",
+            "nonCandidateLexicalStringEmission": "forbidden",
+            "anonymousSkeletonMaximumDepth": 3,
         },
     }
 
     total_upos: Counter[str] = Counter()
     dominant_counts: Counter[str] = Counter()
+    total_dependencies: Counter[str] = Counter()
+    total_parent_upos: Counter[str] = Counter()
+    total_valency: Counter[str] = Counter()
+    total_constructions: Counter[str] = Counter()
     for item in candidates:
         observation = observations[item.text]
         total_upos.update(observation.upos)
         dominant_counts.update(dominant_upos(observation))
+        total_dependencies.update(observation.deprel)
+        total_parent_upos.update(observation.parent_upos)
+        total_valency.update(observation.valency_relations)
+        total_constructions.update(observation.construction_relations)
 
     review_queue: list[dict[str, Any]] = []
     reason_counts: Counter[str] = Counter()
@@ -295,13 +447,19 @@ def project(
 
     observed_count = sum(item.occurrence_count > 0 for item in observations.values())
     coverage_core = {
+        "schemaVersion": EVIDENCE_SCHEMA_VERSION,
         "candidateCount": len(candidates),
         "observedCandidateCount": observed_count,
         "unseenCandidateCount": len(candidates) - observed_count,
         "matchedOccurrenceCount": sum(item.occurrence_count for item in observations.values()),
         "rankBuckets": rank_bucket_summary(candidates, observations),
+        "supportedUpos": list(SUPPORTED_UPOS),
         "totalUposOccurrenceCounts": sorted_counter(total_upos),
         "dominantUposCandidateCounts": sorted_counter(dominant_counts),
+        "totalDependencyRelationCounts": sorted_counter(total_dependencies),
+        "totalParentUposCounts": sorted_counter(total_parent_upos),
+        "totalValencyRelationCounts": sorted_counter(total_valency),
+        "totalConstructionRelationCounts": sorted_counter(total_constructions),
         "lemmaDiagnostics": {
             "agreementCount": sum(item.lemma_agreement_count for item in observations.values()),
             "mismatchCount": sum(item.lemma_mismatch_count for item in observations.values()),
@@ -324,19 +482,22 @@ def project(
         "reviewCandidateCount": len(review_queue),
         "reviewQueue": review_queue,
         "schemaGapAudit": {
-            "productGrammarRoleSnapshot": "grammar-role-v1",
-            "udCategoriesWithoutDedicatedCurrentTemplateSlot": list(SCHEMA_GAP_UPOS),
-            "dominantCandidateCountsForGapCategories": {
+            "legacyProductGrammarRoleSnapshot": "grammar-role-v1",
+            "legacyUposWithoutDedicatedTemplateSlot": list(SCHEMA_GAP_UPOS),
+            "formalSyntaxSnapshot": "mandarin-formal-grammar-v1",
+            "formalSyntaxUnsupportedUpos": [],
+            "dominantCandidateCountsForLegacyGapCategories": {
                 tag: dominant_counts[tag] for tag in SCHEMA_GAP_UPOS if dominant_counts[tag]
             },
             "interpretationBoundary": (
-                "UD categories are corpus evidence only; this report does not map "
-                "them automatically to product grammar roles or templates"
+                "UPOS and dependency evidence create formal syntax profiles only; "
+                "they do not assign meaning, semantic roles, or plausibility"
             ),
         },
     }
     coverage = {
         "adapterVersion": ADAPTER_VERSION,
+        "schemaVersion": EVIDENCE_SCHEMA_VERSION,
         "sourceId": SOURCE_ID,
         "release": SOURCE_RELEASE,
         "evidenceDigest": evidence["determinismDigest"],
