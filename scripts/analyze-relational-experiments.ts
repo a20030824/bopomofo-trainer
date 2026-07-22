@@ -43,7 +43,7 @@ if (process.argv.includes("--verify")) {
 
 if (process.argv.includes("--verify-findings")) {
   const committed = await readFile(
-    new URL("../docs/research/strategy-findings.md", import.meta.url),
+    new URL("../docs/archive/research/strategy-findings.md", import.meta.url),
     "utf8",
   );
   if (committed !== first.markdown) {

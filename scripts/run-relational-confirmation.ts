@@ -125,7 +125,7 @@ try {
 
   if (process.argv.includes("--verify-findings")) {
     const committed = resolve(
-      new URL("../docs/research/strategy-confirmation.md", import.meta.url).pathname,
+      new URL("../docs/archive/research/strategy-confirmation.md", import.meta.url).pathname,
     );
     if (!await filesAreByteIdentical(
       resolve(firstDirectory, "strategy-confirmation.md"),
