@@ -22,6 +22,11 @@ describe("current catalog reading resolution", () => {
     expect(rows.get("我們")?.resolvedReading).toBe("ㄨㄛ3 ㄇㄣ5");
     expect(rows.get("台灣")?.sourceKind).toBe("cedict");
     expect(rows.get("東西")?.sourceKind).toBe("manual");
+    expect(
+      result.report.rows
+        .filter((row) => row.text === "東西")
+        .map((row) => row.resolvedReading),
+    ).toEqual(["ㄉㄨㄥ1 ㄒㄧ1", "ㄉㄨㄥ1 ㄒㄧ5"]);
     expect(rows.get("很好")?.sourceKind).toBe("manual");
     expect(rows.get("我")?.sourceKind).toBe("moe-concised");
     expect(rows.get("不會")?.sourceKind).toBe("moe-concised");

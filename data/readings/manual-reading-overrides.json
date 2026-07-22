@@ -6,7 +6,7 @@
     {
       "text": "東西",
       "reading": "ㄉㄨㄥ1 ㄒㄧ5",
-      "reason": "Select the common noun reading 'thing; stuff'; MOE and CC-CEDICT both preserve competing readings, so the product meaning requires an explicit reviewed choice."
+      "reason": "One of this heteronym's distinct CC-CEDICT pronunciations; included by exact text-and-reading identity without meaning or sense selection."
     },
     {
       "text": "很好",
@@ -162,6 +162,11 @@
       "text": "高中",
       "reading": "ㄍㄠ1 ㄓㄨㄥ4",
       "reason": "One of this heteronym's distinct CC-CEDICT pronunciations; included without picking a single sense because the trainer practices pronunciation, not word-sense disambiguation."
+    },
+    {
+      "text": "東西",
+      "reading": "ㄉㄨㄥ1 ㄒㄧ1",
+      "reason": "One of this heteronym's distinct CC-CEDICT pronunciations; included by exact text-and-reading identity without meaning or sense selection."
     }
   ]
 }

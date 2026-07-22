@@ -116,17 +116,15 @@ identity resolver, not automatic reading replacements.
 
 Multiple records, including one headword with multiple pinyin readings, remain
 `ambiguous-records` at this adapter layer -- it only classifies unique vs.
-ambiguous and never guesses a single reading itself. What happens to an
-`ambiguous-records` word is a separate, later decision:
+ambiguous and never guesses a single reading itself.
 
-- a human can pick one sense with a documented reason (e.g. `東西`, resolved
-  via `data/readings/manual-reading-overrides.json`); or
-- `scripts/activate_cedict_heteronym_readings.py` can activate every distinct
-  converted reading as its own practice entry, when the word is a genuine
-  heteronym (multiple valid pronunciations) rather than a source-data
-  artifact -- this is now the default path for eligible candidates, per the
-  product decision that the trainer practices pronunciation, not word-sense
-  disambiguation.
+`scripts/activate_cedict_heteronym_readings.py` activates every distinct
+converted reading as its own `(text, reading)` practice identity when the text
+has usable syntax-only grammar evidence. Existing catalog membership is checked
+at that pair identity, never at text alone: an already active reading does not
+suppress a missing sibling reading. Meaning and sense selection are forbidden,
+so neither human review nor an automated stage may pick one pronunciation and
+discard the others on semantic grounds.
 
 ## Current target set
 

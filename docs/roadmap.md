@@ -110,7 +110,7 @@ Exit condition: reviewed commonness evidence can replace coarse frequency bands 
 
 ### Phase 9 — Reviewed lexicon expansion and human validation
 
-The next constraint is no longer selection architecture. It is catalog size and the absence of human evidence. The catalog has grown across several activation waves (49 → 114 → 291 → 321 entries) using the committed NAER top-1,000 queue, in bounded review batches.
+The next constraint is no longer selection architecture. It is catalog size and the absence of human evidence. The catalog has grown across several activation waves (49 → 114 → 291 → 321 entries), followed by a missing-heteronym repair to 322 entries, using the committed NAER top-1,000 queue in bounded review batches.
 
 #### Phase 9A — Rank-ordered catalog expansion
 

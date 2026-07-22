@@ -36,11 +36,10 @@ One illustrative correction the resolver makes: the CSV's own provisional
 reading for `我們` was `ㄨㄛ3 ㄇㄣ2`; MOE Concised evidence corrects the
 second syllable's tone to neutral (`ㄨㄛ3 ㄇㄣ5`).
 
-The manual reading for `東西` selects the common noun meaning “thing; stuff”
-and therefore uses the neutral-tone second syllable — this is a genuine
-heteronym where a human explicitly chose one sense over including both
-readings (see `docs/reference-sources/cedict-local-identity-hints.md` for the
-newer default of including every reading instead).
+`東西` is represented by two independent text-and-reading identities:
+`ㄉㄨㄥ1 ㄒㄧ1` and `ㄉㄨㄥ1 ㄒㄧ5`. Neither reading is selected or suppressed by
+meaning. This illustrates the general invariant that an already active text
+does not block another pronunciation.
 
 ## Inputs
 

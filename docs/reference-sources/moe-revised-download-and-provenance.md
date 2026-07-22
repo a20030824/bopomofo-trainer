@@ -176,8 +176,9 @@ The remaining gaps are primarily identity/lexicalization problems. CC-CEDICT
 now covers them: it contributes aliases and variant relationships without
 replacing MOE readings, and (per `docs/reference-sources/cedict-local-identity-hints.md`)
 real heteronyms with several CC-CEDICT readings are activated with every
-reading as its own entry rather than picked down to one, unless a human
-already reviewed and chose a single sense (as `東西` was).
+distinct reading as its own entry. An existing entry for the same written text
+does not suppress another reading; `東西`, for example, retains both
+`ㄉㄨㄥ1 ㄒㄧ1` and `ㄉㄨㄥ1 ㄒㄧ5` without semantic selection.
 
 ## License and redistribution boundary
 

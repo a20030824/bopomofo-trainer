@@ -17,14 +17,16 @@ left out, same as any other candidate. Every reading variant of an activated
 text shares that one grammar decision, since UD evidence does not distinguish
 which specific reading was used in a given sentence.
 
-Texts already present in the active catalog (e.g. "東西", already resolved by
-a prior human-reviewed manual override to a single sense) are left untouched:
-an existing human decision always overrides this automatic rule.
+Existing text alone never suppresses another pronunciation. Identity is the
+``(text, reading)`` pair: readings already present in the active catalog are
+left untouched, while every missing distinct CEDICT pronunciation is added.
+When a text is already active, its existing syntax-only grammar annotation is
+reused if all of its active readings agree. Meaning and sense selection are
+never used to choose or discard a pronunciation.
 """
 
 from __future__ import annotations
 
-import csv
 import json
 import sys
 from pathlib import Path
@@ -44,7 +46,6 @@ from activation_review_batch_common import (  # noqa: E402
     EXPECTED_UD_EVIDENCE_DIGEST,
     EXPECTED_UD_REVIEW_COUNT,
     REVIEW_LANES,
-    load_active_catalog,
     load_candidates,
     load_json,
     load_ud,
@@ -154,9 +155,16 @@ def classifier_row(text: str, ud: dict[str, Any], dominant_upos: str) -> dict[st
 def build_heteronym_activations() -> list[dict[str, Any]]:
     candidates = load_candidates(DEFAULT_CANDIDATES, EXPECTED_CANDIDATE_COUNT)
     candidate_set = {row["text"] for row in candidates}
-    with DEFAULT_WORDS.open("r", encoding="utf-8-sig", newline="") as source:
-        current_active_row_count = sum(1 for _ in csv.DictReader(source))
-    active_catalog = load_active_catalog(DEFAULT_WORDS, current_active_row_count)
+    active_words = load_csv(DEFAULT_WORDS, WORDS_FIELDS)
+    active_grammar = load_csv(DEFAULT_GRAMMAR, GRAMMAR_FIELDS)
+    active_readings_by_text: dict[str, set[str]] = {}
+    grammar_by_text: dict[str, set[tuple[str, str, str]]] = {}
+    for row in active_words:
+        active_readings_by_text.setdefault(row["text"], set()).add(row["reading"])
+    for row in active_grammar:
+        grammar_by_text.setdefault(row["text"], set()).add((
+            row["roles"], row["predicate_frame"], row["standalone_kind"],
+        ))
     ud_rows, ud_review, significant_min_count, significant_min_share = load_ud(
         candidate_set,
         load_json(DEFAULT_UD_EVIDENCE),
@@ -175,21 +183,41 @@ def build_heteronym_activations() -> list[dict[str, Any]]:
 
     activations: list[dict[str, Any]] = []
     for text in sorted(ambiguous):
-        if text not in candidate_set or text in active_catalog or text in ud_review:
-            continue
-        ud = ud_rows.get(text)
-        if ud is None:
-            continue
-        dominant_upos = eligible_dominant_upos(ud, significant_min_count, significant_min_share)
-        if dominant_upos is None:
-            continue
-        decision, roles, frame, standalone, rationale = classify(classifier_row(text, ud, dominant_upos))
-        if decision != "approved-existing-schema":
+        if text not in candidate_set:
             continue
         readings = sorted({converted[record["pinyin"]] for record in ambiguous[text]})
+        missing_readings = sorted(set(readings) - active_readings_by_text.get(text, set()))
+        if not missing_readings:
+            continue
+
+        existing_grammar = grammar_by_text.get(text, set())
+        if existing_grammar:
+            if len(existing_grammar) != 1:
+                raise ValueError(
+                    f"active heteronym text has conflicting grammar annotations: {text}"
+                )
+            roles, frame, standalone = next(iter(existing_grammar))
+            rationale = "Reuses the active text's syntax-only grammar annotation"
+        else:
+            if text in ud_review:
+                continue
+            ud = ud_rows.get(text)
+            if ud is None:
+                continue
+            dominant_upos = eligible_dominant_upos(
+                ud, significant_min_count, significant_min_share
+            )
+            if dominant_upos is None:
+                continue
+            decision, roles, frame, standalone, rationale = classify(
+                classifier_row(text, ud, dominant_upos)
+            )
+            if decision != "approved-existing-schema":
+                continue
+
         activations.append({
             "text": text,
-            "readings": readings,
+            "readings": missing_readings,
             "roles": roles,
             "predicate_frame": frame,
             "standalone_kind": standalone,
@@ -230,9 +258,8 @@ def apply_activations(activations: list[dict[str, Any]]) -> None:
                 "reading": reading,
                 "reason": (
                     "One of this heteronym's distinct CC-CEDICT pronunciations; "
-                    "included without picking a single sense because the "
-                    "trainer practices pronunciation, not word-sense "
-                    "disambiguation."
+                    "included by exact text-and-reading identity without "
+                    "meaning or sense selection."
                 ),
             })
 
