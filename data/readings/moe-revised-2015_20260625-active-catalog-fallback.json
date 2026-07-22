@@ -53,8 +53,8 @@
   "fallbackBasis": {
     "concisedAdapterVersion": "moe-concised-reading-adapter-v1",
     "concisedSourceVersion": "2014_20260626",
-    "concisedProjectionChecksumSha256": "4bf2266d778e1ff3d7be03437b5d82a8b77e862824b397c6b8f49c34b6099b88",
-    "concisedAcceptedCandidateCount": 41,
+    "concisedProjectionChecksumSha256": "b7ef87d7efd36438fd6d1f9484cc27f32d8669f762c3af47a7a19f201e8cb1fd",
+    "concisedAcceptedCandidateCount": 52,
     "fallbackCandidateCount": 8,
     "fallbackCandidateTexts": [
       "中文",

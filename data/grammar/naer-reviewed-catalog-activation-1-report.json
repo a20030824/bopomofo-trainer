@@ -1,0 +1,45 @@
+{
+  "adapterVersion": "naer-reviewed-catalog-activation-v1",
+  "decisionDigest": "1e0198d15281bceb0b47a9b45064025bb747153a49acf1bde8ca7115d5d78e53",
+  "baselineActiveCount": 49,
+  "activeCount": 60,
+  "activatedCount": 11,
+  "activatedTexts": [
+    "我",
+    "他",
+    "你",
+    "她",
+    "它",
+    "自己",
+    "他們",
+    "地方",
+    "孩子",
+    "一樣",
+    "不會"
+  ],
+  "readingAuthorityCounts": {
+    "moe-concised": 52,
+    "moe-revised": 2,
+    "cedict": 4,
+    "manual": 2
+  },
+  "grammarAnnotationCount": 60,
+  "commonnessRowCount": 60,
+  "heldDecisionCount": 14,
+  "outputChecksumsSha256": {
+    "data/commonness/naer-1141208-active-catalog-rows.json": "e123ba289ef7cfe6b116e803dc7aa50e4e1bb82d67072b2e69c98705428ac2db",
+    "data/identity/cedict-active-catalog-hints.json": "82c9aeeb716e8f09ba704dbb70a6d0cd943d20023b33c0f276fcd93172225649",
+    "data/provenance.csv": "970a6a90144b4812bed231cc655b999423e9f1b5f9774abca1f9cc7369a4031e",
+    "data/readings/moe-concised-2014_20260626-active-catalog.json": "b7ef87d7efd36438fd6d1f9484cc27f32d8669f762c3af47a7a19f201e8cb1fd",
+    "data/readings/moe-revised-2015_20260625-active-catalog-fallback.json": "48678912121af54c3b94463a804e4cd115e8b66eb19c2e454938386ea9dd469f",
+    "data/source/grammar.sample.csv": "e30c137f62f3591c200b54bb3746030964ba24780a37adc3d0663f10f04b533a",
+    "data/source/words.sample.csv": "358406ab1b4303f3c461910d93a89e61938600f2b95225e9f40b3620dfa45127"
+  },
+  "determinismDigest": "170333c25b5796e5504abb931dd6126eff5327d00c83829ec165a780eedfbb1b",
+  "policy": {
+    "stageEligibilityChange": "forbidden",
+    "heldCandidateActivation": "forbidden",
+    "grammarDecisionSource": "data/grammar/naer-activation-review-batch-1-decisions-1-25.csv",
+    "externalBulkSourceAccess": "forbidden"
+  }
+}
