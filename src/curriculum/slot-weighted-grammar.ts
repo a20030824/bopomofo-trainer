@@ -9,6 +9,8 @@ import type {
 } from "../grammar/types.js";
 import { weightedPick } from "./random.js";
 
+const MAXIMUM_SLOT_ATTEMPTS = 64;
+
 export interface WeightedGrammarTemplateTrace {
   readonly templateId: string;
   readonly weight: number;
@@ -30,6 +32,7 @@ export interface SlotWeightedGrammarGeneration {
   readonly candidate: GrammarUtteranceCandidate | null;
   readonly templateCandidates: readonly WeightedGrammarTemplateTrace[];
   readonly slotSelections: readonly GrammarSlotSelectionTrace[];
+  readonly slotAttempts: number;
   readonly fallbackReasons: readonly string[];
 }
 
@@ -157,9 +160,9 @@ function standaloneGeneration(
   kind: "utterance" | "lexical-prompt",
   fallbackReasons: readonly string[],
 ): SlotWeightedGrammarGeneration | null {
-  const candidates = input.entries.filter((entry) =>
-    input.annotations[entry.id]?.standaloneKind === kind
-  );
+  const candidates = [...input.entries]
+    .filter((entry) => input.annotations[entry.id]?.standaloneKind === kind)
+    .sort((left, right) => compareText(left.id, right.id));
   if (candidates.length === 0) return null;
   const traces = weightedEntryTraces(candidates, input.entryWeight);
   const selectedId = weightedPick(
@@ -182,6 +185,7 @@ function standaloneGeneration(
       selectedEntryId: selected.id,
       candidates: traces,
     }],
+    slotAttempts: 1,
     fallbackReasons,
   };
 }
@@ -214,6 +218,7 @@ export function generateSlotWeightedGrammar(
       candidate: null,
       templateCandidates: [],
       slotSelections: [],
+      slotAttempts: 0,
       fallbackReasons: [
         "no-complete-template",
         "no-standalone-utterance",
@@ -235,42 +240,56 @@ export function generateSlotWeightedGrammar(
   const template = feasible.find((item) => item.id === selectedTemplateId);
   if (template === undefined) throw new Error("selected grammar template disappeared");
 
-  const remaining: IndexedSlot[] = template.slots.map((slot, index) => ({ index, slot }));
-  const used = new Set<string>();
+  const initialSlots: IndexedSlot[] = template.slots.map((slot, index) => ({ index, slot }));
   const selectedBySlot = new Map<number, CatalogEntry>();
   const traceBySlot = new Map<number, GrammarSlotSelectionTrace>();
+  let slotAttempts = 0;
 
-  while (remaining.length > 0) {
-    remaining.sort((left, right) =>
+  const fill = (
+    remaining: readonly IndexedSlot[],
+    used: Set<string>,
+  ): boolean => {
+    if (remaining.length === 0) return true;
+    if (slotAttempts >= MAXIMUM_SLOT_ATTEMPTS) return false;
+    const ordered = [...remaining].sort((left, right) =>
       legalEntries(left.slot, entries, input.annotations, used).length
         - legalEntries(right.slot, entries, input.annotations, used).length
       || left.index - right.index
     );
-    const current = remaining.shift();
-    if (current === undefined) break;
-    const safe = legalEntries(current.slot, entries, input.annotations, used).filter((entry) => {
-      const nextUsed = new Set(used);
-      nextUsed.add(entry.id);
-      return canAssignAll(remaining, entries, input.annotations, nextUsed);
-    });
-    if (safe.length === 0) {
-      throw new Error(`no completable entry for grammar slot: ${current.slot.key}`);
+    const current = ordered[0];
+    if (current === undefined) return true;
+    const next = ordered.slice(1);
+    let available = [...legalEntries(current.slot, entries, input.annotations, used)];
+    const allCandidates = weightedEntryTraces(available, input.entryWeight);
+
+    while (available.length > 0 && slotAttempts < MAXIMUM_SLOT_ATTEMPTS) {
+      const candidates = weightedEntryTraces(available, input.entryWeight);
+      const selectedEntryId = weightedPick(
+        candidates.map((item) => ({ value: item.entryId, weight: item.weight })),
+        input.random,
+      );
+      const selected = available.find((entry) => entry.id === selectedEntryId);
+      if (selected === undefined) throw new Error("selected grammar entry disappeared");
+      slotAttempts += 1;
+      used.add(selected.id);
+      selectedBySlot.set(current.index, selected);
+      traceBySlot.set(current.index, {
+        slotKey: current.slot.key,
+        role: current.slot.role,
+        selectedEntryId: selected.id,
+        candidates: allCandidates,
+      });
+      if (fill(next, used)) return true;
+      used.delete(selected.id);
+      selectedBySlot.delete(current.index);
+      traceBySlot.delete(current.index);
+      available = available.filter((entry) => entry.id !== selected.id);
     }
-    const candidates = weightedEntryTraces(safe, input.entryWeight);
-    const selectedEntryId = weightedPick(
-      candidates.map((item) => ({ value: item.entryId, weight: item.weight })),
-      input.random,
-    );
-    const selected = safe.find((entry) => entry.id === selectedEntryId);
-    if (selected === undefined) throw new Error("selected grammar entry disappeared");
-    used.add(selected.id);
-    selectedBySlot.set(current.index, selected);
-    traceBySlot.set(current.index, {
-      slotKey: current.slot.key,
-      role: current.slot.role,
-      selectedEntryId: selected.id,
-      candidates,
-    });
+    return false;
+  };
+
+  if (!fill(initialSlots, new Set<string>())) {
+    throw new Error("slot-weighted grammar generation exceeded bounded attempt budget");
   }
 
   const selectedEntries = template.slots.map((_, index) => selectedBySlot.get(index));
@@ -288,6 +307,7 @@ export function generateSlotWeightedGrammar(
     candidate: buildCandidate("template", template, entriesInTemplateOrder, assignments),
     templateCandidates,
     slotSelections: template.slots.map((_, index) => traceBySlot.get(index)!),
+    slotAttempts,
     fallbackReasons: [],
   };
 }
