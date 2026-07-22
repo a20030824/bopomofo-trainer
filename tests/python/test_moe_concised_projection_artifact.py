@@ -17,10 +17,10 @@ class MoeConcisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-concised-reading-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2014_20260626")
-        self.assertEqual(payload["candidateSet"]["entryCount"], 60)
-        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], 60)
+        self.assertEqual(payload["candidateSet"]["entryCount"], 80)
+        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], 80)
         self.assertEqual(len(rows), diagnostics["acceptedCandidateCount"])
-        self.assertEqual(len(rows), 52)
+        self.assertEqual(len(rows), 70)
         self.assertEqual(
             [row["lookupText"] for row in rows],
             sorted(row["lookupText"] for row in rows),
