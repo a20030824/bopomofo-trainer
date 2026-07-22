@@ -18,6 +18,7 @@
     "lexicon:naer-top": "python scripts/project-naer-lexicon-candidates.py",
     "lexicon:reading-coverage": "python scripts/summarize-naer-reading-coverage.py",
     "lexicon:naer-top-1000": "python scripts/project-naer-top-1000.py",
+    "lexicon:activation-review-batch": "python scripts/project-activation-review-batch.py",
     "grammar:ud-evidence": "python scripts/project-ud-grammar-evidence.py",
     "readings:moe-concised": "python scripts/project-moe-concised-readings.py",
     "readings:moe-revised": "python scripts/project-moe-revised-readings.py",
