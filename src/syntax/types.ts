@@ -179,6 +179,14 @@ export interface ProductionRule {
   readonly negativeFixtureIds: readonly string[];
 }
 
+export interface ProductionFixture {
+  readonly id: string;
+  readonly ruleId: string;
+  readonly expected: "accept" | "reject";
+  readonly surfaceOrderId: string;
+  readonly constituentCounts: Readonly<Record<string, number>>;
+}
+
 export interface SyntaxNode {
   readonly id: string;
   readonly category: SyntaxCategory;

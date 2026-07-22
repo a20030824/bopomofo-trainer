@@ -88,13 +88,13 @@ describe("formal grammar validation", () => {
     expect(codes).toContain("invalid-surface-order");
   });
 
-  it("requires every edge in a recursive cycle to consume depth budget", () => {
+  it("requires every recursive cycle to consume depth budget", () => {
     const unmarked = [
       rule("relative.attach", "NounPhrase", [
         constituent("relative", "RelativeClause", false),
       ]),
       rule("relative.nominal", "RelativeClause", [
-        constituent("nominal", "NounPhrase", true),
+        constituent("nominal", "NounPhrase", false),
       ]),
     ];
     expect(validateGrammar(unmarked).errors.map((item) => item.code))
@@ -105,7 +105,7 @@ describe("formal grammar validation", () => {
         constituent("relative", "RelativeClause", true),
       ]),
       rule("relative.nominal", "RelativeClause", [
-        constituent("nominal", "NounPhrase", true),
+        constituent("nominal", "NounPhrase", false),
       ]),
     ];
     expect(validateGrammar(marked).errors).toEqual([]);
