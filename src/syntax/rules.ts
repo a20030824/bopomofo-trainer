@@ -12,6 +12,10 @@ import type {
   ValencyFrame,
 } from "./types.js";
 import { assertValidGrammarBundle } from "./validate.js";
+import {
+  CLAUSE_PRODUCTION_FIXTURES,
+  CLAUSE_PRODUCTION_RULES,
+} from "./clause-rules.js";
 
 interface ConstituentOptions {
   readonly minimum?: number;
@@ -236,8 +240,15 @@ export const PHRASE_PRODUCTION_RULES: readonly ProductionRule[] = [
 export const PHRASE_PRODUCTION_FIXTURES: readonly ProductionFixture[] =
   PHRASE_PRODUCTION_RULES.flatMap(fixturesForRule);
 
-export const FORMAL_SYNTAX_RULES: readonly ProductionRule[] = PHRASE_PRODUCTION_RULES;
-export const FORMAL_SYNTAX_FIXTURES: readonly ProductionFixture[] =
-  PHRASE_PRODUCTION_FIXTURES;
+export const FORMAL_SYNTAX_RULES: readonly ProductionRule[] = [
+  ...PHRASE_PRODUCTION_RULES,
+  ...CLAUSE_PRODUCTION_RULES,
+];
+export const FORMAL_SYNTAX_FIXTURES: readonly ProductionFixture[] = [
+  ...PHRASE_PRODUCTION_FIXTURES,
+  ...CLAUSE_PRODUCTION_FIXTURES,
+];
+
+export { CLAUSE_PRODUCTION_FIXTURES, CLAUSE_PRODUCTION_RULES };
 
 assertValidGrammarBundle(FORMAL_SYNTAX_RULES, FORMAL_SYNTAX_FIXTURES);
