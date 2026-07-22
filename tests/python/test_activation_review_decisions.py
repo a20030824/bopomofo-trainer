@@ -53,7 +53,13 @@ class ActivationReviewDecisionsTest(unittest.TestCase):
         }
         self.assertEqual(approved, APPROVED_TEXTS)
 
-    def test_review_decisions_do_not_mutate_active_catalog(self) -> None:
+    def test_review_decisions_match_active_catalog_boundary(self) -> None:
+        decisions = self.load_decisions()
+        held_texts = {
+            row["text"]
+            for row in decisions
+            if row["decision"] != "approved-existing-schema"
+        }
         with (ROOT / "data/source/words.sample.csv").open(
             "r", encoding="utf-8-sig", newline=""
         ) as source:
@@ -62,8 +68,12 @@ class ActivationReviewDecisionsTest(unittest.TestCase):
             "r", encoding="utf-8-sig", newline=""
         ) as source:
             active_grammar = {row["text"] for row in csv.DictReader(source)}
-        self.assertTrue(APPROVED_TEXTS.isdisjoint(active_words))
-        self.assertTrue(APPROVED_TEXTS.isdisjoint(active_grammar))
+
+        self.assertEqual(active_words, active_grammar)
+        self.assertTrue(APPROVED_TEXTS.issubset(active_words))
+        self.assertTrue(APPROVED_TEXTS.issubset(active_grammar))
+        self.assertTrue(held_texts.isdisjoint(active_words))
+        self.assertTrue(held_texts.isdisjoint(active_grammar))
 
     def test_validator_rejects_latent_annotation_on_held_row(self) -> None:
         decisions = self.load_decisions()

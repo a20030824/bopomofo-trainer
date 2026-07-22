@@ -48,3 +48,14 @@ text,reading,roles,predicate_frame,standalone_kind,provenance_ids
 月亮,ㄩㄝ4 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:grammar-review-v1
 選擇,ㄒㄩㄢ3 ㄗㄜ2,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
 測試,ㄘㄜ4 ㄕ4,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
+我,ㄨㄛ3,subject;object,none,lexical-prompt,local:activation-review-v1
+他,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
+你,ㄋㄧ3,subject;object,none,lexical-prompt,local:activation-review-v1
+她,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
+它,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
+自己,ㄗ4 ㄐㄧ3,subject;object,none,lexical-prompt,local:activation-review-v1
+他們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v1
+地方,ㄉㄧ4 ㄈㄤ1,subject;object,none,lexical-prompt,local:activation-review-v1
+孩子,ㄏㄞ2 ㄗ5,subject;object,none,lexical-prompt,local:activation-review-v1
+一樣,ㄧ1 ㄧㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v1
+不會,ㄅㄨ4 ㄏㄨㄟ4,modal,modal,lexical-prompt,local:activation-review-v1

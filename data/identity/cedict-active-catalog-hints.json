@@ -24,12 +24,12 @@
     "emittedFields": "traditional/simplified/pinyin and structured identity hints only; English definitions are not emitted"
   },
   "resolutionBasis": {
-    "candidateEntryCount": 49,
+    "candidateEntryCount": 60,
     "moeConcisedAdapterVersion": "moe-concised-reading-adapter-v1",
     "moeConcisedSourceVersion": "2014_20260626",
     "moeRevisedAdapterVersion": "moe-revised-reading-fallback-adapter-v1",
     "moeRevisedSourceVersion": "2015_20260625",
-    "moeAcceptedCandidateCount": 43,
+    "moeAcceptedCandidateCount": 54,
     "cedictTargetCount": 6,
     "cedictTargetTexts": [
       "台灣",

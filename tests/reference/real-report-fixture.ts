@@ -9,7 +9,7 @@ import { STANDARD_BOPOMOFO_LAYOUT } from "../../src/scheme/standard-layout.js";
 
 export async function createRealReferenceFixture() {
   const [source, provenanceSource] = await Promise.all([
-    readFile(new URL("../../data/source/words.sample.csv", import.meta.url), "utf8"),
+    readFile(new URL("../fixtures/catalog-baseline-49.csv", import.meta.url), "utf8"),
     readFile(new URL("../../data/provenance.csv", import.meta.url), "utf8"),
   ]);
   const provenance = createProvenanceRegistry(parseCsv(provenanceSource).records);

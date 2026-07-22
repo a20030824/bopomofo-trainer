@@ -12,6 +12,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import activation_review_batch as batch  # noqa: E402
 
+BASELINE_ACTIVE_CATALOG = ROOT / "tests/fixtures/catalog-baseline-49.csv"
+
 
 def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as destination:
@@ -197,7 +199,7 @@ class ActivationReviewBatchTest(unittest.TestCase):
         report_path = ROOT / batch.DEFAULT_REPORT_OUTPUT
         if not batch_path.exists() or not report_path.exists():
             self.skipTest("activation-review batch artifacts are not committed yet")
-        rendered, report = batch.build()
+        rendered, report = batch.build(active_catalog_path=BASELINE_ACTIVE_CATALOG)
         self.assertEqual(batch_path.read_bytes(), rendered)
         self.assertEqual(json.loads(report_path.read_text(encoding="utf-8")), report)
         self.assertEqual(report["selectedCount"], 100)

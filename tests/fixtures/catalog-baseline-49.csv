@@ -48,14 +48,3 @@ text,reading,frequency_band,tags,status,provenance_ids
 月亮,ㄩㄝ4 ㄌㄧㄤ4,1,general,provisional,local:sample-v1
 選擇,ㄒㄩㄢ3 ㄗㄜ2,1,general,provisional,local:sample-v1
 測試,ㄘㄜ4 ㄕ4,1,typing,provisional,local:sample-v1
-我,ㄨㄛ3,1,general,reviewed,local:activation-review-v1
-他,ㄊㄚ1,1,general,reviewed,local:activation-review-v1
-你,ㄋㄧ3,1,general,reviewed,local:activation-review-v1
-她,ㄊㄚ1,1,general,reviewed,local:activation-review-v1
-它,ㄊㄚ1,1,general,reviewed,local:activation-review-v1
-自己,ㄗ4 ㄐㄧ3,1,general,reviewed,local:activation-review-v1
-他們,ㄊㄚ1 ㄇㄣ5,1,general,reviewed,local:activation-review-v1
-地方,ㄉㄧ4 ㄈㄤ1,1,general,reviewed,local:activation-review-v1
-孩子,ㄏㄞ2 ㄗ5,1,general,reviewed,local:activation-review-v1
-一樣,ㄧ1 ㄧㄤ4,1,general,reviewed,local:activation-review-v1
-不會,ㄅㄨ4 ㄏㄨㄟ4,1,general,reviewed,local:activation-review-v1

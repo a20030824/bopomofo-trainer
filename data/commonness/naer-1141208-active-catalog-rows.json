@@ -32,11 +32,23 @@
     ]
   },
   "catalog": {
-    "entryCount": 49,
-    "normalizedTextCount": 49,
+    "entryCount": 60,
+    "normalizedTextCount": 60,
     "identityRule": "NFC(trim(text)) exact match; exactly one catalog identity required"
   },
   "rows": [
+    {
+      "generalRank": 6,
+      "lexicalText": "我",
+      "writtenPerMillion": 11139.62149336243,
+      "spokenPerMillion": 16568.63096000657
+    },
+    {
+      "generalRank": 12,
+      "lexicalText": "他",
+      "writtenPerMillion": 9212.221991765118,
+      "spokenPerMillion": 7550.765746175702
+    },
     {
       "generalRank": 14,
       "lexicalText": "我們",
@@ -44,10 +56,40 @@
       "spokenPerMillion": 14266.35199044469
     },
     {
+      "generalRank": 15,
+      "lexicalText": "你",
+      "writtenPerMillion": 5420.21609809763,
+      "spokenPerMillion": 10214.85888660965
+    },
+    {
+      "generalRank": 28,
+      "lexicalText": "她",
+      "writtenPerMillion": 3854.072497596625,
+      "spokenPerMillion": 2790.561570963073
+    },
+    {
+      "generalRank": 31,
+      "lexicalText": "它",
+      "writtenPerMillion": 1215.396225731959,
+      "spokenPerMillion": 7077.869511693475
+    },
+    {
       "generalRank": 32,
       "lexicalText": "可以",
       "writtenPerMillion": 2212.777252450711,
       "spokenPerMillion": 5035.798399752167
+    },
+    {
+      "generalRank": 44,
+      "lexicalText": "自己",
+      "writtenPerMillion": 2947.060033321199,
+      "spokenPerMillion": 2486.258637416182
+    },
+    {
+      "generalRank": 46,
+      "lexicalText": "他們",
+      "writtenPerMillion": 2691.187143693418,
+      "spokenPerMillion": 3211.575726749007
     },
     {
       "generalRank": 82,
@@ -96,6 +138,30 @@
       "lexicalText": "看到",
       "writtenPerMillion": 624.1715280510857,
       "spokenPerMillion": 1548.253171221696
+    },
+    {
+      "generalRank": 134,
+      "lexicalText": "地方",
+      "writtenPerMillion": 550.4490747464888,
+      "spokenPerMillion": 1449.039250387462
+    },
+    {
+      "generalRank": 136,
+      "lexicalText": "孩子",
+      "writtenPerMillion": 942.5834487454964,
+      "spokenPerMillion": 957.8482503613333
+    },
+    {
+      "generalRank": 141,
+      "lexicalText": "一樣",
+      "writtenPerMillion": 745.4265033490022,
+      "spokenPerMillion": 1305.495705350698
+    },
+    {
+      "generalRank": 145,
+      "lexicalText": "不會",
+      "writtenPerMillion": 684.6382316742587,
+      "spokenPerMillion": 1025.820340805213
     },
     {
       "generalRank": 152,
@@ -334,9 +400,9 @@
   ],
   "diagnostics": {
     "sourceRowCount": 163701,
-    "catalogScopedSourceRowCount": 49,
+    "catalogScopedSourceRowCount": 60,
     "unmatchedCatalogTexts": [],
     "ambiguousCatalogTexts": [],
-    "omittedNonCatalogSourceRowCount": 163652
+    "omittedNonCatalogSourceRowCount": 163641
   }
 }
