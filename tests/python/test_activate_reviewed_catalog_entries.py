@@ -255,7 +255,16 @@ class ActivateReviewedCatalogEntriesTest(unittest.TestCase):
     def test_committed_activation_report_is_internally_locked(self) -> None:
         if not activation.DEFAULT_OUTPUT_REPORT.exists():
             self.skipTest("reviewed activation artifacts are not committed yet")
-        report = activation.validate_committed_activation()
+        report = activation.load_json(activation.DEFAULT_OUTPUT_REPORT)
+        report_core = {
+            key: value
+            for key, value in report.items()
+            if key not in {"adapterVersion", "determinismDigest", "policy"}
+        }
+        self.assertEqual(
+            report["determinismDigest"],
+            activation.canonical_digest(report_core),
+        )
         self.assertEqual(report["activeCount"], 60)
         self.assertEqual(report["activatedCount"], 11)
         self.assertEqual(
