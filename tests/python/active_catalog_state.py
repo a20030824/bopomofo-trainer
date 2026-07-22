@@ -22,6 +22,15 @@ def active_catalog_size() -> int:
         return sum(1 for _ in csv.DictReader(source))
 
 
+def active_catalog_text_count() -> int:
+    """Distinct texts in the active catalog. A text may have more than one
+    row when it is a real heteronym (multiple active readings), so this can
+    be smaller than `active_catalog_size()`, which counts rows.
+    """
+    with ACTIVE_WORDS.open("r", encoding="utf-8-sig", newline="") as source:
+        return len({row["text"] for row in csv.DictReader(source)})
+
+
 def active_concised_count() -> int:
     payload = json.loads(ACTIVE_CONCISED.read_text(encoding="utf-8"))
     return len(payload["rows"])

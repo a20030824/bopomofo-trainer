@@ -127,8 +127,9 @@ def load_active_catalog(path: Path, expected_count: int) -> set[str]:
         texts = [(row.get("text") or "").strip() for row in reader]
     if any(not text for text in texts):
         raise ValueError("active catalog contains an empty text")
-    if len(texts) != len(set(texts)):
-        raise ValueError("active catalog contains duplicate text")
+    # A text may now appear on more than one row when it is a real heteronym
+    # (multiple active readings for the same hanzi); expected_count is a row
+    # count, not a distinct-text count, so duplicates are expected there.
     if len(texts) != expected_count:
         raise ValueError(f"active catalog count mismatch: expected {expected_count}, got {len(texts)}")
     return set(texts)

@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "tests" / "python"))
 
 from active_catalog_state import (  # noqa: E402
     active_catalog_size,
+    active_catalog_text_count,
     active_concised_count,
     active_revised_count,
 )
@@ -35,7 +36,7 @@ def load_adapter() -> ModuleType:
 
 
 class CedictResolutionBasisTest(unittest.TestCase):
-    def test_current_moe_projections_leave_exactly_six_cedict_targets(self) -> None:
+    def test_current_moe_projections_leave_the_expected_cedict_targets(self) -> None:
         adapter = load_adapter()
         unresolved, accepted, _, _, candidate_count = adapter.unresolved_after_moe(
             CANDIDATES,
@@ -45,10 +46,16 @@ class CedictResolutionBasisTest(unittest.TestCase):
 
         self.assertEqual(candidate_count, active_catalog_size())
         self.assertEqual(len(accepted), active_concised_count() + active_revised_count())
+        # The exact target set grows every time a new batch adds
+        # CEDICT-sourced words, so only the self-consistent count and a
+        # long-standing subset are checked here rather than a fixed list.
+        # Unresolved is a distinct-text set (not a row count): a heteronym
+        # text can have several active rows, all sharing the same identity.
         self.assertEqual(
-            unresolved,
-            ["台灣", "很好", "想要", "東西", "看到", "聽到"],
+            len(unresolved),
+            active_catalog_text_count() - active_concised_count() - active_revised_count(),
         )
+        self.assertTrue({"台灣", "很好", "想要", "東西", "看到", "聽到"}.issubset(unresolved))
 
 
 if __name__ == "__main__":

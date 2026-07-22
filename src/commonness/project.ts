@@ -168,12 +168,16 @@ export function projectCommonness(
   const excluded = new Map<number, CommonnessProjectionExclusion>();
 
   const catalogCounts = new Map<string, number>();
-  const sourceRows = new Map<string, Set<string>>();
+  // A source row legitimately fans out to several catalog identities when
+  // they are all reading variants of the same heteronym text; it is only a
+  // data problem when the shared row maps to genuinely different texts, so
+  // track the distinct catalogText values per row rather than just presence.
+  const sourceRowTexts = new Map<string, Set<string>>();
   for (const evidence of sorted) {
     catalogCounts.set(evidence.catalogEntryId, (catalogCounts.get(evidence.catalogEntryId) ?? 0) + 1);
-    const ids = sourceRows.get(sourceRowKey(evidence)) ?? new Set<string>();
-    ids.add(evidence.catalogEntryId);
-    sourceRows.set(sourceRowKey(evidence), ids);
+    const texts = sourceRowTexts.get(sourceRowKey(evidence)) ?? new Set<string>();
+    texts.add(evidence.catalogText);
+    sourceRowTexts.set(sourceRowKey(evidence), texts);
   }
 
   sorted.forEach((evidence, index) => {
@@ -185,11 +189,11 @@ export function projectCommonness(
       ));
       return;
     }
-    if ((sourceRows.get(sourceRowKey(evidence))?.size ?? 0) > 1) {
+    if ((sourceRowTexts.get(sourceRowKey(evidence))?.size ?? 0) > 1) {
       excluded.set(index, exclusion(
         evidence,
         "shared_source_row_identity",
-        "one source row maps to multiple catalog identities",
+        "one source row maps to more than one distinct catalog text",
       ));
       return;
     }

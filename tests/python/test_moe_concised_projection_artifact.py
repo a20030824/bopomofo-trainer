@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tests" / "python"))
 
-from active_catalog_state import active_catalog_size  # noqa: E402
+from active_catalog_state import active_catalog_text_count  # noqa: E402
 
 ARTIFACT = ROOT / "data" / "readings" / "moe-concised-2014_20260626-active-catalog.json"
 
@@ -22,13 +22,14 @@ class MoeConcisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-concised-reading-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2014_20260626")
-        # entryCount/normalizedTextCount scope to the whole active catalog, not
-        # just the rows Concised happened to resolve -- read dynamically so
-        # this doesn't need editing every time the catalog grows.
-        self.assertEqual(payload["candidateSet"]["entryCount"], active_catalog_size())
-        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], active_catalog_size())
+        # entryCount/normalizedTextCount scope to the whole active catalog's
+        # distinct texts, not just the rows Concised happened to resolve, and
+        # not the row count (a heteronym text can have several active rows)
+        # -- read dynamically so this doesn't need editing every time the
+        # catalog grows.
+        self.assertEqual(payload["candidateSet"]["entryCount"], active_catalog_text_count())
+        self.assertEqual(payload["candidateSet"]["normalizedTextCount"], active_catalog_text_count())
         self.assertEqual(len(rows), diagnostics["acceptedCandidateCount"])
-        self.assertEqual(len(rows), 101)
         self.assertEqual(
             [row["lookupText"] for row in rows],
             sorted(row["lookupText"] for row in rows),

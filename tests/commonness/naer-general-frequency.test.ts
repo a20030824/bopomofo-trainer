@@ -82,7 +82,7 @@ describe("NAER general-frequency adapter", () => {
     });
   });
 
-  it("maps NFC-trimmed exact text only when identity is unique", () => {
+  it("maps NFC-trimmed exact text to every matching entry, including heteronym siblings", () => {
     const result = mapNaerRowsToCatalogEvidence([
       {
         generalRank: 2,
@@ -109,14 +109,8 @@ describe("NAER general-frequency adapter", () => {
       entry("catalog-only", "詞庫孤兒"),
     ]);
 
-    expect(result.evidence.map((item) => item.catalogEntryId)).toEqual(["test"]);
+    expect(result.evidence.map((item) => item.catalogEntryId)).toEqual(["a", "b", "test"]);
     expect(result.exclusions).toEqual([
-      {
-        sourceRowId: "1141208:3",
-        lexicalText: "歧義",
-        code: "ambiguous_text",
-        catalogEntryIds: ["a", "b"],
-      },
       {
         sourceRowId: "1141208:4",
         lexicalText: "來源孤兒",

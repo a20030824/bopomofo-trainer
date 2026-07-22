@@ -22,6 +22,7 @@ describe("catalog commonness projection", () => {
     const projection = projectCommonness([
       {
         catalogEntryId: "high",
+        catalogText: "high",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "1",
@@ -31,6 +32,7 @@ describe("catalog commonness projection", () => {
       },
       {
         catalogEntryId: "unused",
+        catalogText: "unused",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "2",

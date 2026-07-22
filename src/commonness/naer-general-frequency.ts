@@ -52,7 +52,7 @@ export interface NaerActiveCatalogRowsFile {
   readonly rows: readonly NaerGeneralFrequencyRow[];
 }
 
-export type NaerIdentityExclusionCode = "unmatched_text" | "ambiguous_text";
+export type NaerIdentityExclusionCode = "unmatched_text";
 
 export interface NaerIdentityExclusion {
   readonly sourceRowId: string;
@@ -173,25 +173,33 @@ export function mapNaerRowsToCatalogEvidence(
     const matches = catalogByText.get(lexicalText) ?? [];
     sourceTexts.add(lexicalText);
 
-    if (matches.length !== 1) {
+    if (matches.length === 0) {
       exclusions.push({
         sourceRowId,
         lexicalText,
-        code: matches.length === 0 ? "unmatched_text" : "ambiguous_text",
-        catalogEntryIds: matches.map((entry) => entry.id),
+        code: "unmatched_text",
+        catalogEntryIds: [],
       });
       continue;
     }
 
-    evidence.push({
-      catalogEntryId: matches[0]!.id,
-      sourceId: NAER_GENERAL_FREQUENCY_SOURCE_ID,
-      sourceVersion: NAER_GENERAL_FREQUENCY_SOURCE_VERSION,
-      sourceRowId,
-      writtenPerMillion: row.writtenPerMillion,
-      spokenPerMillion: row.spokenPerMillion,
-      identityStatus: "reviewed",
-    });
+    // Multiple matches happen when the same hanzi has more than one active
+    // reading (a real heteronym): the NAER frequency figure describes the
+    // written/spoken word regardless of which reading is practiced, so the
+    // same evidence applies to every reading variant rather than being
+    // treated as an identity conflict.
+    for (const match of matches) {
+      evidence.push({
+        catalogEntryId: match.id,
+        catalogText: match.prompt.text,
+        sourceId: NAER_GENERAL_FREQUENCY_SOURCE_ID,
+        sourceVersion: NAER_GENERAL_FREQUENCY_SOURCE_VERSION,
+        sourceRowId,
+        writtenPerMillion: row.writtenPerMillion,
+        spokenPerMillion: row.spokenPerMillion,
+        identityStatus: "reviewed",
+      });
+    }
   }
 
   const unmatchedCatalogEntryIds = catalog

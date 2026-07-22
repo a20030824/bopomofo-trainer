@@ -4,6 +4,11 @@ export type CommonnessIdentityStatus = "reviewed" | "unresolved";
 
 export interface CommonnessEvidence {
   readonly catalogEntryId: string;
+  // The catalog text this entry practices. A heteronym text can produce
+  // several catalogEntryIds (one per reading) that legitimately share one
+  // source row; catalogText lets the projector tell that apart from two
+  // unrelated entries accidentally sharing a source row.
+  readonly catalogText: string;
   readonly sourceId: string;
   readonly sourceVersion: string;
   readonly sourceRowId: string;

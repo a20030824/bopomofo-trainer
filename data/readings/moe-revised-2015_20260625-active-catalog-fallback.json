@@ -53,23 +53,50 @@
   "fallbackBasis": {
     "concisedAdapterVersion": "moe-concised-reading-adapter-v1",
     "concisedSourceVersion": "2014_20260626",
-    "concisedProjectionChecksumSha256": "b3d20c64c6eab62d52ff2480a87b68d5c06e8cc33fe9a6dd8a5649e648eab6a6",
-    "concisedAcceptedCandidateCount": 101,
-    "fallbackCandidateCount": 13,
+    "concisedProjectionChecksumSha256": "8fd2b675b7dccf9fe37110fbc038445b6a2c44a24344e3bed61cfa1c4f4fee31",
+    "concisedAcceptedCandidateCount": 265,
+    "fallbackCandidateCount": 40,
     "fallbackCandidateTexts": [
       "中國",
       "中文",
+      "了",
+      "作",
+      "來到",
+      "個",
+      "具有",
+      "北京",
+      "句",
+      "叫做",
+      "可",
+      "台中",
+      "台北",
       "台灣",
+      "回到",
       "大陸",
       "很好",
+      "得到",
       "想要",
+      "意思",
+      "感到",
       "日本",
       "東西",
       "看到",
+      "知",
+      "種",
       "總統",
       "美國",
       "聽到",
-      "謝謝"
+      "英國",
+      "著",
+      "要",
+      "說",
+      "謝謝",
+      "讀",
+      "那樣",
+      "那裡",
+      "難",
+      "香港",
+      "高中"
     ],
     "identityRule": "exact NFC(trim(headword)); accepted Concised identities are protected"
   },
@@ -97,6 +124,28 @@
       "fallbackStatus": "provisional"
     },
     {
+      "lookupText": "具有",
+      "sourceHeadword": "具有",
+      "sourceEntryId": "060450024",
+      "sourcePhysicalRow": 95766,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄩˋ ㄧㄡˇ",
+      "trainerReading": "ㄐㄩ4 ㄧㄡ3",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "叫做",
+      "sourceHeadword": "叫做",
+      "sourceEntryId": "056710048",
+      "sourcePhysicalRow": 90557,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄠˋ ㄗㄨㄛˋ",
+      "trainerReading": "ㄐㄧㄠ4 ㄗㄨㄛ4",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
       "lookupText": "大陸",
       "sourceHeadword": "大陸",
       "sourceEntryId": "019130460",
@@ -104,6 +153,28 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄉㄚˋ ㄌㄨˋ",
       "trainerReading": "ㄉㄚ4 ㄌㄨ4",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "得到",
+      "sourceHeadword": "得到",
+      "sourceEntryId": "019170020",
+      "sourcePhysicalRow": 41542,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄜˊ ㄉㄠˋ",
+      "trainerReading": "ㄉㄜ2 ㄉㄠ4",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
+      "lookupText": "意思",
+      "sourceHeadword": "意思",
+      "sourceEntryId": "1065101131",
+      "sourcePhysicalRow": 149580,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧˋ ˙ㄙ",
+      "trainerReading": "ㄧ4 ㄙ5",
       "multiReadingReference": null,
       "fallbackStatus": "provisional"
     },
@@ -141,6 +212,17 @@
       "fallbackStatus": "provisional"
     },
     {
+      "lookupText": "英國",
+      "sourceHeadword": "英國",
+      "sourceEntryId": "111670031",
+      "sourcePhysicalRow": 155645,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄥ ㄍㄨㄛˊ",
+      "trainerReading": "ㄧㄥ1 ㄍㄨㄛ2",
+      "multiReadingReference": null,
+      "fallbackStatus": "provisional"
+    },
+    {
       "lookupText": "謝謝",
       "sourceHeadword": "謝謝",
       "sourceEntryId": "069750032",
@@ -154,8 +236,8 @@
   ],
   "diagnostics": {
     "sourceRowCount": 163920,
-    "candidateScopedSourceRowCount": 9,
-    "acceptedFallbackCount": 7,
+    "candidateScopedSourceRowCount": 14,
+    "acceptedFallbackCount": 12,
     "unmatchedFallbackTexts": [
       "台灣",
       "很好",
@@ -168,6 +250,6 @@
       "東西"
     ],
     "invalidReadings": [],
-    "omittedNonFallbackSourceRowCount": 163911
+    "omittedNonFallbackSourceRowCount": 163906
   }
 }

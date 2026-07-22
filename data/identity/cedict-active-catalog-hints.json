@@ -24,24 +24,387 @@
     "emittedFields": "traditional/simplified/pinyin and structured identity hints only; English definitions are not emitted"
   },
   "resolutionBasis": {
-    "candidateEntryCount": 114,
+    "candidateEntryCount": 321,
     "moeConcisedAdapterVersion": "moe-concised-reading-adapter-v1",
     "moeConcisedSourceVersion": "2014_20260626",
     "moeRevisedAdapterVersion": "moe-revised-reading-fallback-adapter-v1",
     "moeRevisedSourceVersion": "2015_20260625",
-    "moeAcceptedCandidateCount": 108,
-    "cedictTargetCount": 6,
+    "moeAcceptedCandidateCount": 277,
+    "cedictTargetCount": 28,
     "cedictTargetTexts": [
+      "了",
+      "作",
+      "來到",
+      "個",
+      "北京",
+      "句",
+      "可",
+      "台中",
+      "台北",
       "台灣",
+      "回到",
       "很好",
       "想要",
+      "感到",
       "東西",
       "看到",
-      "聽到"
+      "知",
+      "種",
+      "聽到",
+      "著",
+      "要",
+      "說",
+      "讀",
+      "那樣",
+      "那裡",
+      "難",
+      "香港",
+      "高中"
     ],
     "authorityRule": "CC-CEDICT targets only identities unresolved after both MOE projections"
   },
   "rows": [
+    {
+      "lookupText": "了",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 4578,
+          "formatVersion": 1,
+          "traditional": "了",
+          "simplified": "了",
+          "pinyin": "le5",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 4579,
+          "formatVersion": 1,
+          "traditional": "了",
+          "simplified": "了",
+          "pinyin": "liao3",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [
+            {
+              "traditional": "瞭",
+              "simplified": "了",
+              "pinyin": "liao3"
+            }
+          ],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 78565,
+          "formatVersion": 1,
+          "traditional": "瞭",
+          "simplified": "了",
+          "pinyin": "liao3",
+          "matchKinds": [
+            "simplified"
+          ],
+          "canonicalTraditionalHint": "瞭",
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 78566,
+          "formatVersion": 1,
+          "traditional": "瞭",
+          "simplified": "了",
+          "pinyin": "liao4",
+          "matchKinds": [
+            "simplified"
+          ],
+          "canonicalTraditionalHint": "瞭",
+          "variantTargets": [
+            {
+              "traditional": "瞭",
+              "simplified": null,
+              "pinyin": "liao4"
+            }
+          ],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "作",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 7400,
+          "formatVersion": 1,
+          "traditional": "作",
+          "simplified": "作",
+          "pinyin": "zuo1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 7401,
+          "formatVersion": 1,
+          "traditional": "作",
+          "simplified": "作",
+          "pinyin": "zuo4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "來到",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 7649,
+          "formatVersion": 1,
+          "traditional": "來到",
+          "simplified": "来到",
+          "pinyin": "lai2 dao4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "個",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 8538,
+          "formatVersion": 1,
+          "traditional": "個",
+          "simplified": "个",
+          "pinyin": "ge3",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 8539,
+          "formatVersion": 1,
+          "traditional": "個",
+          "simplified": "个",
+          "pinyin": "ge4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "北京",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 16156,
+          "formatVersion": 1,
+          "traditional": "北京",
+          "simplified": "北京",
+          "pinyin": "Bei3 jing1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        }
+      ]
+    },
+    {
+      "lookupText": "句",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 18938,
+          "formatVersion": 1,
+          "traditional": "句",
+          "simplified": "句",
+          "pinyin": "gou1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [
+            {
+              "traditional": "勾",
+              "simplified": null,
+              "pinyin": "gou1"
+            }
+          ],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 18939,
+          "formatVersion": 1,
+          "traditional": "句",
+          "simplified": "句",
+          "pinyin": "ju4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "可",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 19084,
+          "formatVersion": 1,
+          "traditional": "可",
+          "simplified": "可",
+          "pinyin": "ke3",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 19085,
+          "formatVersion": 1,
+          "traditional": "可",
+          "simplified": "可",
+          "pinyin": "ke4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "台中",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 19257,
+          "formatVersion": 1,
+          "traditional": "台中",
+          "simplified": "台中",
+          "pinyin": "Tai2 zhong1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [
+            {
+              "traditional": "臺中",
+              "simplified": "台中",
+              "pinyin": "Tai2 zhong1"
+            }
+          ],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        },
+        {
+          "sourceLine": 91837,
+          "formatVersion": 1,
+          "traditional": "臺中",
+          "simplified": "台中",
+          "pinyin": "Tai2 zhong1",
+          "matchKinds": [
+            "simplified"
+          ],
+          "canonicalTraditionalHint": "臺中",
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        }
+      ]
+    },
+    {
+      "lookupText": "台北",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 19264,
+          "formatVersion": 1,
+          "traditional": "台北",
+          "simplified": "台北",
+          "pinyin": "Tai2 bei3",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        },
+        {
+          "sourceLine": 91841,
+          "formatVersion": 1,
+          "traditional": "臺北",
+          "simplified": "台北",
+          "pinyin": "Tai2 bei3",
+          "matchKinds": [
+            "simplified"
+          ],
+          "canonicalTraditionalHint": "臺北",
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        }
+      ]
+    },
     {
       "lookupText": "台灣",
       "status": "unique-record",
@@ -69,6 +432,27 @@
       ]
     },
     {
+      "lookupText": "回到",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 23817,
+          "formatVersion": 1,
+          "traditional": "回到",
+          "simplified": "回到",
+          "pinyin": "hui2 dao4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
       "lookupText": "想要",
       "status": "unique-record",
       "records": [
@@ -78,6 +462,27 @@
           "traditional": "想要",
           "simplified": "想要",
           "pinyin": "xiang3 yao4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "感到",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 42733,
+          "formatVersion": 1,
+          "traditional": "感到",
+          "simplified": "感到",
+          "pinyin": "gan3 dao4",
           "matchKinds": [
             "traditional",
             "simplified"
@@ -145,6 +550,61 @@
       ]
     },
     {
+      "lookupText": "知",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 78649,
+          "formatVersion": 1,
+          "traditional": "知",
+          "simplified": "知",
+          "pinyin": "zhi1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "種",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 81392,
+          "formatVersion": 1,
+          "traditional": "種",
+          "simplified": "种",
+          "pinyin": "zhong3",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 81393,
+          "formatVersion": 1,
+          "traditional": "種",
+          "simplified": "种",
+          "pinyin": "zhong4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
       "lookupText": "聽到",
       "status": "unique-record",
       "records": [
@@ -163,22 +623,371 @@
           "properNameHint": false
         }
       ]
+    },
+    {
+      "lookupText": "著",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 94748,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "着",
+          "pinyin": "zhao1",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 94749,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "着",
+          "pinyin": "zhao2",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 94750,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "着",
+          "pinyin": "zhe5",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 94751,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "着",
+          "pinyin": "zhuo2",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 94752,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "著",
+          "pinyin": "zhu4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 94753,
+          "formatVersion": 1,
+          "traditional": "著",
+          "simplified": "著",
+          "pinyin": "zhuo2",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "要",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 99236,
+          "formatVersion": 1,
+          "traditional": "要",
+          "simplified": "要",
+          "pinyin": "yao1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 99237,
+          "formatVersion": 1,
+          "traditional": "要",
+          "simplified": "要",
+          "pinyin": "yao4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "說",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 100996,
+          "formatVersion": 1,
+          "traditional": "說",
+          "simplified": "说",
+          "pinyin": "shui4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 100997,
+          "formatVersion": 1,
+          "traditional": "說",
+          "simplified": "说",
+          "pinyin": "shuo1",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "讀",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 101986,
+          "formatVersion": 1,
+          "traditional": "讀",
+          "simplified": "读",
+          "pinyin": "dou4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 101987,
+          "formatVersion": 1,
+          "traditional": "讀",
+          "simplified": "读",
+          "pinyin": "du2",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "那樣",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 109194,
+          "formatVersion": 1,
+          "traditional": "那樣",
+          "simplified": "那样",
+          "pinyin": "na4 yang4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "那裡",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 109200,
+          "formatVersion": 1,
+          "traditional": "那裡",
+          "simplified": "那里",
+          "pinyin": "na4 li5",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "難",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 116074,
+          "formatVersion": 1,
+          "traditional": "難",
+          "simplified": "难",
+          "pinyin": "nan2",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 116075,
+          "formatVersion": 1,
+          "traditional": "難",
+          "simplified": "难",
+          "pinyin": "nan4",
+          "matchKinds": [
+            "traditional"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
+    },
+    {
+      "lookupText": "香港",
+      "status": "unique-record",
+      "records": [
+        {
+          "sourceLine": 120002,
+          "formatVersion": 1,
+          "traditional": "香港",
+          "simplified": "香港",
+          "pinyin": "Xiang1 gang3",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": true
+        }
+      ]
+    },
+    {
+      "lookupText": "高中",
+      "status": "ambiguous-records",
+      "records": [
+        {
+          "sourceLine": 121214,
+          "formatVersion": 1,
+          "traditional": "高中",
+          "simplified": "高中",
+          "pinyin": "gao1 zhong1",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        },
+        {
+          "sourceLine": 121215,
+          "formatVersion": 1,
+          "traditional": "高中",
+          "simplified": "高中",
+          "pinyin": "gao1 zhong4",
+          "matchKinds": [
+            "traditional",
+            "simplified"
+          ],
+          "canonicalTraditionalHint": null,
+          "variantTargets": [],
+          "hasClassifierHint": false,
+          "properNameHint": false
+        }
+      ]
     }
   ],
   "diagnostics": {
     "uniqueRecordTexts": [
+      "來到",
+      "北京",
       "台灣",
+      "回到",
       "想要",
+      "感到",
       "看到",
-      "聽到"
+      "知",
+      "聽到",
+      "那樣",
+      "那裡",
+      "香港"
     ],
     "ambiguousRecordTexts": [
-      "東西"
+      "了",
+      "作",
+      "個",
+      "句",
+      "可",
+      "台中",
+      "台北",
+      "東西",
+      "種",
+      "著",
+      "要",
+      "說",
+      "讀",
+      "難",
+      "高中"
     ],
     "unmatchedTexts": [
       "很好"
     ],
-    "matchedTargetCount": 5,
-    "omittedNonTargetEntryCount": 124727
+    "matchedTargetCount": 27,
+    "omittedNonTargetEntryCount": 124685
   }
 }

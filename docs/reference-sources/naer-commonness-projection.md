@@ -23,7 +23,7 @@ The official XLSX and the remaining non-catalog lexical rows stay local and are 
 
 ## Exact identity boundary
 
-A source row becomes reviewed evidence only when its normalized lexical text maps to exactly one catalog identity. A text shared by multiple readings is reported as `ambiguous_text`; a source text with no catalog identity is reported as `unmatched_text`. No pronunciation, POS, valency, grammar role, heteronym split, or variant decision is inferred from NAER.
+A source row becomes reviewed evidence for every active catalog entry whose normalized lexical text matches it -- including every reading variant of a heteronym, since the frequency figure describes the written/spoken word, not a specific pronunciation. A source text with no catalog identity is reported as `unmatched_text`. No pronunciation, POS, valency, grammar role, or variant decision is inferred from NAER.
 
 The committed active-catalog artifact is deliberately small and versioned. It is regenerated locally from the pinned workbook and current catalog; the browser never opens the XLSX and has no network, backend, cloud, or runtime-model dependency.
 

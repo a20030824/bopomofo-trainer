@@ -212,10 +212,10 @@ def unresolved_after_moe(
     concised_projection_path: Path,
     revised_projection_path: Path,
 ) -> tuple[list[str], set[str], dict[str, Any], dict[str, Any], int]:
+    # A candidate text may appear on more than one active-catalog row when it
+    # is a real heteronym (multiple active readings); resolution below is
+    # already keyed by the distinct text set, so duplicates are expected.
     candidate_items, candidate_counts = candidate_texts(candidate_path)
-    duplicate_candidates = sorted(text for text, count in candidate_counts.items() if count > 1)
-    if duplicate_candidates:
-        raise ValueError(f"duplicate candidate identities cannot enter CEDICT resolution: {duplicate_candidates}")
 
     concised, concised_accepted = projection_accepted(
         concised_projection_path,
@@ -235,7 +235,7 @@ def unresolved_after_moe(
         raise ValueError("MOE projections contain identities outside the candidate set")
 
     concised_count = concised.get("candidateSet", {}).get("entryCount")
-    if concised_count != len(candidate_items):
+    if concised_count != len(candidate_set):
         raise ValueError("MOE Concised projection candidate entry count mismatch")
     fallback_texts = {
         normalize_text(text)

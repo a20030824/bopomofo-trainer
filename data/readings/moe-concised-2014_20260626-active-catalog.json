@@ -39,8 +39,8 @@
     "redistributionBoundary": "official bulk archive remains local; committed outputs must be candidate-scoped and preserve exact source evidence"
   },
   "candidateSet": {
-    "entryCount": 114,
-    "normalizedTextCount": 114,
+    "entryCount": 305,
+    "normalizedTextCount": 305,
     "identityRule": "NFC(trim(text)) exact headword lookup; exactly one candidate and source row required"
   },
   "rows": [
@@ -65,6 +65,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "下來",
+      "sourceHeadword": "下來",
+      "sourceEntryId": "390700031",
+      "sourcePhysicalRow": 26199,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄚˋ　ㄌㄞˊ",
+      "trainerReading": "ㄒㄧㄚ4 ㄌㄞ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "下午",
+      "sourceHeadword": "下午",
+      "sourceEntryId": "390700084",
+      "sourcePhysicalRow": 26255,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄚˋ　ㄨˇ",
+      "trainerReading": "ㄒㄧㄚ4 ㄨ3",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "不同",
       "sourceHeadword": "不同",
       "sourceEntryId": "028500070",
@@ -72,6 +92,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄅㄨˋ　ㄊㄨㄥˊ",
       "trainerReading": "ㄅㄨ4 ㄊㄨㄥ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "不少",
+      "sourceHeadword": "不少",
+      "sourceEntryId": "028500293",
+      "sourcePhysicalRow": 2199,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄨˋ　ㄕㄠˇ",
+      "trainerReading": "ㄅㄨ4 ㄕㄠ3",
       "multiReadingReference": null
     },
     {
@@ -105,6 +135,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "中央",
+      "sourceHeadword": "中央",
+      "sourceEntryId": "460100070",
+      "sourcePhysicalRow": 30688,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨㄥ　ㄧㄤ",
+      "trainerReading": "ㄓㄨㄥ1 ㄧㄤ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "中心",
       "sourceHeadword": "中心",
       "sourceEntryId": "460100042",
@@ -112,6 +152,56 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄓㄨㄥ　ㄒㄧㄣ",
       "trainerReading": "ㄓㄨㄥ1 ㄒㄧㄣ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "主義",
+      "sourceHeadword": "主義",
+      "sourceEntryId": "451600057",
+      "sourcePhysicalRow": 30149,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨˇ　ㄧˋ",
+      "trainerReading": "ㄓㄨ3 ㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "主題",
+      "sourceHeadword": "主題",
+      "sourceEntryId": "451600011",
+      "sourcePhysicalRow": 30101,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨˇ　ㄊㄧˊ",
+      "trainerReading": "ㄓㄨ3 ㄊㄧ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "久",
+      "sourceHeadword": "久",
+      "sourceEntryId": "3239",
+      "sourcePhysicalRow": 22270,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄡˇ",
+      "trainerReading": "ㄐㄧㄡ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "事件",
+      "sourceHeadword": "事件",
+      "sourceEntryId": "493000018",
+      "sourcePhysicalRow": 33109,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˋ　ㄐㄧㄢˋ",
+      "trainerReading": "ㄕ4 ㄐㄧㄢ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "事實",
+      "sourceHeadword": "事實",
+      "sourceEntryId": "493000026",
+      "sourcePhysicalRow": 33117,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˋ　ㄕˊ",
+      "trainerReading": "ㄕ4 ㄕ2",
       "multiReadingReference": null
     },
     {
@@ -125,6 +215,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "人們",
+      "sourceHeadword": "人們",
+      "sourceEntryId": "520100007",
+      "sourcePhysicalRow": 35475,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄣˊ　˙ㄇㄣ",
+      "trainerReading": "ㄖㄣ2 ㄇㄣ5",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "人員",
       "sourceHeadword": "人員",
       "sourceEntryId": "520100112",
@@ -132,6 +232,46 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄖㄣˊ　ㄩㄢˊ",
       "trainerReading": "ㄖㄣ2 ㄩㄢ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "人士",
+      "sourceHeadword": "人士",
+      "sourceEntryId": "520100075",
+      "sourcePhysicalRow": 35560,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄣˊ　ㄕˋ",
+      "trainerReading": "ㄖㄣ2 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "人民",
+      "sourceHeadword": "人民",
+      "sourceEntryId": "520100009",
+      "sourcePhysicalRow": 35478,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄣˊ　ㄇㄧㄣˊ",
+      "trainerReading": "ㄖㄣ2 ㄇㄧㄣ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "人物",
+      "sourceHeadword": "人物",
+      "sourceEntryId": "520100105",
+      "sourcePhysicalRow": 35594,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄣˊ　ㄨˋ",
+      "trainerReading": "ㄖㄣ2 ㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "人類",
+      "sourceHeadword": "人類",
+      "sourceEntryId": "520100024",
+      "sourcePhysicalRow": 35497,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄣˊ　ㄌㄟˋ",
+      "trainerReading": "ㄖㄣ2 ㄌㄟ4",
       "multiReadingReference": null
     },
     {
@@ -165,6 +305,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "代",
+      "sourceHeadword": "代",
+      "sourceEntryId": "1028",
+      "sourcePhysicalRow": 7385,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄞˋ",
+      "trainerReading": "ㄉㄞ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "份",
+      "sourceHeadword": "份",
+      "sourceEntryId": "0887",
+      "sourcePhysicalRow": 5785,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄣˋ",
+      "trainerReading": "ㄈㄣ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "企業",
       "sourceHeadword": "企業",
       "sourceEntryId": "357400006",
@@ -172,6 +332,36 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄑㄧˋ　ㄧㄝˋ",
       "trainerReading": "ㄑㄧ4 ㄧㄝ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "位置",
+      "sourceHeadword": "位置",
+      "sourceEntryId": "633900004",
+      "sourcePhysicalRow": 42794,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄨㄟˋ　ㄓˋ",
+      "trainerReading": "ㄨㄟ4 ㄓ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "住",
+      "sourceHeadword": "住",
+      "sourceEntryId": "4526",
+      "sourcePhysicalRow": 30192,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨˋ",
+      "trainerReading": "ㄓㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "作品",
+      "sourceHeadword": "作品",
+      "sourceEntryId": "539100009",
+      "sourcePhysicalRow": 36889,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗㄨㄛˋ　ㄆㄧㄣˇ",
+      "trainerReading": "ㄗㄨㄛ4 ㄆㄧㄣ3",
       "multiReadingReference": null
     },
     {
@@ -195,6 +385,36 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "信",
+      "sourceHeadword": "信",
+      "sourceEntryId": "4055",
+      "sourcePhysicalRow": 27373,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄣˋ",
+      "trainerReading": "ㄒㄧㄣ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "倍",
+      "sourceHeadword": "倍",
+      "sourceEntryId": "0083",
+      "sourcePhysicalRow": 577,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄟˋ",
+      "trainerReading": "ㄅㄟ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "價值",
+      "sourceHeadword": "價值",
+      "sourceEntryId": "314200007",
+      "sourcePhysicalRow": 21638,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄚˋ　ㄓˊ",
+      "trainerReading": "ㄐㄧㄚ4 ㄓ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "先生",
       "sourceHeadword": "先生",
       "sourceEntryId": "399800031",
@@ -215,6 +435,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "內容",
+      "sourceHeadword": "內容",
+      "sourceEntryId": "160400054",
+      "sourcePhysicalRow": 12104,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄋㄟˋ　ㄖㄨㄥˊ",
+      "trainerReading": "ㄋㄟ4 ㄖㄨㄥ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "全球",
+      "sourceHeadword": "全球",
+      "sourceEntryId": "378800022",
+      "sourcePhysicalRow": 25665,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄩㄢˊ　ㄑㄧㄡˊ",
+      "trainerReading": "ㄑㄩㄢ2 ㄑㄧㄡ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "公司",
       "sourceHeadword": "公司",
       "sourceEntryId": "247200100",
@@ -222,6 +462,166 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄍㄨㄥ　ㄙ",
       "trainerReading": "ㄍㄨㄥ1 ㄙ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "公園",
+      "sourceHeadword": "公園",
+      "sourceEntryId": "247200121",
+      "sourcePhysicalRow": 17544,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄥ　ㄩㄢˊ",
+      "trainerReading": "ㄍㄨㄥ1 ㄩㄢ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "公尺",
+      "sourceHeadword": "公尺",
+      "sourceEntryId": "247200079",
+      "sourcePhysicalRow": 17496,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄥ　ㄔˇ",
+      "trainerReading": "ㄍㄨㄥ1 ㄔ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "公里",
+      "sourceHeadword": "公里",
+      "sourceEntryId": "247200024",
+      "sourcePhysicalRow": 17437,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄥ　ㄌㄧˇ",
+      "trainerReading": "ㄍㄨㄥ1 ㄌㄧ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "具",
+      "sourceHeadword": "具",
+      "sourceEntryId": "3449",
+      "sourcePhysicalRow": 23647,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄩˋ",
+      "trainerReading": "ㄐㄩ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "出來",
+      "sourceHeadword": "出來",
+      "sourceEntryId": "480100023",
+      "sourcePhysicalRow": 31947,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄨ　ㄌㄞˊ",
+      "trainerReading": "ㄔㄨ1 ㄌㄞ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "分鐘",
+      "sourceHeadword": "分鐘",
+      "sourceEntryId": "087300056",
+      "sourcePhysicalRow": 5701,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄣ　ㄓㄨㄥ",
+      "trainerReading": "ㄈㄣ1 ㄓㄨㄥ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "前往",
+      "sourceHeadword": "前往",
+      "sourceEntryId": "366500053",
+      "sourcePhysicalRow": 24838,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄧㄢˊ　ㄨㄤˇ",
+      "trainerReading": "ㄑㄧㄢ2 ㄨㄤ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "力量",
+      "sourceHeadword": "力量",
+      "sourceEntryId": "189000006",
+      "sourcePhysicalRow": 13905,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄌㄧˋ　ㄌㄧㄤˋ",
+      "trainerReading": "ㄌㄧ4 ㄌㄧㄤ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "功能",
+      "sourceHeadword": "功能",
+      "sourceEntryId": "246700006",
+      "sourcePhysicalRow": 17353,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄥ　ㄋㄥˊ",
+      "trainerReading": "ㄍㄨㄥ1 ㄋㄥ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "加入",
+      "sourceHeadword": "加入",
+      "sourceEntryId": "310700028",
+      "sourcePhysicalRow": 21424,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄚ　ㄖㄨˋ",
+      "trainerReading": "ㄐㄧㄚ1 ㄖㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "動作",
+      "sourceHeadword": "動作",
+      "sourceEntryId": "131600040",
+      "sourcePhysicalRow": 9760,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄨㄥˋ　ㄗㄨㄛˋ",
+      "trainerReading": "ㄉㄨㄥ4 ㄗㄨㄛ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "動物",
+      "sourceHeadword": "動物",
+      "sourceEntryId": "131600050",
+      "sourcePhysicalRow": 9770,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄨㄥˋ　ㄨˋ",
+      "trainerReading": "ㄉㄨㄥ4 ㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "北",
+      "sourceHeadword": "北",
+      "sourceEntryId": "0077",
+      "sourcePhysicalRow": 521,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄟˇ",
+      "trainerReading": "ㄅㄟ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "協會",
+      "sourceHeadword": "協會",
+      "sourceEntryId": "391800009",
+      "sourcePhysicalRow": 26310,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄝˊ　ㄏㄨㄟˋ",
+      "trainerReading": "ㄒㄧㄝ2 ㄏㄨㄟ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "博士",
+      "sourceHeadword": "博士",
+      "sourceEntryId": "004600008",
+      "sourcePhysicalRow": 197,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄛˊ　ㄕˋ",
+      "trainerReading": "ㄅㄛ2 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "原因",
+      "sourceHeadword": "原因",
+      "sourceEntryId": "655100056",
+      "sourcePhysicalRow": 44021,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄩㄢˊ　ㄧㄣ",
+      "trainerReading": "ㄩㄢ2 ㄧㄣ1",
       "multiReadingReference": null
     },
     {
@@ -245,6 +645,46 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "呈現",
+      "sourceHeadword": "呈現",
+      "sourceEntryId": "478800006",
+      "sourcePhysicalRow": 31875,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄥˊ　ㄒㄧㄢˋ",
+      "trainerReading": "ㄔㄥ2 ㄒㄧㄢ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "品牌",
+      "sourceHeadword": "品牌",
+      "sourceEntryId": "048500001",
+      "sourcePhysicalRow": 3219,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄆㄧㄣˇ　ㄆㄞˊ",
+      "trainerReading": "ㄆㄧㄣ3 ㄆㄞ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "員工",
+      "sourceHeadword": "員工",
+      "sourceEntryId": "655500001",
+      "sourcePhysicalRow": 44042,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄩㄢˊ　ㄍㄨㄥ",
+      "trainerReading": "ㄩㄢ2 ㄍㄨㄥ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "唯一",
+      "sourceHeadword": "唯一",
+      "sourceEntryId": "631600006",
+      "sourcePhysicalRow": 42652,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄨㄟˊ　ㄧ",
+      "trainerReading": "ㄨㄟ2 ㄧ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "問題",
       "sourceHeadword": "問題",
       "sourceEntryId": "640000004",
@@ -252,6 +692,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄨㄣˋ　ㄊㄧˊ",
       "trainerReading": "ㄨㄣ4 ㄊㄧ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "單位",
+      "sourceHeadword": "單位",
+      "sourceEntryId": "107700058",
+      "sourcePhysicalRow": 7816,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄢ　ㄨㄟˋ",
+      "trainerReading": "ㄉㄢ1 ㄨㄟ4",
       "multiReadingReference": null
     },
     {
@@ -265,6 +715,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "國內",
+      "sourceHeadword": "國內",
+      "sourceEntryId": "239500028",
+      "sourcePhysicalRow": 16707,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄛˊ　ㄋㄟˋ",
+      "trainerReading": "ㄍㄨㄛ2 ㄋㄟ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "國家",
       "sourceHeadword": "國家",
       "sourceEntryId": "239500049",
@@ -275,6 +735,36 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "團體",
+      "sourceHeadword": "團體",
+      "sourceEntryId": "154600006",
+      "sourcePhysicalRow": 11663,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄨㄢˊ　ㄊㄧˇ",
+      "trainerReading": "ㄊㄨㄢ2 ㄊㄧ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "土地",
+      "sourceHeadword": "土地",
+      "sourceEntryId": "151300010",
+      "sourcePhysicalRow": 11353,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄨˇ　ㄉㄧˋ",
+      "trainerReading": "ㄊㄨ3 ㄉㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "地區",
+      "sourceHeadword": "地區",
+      "sourceEntryId": "114700080",
+      "sourcePhysicalRow": 8364,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄧˋ　ㄑㄩ",
+      "trainerReading": "ㄉㄧ4 ㄑㄩ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "地方",
       "sourceHeadword": "地方",
       "sourceEntryId": "114700018",
@@ -282,6 +772,56 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄉㄧˋ　ㄈㄤ",
       "trainerReading": "ㄉㄧ4 ㄈㄤ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "城市",
+      "sourceHeadword": "城市",
+      "sourceEntryId": "478300011",
+      "sourcePhysicalRow": 31828,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄥˊ　ㄕˋ",
+      "trainerReading": "ㄔㄥ2 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "基本",
+      "sourceHeadword": "基本",
+      "sourceEntryId": "300400001",
+      "sourcePhysicalRow": 20849,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧ　ㄅㄣˇ",
+      "trainerReading": "ㄐㄧ1 ㄅㄣ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "基礎",
+      "sourceHeadword": "基礎",
+      "sourceEntryId": "300400008",
+      "sourcePhysicalRow": 20859,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧ　ㄔㄨˇ",
+      "trainerReading": "ㄐㄧ1 ㄔㄨ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "報告",
+      "sourceHeadword": "報告",
+      "sourceEntryId": "010900012",
+      "sourcePhysicalRow": 789,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄠˋ　ㄍㄠˋ",
+      "trainerReading": "ㄅㄠ4 ㄍㄠ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "壓力",
+      "sourceHeadword": "壓力",
+      "sourceEntryId": "594900005",
+      "sourcePhysicalRow": 40103,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄚ　ㄌㄧˋ",
+      "trainerReading": "ㄧㄚ1 ㄌㄧ4",
       "multiReadingReference": null
     },
     {
@@ -305,6 +845,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "女性",
+      "sourceHeadword": "女性",
+      "sourceEntryId": "173100035",
+      "sourcePhysicalRow": 12924,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄋㄩˇ　ㄒㄧㄥˋ",
+      "trainerReading": "ㄋㄩ3 ㄒㄧㄥ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "她",
       "sourceHeadword": "她",
       "sourceEntryId": "1319",
@@ -312,6 +862,46 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄊㄚ",
       "trainerReading": "ㄊㄚ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "她們",
+      "sourceHeadword": "她們",
+      "sourceEntryId": "131900001",
+      "sourcePhysicalRow": 9793,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄚ　˙ㄇㄣ",
+      "trainerReading": "ㄊㄚ1 ㄇㄣ5",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "如今",
+      "sourceHeadword": "如今",
+      "sourceEntryId": "522800023",
+      "sourcePhysicalRow": 35745,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄨˊ　ㄐㄧㄣ",
+      "trainerReading": "ㄖㄨ2 ㄐㄧㄣ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "如此",
+      "sourceHeadword": "如此",
+      "sourceEntryId": "522800035",
+      "sourcePhysicalRow": 35760,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄖㄨˊ　ㄘˇ",
+      "trainerReading": "ㄖㄨ2 ㄘ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "媒體",
+      "sourceHeadword": "媒體",
+      "sourceEntryId": "059800002",
+      "sourcePhysicalRow": 3870,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄟˊ　ㄊㄧˇ",
+      "trainerReading": "ㄇㄟ2 ㄊㄧ3",
       "multiReadingReference": null
     },
     {
@@ -375,6 +965,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "它們",
+      "sourceHeadword": "它們",
+      "sourceEntryId": "131700001",
+      "sourcePhysicalRow": 9777,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄚ　˙ㄇㄣ",
+      "trainerReading": "ㄊㄚ1 ㄇㄣ5",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "家人",
+      "sourceHeadword": "家人",
+      "sourceEntryId": "311900048",
+      "sourcePhysicalRow": 21520,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄚ　ㄖㄣˊ",
+      "trainerReading": "ㄐㄧㄚ1 ㄖㄣ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "家庭",
       "sourceHeadword": "家庭",
       "sourceEntryId": "311900014",
@@ -385,6 +995,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "實際",
+      "sourceHeadword": "實際",
+      "sourceEntryId": "490800014",
+      "sourcePhysicalRow": 32885,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˊ　ㄐㄧˋ",
+      "trainerReading": "ㄕ2 ㄐㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "專家",
+      "sourceHeadword": "專家",
+      "sourceEntryId": "457300021",
+      "sourcePhysicalRow": 30430,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄨㄢ　ㄐㄧㄚ",
+      "trainerReading": "ㄓㄨㄢ1 ㄐㄧㄚ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "對不起",
       "sourceHeadword": "對不起",
       "sourceEntryId": "127800007",
@@ -392,6 +1022,26 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄉㄨㄟˋ　ㄅㄨˋ　ㄑㄧˇ",
       "trainerReading": "ㄉㄨㄟ4 ㄅㄨ4 ㄑㄧ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "居民",
+      "sourceHeadword": "居民",
+      "sourceEntryId": "341800001",
+      "sourcePhysicalRow": 23503,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄩ　ㄇㄧㄣˊ",
+      "trainerReading": "ㄐㄩ1 ㄇㄧㄣ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "屆",
+      "sourceHeadword": "屆",
+      "sourceEntryId": "3184",
+      "sourcePhysicalRow": 21924,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄝˋ",
+      "trainerReading": "ㄐㄧㄝ4",
       "multiReadingReference": null
     },
     {
@@ -425,6 +1075,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "年輕",
+      "sourceHeadword": "年輕",
+      "sourceEntryId": "167900043",
+      "sourcePhysicalRow": 12620,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄋㄧㄢˊ　ㄑㄧㄥ",
+      "trainerReading": "ㄋㄧㄢ2 ㄑㄧㄥ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "建築",
       "sourceHeadword": "建築",
       "sourceEntryId": "329300015",
@@ -432,6 +1092,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄐㄧㄢˋ　ㄓㄨˊ",
       "trainerReading": "ㄐㄧㄢ4 ㄓㄨ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "影片",
+      "sourceHeadword": "影片",
+      "sourceEntryId": "621500002",
+      "sourcePhysicalRow": 41788,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄥˇ　ㄆㄧㄢˋ",
+      "trainerReading": "ㄧㄥ3 ㄆㄧㄢ4",
       "multiReadingReference": null
     },
     {
@@ -445,6 +1115,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "心理",
+      "sourceHeadword": "心理",
+      "sourceEntryId": "404200027",
+      "sourcePhysicalRow": 27182,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄣ　ㄌㄧˇ",
+      "trainerReading": "ㄒㄧㄣ1 ㄌㄧ3",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "必須",
       "sourceHeadword": "必須",
       "sourceEntryId": "017500005",
@@ -455,6 +1135,46 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "情形",
+      "sourceHeadword": "情形",
+      "sourceEntryId": "373600025",
+      "sourcePhysicalRow": 25379,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄧㄥˊ　ㄒㄧㄥˊ",
+      "trainerReading": "ㄑㄧㄥ2 ㄒㄧㄥ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "情況",
+      "sourceHeadword": "情況",
+      "sourceEntryId": "373600016",
+      "sourcePhysicalRow": 25369,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄧㄥˊ　ㄎㄨㄤˋ",
+      "trainerReading": "ㄑㄧㄥ2 ㄎㄨㄤ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "情緒",
+      "sourceHeadword": "情緒",
+      "sourceEntryId": "373600026",
+      "sourcePhysicalRow": 25380,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄧㄥˊ　ㄒㄩˋ",
+      "trainerReading": "ㄑㄧㄥ2 ㄒㄩ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "意義",
+      "sourceHeadword": "意義",
+      "sourceEntryId": "592200024",
+      "sourcePhysicalRow": 40002,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧˋ　ㄧˋ",
+      "trainerReading": "ㄧ4 ㄧ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "感覺",
       "sourceHeadword": "感覺",
       "sourceEntryId": "228900017",
@@ -462,6 +1182,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄍㄢˇ　ㄐㄩㄝˊ",
       "trainerReading": "ㄍㄢ3 ㄐㄩㄝ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "態度",
+      "sourceHeadword": "態度",
+      "sourceEntryId": "135500001",
+      "sourcePhysicalRow": 10011,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄞˋ　ㄉㄨˋ",
+      "trainerReading": "ㄊㄞ4 ㄉㄨ4",
       "multiReadingReference": null
     },
     {
@@ -485,6 +1215,36 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "技術",
+      "sourceHeadword": "技術",
+      "sourceEntryId": "307600010",
+      "sourcePhysicalRow": 21239,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧˋ　ㄕㄨˋ",
+      "trainerReading": "ㄐㄧ4 ㄕㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "推動",
+      "sourceHeadword": "推動",
+      "sourceEntryId": "153800007",
+      "sourcePhysicalRow": 11540,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄨㄟ　ㄉㄨㄥˋ",
+      "trainerReading": "ㄊㄨㄟ1 ㄉㄨㄥ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "擔任",
+      "sourceHeadword": "擔任",
+      "sourceEntryId": "108200012",
+      "sourcePhysicalRow": 7835,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄢ　ㄖㄣˋ",
+      "trainerReading": "ㄉㄢ1 ㄖㄣ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "政府",
       "sourceHeadword": "政府",
       "sourceEntryId": "448600003",
@@ -505,6 +1265,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "政策",
+      "sourceHeadword": "政策",
+      "sourceEntryId": "448600033",
+      "sourcePhysicalRow": 29961,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄥˋ　ㄘㄜˋ",
+      "trainerReading": "ㄓㄥ4 ㄘㄜ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "故事",
       "sourceHeadword": "故事",
       "sourceEntryId": "237100013",
@@ -512,6 +1282,26 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄍㄨˋ　ㄕˋ",
       "trainerReading": "ㄍㄨ4 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "效果",
+      "sourceHeadword": "效果",
+      "sourceEntryId": "397100007",
+      "sourcePhysicalRow": 26686,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄠˋ　ㄍㄨㄛˇ",
+      "trainerReading": "ㄒㄧㄠ4 ㄍㄨㄛ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "教授",
+      "sourceHeadword": "教授",
+      "sourceEntryId": "322500023",
+      "sourcePhysicalRow": 22215,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄠˋ　ㄕㄡˋ",
+      "trainerReading": "ㄐㄧㄠ4 ㄕㄡ4",
       "multiReadingReference": null
     },
     {
@@ -535,6 +1325,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "新聞",
+      "sourceHeadword": "新聞",
+      "sourceEntryId": "404900054",
+      "sourcePhysicalRow": 27354,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄣ　ㄨㄣˊ",
+      "trainerReading": "ㄒㄧㄣ1 ㄨㄣ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "方向",
+      "sourceHeadword": "方向",
+      "sourceEntryId": "089200007",
+      "sourcePhysicalRow": 5821,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄤ　ㄒㄧㄤˋ",
+      "trainerReading": "ㄈㄤ1 ㄒㄧㄤ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "方式",
       "sourceHeadword": "方式",
       "sourceEntryId": "089200018",
@@ -555,6 +1365,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "方面",
+      "sourceHeadword": "方面",
+      "sourceEntryId": "089200002",
+      "sourcePhysicalRow": 5816,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄤ　ㄇㄧㄢˋ",
+      "trainerReading": "ㄈㄤ1 ㄇㄧㄢ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "明天",
       "sourceHeadword": "明天",
       "sourceEntryId": "077400011",
@@ -562,6 +1382,26 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄇㄧㄥˊ　ㄊㄧㄢ",
       "trainerReading": "ㄇㄧㄥ2 ㄊㄧㄢ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "時代",
+      "sourceHeadword": "時代",
+      "sourceEntryId": "490400003",
+      "sourcePhysicalRow": 32828,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˊ　ㄉㄞˋ",
+      "trainerReading": "ㄕ2 ㄉㄞ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "時期",
+      "sourceHeadword": "時期",
+      "sourceEntryId": "490400018",
+      "sourcePhysicalRow": 32845,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˊ　ㄑㄧˊ",
+      "trainerReading": "ㄕ2 ㄑㄧ2",
       "multiReadingReference": null
     },
     {
@@ -585,6 +1425,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "會議",
+      "sourceHeadword": "會議",
+      "sourceEntryId": "291700032",
+      "sourcePhysicalRow": 20370,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄏㄨㄟˋ　ㄧˋ",
+      "trainerReading": "ㄏㄨㄟ4 ㄧ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "月亮",
       "sourceHeadword": "月亮",
       "sourceEntryId": "652300009",
@@ -605,6 +1455,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "期間",
+      "sourceHeadword": "期間",
+      "sourceEntryId": "354700009",
+      "sourcePhysicalRow": 24090,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄑㄧˊ　ㄐㄧㄢ",
+      "trainerReading": "ㄑㄧ2 ㄐㄧㄢ1",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "未來",
       "sourceHeadword": "未來",
       "sourceEntryId": "633700008",
@@ -612,6 +1472,46 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄨㄟˋ　ㄌㄞˊ",
       "trainerReading": "ㄨㄟ4 ㄌㄞ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "校長",
+      "sourceHeadword": "校長",
+      "sourceEntryId": "397200014",
+      "sourcePhysicalRow": 26706,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄠˋ　ㄓㄤˇ",
+      "trainerReading": "ㄒㄧㄠ4 ㄓㄤ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "條件",
+      "sourceHeadword": "條件",
+      "sourceEntryId": "146600007",
+      "sourcePhysicalRow": 10832,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄧㄠˊ　ㄐㄧㄢˋ",
+      "trainerReading": "ㄊㄧㄠ2 ㄐㄧㄢ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "植物",
+      "sourceHeadword": "植物",
+      "sourceEntryId": "423500006",
+      "sourcePhysicalRow": 28594,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓˊ　ㄨˋ",
+      "trainerReading": "ㄓ2 ㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "概念",
+      "sourceHeadword": "概念",
+      "sourceEntryId": "223400001",
+      "sourcePhysicalRow": 15787,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄞˋ　ㄋㄧㄢˋ",
+      "trainerReading": "ㄍㄞ4 ㄋㄧㄢ4",
       "multiReadingReference": null
     },
     {
@@ -625,6 +1525,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "歡迎",
+      "sourceHeadword": "歡迎",
+      "sourceEntryId": "292500015",
+      "sourcePhysicalRow": 20418,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄏㄨㄢ　ㄧㄥˊ",
+      "trainerReading": "ㄏㄨㄢ1 ㄧㄥ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "正確",
       "sourceHeadword": "正確",
       "sourceEntryId": "448500030",
@@ -632,6 +1542,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄓㄥˋ　ㄑㄩㄝˋ",
       "trainerReading": "ㄓㄥ4 ㄑㄩㄝ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "步",
+      "sourceHeadword": "步",
+      "sourceEntryId": "0290",
+      "sourcePhysicalRow": 2338,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄨˋ",
+      "trainerReading": "ㄅㄨ4",
       "multiReadingReference": null
     },
     {
@@ -645,6 +1565,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "母親",
+      "sourceHeadword": "母親",
+      "sourceEntryId": "078200005",
+      "sourcePhysicalRow": 4916,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄨˇ　ㄑㄧㄣ",
+      "trainerReading": "ㄇㄨ3 ㄑㄧㄣ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "比賽",
+      "sourceHeadword": "比賽",
+      "sourceEntryId": "016500023",
+      "sourcePhysicalRow": 1218,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄧˇ　ㄙㄞˋ",
+      "trainerReading": "ㄅㄧ3 ㄙㄞ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "民眾",
       "sourceHeadword": "民眾",
       "sourceEntryId": "075600032",
@@ -652,6 +1592,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄇㄧㄣˊ　ㄓㄨㄥˋ",
       "trainerReading": "ㄇㄧㄣ2 ㄓㄨㄥ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "永遠",
+      "sourceHeadword": "永遠",
+      "sourceEntryId": "660600008",
+      "sourcePhysicalRow": 44272,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄩㄥˇ　ㄩㄢˇ",
+      "trainerReading": "ㄩㄥ3 ㄩㄢ3",
       "multiReadingReference": null
     },
     {
@@ -695,6 +1645,36 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "父母",
+      "sourceHeadword": "父母",
+      "sourceEntryId": "098400001",
+      "sourcePhysicalRow": 6433,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄨˋ　ㄇㄨˇ",
+      "trainerReading": "ㄈㄨ4 ㄇㄨ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "父親",
+      "sourceHeadword": "父親",
+      "sourceEntryId": "098400003",
+      "sourcePhysicalRow": 6435,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄨˋ　ㄑㄧㄣ",
+      "trainerReading": "ㄈㄨ4 ㄑㄧㄣ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "特色",
+      "sourceHeadword": "特色",
+      "sourceEntryId": "133900064",
+      "sourcePhysicalRow": 9899,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄜˋ　ㄙㄜˋ",
+      "trainerReading": "ㄊㄜ4 ㄙㄜ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "狀況",
       "sourceHeadword": "狀況",
       "sourceEntryId": "459600002",
@@ -705,6 +1685,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "狗",
+      "sourceHeadword": "狗",
+      "sourceEntryId": "2259",
+      "sourcePhysicalRow": 15994,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄡˇ",
+      "trainerReading": "ㄍㄡ3",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "現在",
       "sourceHeadword": "現在",
       "sourceEntryId": "403000028",
@@ -712,6 +1702,26 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄒㄧㄢˋ　ㄗㄞˋ",
       "trainerReading": "ㄒㄧㄢ4 ㄗㄞ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "現場",
+      "sourceHeadword": "現場",
+      "sourceEntryId": "403000019",
+      "sourcePhysicalRow": 27064,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄢˋ　ㄔㄤˇ",
+      "trainerReading": "ㄒㄧㄢ4 ㄔㄤ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "現象",
+      "sourceHeadword": "現象",
+      "sourceEntryId": "403000011",
+      "sourcePhysicalRow": 27055,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄢˋ　ㄒㄧㄤˋ",
+      "trainerReading": "ㄒㄧㄢ4 ㄒㄧㄤ4",
       "multiReadingReference": null
     },
     {
@@ -735,6 +1745,86 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "生態",
+      "sourceHeadword": "生態",
+      "sourceEntryId": "508600015",
+      "sourcePhysicalRow": 34454,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕㄥ　ㄊㄞˋ",
+      "trainerReading": "ㄕㄥ1 ㄊㄞ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "產品",
+      "sourceHeadword": "產品",
+      "sourceEntryId": "472400001",
+      "sourcePhysicalRow": 31438,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄢˇ　ㄆㄧㄣˇ",
+      "trainerReading": "ㄔㄢ3 ㄆㄧㄣ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "產業",
+      "sourceHeadword": "產業",
+      "sourceEntryId": "472400014",
+      "sourcePhysicalRow": 31452,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄢˇ　ㄧㄝˋ",
+      "trainerReading": "ㄔㄢ3 ㄧㄝ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "申請",
+      "sourceHeadword": "申請",
+      "sourceEntryId": "504600006",
+      "sourcePhysicalRow": 34011,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕㄣ　ㄑㄧㄥˇ",
+      "trainerReading": "ㄕㄣ1 ㄑㄧㄥ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "男",
+      "sourceHeadword": "男",
+      "sourceEntryId": "1618",
+      "sourcePhysicalRow": 12190,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄋㄢˊ",
+      "trainerReading": "ㄋㄢ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "畢業",
+      "sourceHeadword": "畢業",
+      "sourceEntryId": "019500003",
+      "sourcePhysicalRow": 1342,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄧˋ　ㄧㄝˋ",
+      "trainerReading": "ㄅㄧ4 ㄧㄝ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "當中",
+      "sourceHeadword": "當中",
+      "sourceEntryId": "110100031",
+      "sourcePhysicalRow": 7947,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄤ　ㄓㄨㄥ",
+      "trainerReading": "ㄉㄤ1 ㄓㄨㄥ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "當地",
+      "sourceHeadword": "當地",
+      "sourceEntryId": "110100006",
+      "sourcePhysicalRow": 7923,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄤ　ㄉㄧˋ",
+      "trainerReading": "ㄉㄤ1 ㄉㄧ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "當時",
       "sourceHeadword": "當時",
       "sourceEntryId": "110100037",
@@ -755,6 +1845,46 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "目標",
+      "sourceHeadword": "目標",
+      "sourceEntryId": "079200001",
+      "sourcePhysicalRow": 4978,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄨˋ　ㄅㄧㄠ",
+      "trainerReading": "ㄇㄨ4 ㄅㄧㄠ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "目的",
+      "sourceHeadword": "目的",
+      "sourceEntryId": "079200008",
+      "sourcePhysicalRow": 4985,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄨˋ　ㄉㄧˋ",
+      "trainerReading": "ㄇㄨ4 ㄉㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "真正",
+      "sourceHeadword": "真正",
+      "sourceEntryId": "441900020",
+      "sourcePhysicalRow": 29523,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄣ　ㄓㄥˋ",
+      "trainerReading": "ㄓㄣ1 ㄓㄥ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "知識",
+      "sourceHeadword": "知識",
+      "sourceEntryId": "422600022",
+      "sourcePhysicalRow": 28511,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓ　ㄕˋ",
+      "trainerReading": "ㄓ1 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "知道",
       "sourceHeadword": "知道",
       "sourceEntryId": "422600005",
@@ -762,6 +1892,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄓ　ㄉㄠˋ",
       "trainerReading": "ㄓ1 ㄉㄠ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "社區",
+      "sourceHeadword": "社區",
+      "sourceEntryId": "497100014",
+      "sourcePhysicalRow": 33402,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕㄜˋ　ㄑㄩ",
+      "trainerReading": "ㄕㄜ4 ㄑㄩ1",
       "multiReadingReference": null
     },
     {
@@ -775,6 +1915,96 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "科學",
+      "sourceHeadword": "科學",
+      "sourceEntryId": "249700009",
+      "sourcePhysicalRow": 17669,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄜ　ㄒㄩㄝˊ",
+      "trainerReading": "ㄎㄜ1 ㄒㄩㄝ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "科技",
+      "sourceHeadword": "科技",
+      "sourceEntryId": "249700005",
+      "sourcePhysicalRow": 17665,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄜ　ㄐㄧˋ",
+      "trainerReading": "ㄎㄜ1 ㄐㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "程度",
+      "sourceHeadword": "程度",
+      "sourceEntryId": "479000001",
+      "sourcePhysicalRow": 31879,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄥˊ　ㄉㄨˋ",
+      "trainerReading": "ㄔㄥ2 ㄉㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "積極",
+      "sourceHeadword": "積極",
+      "sourceEntryId": "302700009",
+      "sourcePhysicalRow": 20975,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧ　ㄐㄧˊ",
+      "trainerReading": "ㄐㄧ1 ㄐㄧ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "空氣",
+      "sourceHeadword": "空氣",
+      "sourceEntryId": "266100020",
+      "sourcePhysicalRow": 18637,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄨㄥ　ㄑㄧˋ",
+      "trainerReading": "ㄎㄨㄥ1 ㄑㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "空間",
+      "sourceHeadword": "空間",
+      "sourceEntryId": "266100017",
+      "sourcePhysicalRow": 18633,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄨㄥ　ㄐㄧㄢ",
+      "trainerReading": "ㄎㄨㄥ1 ㄐㄧㄢ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "穿",
+      "sourceHeadword": "穿",
+      "sourceEntryId": "4847",
+      "sourcePhysicalRow": 32261,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄨㄢ",
+      "trainerReading": "ㄔㄨㄢ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "等等",
+      "sourceHeadword": "等等",
+      "sourceEntryId": "111700006",
+      "sourcePhysicalRow": 8092,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄥˇ　ㄉㄥˇ",
+      "trainerReading": "ㄉㄥ3 ㄉㄥ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "節目",
+      "sourceHeadword": "節目",
+      "sourceEntryId": "316900002",
+      "sourcePhysicalRow": 21803,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄝˊ　ㄇㄨˋ",
+      "trainerReading": "ㄐㄧㄝ2 ㄇㄨ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "簡單",
       "sourceHeadword": "簡單",
       "sourceEntryId": "328900005",
@@ -782,6 +2012,36 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄐㄧㄢˇ　ㄉㄢ",
       "trainerReading": "ㄐㄧㄢ3 ㄉㄢ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "米",
+      "sourceHeadword": "米",
+      "sourceEntryId": "0703",
+      "sourcePhysicalRow": 4401,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄧˇ",
+      "trainerReading": "ㄇㄧ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "精神",
+      "sourceHeadword": "精神",
+      "sourceEntryId": "337700034",
+      "sourcePhysicalRow": 23238,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄥ　ㄕㄣˊ",
+      "trainerReading": "ㄐㄧㄥ1 ㄕㄣ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "系列",
+      "sourceHeadword": "系列",
+      "sourceEntryId": "388200002",
+      "sourcePhysicalRow": 26057,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧˋ　ㄌㄧㄝˋ",
+      "trainerReading": "ㄒㄧ4 ㄌㄧㄝ4",
       "multiReadingReference": null
     },
     {
@@ -805,6 +2065,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "結構",
+      "sourceHeadword": "結構",
+      "sourceEntryId": "315500010",
+      "sourcePhysicalRow": 21744,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄝˊ　ㄍㄡˋ",
+      "trainerReading": "ㄐㄧㄝ2 ㄍㄡ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "經濟",
       "sourceHeadword": "經濟",
       "sourceEntryId": "338000018",
@@ -825,6 +2095,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "網路",
+      "sourceHeadword": "網路",
+      "sourceEntryId": "640900001",
+      "sourcePhysicalRow": 43279,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄨㄤˇ　ㄌㄨˋ",
+      "trainerReading": "ㄨㄤ3 ㄌㄨ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "練習",
       "sourceHeadword": "練習",
       "sourceEntryId": "199800006",
@@ -832,6 +2112,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄌㄧㄢˋ　ㄒㄧˊ",
       "trainerReading": "ㄌㄧㄢ4 ㄒㄧ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "美",
+      "sourceHeadword": "美",
+      "sourceEntryId": "0602",
+      "sourcePhysicalRow": 3890,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄇㄟˇ",
+      "trainerReading": "ㄇㄟ3",
       "multiReadingReference": null
     },
     {
@@ -885,6 +2175,66 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "臺灣",
+      "sourceHeadword": "臺灣",
+      "sourceEntryId": "134800022",
+      "sourcePhysicalRow": 9943,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄊㄞˊ　ㄨㄢ",
+      "trainerReading": "ㄊㄞ2 ㄨㄢ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "興趣",
+      "sourceHeadword": "興趣",
+      "sourceEntryId": "411200004",
+      "sourcePhysicalRow": 27902,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄥˋ　ㄑㄩˋ",
+      "trainerReading": "ㄒㄧㄥ4 ㄑㄩ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "藝術",
+      "sourceHeadword": "藝術",
+      "sourceEntryId": "593700008",
+      "sourcePhysicalRow": 40046,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧˋ　ㄕㄨˋ",
+      "trainerReading": "ㄧ4 ㄕㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "行為",
+      "sourceHeadword": "行為",
+      "sourceEntryId": "409700059",
+      "sourcePhysicalRow": 27832,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄧㄥˊ　ㄨㄟˊ",
+      "trainerReading": "ㄒㄧㄥ2 ㄨㄟ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "觀眾",
+      "sourceHeadword": "觀眾",
+      "sourceEntryId": "244300014",
+      "sourcePhysicalRow": 17132,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨㄢ　ㄓㄨㄥˋ",
+      "trainerReading": "ㄍㄨㄢ1 ㄓㄨㄥ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "角色",
+      "sourceHeadword": "角色",
+      "sourceEntryId": "347000002",
+      "sourcePhysicalRow": 23753,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄩㄝˊ　ㄙㄜˋ　",
+      "trainerReading": "ㄐㄩㄝ2 ㄙㄜ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "設計",
       "sourceHeadword": "設計",
       "sourceEntryId": "497600007",
@@ -892,6 +2242,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄕㄜˋ　ㄐㄧˋ",
       "trainerReading": "ㄕㄜ4 ㄐㄧ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "課程",
+      "sourceHeadword": "課程",
+      "sourceEntryId": "251900009",
+      "sourcePhysicalRow": 17818,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄜˋ　ㄔㄥˊ",
+      "trainerReading": "ㄎㄜ4 ㄔㄥ2",
       "multiReadingReference": null
     },
     {
@@ -905,6 +2265,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "豐富",
+      "sourceHeadword": "豐富",
+      "sourceEntryId": "092000003",
+      "sourcePhysicalRow": 6150,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄥ　ㄈㄨˋ",
+      "trainerReading": "ㄈㄥ1 ㄈㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "責任",
+      "sourceHeadword": "責任",
+      "sourceEntryId": "531200009",
+      "sourcePhysicalRow": 36404,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗㄜˊ　ㄖㄣˋ",
+      "trainerReading": "ㄗㄜ2 ㄖㄣ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "資料",
       "sourceHeadword": "資料",
       "sourceEntryId": "527600008",
@@ -912,6 +2292,26 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄗ　ㄌㄧㄠˋ",
       "trainerReading": "ㄗ1 ㄌㄧㄠ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "資源",
+      "sourceHeadword": "資源",
+      "sourceEntryId": "527600021",
+      "sourcePhysicalRow": 36062,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗ　ㄩㄢˊ",
+      "trainerReading": "ㄗ1 ㄩㄢ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "資訊",
+      "sourceHeadword": "資訊",
+      "sourceEntryId": "527600013",
+      "sourcePhysicalRow": 36052,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗ　ㄒㄩㄣˋ",
+      "trainerReading": "ㄗ1 ㄒㄩㄣ4",
       "multiReadingReference": null
     },
     {
@@ -945,6 +2345,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "辦法",
+      "sourceHeadword": "辦法",
+      "sourceEntryId": "012900003",
+      "sourcePhysicalRow": 999,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄢˋ　ㄈㄚˇ",
+      "trainerReading": "ㄅㄢ4 ㄈㄚ3",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "農業",
+      "sourceHeadword": "農業",
+      "sourceEntryId": "172400048",
+      "sourcePhysicalRow": 12853,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄋㄨㄥˊ　ㄧㄝˋ",
+      "trainerReading": "ㄋㄨㄥ2 ㄧㄝ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "速度",
       "sourceHeadword": "速度",
       "sourceEntryId": "564600002",
@@ -952,6 +2372,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄙㄨˋ　ㄉㄨˋ",
       "trainerReading": "ㄙㄨ4 ㄉㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "進",
+      "sourceHeadword": "進",
+      "sourceEntryId": "3343",
+      "sourcePhysicalRow": 22967,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄣˋ",
+      "trainerReading": "ㄐㄧㄣ4",
       "multiReadingReference": null
     },
     {
@@ -965,6 +2395,16 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "遊戲",
+      "sourceHeadword": "遊戲",
+      "sourceEntryId": "604000013",
+      "sourcePhysicalRow": 40652,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄡˊ　ㄒㄧˋ",
+      "trainerReading": "ㄧㄡ2 ㄒㄧ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "過程",
       "sourceHeadword": "過程",
       "sourceEntryId": "240400034",
@@ -972,6 +2412,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄍㄨㄛˋ　ㄔㄥˊ",
       "trainerReading": "ㄍㄨㄛ4 ㄔㄥ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "遭",
+      "sourceHeadword": "遭",
+      "sourceEntryId": "5328",
+      "sourcePhysicalRow": 36501,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄗㄠ",
+      "trainerReading": "ㄗㄠ1",
       "multiReadingReference": null
     },
     {
@@ -995,6 +2445,56 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "部落",
+      "sourceHeadword": "部落",
+      "sourceEntryId": "029100005",
+      "sourcePhysicalRow": 2353,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄅㄨˋ ㄌㄨㄛˋ",
+      "trainerReading": "ㄅㄨ4 ㄌㄨㄛ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "醫師",
+      "sourceHeadword": "醫師",
+      "sourceEntryId": "584500006",
+      "sourcePhysicalRow": 39624,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧ　ㄕ",
+      "trainerReading": "ㄧ1 ㄕ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "醫生",
+      "sourceHeadword": "醫生",
+      "sourceEntryId": "584500008",
+      "sourcePhysicalRow": 39625,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧ　ㄕㄥ",
+      "trainerReading": "ㄧ1 ㄕㄥ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "醫療",
+      "sourceHeadword": "醫療",
+      "sourceEntryId": "584500002",
+      "sourcePhysicalRow": 39619,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧ　ㄌㄧㄠˊ",
+      "trainerReading": "ㄧ1 ㄌㄧㄠ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "醫院",
+      "sourceHeadword": "醫院",
+      "sourceEntryId": "584500011",
+      "sourcePhysicalRow": 39629,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧ　ㄩㄢˋ",
+      "trainerReading": "ㄧ1 ㄩㄢ4",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "重要",
       "sourceHeadword": "重要",
       "sourceEntryId": "461700035",
@@ -1005,6 +2505,26 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "針對",
+      "sourceHeadword": "針對",
+      "sourceEntryId": "442100003",
+      "sourcePhysicalRow": 29541,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄓㄣ　ㄉㄨㄟˋ",
+      "trainerReading": "ㄓㄣ1 ㄉㄨㄟ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "銀行",
+      "sourceHeadword": "銀行",
+      "sourceEntryId": "614100011",
+      "sourcePhysicalRow": 41354,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄣˊ　ㄏㄤˊ",
+      "trainerReading": "ㄧㄣ2 ㄏㄤ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "鍵盤",
       "sourceHeadword": "鍵盤",
       "sourceEntryId": "329700001",
@@ -1012,6 +2532,16 @@
       "multiReadingOrder": 0,
       "sourceBopomofo": "ㄐㄧㄢˋ　ㄆㄢˊ",
       "trainerReading": "ㄐㄧㄢ4 ㄆㄢ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "長期",
+      "sourceHeadword": "長期",
+      "sourceEntryId": "475700029",
+      "sourcePhysicalRow": 31616,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄔㄤˊ　ㄑㄧˊ",
+      "trainerReading": "ㄔㄤ2 ㄑㄧ2",
       "multiReadingReference": null
     },
     {
@@ -1035,6 +2565,36 @@
       "multiReadingReference": null
     },
     {
+      "lookupText": "附近",
+      "sourceHeadword": "附近",
+      "sourceEntryId": "098700010",
+      "sourcePhysicalRow": 6468,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄈㄨˋ　ㄐㄧㄣˋ",
+      "trainerReading": "ㄈㄨ4 ㄐㄧㄣ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "階段",
+      "sourceHeadword": "階段",
+      "sourceEntryId": "314400001",
+      "sourcePhysicalRow": 21645,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧㄝ　ㄉㄨㄢˋ",
+      "trainerReading": "ㄐㄧㄝ1 ㄉㄨㄢ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "集團",
+      "sourceHeadword": "集團",
+      "sourceEntryId": "305600002",
+      "sourcePhysicalRow": 21154,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄐㄧˊ　ㄊㄨㄢˊ",
+      "trainerReading": "ㄐㄧ2 ㄊㄨㄢ2",
+      "multiReadingReference": null
+    },
+    {
       "lookupText": "電影",
       "sourceHeadword": "電影",
       "sourceEntryId": "120900144",
@@ -1053,12 +2613,92 @@
       "sourceBopomofo": "ㄉㄧㄢˋ　ㄋㄠˇ",
       "trainerReading": "ㄉㄧㄢ4 ㄋㄠ3",
       "multiReadingReference": null
+    },
+    {
+      "lookupText": "電視",
+      "sourceHeadword": "電視",
+      "sourceEntryId": "120900107",
+      "sourcePhysicalRow": 8862,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄧㄢˋ　ㄕˋ",
+      "trainerReading": "ㄉㄧㄢ4 ㄕ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "電話",
+      "sourceHeadword": "電話",
+      "sourceEntryId": "120900063",
+      "sourcePhysicalRow": 8821,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄉㄧㄢˋ　ㄏㄨㄚˋ",
+      "trainerReading": "ㄉㄧㄢ4 ㄏㄨㄚ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "需求",
+      "sourceHeadword": "需求",
+      "sourceEntryId": "412300002",
+      "sourcePhysicalRow": 27959,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄒㄩ　ㄑㄧㄡˊ",
+      "trainerReading": "ㄒㄩ1 ㄑㄧㄡ2",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "音樂",
+      "sourceHeadword": "音樂",
+      "sourceEntryId": "613200020",
+      "sourcePhysicalRow": 41266,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄧㄣ　ㄩㄝˋ",
+      "trainerReading": "ㄧㄣ1 ㄩㄝ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "顆",
+      "sourceHeadword": "顆",
+      "sourceEntryId": "2502",
+      "sourcePhysicalRow": 17681,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄎㄜ",
+      "trainerReading": "ㄎㄜ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "食物",
+      "sourceHeadword": "食物",
+      "sourceEntryId": "490200016",
+      "sourcePhysicalRow": 32819,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄕˊ　ㄨˋ",
+      "trainerReading": "ㄕ2 ㄨ4",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "黑",
+      "sourceHeadword": "黑",
+      "sourceEntryId": "2717",
+      "sourcePhysicalRow": 19035,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄏㄟ",
+      "trainerReading": "ㄏㄟ1",
+      "multiReadingReference": null
+    },
+    {
+      "lookupText": "鼓勵",
+      "sourceHeadword": "鼓勵",
+      "sourceEntryId": "236000004",
+      "sourcePhysicalRow": 16517,
+      "multiReadingOrder": 0,
+      "sourceBopomofo": "ㄍㄨˇ　ㄌㄧˋ",
+      "trainerReading": "ㄍㄨ3 ㄌㄧ4",
+      "multiReadingReference": null
     }
   ],
   "diagnostics": {
     "sourceRowCount": 45130,
-    "candidateScopedSourceRowCount": 103,
-    "acceptedCandidateCount": 101,
+    "candidateScopedSourceRowCount": 267,
+    "acceptedCandidateCount": 265,
     "unmatchedCandidateTexts": [
       "中文",
       "台灣",
@@ -1074,6 +2714,6 @@
       "東西"
     ],
     "invalidReadings": [],
-    "omittedNonCandidateSourceRowCount": 45027
+    "omittedNonCandidateSourceRowCount": 44863
   }
 }

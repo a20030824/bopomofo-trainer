@@ -113,3 +113,210 @@ text,reading,roles,predicate_frame,standalone_kind,provenance_ids
 企業,ㄑㄧ4 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v3
 總統,ㄗㄨㄥ3 ㄊㄨㄥ3,subject;object,none,lexical-prompt,local:activation-review-v3
 進入,ㄐㄧㄣ4 ㄖㄨ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v3
+美,ㄇㄟ3,subject;object,none,lexical-prompt,local:activation-review-v4
+情況,ㄑㄧㄥ2 ㄎㄨㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
+醫院,ㄧ1 ㄩㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+如此,ㄖㄨ2 ㄘ3,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+社區,ㄕㄜ4 ㄑㄩ1,subject;object,none,lexical-prompt,local:activation-review-v4
+作品,ㄗㄨㄛ4 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
+藝術,ㄧ4 ㄕㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+父親,ㄈㄨ4 ㄑㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
+地區,ㄉㄧ4 ㄑㄩ1,subject;object,none,lexical-prompt,local:activation-review-v4
+方面,ㄈㄤ1 ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+空間,ㄎㄨㄥ1 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:activation-review-v4
+久,ㄐㄧㄡ3,subject;object,none,lexical-prompt,local:activation-review-v4
+臺灣,ㄊㄞ2 ㄨㄢ1,subject;object,none,lexical-prompt,local:activation-review-v4
+產業,ㄔㄢ3 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
+辦法,ㄅㄢ4 ㄈㄚ3,subject;object,none,lexical-prompt,local:activation-review-v4
+事實,ㄕ4 ㄕ2,subject;object,none,lexical-prompt,local:activation-review-v4
+精神,ㄐㄧㄥ1 ㄕㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
+住,ㄓㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+醫師,ㄧ1 ㄕ1,subject;object,none,lexical-prompt,local:activation-review-v4
+政策,ㄓㄥ4 ㄘㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
+得到,ㄉㄜ2 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+出來,ㄔㄨ1 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+知,ㄓ1,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+原因,ㄩㄢ2 ㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
+時代,ㄕ2 ㄉㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
+母親,ㄇㄨ3 ㄑㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
+土地,ㄊㄨ3 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+現場,ㄒㄧㄢ4 ㄔㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
+父母,ㄈㄨ4 ㄇㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
+基本,ㄐㄧ1 ㄅㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
+全球,ㄑㄩㄢ2 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:activation-review-v4
+真正,ㄓㄣ1 ㄓㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+行為,ㄒㄧㄥ2 ㄨㄟ2,subject;object,none,lexical-prompt,local:activation-review-v4
+分鐘,ㄈㄣ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
+不少,ㄅㄨ4 ㄕㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+人類,ㄖㄣ2 ㄌㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
+產品,ㄔㄢ3 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
+資源,ㄗ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
+力量,ㄌㄧ4 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
+技術,ㄐㄧ4 ㄕㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+食物,ㄕ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+目標,ㄇㄨ4 ㄅㄧㄠ1,subject;object,none,lexical-prompt,local:activation-review-v4
+壓力,ㄧㄚ1 ㄌㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+年輕,ㄋㄧㄢ2 ㄑㄧㄥ1,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+回到,ㄏㄨㄟ2 ㄉㄠ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
+音樂,ㄧㄣ1 ㄩㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
+中央,ㄓㄨㄥ1 ㄧㄤ1,subject;object,none,lexical-prompt,local:activation-review-v4
+當中,ㄉㄤ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
+價值,ㄐㄧㄚ4 ㄓ2,subject;object,none,lexical-prompt,local:activation-review-v4
+事件,ㄕ4 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+動物,ㄉㄨㄥ4 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+意義,ㄧ4 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+網路,ㄨㄤ3 ㄌㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+媒體,ㄇㄟ2 ㄊㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
+歡迎,ㄏㄨㄢ1 ㄧㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+意思,ㄧ4 ㄙ5,subject;object,none,lexical-prompt,local:activation-review-v4
+推動,ㄊㄨㄟ1 ㄉㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+擔任,ㄉㄢ1 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+份,ㄈㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
+家人,ㄐㄧㄚ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
+遭,ㄗㄠ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+當地,ㄉㄤ1 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+實際,ㄕ2 ㄐㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+鼓勵,ㄍㄨ3 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+科技,ㄎㄜ1 ㄐㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+內容,ㄋㄟ4 ㄖㄨㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
+穿,ㄔㄨㄢ1,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
+單位,ㄉㄢ1 ㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
+顆,ㄎㄜ1,subject;object,none,lexical-prompt,local:activation-review-v4
+觀眾,ㄍㄨㄢ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v4
+功能,ㄍㄨㄥ1 ㄋㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
+城市,ㄔㄥ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
+來到,ㄌㄞ2 ㄉㄠ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
+加入,ㄐㄧㄚ1 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+女性,ㄋㄩ3 ㄒㄧㄥ4,subject;object,none,lexical-prompt,local:activation-review-v4
+情緒,ㄑㄧㄥ2 ㄒㄩ4,subject;object,none,lexical-prompt,local:activation-review-v4
+期間,ㄑㄧ2 ㄐㄧㄢ1,temporal,none,lexical-prompt,local:activation-review-v4
+動作,ㄉㄨㄥ4 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:activation-review-v4
+教授,ㄐㄧㄠ4 ㄕㄡ4,subject;object,none,lexical-prompt,local:activation-review-v4
+態度,ㄊㄞ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+角色,ㄐㄩㄝ2 ㄙㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
+代,ㄉㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
+叫做,ㄐㄧㄠ4 ㄗㄨㄛ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
+她們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
+針對,ㄓㄣ1 ㄉㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+香港,ㄒㄧㄤ1 ㄍㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
+銀行,ㄧㄣ2 ㄏㄤ2,subject;object,none,lexical-prompt,local:activation-review-v4
+感到,ㄍㄢ3 ㄉㄠ4,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+長期,ㄔㄤ2 ㄑㄧ2,temporal,none,lexical-prompt,local:activation-review-v4
+英國,ㄧㄥ1 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v4
+博士,ㄅㄛ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
+男,ㄋㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
+團體,ㄊㄨㄢ2 ㄊㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
+比賽,ㄅㄧ3 ㄙㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
+下午,ㄒㄧㄚ4 ㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
+節目,ㄐㄧㄝ2 ㄇㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+生態,ㄕㄥ1 ㄊㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
+植物,ㄓ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+知識,ㄓ1 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
+附近,ㄈㄨ4 ㄐㄧㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
+科學,ㄎㄜ1 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:activation-review-v4
+具有,ㄐㄩ4 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+人民,ㄖㄣ2 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
+公園,ㄍㄨㄥ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
+主義,ㄓㄨ3 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+人們,ㄖㄣ2 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
+資訊,ㄗ1 ㄒㄩㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
+需求,ㄒㄩ1 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:activation-review-v4
+情形,ㄑㄧㄥ2 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
+效果,ㄒㄧㄠ4 ㄍㄨㄛ3,subject;object,none,lexical-prompt,local:activation-review-v4
+報告,ㄅㄠ4 ㄍㄠ4,subject;object,none,lexical-prompt,local:activation-review-v4
+公尺,ㄍㄨㄥ1 ㄔ3,subject;object,none,lexical-prompt,local:activation-review-v4
+具,ㄐㄩ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
+新聞,ㄒㄧㄣ1 ㄨㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
+前往,ㄑㄧㄢ2 ㄨㄤ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+品牌,ㄆㄧㄣ3 ㄆㄞ2,subject;object,none,lexical-prompt,local:activation-review-v4
+概念,ㄍㄞ4 ㄋㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+方向,ㄈㄤ1 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
+課程,ㄎㄜ4 ㄔㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
+現象,ㄒㄧㄢ4 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
+協會,ㄒㄧㄝ2 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
+積極,ㄐㄧ1 ㄐㄧ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+醫生,ㄧ1 ㄕㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
+步,ㄅㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+人士,ㄖㄣ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
+它們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
+電視,ㄉㄧㄢ4 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
+醫療,ㄧ1 ㄌㄧㄠ2,subject;object,none,lexical-prompt,local:activation-review-v4
+居民,ㄐㄩ1 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
+會議,ㄏㄨㄟ4 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+系列,ㄒㄧ4 ㄌㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
+階段,ㄐㄧㄝ1 ㄉㄨㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+等等,ㄉㄥ3 ㄉㄥ3,subject;object,none,lexical-prompt,local:activation-review-v4
+員工,ㄩㄢ2 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
+電話,ㄉㄧㄢ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:activation-review-v4
+時期,ㄕ2 ㄑㄧ2,subject;object,none,lexical-prompt,local:activation-review-v4
+那樣,ㄋㄚ4 ㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
+屆,ㄐㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
+北京,ㄅㄟ3 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
+人物,ㄖㄣ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+那裡,ㄋㄚ4 ㄌㄧ5,subject;object,none,lexical-prompt,local:activation-review-v4
+專家,ㄓㄨㄢ1 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:activation-review-v4
+畢業,ㄅㄧ4 ㄧㄝ4,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+倍,ㄅㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
+唯一,ㄨㄟ2 ㄧ1,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+部落,ㄅㄨ4 ㄌㄨㄛ4,subject;object,none,lexical-prompt,local:activation-review-v4
+特色,ㄊㄜ4 ㄙㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
+基礎,ㄐㄧ1 ㄔㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
+米,ㄇㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
+國內,ㄍㄨㄛ2 ㄋㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
+程度,ㄔㄥ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
+興趣,ㄒㄧㄥ4 ㄑㄩ4,subject;object,none,lexical-prompt,local:activation-review-v4
+北,ㄅㄟ3,subject;object,none,lexical-prompt,local:activation-review-v4
+心理,ㄒㄧㄣ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
+條件,ㄊㄧㄠ2 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+影片,ㄧㄥ3 ㄆㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
+空氣,ㄎㄨㄥ1 ㄑㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+申請,ㄕㄣ1 ㄑㄧㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+公里,ㄍㄨㄥ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
+結構,ㄐㄧㄝ2 ㄍㄡ4,subject;object,none,lexical-prompt,local:activation-review-v4
+位置,ㄨㄟ4 ㄓ4,subject;object,none,lexical-prompt,local:activation-review-v4
+遊戲,ㄧㄡ2 ㄒㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+進,ㄐㄧㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+校長,ㄒㄧㄠ4 ㄓㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
+如今,ㄖㄨ2 ㄐㄧㄣ1,temporal,none,lexical-prompt,local:activation-review-v4
+責任,ㄗㄜ2 ㄖㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
+下來,ㄒㄧㄚ4 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
+農業,ㄋㄨㄥ2 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
+永遠,ㄩㄥ3 ㄩㄢ3,temporal,none,lexical-prompt,local:activation-review-v4
+集團,ㄐㄧ2 ㄊㄨㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
+黑,ㄏㄟ1,subject;object,none,lexical-prompt,local:activation-review-v4
+呈現,ㄔㄥ2 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
+主題,ㄓㄨ3 ㄊㄧ2,subject;object,none,lexical-prompt,local:activation-review-v4
+豐富,ㄈㄥ1 ㄈㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
+狗,ㄍㄡ3,subject;object,none,lexical-prompt,local:activation-review-v4
+目的,ㄇㄨ4 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
+信,ㄒㄧㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
+了,ㄌㄜ5,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+了,ㄌㄧㄠ3,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+了,ㄌㄧㄠ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+作,ㄗㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+作,ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+個,ㄍㄜ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+個,ㄍㄜ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+句,ㄍㄡ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+句,ㄐㄩ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+可,ㄎㄜ3,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+可,ㄎㄜ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+台中,ㄊㄞ2 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+台北,ㄊㄞ2 ㄅㄟ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+種,ㄓㄨㄥ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+種,ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+著,ㄓㄜ5,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+著,ㄓㄠ1,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+著,ㄓㄠ2,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+著,ㄓㄨ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+著,ㄓㄨㄛ2,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+要,ㄧㄠ1,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+要,ㄧㄠ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
+說,ㄕㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+說,ㄕㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+讀,ㄉㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+讀,ㄉㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
+難,ㄋㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v5-heteronym
+難,ㄋㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v5-heteronym
+高中,ㄍㄠ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+高中,ㄍㄠ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym

@@ -15,6 +15,8 @@ import csv
 import hashlib
 import json
 import os
+import subprocess
+import sys
 from collections import Counter
 from dataclasses import dataclass
 from io import StringIO
@@ -23,6 +25,7 @@ from typing import Any, Callable, Mapping, Sequence
 
 from validate_activation_review_decisions import (
     DECISION_FIELDS,
+    EXPECTED_REPORT_DIGEST,
     ReviewSlice,
     load_locked_inputs,
     validate_review_slice,
@@ -291,6 +294,40 @@ def activation_state(
             )
         return "activated"
     raise ValueError(f"{label} contains a partial activation: {present}")
+
+
+def convert_numbered_pinyin(values: Sequence[str]) -> list[str]:
+    """Converts numbered pinyin to trainer Bopomofo via the single TS
+    implementation (src/readings/pinyin-to-bopomofo.ts) so there is exactly
+    one conversion table, not a duplicated Python copy that could drift.
+    """
+    if not values:
+        return []
+    result = subprocess.run(
+        ["npx", "tsx", str(ROOT / "scripts/convert-numbered-pinyin.ts")],
+        input=json.dumps(list(values)),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=ROOT,
+        shell=(os.name == "nt"),
+    )
+    if result.returncode != 0:
+        raise ValueError(f"numbered pinyin conversion failed: {result.stderr}")
+    return json.loads(result.stdout)
+
+
+def resolve_numbered_pinyin_readings(decisions: list[dict[str, str]]) -> None:
+    """Replaces each numbered-pinyin decision's reading_evidence in place with
+    its converted trainer Bopomofo reading, so downstream row builders can
+    treat reading_evidence uniformly regardless of source authority.
+    """
+    targets = [row for row in decisions if row["reading_evidence_type"] == "numbered-pinyin"]
+    if not targets:
+        return
+    converted = convert_numbered_pinyin([row["reading_evidence"] for row in targets])
+    for row, reading in zip(targets, converted, strict=True):
+        row["reading_evidence"] = reading
 
 
 def expected_word_row(decision: Mapping[str, str], provenance_id: str) -> dict[str, str]:
@@ -632,15 +669,32 @@ def load_review_decisions(
     batch_path: Path,
     decision_report_path: Path,
     decisions_path: Path | None = None,
+    *,
+    expected_row_count: int = 100,
+    expected_report_digest: str = EXPECTED_REPORT_DIGEST,
 ) -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, Any]]:
-    batch_rows, _ = load_locked_inputs(batch_path, decision_report_path)
+    batch_rows, _ = load_locked_inputs(
+        batch_path,
+        decision_report_path,
+        expected_row_count=expected_row_count,
+        expected_report_digest=expected_report_digest,
+    )
     validation = validate_review_slice(
         batch_rows, batch.review_slice, decisions_path or batch.decisions_path
     )
     decisions = load_csv(decisions_path or batch.decisions_path, DECISION_FIELDS)
     approved = [row for row in decisions if row["decision"] == "approved-existing-schema"]
-    if any(row["reading_evidence_type"] != "trainer-bopomofo" for row in approved):
-        raise ValueError("approved activation readings must be trainer Bopomofo")
+    # numbered-pinyin (CC-CEDICT) readings are approvable too: the catalog
+    # build converts them to trainer Bopomofo automatically for every active
+    # CC-CEDICT-sourced word, regardless of review lane. Convert here so the
+    # committed words/grammar CSVs store the final Bopomofo reading directly,
+    # matching every other authority.
+    if any(
+        row["reading_evidence_type"] not in ("trainer-bopomofo", "numbered-pinyin")
+        for row in approved
+    ):
+        raise ValueError("approved activation readings must be trainer Bopomofo or numbered pinyin")
+    resolve_numbered_pinyin_readings(approved)
     held = [row for row in decisions if row["decision"] != "approved-existing-schema"]
     return approved, held, validation
 
@@ -652,6 +706,8 @@ def run_activation(
     batch_path: Path = DEFAULT_BATCH,
     decision_report_path: Path = DEFAULT_DECISION_REPORT,
     decisions_path: Path | None = None,
+    expected_batch_row_count: int = 100,
+    expected_batch_report_digest: str = EXPECTED_REPORT_DIGEST,
     words_path: Path = DEFAULT_WORDS,
     grammar_path: Path = DEFAULT_GRAMMAR,
     provenance_path: Path = DEFAULT_PROVENANCE,
@@ -664,7 +720,12 @@ def run_activation(
     cedict_path: Path = DEFAULT_ACTIVE_CEDICT,
 ) -> dict[str, Any]:
     approved, held, decision_validation = load_review_decisions(
-        batch, batch_path, decision_report_path, decisions_path
+        batch,
+        batch_path,
+        decision_report_path,
+        decisions_path,
+        expected_row_count=expected_batch_row_count,
+        expected_report_digest=expected_batch_report_digest,
     )
     approved_texts = [row["text"] for row in approved]
     baseline_count, previous_reading_counts = resolve_baseline_state(batch)

@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tests" / "python"))
 
-from active_catalog_state import active_catalog_size, active_concised_count  # noqa: E402
+from active_catalog_state import active_catalog_text_count, active_concised_count  # noqa: E402
 
 ARTIFACT = ROOT / "data" / "readings" / "moe-revised-2015_20260625-active-catalog-fallback.json"
 
@@ -24,18 +24,19 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
         # Both counts are cross-file bookkeeping (they mirror the Concised
-        # artifact's own row count and the overall catalog size) rather than
-        # facts owned by this file, so they are read dynamically.
+        # artifact's own row count and the overall catalog's distinct-text
+        # count, not row count -- a heteronym text can have several active
+        # rows) rather than facts owned by this file, so they are read
+        # dynamically.
         self.assertEqual(basis["concisedAcceptedCandidateCount"], active_concised_count())
         self.assertEqual(
             basis["fallbackCandidateCount"],
-            active_catalog_size() - active_concised_count(),
+            active_catalog_text_count() - active_concised_count(),
         )
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
-        self.assertEqual(
-            [row["lookupText"] for row in rows],
-            ["中國", "中文", "大陸", "日本", "總統", "美國", "謝謝"],
-        )
+        lookup_texts = [row["lookupText"] for row in rows]
+        self.assertEqual(lookup_texts, sorted(lookup_texts))
+        self.assertTrue({"中國", "中文", "美國", "謝謝"}.issubset(lookup_texts))
         self.assertTrue(all(row["fallbackStatus"] == "provisional" for row in rows))
         self.assertEqual(diagnostics["multipleReadingTexts"], ["東西"])
         self.assertEqual(

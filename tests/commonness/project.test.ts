@@ -8,6 +8,7 @@ import type { CommonnessEvidence } from "../../src/commonness/types.js";
 const evidence: readonly CommonnessEvidence[] = [
   {
     catalogEntryId: "word:common",
+    catalogText: "common",
     sourceId: "naer:general-frequency",
     sourceVersion: "fixture-v1",
     sourceRowId: "1",
@@ -17,6 +18,7 @@ const evidence: readonly CommonnessEvidence[] = [
   },
   {
     catalogEntryId: "word:zero",
+    catalogText: "zero",
     sourceId: "naer:general-frequency",
     sourceVersion: "fixture-v1",
     sourceRowId: "2",
@@ -26,6 +28,7 @@ const evidence: readonly CommonnessEvidence[] = [
   },
   {
     catalogEntryId: "word:missing",
+    catalogText: "missing",
     sourceId: "naer:general-frequency",
     sourceVersion: "fixture-v1",
     sourceRowId: "3",
@@ -56,10 +59,11 @@ describe("commonness projection", () => {
     }));
   });
 
-  it("excludes every identity sharing one source row", () => {
+  it("excludes identities that share one source row but are different texts", () => {
     const projection = projectCommonness([
       {
         catalogEntryId: "word:a",
+        catalogText: "甲",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "same",
@@ -69,6 +73,7 @@ describe("commonness projection", () => {
       },
       {
         catalogEntryId: "word:b",
+        catalogText: "乙",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "same",
@@ -83,10 +88,41 @@ describe("commonness projection", () => {
       .toBe(true);
   });
 
+  it("applies one source row to every reading variant of the same heteronym text", () => {
+    const projection = projectCommonness([
+      {
+        catalogEntryId: "word:了:ㄌㄜ5",
+        catalogText: "了",
+        sourceId: "naer:general-frequency",
+        sourceVersion: "fixture-v1",
+        sourceRowId: "same",
+        spokenPerMillion: 1,
+        writtenPerMillion: 1,
+        identityStatus: "reviewed",
+      },
+      {
+        catalogEntryId: "word:了:ㄌㄧㄠ3",
+        catalogText: "了",
+        sourceId: "naer:general-frequency",
+        sourceVersion: "fixture-v1",
+        sourceRowId: "same",
+        spokenPerMillion: 1,
+        writtenPerMillion: 1,
+        identityStatus: "reviewed",
+      },
+    ]);
+    expect(projection.exclusions).toEqual([]);
+    expect(projection.entries.map((item) => item.catalogEntryId)).toEqual([
+      "word:了:ㄌㄜ5",
+      "word:了:ㄌㄧㄠ3",
+    ]);
+  });
+
   it("rejects unresolved identities and invalid frequencies", () => {
     const projection = projectCommonness([
       {
         catalogEntryId: "word:unreviewed",
+        catalogText: "unreviewed",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "u",
@@ -96,6 +132,7 @@ describe("commonness projection", () => {
       },
       {
         catalogEntryId: "word:negative",
+        catalogText: "negative",
         sourceId: "naer:general-frequency",
         sourceVersion: "fixture-v1",
         sourceRowId: "n",
