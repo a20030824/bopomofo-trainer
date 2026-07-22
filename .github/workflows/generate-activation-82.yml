@@ -1,0 +1,54 @@
+name: generate activation 82
+
+on:
+  push:
+    branches:
+      - agent/issue-82-activate-reviewed-20
+    paths:
+      - scripts/activate_reviewed_catalog_entries_26_50.py
+      - tests/python/test_activate_reviewed_catalog_entries_26_50.py
+      - package.json
+      - .github/workflows/generate-activation-82.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: agent/issue-82-activate-reviewed-20
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm run catalog:activate-reviewed-20
+      - run: npm run app:catalog
+      - name: Commit generated activation outputs
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            data/source/words.sample.csv \
+            data/source/grammar.sample.csv \
+            data/provenance.csv \
+            data/commonness/naer-1141208-active-catalog-rows.json \
+            data/readings/moe-concised-2014_20260626-active-catalog.json \
+            data/readings/moe-revised-2015_20260625-active-catalog-fallback.json \
+            data/identity/cedict-active-catalog-hints.json \
+            data/grammar/naer-reviewed-catalog-activation-2-report.json \
+            src/app/generated/catalog.ts
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+          else
+            git commit -m "chore(catalog): generate reviewed-20 activation outputs"
+            git push origin HEAD:agent/issue-82-activate-reviewed-20
+          fi
