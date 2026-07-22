@@ -32,8 +32,8 @@
     ]
   },
   "catalog": {
-    "entryCount": 60,
-    "normalizedTextCount": 60,
+    "entryCount": 80,
+    "normalizedTextCount": 80,
     "identityRule": "NFC(trim(text)) exact match; exactly one catalog identity required"
   },
   "rows": [
@@ -176,6 +176,12 @@
       "spokenPerMillion": 1353.625011627731
     },
     {
+      "generalRank": 166,
+      "lexicalText": "重要",
+      "writtenPerMillion": 611.1341270466543,
+      "spokenPerMillion": 814.9614404979402
+    },
+    {
       "generalRank": 168,
       "lexicalText": "學生",
       "writtenPerMillion": 453.672971127417,
@@ -188,16 +194,130 @@
       "spokenPerMillion": 1187.236464488711
     },
     {
+      "generalRank": 171,
+      "lexicalText": "美國",
+      "writtenPerMillion": 569.9297467101752,
+      "spokenPerMillion": 283.8034142066736
+    },
+    {
       "generalRank": 174,
       "lexicalText": "今天",
       "writtenPerMillion": 272.1617009314298,
       "spokenPerMillion": 1263.886841152133
     },
     {
+      "generalRank": 178,
+      "lexicalText": "中國",
+      "writtenPerMillion": 829.967141104597,
+      "spokenPerMillion": 230.7016844741191
+    },
+    {
+      "generalRank": 179,
+      "lexicalText": "政府",
+      "writtenPerMillion": 362.8161016428177,
+      "spokenPerMillion": 268.4639569429409
+    },
+    {
+      "generalRank": 181,
+      "lexicalText": "社會",
+      "writtenPerMillion": 694.2336635340976,
+      "spokenPerMillion": 356.9824763822786
+    },
+    {
+      "generalRank": 182,
+      "lexicalText": "世界",
+      "writtenPerMillion": 649.3610254241428,
+      "spokenPerMillion": 491.2379096813694
+    },
+    {
+      "generalRank": 186,
+      "lexicalText": "活動",
+      "writtenPerMillion": 337.0509577576893,
+      "spokenPerMillion": 328.9774122035374
+    },
+    {
+      "generalRank": 187,
+      "lexicalText": "公司",
+      "writtenPerMillion": 657.0230789986108,
+      "spokenPerMillion": 153.3476629820852
+    },
+    {
+      "generalRank": 192,
+      "lexicalText": "民眾",
+      "writtenPerMillion": 67.27918234534229,
+      "spokenPerMillion": 193.3615989024642
+    },
+    {
+      "generalRank": 194,
+      "lexicalText": "不同",
+      "writtenPerMillion": 628.3995524328519,
+      "spokenPerMillion": 502.5431365943956
+    },
+    {
+      "generalRank": 198,
+      "lexicalText": "關係",
+      "writtenPerMillion": 642.6001563892625,
+      "spokenPerMillion": 466.0943344723154
+    },
+    {
+      "generalRank": 200,
+      "lexicalText": "能夠",
+      "writtenPerMillion": 379.1287328021386,
+      "spokenPerMillion": 1014.74966216839
+    },
+    {
+      "generalRank": 203,
+      "lexicalText": "不能",
+      "writtenPerMillion": 642.8065951384191,
+      "spokenPerMillion": 496.2103331368914
+    },
+    {
+      "generalRank": 204,
+      "lexicalText": "事情",
+      "writtenPerMillion": 438.9403903943335,
+      "spokenPerMillion": 982.5227290179796
+    },
+    {
+      "generalRank": 205,
+      "lexicalText": "最後",
+      "writtenPerMillion": 521.3253312116193,
+      "spokenPerMillion": 451.0363351400274
+    },
+    {
+      "generalRank": 211,
+      "lexicalText": "國家",
+      "writtenPerMillion": 429.5037575723073,
+      "spokenPerMillion": 361.6734419063558
+    },
+    {
+      "generalRank": 214,
+      "lexicalText": "方式",
+      "writtenPerMillion": 526.8952074629037,
+      "spokenPerMillion": 511.0806938482162
+    },
+    {
+      "generalRank": 219,
+      "lexicalText": "必須",
+      "writtenPerMillion": 673.3515900617131,
+      "spokenPerMillion": 376.3561639967176
+    },
+    {
       "generalRank": 222,
       "lexicalText": "一起",
       "writtenPerMillion": 313.9814275394334,
       "spokenPerMillion": 759.8425955900328
+    },
+    {
+      "generalRank": 230,
+      "lexicalText": "走",
+      "writtenPerMillion": 503.2976704439202,
+      "spokenPerMillion": 575.3469215280745
+    },
+    {
+      "generalRank": 234,
+      "lexicalText": "環境",
+      "writtenPerMillion": 279.3394174405688,
+      "spokenPerMillion": 637.8305823087835
     },
     {
       "generalRank": 257,
@@ -400,9 +520,9 @@
   ],
   "diagnostics": {
     "sourceRowCount": 163701,
-    "catalogScopedSourceRowCount": 60,
+    "catalogScopedSourceRowCount": 80,
     "unmatchedCatalogTexts": [],
     "ambiguousCatalogTexts": [],
-    "omittedNonCatalogSourceRowCount": 163641
+    "omittedNonCatalogSourceRowCount": 163621
   }
 }
