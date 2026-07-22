@@ -16,6 +16,10 @@ import {
   CLAUSE_PRODUCTION_FIXTURES,
   CLAUSE_PRODUCTION_RULES,
 } from "./clause-rules.js";
+import {
+  COMPLEMENT_PRODUCTION_FIXTURES,
+  COMPLEMENT_PRODUCTION_RULES,
+} from "./complement-rules.js";
 
 interface ConstituentOptions {
   readonly minimum?: number;
@@ -243,12 +247,15 @@ export const PHRASE_PRODUCTION_FIXTURES: readonly ProductionFixture[] =
 export const FORMAL_SYNTAX_RULES: readonly ProductionRule[] = [
   ...PHRASE_PRODUCTION_RULES,
   ...CLAUSE_PRODUCTION_RULES,
+  ...COMPLEMENT_PRODUCTION_RULES,
 ];
 export const FORMAL_SYNTAX_FIXTURES: readonly ProductionFixture[] = [
   ...PHRASE_PRODUCTION_FIXTURES,
   ...CLAUSE_PRODUCTION_FIXTURES,
+  ...COMPLEMENT_PRODUCTION_FIXTURES,
 ];
 
 export { CLAUSE_PRODUCTION_FIXTURES, CLAUSE_PRODUCTION_RULES };
+export { COMPLEMENT_PRODUCTION_FIXTURES, COMPLEMENT_PRODUCTION_RULES };
 
 assertValidGrammarBundle(FORMAL_SYNTAX_RULES, FORMAL_SYNTAX_FIXTURES);
