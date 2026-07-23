@@ -1,0 +1,32 @@
+name: balanced-line-diagnostic
+
+on:
+  pull_request:
+  push:
+    branches:
+      - agent/ultra-minimal-practice-ui
+
+permissions:
+  contents: read
+
+jobs:
+  balanced-line:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm ci --include=dev --ignore-scripts
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused app tests
+        run: npx vitest run tests/app/presentation-model.test.ts tests/app/keyboard-adapter.test.ts --reporter=verbose
+      - name: Validate catalog
+        run: npm run catalog:validate
+      - name: Production build
+        run: npm run build
