@@ -89,7 +89,8 @@ export interface GrammarSlotAssignment {
 export type GrammarCandidateKind =
   | "template"
   | "standalone-utterance"
-  | "standalone-lexical-prompt";
+  | "standalone-lexical-prompt"
+  | "formal-syntax";
 
 export interface GrammarUtteranceCandidate {
   readonly id: string;
@@ -99,6 +100,8 @@ export interface GrammarUtteranceCandidate {
   readonly assignments: readonly GrammarSlotAssignment[];
   readonly text: string;
   readonly punctuation: GrammarTemplate["punctuation"];
+  readonly syntaxDerivationId?: string;
+  readonly syntaxProfileIds?: readonly string[];
 }
 
 export interface GrammarCompositionOptions {
