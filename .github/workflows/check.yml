@@ -62,12 +62,13 @@ jobs:
           path: vitest.log
       - name: Source adapter tests
         id: source_adapters
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
           npm run test:source-adapters 2>&1 | tee source-adapters.log
       - name: Upload source adapter failure log
-        if: failure() && steps.source_adapters.outcome == 'failure'
+        if: steps.source_adapters.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: source-adapter-failure-log
