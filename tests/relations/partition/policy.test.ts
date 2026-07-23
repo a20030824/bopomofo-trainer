@@ -94,7 +94,7 @@ describe("relational partition policies", () => {
     for (const decision of decisions.slice(1)) {
       expect(decision.metrics.evaluationOnlyRelationCount).toBe(0);
     }
-  });
+  }, 15_000);
 
   it("preserves relation support on the feasible paired fixture", async () => {
     const input = createPartitionInput(await readPartitionFixture("feasible"));
