@@ -406,7 +406,7 @@ function updatePracticeFeedback(): void {
   const code = reverseBindings.get(current.tokenId);
   const key = code === undefined ? "—" : physicalKeyLabel(code);
   feedback.classList.add("hint");
-  feedback.innerHTML = `${escapeHtml(tokenLabel(current.tokenId))}<span>${escapeHtml(key)}</span>`;
+  feedback.textContent = key;
 }
 
 function updatePracticeState(): void {
@@ -531,10 +531,16 @@ function renderInformationPanel(): void {
 
     <section class="panel-section">
       <div class="panel-heading"><h3>顯示</h3></div>
-      <label class="setting-row" for="toggle-physical-hint">
-        <span><strong>實體鍵提示</strong><small>只顯示下一個按鍵。</small></span>
-        <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
-      </label>
+      <div class="display-options">
+        <label class="setting-row" for="toggle-physical-hint">
+          <span><strong>實體鍵</strong></span>
+          <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
+        </label>
+        <label class="setting-row" for="toggle-keyboard-sketch">
+          <span><strong>鍵盤提示</strong></span>
+          <input id="toggle-keyboard-sketch" type="checkbox"${showKeyboardSketch ? " checked" : ""} />
+        </label>
+      </div>
     </section>
 
     <section class="panel-section">
@@ -590,6 +596,11 @@ function renderInformationPanel(): void {
     if (!(event.currentTarget instanceof HTMLInputElement)) return;
     showPhysicalHint = event.currentTarget.checked;
     updatePracticeState();
+  });
+  content.querySelector<HTMLInputElement>("#toggle-keyboard-sketch")?.addEventListener("change", (event) => {
+    if (!(event.currentTarget instanceof HTMLInputElement)) return;
+    showKeyboardSketch = event.currentTarget.checked;
+    updateKeyboardSketch();
   });
   bindInfluenceControl(content, "error-influence", "error-influence-value", "errorInfluence");
   bindInfluenceControl(content, "timing-influence", "timing-influence-value", "timingInfluence");
