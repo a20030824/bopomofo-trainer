@@ -1,7 +1,10 @@
 import { parseProductProgress, serializeProductProgress } from "../product/progress.js";
 import type { ProductEnvironment, ProductProgress } from "../product/types.js";
 
-export const LOCAL_PROGRESS_KEY = "bopomofo-trainer.progress.v1";
+export const LOCAL_PROGRESS_KEY = "bopomofo-trainer.progress.v3";
+export const OBSOLETE_LOCAL_PROGRESS_KEYS = [
+  "bopomofo-trainer.progress.v1",
+] as const;
 
 export interface StorageLike {
   getItem(key: string): string | null;
@@ -16,6 +19,15 @@ export interface LocalProgressLoadResult {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function clearObsoleteLocalProgress(storage: StorageLike): boolean {
+  let removed = false;
+  for (const key of OBSOLETE_LOCAL_PROGRESS_KEYS) {
+    if (storage.getItem(key) !== null) removed = true;
+    storage.removeItem(key);
+  }
+  return removed;
 }
 
 function summaryReferencesAreKnown(
@@ -53,9 +65,10 @@ export function loadLocalProductProgress(
   mode: ProductProgress["mode"],
   layoutId: string,
 ): LocalProgressLoadResult {
+  const discardedObsoleteState = clearObsoleteLocalProgress(storage);
   const source = storage.getItem(LOCAL_PROGRESS_KEY);
   if (source === null) {
-    return { progress: null, recoveredFromInvalidState: false };
+    return { progress: null, recoveredFromInvalidState: discardedObsoleteState };
   }
   if (!summaryReferencesAreKnown(source, environment)) {
     return { progress: null, recoveredFromInvalidState: true };
@@ -84,4 +97,5 @@ export function saveLocalProductProgress(
 
 export function clearLocalProductProgress(storage: StorageLike): void {
   storage.removeItem(LOCAL_PROGRESS_KEY);
+  clearObsoleteLocalProgress(storage);
 }

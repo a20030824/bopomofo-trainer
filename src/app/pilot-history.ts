@@ -8,11 +8,23 @@ import {
 import type { ProductEnvironment, ProductProgress } from "../product/types.js";
 import type { StorageLike } from "./local-progress.js";
 
-export const LOCAL_PILOT_HISTORY_KEY = "bopomofo-trainer.pilot-history.v1";
+export const LOCAL_PILOT_HISTORY_KEY = "bopomofo-trainer.pilot-history.v2";
+export const OBSOLETE_LOCAL_PILOT_HISTORY_KEYS = [
+  "bopomofo-trainer.pilot-history.v1",
+] as const;
 
 export interface LocalPilotHistoryLoadResult {
   readonly history: PilotHistory;
   readonly recoveredFromInvalidState: boolean;
+}
+
+function clearObsoleteLocalPilotHistory(storage: StorageLike): boolean {
+  let removed = false;
+  for (const key of OBSOLETE_LOCAL_PILOT_HISTORY_KEYS) {
+    if (storage.getItem(key) !== null) removed = true;
+    storage.removeItem(key);
+  }
+  return removed;
 }
 
 export function loadLocalPilotHistory(
@@ -21,9 +33,13 @@ export function loadLocalPilotHistory(
   environment: ProductEnvironment,
 ): LocalPilotHistoryLoadResult {
   const migrated = migratePilotHistory(progress);
+  const discardedObsoleteState = clearObsoleteLocalPilotHistory(storage);
   const source = storage.getItem(LOCAL_PILOT_HISTORY_KEY);
   if (source === null) {
-    return { history: migrated, recoveredFromInvalidState: false };
+    return {
+      history: migrated,
+      recoveredFromInvalidState: discardedObsoleteState,
+    };
   }
   const parsed = parsePilotHistory(source, environment);
   if (parsed === null) {
@@ -46,4 +62,5 @@ export function saveLocalPilotHistory(
 
 export function clearLocalPilotHistory(storage: StorageLike): void {
   storage.removeItem(LOCAL_PILOT_HISTORY_KEY);
+  clearObsoleteLocalPilotHistory(storage);
 }

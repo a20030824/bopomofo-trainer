@@ -3,6 +3,7 @@ import {
   clearLocalProductProgress,
   loadLocalProductProgress,
   LOCAL_PROGRESS_KEY,
+  OBSOLETE_LOCAL_PROGRESS_KEYS,
   saveLocalProductProgress,
   type StorageLike,
 } from "../../src/app/local-progress.js";
@@ -36,6 +37,18 @@ describe("local progress adapter", () => {
       recoveredFromInvalidState: false,
     });
     clearLocalProductProgress(storage);
+    expect(storage.getItem(LOCAL_PROGRESS_KEY)).toBeNull();
+  });
+
+  it("deletes obsolete storage generations instead of migrating them", () => {
+    const storage = new MemoryStorage();
+    const obsoleteKey = OBSOLETE_LOCAL_PROGRESS_KEYS[0]!;
+    storage.setItem(obsoleteKey, JSON.stringify({ schemaVersion: 2 }));
+    expect(loadLocalProductProgress(storage, environment, "guided", "standard")).toEqual({
+      progress: null,
+      recoveredFromInvalidState: true,
+    });
+    expect(storage.getItem(obsoleteKey)).toBeNull();
     expect(storage.getItem(LOCAL_PROGRESS_KEY)).toBeNull();
   });
 

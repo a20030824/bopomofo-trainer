@@ -474,10 +474,10 @@ function downloadPilotExport(): void {
 function renderNotices(): string {
   return [
     recoveredFromInvalidState
-      ? '<div class="notice">舊的本機進度已保留可驗證量測，新的語句選題從高頻階段開始。</div>'
+      ? '<div class="notice">舊版或無效的本機進度已刪除，已從新的進度世代重新開始。</div>'
       : "",
     recoveredPilotHistory
-      ? '<div class="notice">Pilot 歷史格式無法讀取，已從有效的完成摘要重建；舊輪次時間會顯示為未知。</div>'
+      ? '<div class="notice">舊版或無效的 Pilot 歷史已刪除；目前世代可由有效完成摘要補齊。</div>'
       : "",
     storageWarning
       ? `<div class="notice warning">${escapeHtml(storageWarning)}</div>`

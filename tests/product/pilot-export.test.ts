@@ -2,12 +2,14 @@ import { describe, expect, it } from "vitest";
 import {
   loadLocalPilotHistory,
   LOCAL_PILOT_HISTORY_KEY,
+  OBSOLETE_LOCAL_PILOT_HISTORY_KEYS,
   saveLocalPilotHistory,
 } from "../../src/app/pilot-history.js";
 import type { StorageLike } from "../../src/app/local-progress.js";
 import { createPilotExport } from "../../src/product/pilot-export.js";
 import {
   migratePilotHistory,
+  PILOT_HISTORY_SCHEMA_VERSION,
   type PilotHistory,
   type PilotRoundRecord,
 } from "../../src/product/pilot-history.js";
@@ -71,7 +73,7 @@ function withLatency(record: PilotRoundRecord, latency: number): PilotRoundRecor
 }
 
 describe("local pilot history and export", () => {
-  it("migrates existing progress when the pilot key is absent", () => {
+  it("derives current progress when the pilot key is absent", () => {
     const storage = new MemoryStorage();
     const progress = progressWithSummaries(3);
     const loaded = loadLocalPilotHistory(storage, progress, environment);
@@ -80,12 +82,25 @@ describe("local pilot history and export", () => {
     expect(loaded.history.records.every((record) => record.cleanLatencyMedianMs === null)).toBe(true);
   });
 
+  it("deletes obsolete pilot history storage instead of migrating it", () => {
+    const storage = new MemoryStorage();
+    const obsoleteKey = OBSOLETE_LOCAL_PILOT_HISTORY_KEYS[0]!;
+    storage.setItem(obsoleteKey, JSON.stringify({ schemaVersion: 1, records: [] }));
+    const loaded = loadLocalPilotHistory(storage, progressWithSummaries(0), environment);
+    expect(loaded).toEqual({
+      history: { schemaVersion: PILOT_HISTORY_SCHEMA_VERSION, records: [] },
+      recoveredFromInvalidState: true,
+    });
+    expect(storage.getItem(obsoleteKey)).toBeNull();
+    expect(storage.getItem(LOCAL_PILOT_HISTORY_KEY)).toBeNull();
+  });
+
   it("reconciles a history write that is one round behind product progress", () => {
     const storage = new MemoryStorage();
     const progress = progressWithSummaries(3);
     const migrated = migratePilotHistory(progress);
     const behind: PilotHistory = {
-      schemaVersion: 1,
+      schemaVersion: PILOT_HISTORY_SCHEMA_VERSION,
       records: migrated.records.slice(0, 2).map((record) => withLatency(record, 50)),
     };
     saveLocalPilotHistory(storage, behind);

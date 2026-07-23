@@ -95,9 +95,9 @@ Held-out evaluation uses only the held-out catalog partition and grammar-valid c
 
 Evaluation observes behavior; it is not a mastery score.
 
-## Persistence and migration
+## Persistence boundary
 
-Product progress schema 2 adds:
+Product progress schema 3 stores:
 
 - current frequency stage;
 - attempts, errors, and completed practice utterances accumulated toward the next stage;
@@ -105,7 +105,7 @@ Product progress schema 2 adds:
 - recent template IDs;
 - utterance/template/stage fields in recent summaries.
 
-A valid schema-1 progress value is migrated without discarding its measurements, curriculum diagnostics, completed-round counters, or summaries. New frequency-first state begins conservatively at Stage 1.
+Schemas 1 and 2 are not accepted. The browser deletes their obsolete storage key before loading the current generation, then starts with fresh measurements, counters, summaries, and selection state. No legacy payload contributes to product or Pilot state.
 
 ## Explainability
 

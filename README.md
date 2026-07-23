@@ -46,7 +46,7 @@ The product includes:
 - deterministic seeded selection and recent entry/utterance/template penalties;
 - guided keyboard interaction and context-aware raw traces;
 - versioned binding, transition, and confusion aggregation;
-- schema-versioned local progress with schema-1 migration;
+- generation-scoped local progress with obsolete-key deletion and no legacy migration;
 - grammar-valid held-out evaluation;
 - local pilot history, diagnostics, and deterministic export.
 
