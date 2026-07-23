@@ -49,7 +49,7 @@ export function loadLocalPilotHistory(
     + progress.evaluationRoundsCompleted;
   return {
     history: mergePilotHistories(parsed, migrated, completedRounds),
-    recoveredFromInvalidState: discardedObsoleteState,
+    recoveredFromInvalidState: false,
   };
 }
 
