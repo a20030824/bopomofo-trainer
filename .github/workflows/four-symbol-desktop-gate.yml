@@ -1,0 +1,205 @@
+name: four-symbol-desktop-gate
+
+on:
+  push:
+    branches:
+      - agent/ultra-minimal-practice-ui
+
+permissions:
+  contents: write
+
+concurrency:
+  group: four-symbol-desktop-gate
+  cancel-in-progress: false
+
+jobs:
+  correct-and-inspect:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: agent/ultra-minimal-practice-ui
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Apply four-symbol sizing and remove duplicate CSS
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              file = Path(path)
+              source = file.read_text(encoding="utf-8")
+              count = source.count(old)
+              if count != 1:
+                  raise SystemExit(f"{path}: expected one match, found {count}: {old!r}")
+              file.write_text(source.replace(old, new), encoding="utf-8", newline="\n")
+
+          replace_once(
+              "src/app/utterance.css",
+              "--glyph-step: clamp(64px, 5vw, 68px);",
+              "--glyph-step: clamp(74px, 5.6vw, 78px);",
+          )
+          replace_once(
+              "src/app/utterance.css",
+              "  width: 3.25em;\n  min-height: 1.5em;\n  justify-content: center;\n  gap: .06em;",
+              "  width: 3.6em;\n  min-height: 1.5em;\n  justify-content: center;\n  gap: .08em;",
+          )
+          replace_once(
+              "src/app/utterance.css",
+              "  display: inline-grid;\n  min-width: .74em;\n  place-items: start center;",
+              "  display: inline-grid;\n  min-width: 0;\n  flex: 0 0 .82em;\n  place-items: start center;",
+          )
+          replace_once(
+              "src/app/utterance.css",
+              "--glyph-step: clamp(50px, 13vw, 54px);",
+              "--glyph-step: clamp(60px, 15vw, 64px);",
+          )
+          replace_once(
+              "src/app/style.css",
+              ".progress-line {\n  width: 100%;\n  height: 2px;\n  margin-top: 36px;\n  overflow: hidden;",
+              ".progress-line {\n  height: 2px;\n  overflow: hidden;",
+          )
+          replace_once(
+              "src/app/style.css",
+              ".practice-feedback.ime {\n  min-height: 162px;\n  margin-top: 20px;\n}\n",
+              "",
+          )
+
+          style = Path("src/app/style.css").read_text(encoding="utf-8")
+          utterance = Path("src/app/utterance.css").read_text(encoding="utf-8")
+          if ".practice-feedback.ime" in style:
+              raise SystemExit("legacy IME override remains in style.css")
+          if ".progress-line {\n  width: 100%;" in style:
+              raise SystemExit("legacy progress width remains in style.css")
+          if "margin-top: 36px;" in style:
+              raise SystemExit("legacy progress margin remains in style.css")
+          if utterance.count(".practice-center .practice-feedback.ime") != 1:
+              raise SystemExit("IME geometry must have one authoritative rule")
+          PY
+          git diff --check
+      - name: Install dependencies
+        run: npm ci --include=dev --ignore-scripts
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused app tests
+        run: npx vitest run tests/app/presentation-model.test.ts tests/app/keyboard-adapter.test.ts --reporter=verbose
+      - name: Validate catalog
+        run: npm run catalog:validate
+      - name: Production build
+        run: npm run build
+      - name: Install Chromium inspection dependency
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Inspect real desktop rendering
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run dev -- --host 127.0.0.1 > /tmp/bopomofo-vite.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:5173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          mkdir -p visual-artifacts
+          cat > /tmp/four-symbol-inspection.mjs <<'JS'
+          import { chromium } from "playwright";
+          import { writeFile } from "node:fs/promises";
+
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+          let metrics = null;
+
+          for (let attempt = 0; attempt < 40; attempt += 1) {
+            await page.goto("http://127.0.0.1:5173/", { waitUntil: "networkidle" });
+            await page.evaluate(() => localStorage.clear());
+            await page.reload({ waitUntil: "networkidle" });
+            await page.waitForSelector(".practice-glyph");
+            await page.evaluate(() => document.fonts.ready);
+            await page.waitForTimeout(80);
+            metrics = await page.evaluate(() => {
+              const fourSymbolReadings = [...document.querySelectorAll(".syllable-reading")]
+                .filter((reading) => reading.querySelectorAll(".reading-token").length === 4);
+              if (fourSymbolReadings.length === 0) return null;
+              const samples = fourSymbolReadings.map((reading) => {
+                const slot = reading.getBoundingClientRect();
+                const glyph = reading.closest(".practice-glyph").getBoundingClientRect();
+                const tokens = [...reading.querySelectorAll(".reading-token")]
+                  .map((token) => {
+                    const rect = token.getBoundingClientRect();
+                    return { text: token.textContent, left: rect.left, right: rect.right, width: rect.width };
+                  });
+                return {
+                  text: tokens.map((token) => token.text).join(""),
+                  slot: { left: slot.left, right: slot.right, width: slot.width },
+                  glyph: { left: glyph.left, right: glyph.right, width: glyph.width },
+                  tokens,
+                  tokenGaps: tokens.slice(1).map((token, index) => token.left - tokens[index].right),
+                };
+              });
+              const readingRects = [...document.querySelectorAll(".syllable-reading")]
+                .map((reading) => {
+                  const rect = reading.getBoundingClientRect();
+                  return { top: Math.round(rect.top), left: rect.left, right: rect.right };
+                });
+              const rowGroups = Map.groupBy(readingRects, (rect) => rect.top);
+              const adjacentGaps = [...rowGroups.values()].flatMap((row) => {
+                const sorted = row.toSorted((left, right) => left.left - right.left);
+                return sorted.slice(1).map((rect, index) => rect.left - sorted[index].right);
+              });
+              return {
+                viewport: { width: innerWidth, height: innerHeight },
+                lineCount: Number(document.querySelector(".utterance-runway")?.dataset.lineCount ?? "0"),
+                samples,
+                adjacentReadingGaps: adjacentGaps,
+              };
+            });
+            if (metrics !== null) break;
+          }
+
+          if (metrics === null) throw new Error("Could not render a catalog sentence containing a four-symbol syllable after 40 fresh seeds");
+          for (const sample of metrics.samples) {
+            if (sample.slot.width > sample.glyph.width + 0.5) {
+              throw new Error(`reading slot ${sample.slot.width}px exceeds glyph column ${sample.glyph.width}px for ${sample.text}`);
+            }
+            if (sample.slot.left < sample.glyph.left - 0.5 || sample.slot.right > sample.glyph.right + 0.5) {
+              throw new Error(`four-symbol reading escapes its glyph column for ${sample.text}`);
+            }
+            if (sample.tokenGaps.some((gap) => gap < 1)) {
+              throw new Error(`four-symbol tokens overlap or lack a visible gap for ${sample.text}: ${sample.tokenGaps.join(", ")}`);
+            }
+          }
+          if (metrics.adjacentReadingGaps.some((gap) => gap < 1)) {
+            throw new Error(`adjacent syllable readings overlap or touch: ${metrics.adjacentReadingGaps.join(", ")}`);
+          }
+
+          await page.screenshot({ path: "visual-artifacts/desktop-four-symbol.png", fullPage: true });
+          await page.locator(".utterance-runway").screenshot({ path: "visual-artifacts/desktop-four-symbol-runway.png" });
+          await writeFile("visual-artifacts/desktop-four-symbol-metrics.json", JSON.stringify(metrics, null, 2));
+          console.log(JSON.stringify(metrics, null, 2));
+          await browser.close();
+          JS
+          node /tmp/four-symbol-inspection.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-four-symbol-inspection
+          path: visual-artifacts/
+          if-no-files-found: error
+      - name: Commit validated CSS correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/app/style.css src/app/utterance.css
+          git commit -m "Give four-symbol readings full-width columns"
+          git push origin HEAD:agent/ultra-minimal-practice-ui
