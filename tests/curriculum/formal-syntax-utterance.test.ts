@@ -76,6 +76,31 @@ const rules: readonly ProductionRule[] = [
   },
 ];
 
+const punctuatedRules: readonly ProductionRule[] = [{
+  ...rules[0]!,
+  id: "sentence.test-punctuated",
+  constituents: [
+    ...rules[0]!.constituents,
+    {
+      key: "punctuation",
+      category: "Lexeme",
+      minimum: 1,
+      maximum: 1,
+      recursive: false,
+      allowedUpos: ["PUNCT"],
+      requiredFunctions: [],
+      requiredValencyFrames: [],
+      requiredFeatures: {},
+    },
+  ],
+  surfaceOrders: [{
+    id: "canonical",
+    constituentKeys: ["subject", "punctuation"],
+  }],
+  positiveFixtureIds: ["sentence.test-punctuated:positive"],
+  negativeFixtureIds: ["sentence.test-punctuated:negative"],
+}];
+
 describe("frequency-first formal syntax compatibility composer", () => {
   it("uses only stage-eligible entries and returns a formal candidate", () => {
     const eligible = entry("entry:eligible", "甲", 1);
@@ -98,6 +123,22 @@ describe("frequency-first formal syntax compatibility composer", () => {
       templateId: null,
     });
     expect(result.candidates[0]?.entries.map((item) => item.id)).toEqual([eligible.id]);
+  });
+
+  it("keeps punctuation separate from candidate text", () => {
+    const eligible = entry("entry:eligible", "甲", 1);
+    const result = composeFormalSyntaxUtterances({
+      eligibleEntries: [eligible],
+      profiles: [profile("profile:eligible", eligible.id)],
+      random: new SequenceRandom([0]),
+      maximumCandidates: 1,
+      maximumAttempts: 1,
+      rules: punctuatedRules,
+    });
+    expect(result.candidates[0]).toMatchObject({
+      text: "甲",
+      punctuation: "。",
+    });
   });
 
   it("applies explicit post-eligibility entry weights", () => {
