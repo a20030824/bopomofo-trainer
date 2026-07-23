@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import activate_reviewed_catalog_entries_51_100 as activation  # noqa: E402
 import catalog_activation  # noqa: E402
+from activation_report_assertions import validate_historical_activation_report  # noqa: E402
 
 EXPECTED_APPROVED_TEXTS = [
     "文化", "大陸", "大學", "目前", "部分", "日本", "未來", "學校", "經濟",
@@ -44,10 +45,10 @@ class ActivateReviewedCatalogEntries51100Test(unittest.TestCase):
             {"moe-concised": 70, "moe-revised": 4, "cedict": 4, "manual": 2},
         )
 
-    def test_committed_activation_report_is_locked(self) -> None:
+    def test_historical_activation_report_is_internally_locked(self) -> None:
         if not activation.DEFAULT_OUTPUT_REPORT.exists():
             self.skipTest("reviewed-34 activation artifacts are not committed yet")
-        report = catalog_activation.validate_committed_activation(
+        report = validate_historical_activation_report(
             activation.BATCH, activation.DEFAULT_OUTPUT_REPORT
         )
         self.assertEqual(report["activeCount"], 114)
@@ -56,6 +57,10 @@ class ActivateReviewedCatalogEntries51100Test(unittest.TestCase):
             report["readingAuthorityCounts"],
             {"moe-concised": 101, "moe-revised": 7, "cedict": 4, "manual": 2},
         )
+        current_rows = catalog_activation.load_csv(
+            catalog_activation.DEFAULT_WORDS, catalog_activation.WORDS_FIELDS
+        )
+        self.assertGreater(len(current_rows), report["activeCount"])
 
 
 if __name__ == "__main__":
