@@ -37,9 +37,9 @@ Median clean latency is calculated only from non-null binding-observation timing
 
 The primary product is a continuous sentence runway rather than a dashboard of product and research state.
 
-1. One complete Traditional Chinese utterance is the visual unit. Catalog-entry and word boundaries remain in the domain model but are not rendered as cards, gaps, queue rows, or numbered states. Invisible entry wrappers define legal line-break opportunities so a word is not split across desktop lines.
+1. One complete Traditional Chinese utterance is the visual unit. Catalog-entry and word boundaries remain in the domain model but are not rendered as cards, gaps, queue rows, or numbered states. Invisible entry wrappers are indivisible line-breaking units, so a reviewed word cannot split across lines.
 2. Each displayed character uses a fixed visual step that is independent of reading length. The syllable row reserves four readable symbol positions — initial, medial, final, and tone where present — without compressing token spacing. Shorter syllables remain centered in that same slot.
-3. Constrained long utterances use balanced entry-level wrapping. Lines share one stable left edge, punctuation stays with the final entry, and the layout avoids leaving one short entry alone when an earlier legal break can produce more even lines.
+3. The browser measures every entry at the current rendered font and container width, then uses a deterministic dynamic-programming planner to assign contiguous entry ranges to explicit lines. The planner minimizes ragged unused width and applies a strong penalty to a short single-entry final orphan whenever another legal distribution exists. Lines share one stable left edge, and punctuation remains inside the final entry.
 4. Completed, current, and upcoming tokens use restrained ink contrast. The current Bopomofo token receives the persistent accent; the Chinese row does not add a second decorative locator.
 5. Wrong-key feedback appears at the current token and in one fixed-height feedback line. Unmapped input remains quiet and does not move layout.
 6. IME composition remains blocking, but its warning overlays and dims the stable practice surface instead of increasing feedback height or shifting the sentence and progress line.
@@ -57,6 +57,7 @@ The implementation keeps the hidden textarea so real composition events remain o
 Motion supports state continuity but never becomes a reward layer:
 
 - the sentence DOM is mounted once per round and existing token/glyph classes update in place;
+- initial mount, container resize, and final font availability may reparent the existing entry nodes into newly planned line wrappers without recreating glyph or token nodes;
 - token progress uses an 80–90 ms color and underline transition;
 - an incorrect current token receives one small horizontal nudge;
 - a newly created sentence receives a 150 ms opacity and four-pixel entrance;
@@ -88,9 +89,9 @@ The export omits the random product seed, export time, account data, and any con
 6. Trigger wrong-key, unmapped-key, and IME states without causing sentence or progress layout shifts.
 7. Confirm evaluation appears after every five practice rounds and remains distinct in history without changing adaptive measurements.
 8. Reload at least twice and verify completed current-generation history remains ordered and the deterministic next utterance is reproduced.
-9. Check one 320 px viewport and one normal desktop viewport, including a long sentence whose entry-level lines are balanced and share a stable left edge.
-10. Confirm a four-symbol syllable including its tone remains visibly separated, and that shorter syllables do not change Chinese character spacing.
-11. Confirm punctuation remains attached to the final entry and no short orphan line appears when a balanced legal break exists.
+9. Check one 320 px viewport and one normal desktop viewport. Use a long sentence that would greedily leave one short final entry, and confirm the measured planner moves an earlier entry to produce a more even final line while preserving entry order.
+10. Resize across at least one line-break threshold and confirm only entry grouping changes: entered token state, current token, punctuation attachment, and sentence identity remain unchanged.
+11. Confirm a four-symbol syllable including its tone remains visibly separated, and that shorter syllables do not change Chinese character spacing.
 12. Download the Pilot JSON and one raw round diagnostic; keep qualitative notes on repetition, feedback, and visual friction separately.
 
 Curriculum thresholds should change only after a repeatable failure mode appears in this pilot. UI changes should likewise respond to observed task friction rather than decoration alone.
