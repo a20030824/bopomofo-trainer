@@ -1,7 +1,6 @@
 import "./style.css";
 import type { TokenId } from "../core/model.js";
 import { createProductBackup, parseProductBackup } from "./backup.js";
-import { createPilotExport } from "../product/pilot-export.js";
 import {
   appendPilotRoundRecord,
   createPilotRoundRecord,
@@ -48,6 +47,7 @@ import {
   saveSelectionTuning,
   type SelectionTuning,
 } from "./selection-tuning.js";
+import { applyTheme, DEFAULT_THEME, loadTheme, saveTheme, type Theme } from "./theme.js";
 
 type VisualState = "done" | "current" | "upcoming";
 
@@ -70,6 +70,13 @@ try {
 } catch {
   // Storage may be blocked; defaults still provide a complete local session.
 }
+let theme: Theme = DEFAULT_THEME;
+try {
+  theme = loadTheme(localStorage);
+} catch {
+  // Storage may be blocked; defaults still provide a complete local session.
+}
+applyTheme(theme);
 let environment = createProductEnvironment(
   catalogs,
   undefined,
@@ -120,12 +127,12 @@ let product: ProductState = createProductState(
 );
 let compositionActive = false;
 let imeWarning = false;
-let showPhysicalHint = false;
 let showKeyboardSketch = false;
 let previousResult: PilotRoundRecord | null = null;
 let previousResultTimer: number | null = null;
 let inspectionAdvanceCount = 0;
-let panelNotice = "";
+let tuningNotice = "";
+let dataNotice = "";
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -398,15 +405,7 @@ function updatePracticeFeedback(): void {
     return;
   }
 
-  const current = product.session.targets[product.session.position];
-  if (!showPhysicalHint || current === undefined) {
-    feedback.textContent = "";
-    return;
-  }
-  const code = reverseBindings.get(current.tokenId);
-  const key = code === undefined ? "—" : physicalKeyLabel(code);
-  feedback.classList.add("hint");
-  feedback.textContent = key;
+  feedback.textContent = "";
 }
 
 function updatePracticeState(): void {
@@ -487,16 +486,110 @@ function showPreviousResult(record: PilotRoundRecord): void {
   }, 1400);
 }
 
-function traceRows(): string {
-  return product.session.traces.slice(-60).reverse().map((trace) => `<tr>
-    <td>${trace.sequence}</td>
-    <td>${trace.context}</td>
-    <td>${escapeHtml(tokenLabel(trace.expectedToken))}</td>
-    <td>${escapeHtml(trace.actualToken === null ? "—" : tokenLabel(trace.actualToken))}</td>
-    <td>${escapeHtml(trace.physicalCode)}</td>
-    <td>${trace.outcome}</td>
-    <td>${Math.round(trace.elapsedSinceAdvanceMs)}</td>
-  </tr>`).join("");
+function sparklinePoints(
+  values: readonly number[],
+  width: number,
+  height: number,
+  pad: number,
+): readonly { readonly x: number; readonly y: number }[] {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+  const innerWidth = width - pad * 2;
+  const innerHeight = height - pad * 2;
+  const step = values.length > 1 ? innerWidth / (values.length - 1) : 0;
+  return values.map((value, index) => ({
+    x: pad + step * index,
+    y: pad + innerHeight - ((value - min) / span) * innerHeight,
+  }));
+}
+
+function renderSparkline(
+  label: string,
+  values: readonly number[],
+  formatValue: (value: number) => string,
+): string {
+  const width = 168;
+  const height = 40;
+  const pad = 4;
+  if (values.length < 2) {
+    return `<div class="trend-chart">
+      <div class="trend-chart-heading"><span class="trend-label">${escapeHtml(label)}</span></div>
+      <div class="trend-empty">還沒有足夠資料</div>
+    </div>`;
+  }
+  const points = sparklinePoints(values, width, height, pad);
+  const path = points
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+    .join(" ");
+  const last = points.at(-1)!;
+  return `<div class="trend-chart">
+    <div class="trend-chart-heading">
+      <span class="trend-label">${escapeHtml(label)}</span>
+      <span class="trend-value">${escapeHtml(formatValue(values.at(-1)!))}</span>
+    </div>
+    <svg class="trend-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" class="trend-baseline"></line>
+      <path d="${path}" class="trend-line"></path>
+      <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.5" class="trend-dot"></circle>
+    </svg>
+  </div>`;
+}
+
+function renderTrendSection(): string {
+  const records = pilotHistory.records.filter((record) => record.attempts > 0);
+  const accuracyValues = records.map(
+    (record) => ((record.attempts - record.errors) / record.attempts) * 100,
+  );
+  const latencyValues = records
+    .map((record) => record.cleanLatencyMedianMs)
+    .filter((value): value is number => value !== null);
+  return `<div class="trend-row">
+    ${renderSparkline("正確率", accuracyValues, (value) => `${Math.round(value)}%`)}
+    ${renderSparkline("反應時間", latencyValues, (value) => `${Math.round(value)} ms`)}
+  </div>`;
+}
+
+interface WeakBinding {
+  readonly tokenId: TokenId;
+  readonly errorRate: number;
+  readonly attempts: number;
+}
+
+const WEAK_BINDING_MIN_ATTEMPTS = 5;
+const WEAK_BINDING_LIMIT = 5;
+
+function weakestBindings(): readonly WeakBinding[] {
+  const rows: WeakBinding[] = [];
+  for (const record of Object.values(product.progress.curriculum.bindings)) {
+    const aggregate = record.aggregate;
+    if (aggregate === null || aggregate.attempts < WEAK_BINDING_MIN_ATTEMPTS) continue;
+    const errorRate = aggregate.errors / aggregate.attempts;
+    if (errorRate <= 0) continue;
+    rows.push({ tokenId: record.scope.tokenId, errorRate, attempts: aggregate.attempts });
+  }
+  return rows
+    .sort((left, right) => right.errorRate - left.errorRate || right.attempts - left.attempts)
+    .slice(0, WEAK_BINDING_LIMIT);
+}
+
+function renderWeakBindingsSection(): string {
+  const rows = weakestBindings();
+  if (rows.length === 0) {
+    return '<div class="history-empty">累積更多練習後，這裡會列出目前錯誤率較高的按鍵。</div>';
+  }
+  const maxRate = Math.max(...rows.map((row) => row.errorRate));
+  return `<div class="weak-bindings">${rows.map((row) => {
+    const code = reverseBindings.get(row.tokenId);
+    const keyLabel = code === undefined ? "—" : physicalKeyLabel(code);
+    const widthPercent = Math.max(6, Math.round((row.errorRate / maxRate) * 100));
+    return `<div class="weak-binding-row">
+      <span class="weak-binding-symbol">${escapeHtml(tokenLabel(row.tokenId))}</span>
+      <span class="weak-binding-key">${escapeHtml(keyLabel)}</span>
+      <span class="weak-binding-bar-track"><span class="weak-binding-bar" style="width:${widthPercent}%"></span></span>
+      <span class="weak-binding-rate">${Math.round(row.errorRate * 100)}%</span>
+    </div>`;
+  }).join("")}</div>`;
 }
 
 function renderHistoryRows(): string {
@@ -532,19 +625,22 @@ function renderInformationPanel(): void {
     <section class="panel-section">
       <div class="panel-heading"><h3>顯示</h3></div>
       <div class="display-options">
-        <label class="setting-row" for="toggle-physical-hint">
-          <span><strong>實體鍵</strong></span>
-          <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
-        </label>
         <label class="setting-row" for="toggle-keyboard-sketch">
           <span><strong>鍵盤提示</strong></span>
           <input id="toggle-keyboard-sketch" type="checkbox"${showKeyboardSketch ? " checked" : ""} />
+        </label>
+        <label class="setting-row" for="toggle-dark-theme">
+          <span><strong>深色模式</strong></span>
+          <input id="toggle-dark-theme" type="checkbox"${theme === "dark" ? " checked" : ""} />
         </label>
       </div>
     </section>
 
     <section class="panel-section">
-      <div class="panel-heading"><h3>選題權重</h3></div>
+      <div class="panel-heading panel-heading-inline">
+        <h3>選題權重</h3>
+        ${tuningNotice ? `<span class="panel-notice" role="status">${escapeHtml(tuningNotice)}</span>` : ""}
+      </div>
       <div class="tuning-controls">
         <label class="tuning-row" for="error-influence">
           <span>錯誤</span><output id="error-influence-value">${Math.round(selectionTuning.errorInfluence * 100)}%</output>
@@ -557,55 +653,46 @@ function renderInformationPanel(): void {
       </div>
     </section>
 
-    <section class="panel-section data-section">
-      <div class="panel-heading"><h3>本機資料</h3></div>
-      ${panelNotice ? `<p class="panel-notice" role="status">${escapeHtml(panelNotice)}</p>` : ""}
-      <div class="data-actions">
-        <button id="download-backup" class="text-button" type="button">匯出存檔</button>
-        <button id="choose-backup" class="text-button" type="button">匯入存檔</button>
-        <input id="import-backup" class="visually-hidden" type="file" accept="application/json,.json" />
-        <a href="https://github.com/a20030824/bopomofo-trainer" target="_blank" rel="noreferrer">GitHub ↗</a>
-      </div>
+    <section class="panel-section">
+      <div class="panel-heading"><h3>較弱按鍵</h3></div>
+      ${renderWeakBindingsSection()}
     </section>
 
     <section class="panel-section history-section">
       <div class="panel-heading history-heading"><h3>最近紀錄</h3></div>
+      ${renderTrendSection()}
       <div class="history-list">${renderHistoryRows()}</div>
     </section>
 
-    <section class="panel-section developer-section">
-      <details class="developer-tools">
-        <summary>進階</summary>
-        <div class="developer-tools-body">
-          <div class="developer-copy">
-            <p>量測診斷與重設。</p>
-            <div class="inline-actions"><button id="download-round" class="text-button" type="button">本句 trace</button><button id="download-pilot" class="text-button" type="button">Pilot JSON</button></div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>#</th><th>context</th><th>expected</th><th>actual</th><th>code</th><th>outcome</th><th>ms</th></tr></thead>
-              <tbody>${traceRows()}</tbody>
-            </table>
-          </div>
-          <button id="reset-progress" class="danger-button" type="button">清除所有本機進度</button>
-        </div>
-      </details>
+    <section class="panel-section data-section">
+      <div class="panel-heading"><h3>本機資料</h3></div>
+      ${dataNotice ? `<p class="panel-notice data-notice" role="status">${escapeHtml(dataNotice)}</p>` : ""}
+      <div class="data-actions">
+        <button id="download-backup" class="text-button" type="button">匯出存檔</button>
+        <button id="choose-backup" class="text-button" type="button">匯入存檔</button>
+        <button id="reset-progress" class="danger-button" type="button">清除進度</button>
+        <input id="import-backup" class="visually-hidden" type="file" accept="application/json,.json" />
+        <a href="https://github.com/a20030824/bopomofo-trainer" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
     </section>`;
 
-  content.querySelector<HTMLInputElement>("#toggle-physical-hint")?.addEventListener("change", (event) => {
-    if (!(event.currentTarget instanceof HTMLInputElement)) return;
-    showPhysicalHint = event.currentTarget.checked;
-    updatePracticeState();
-  });
   content.querySelector<HTMLInputElement>("#toggle-keyboard-sketch")?.addEventListener("change", (event) => {
     if (!(event.currentTarget instanceof HTMLInputElement)) return;
     showKeyboardSketch = event.currentTarget.checked;
     updateKeyboardSketch();
   });
+  content.querySelector<HTMLInputElement>("#toggle-dark-theme")?.addEventListener("change", (event) => {
+    if (!(event.currentTarget instanceof HTMLInputElement)) return;
+    theme = event.currentTarget.checked ? "dark" : "light";
+    applyTheme(theme);
+    try {
+      saveTheme(localStorage, theme);
+    } catch {
+      // Storage may be blocked; the theme still applies for this session.
+    }
+  });
   bindInfluenceControl(content, "error-influence", "error-influence-value", "errorInfluence");
   bindInfluenceControl(content, "timing-influence", "timing-influence-value", "timingInfluence");
-  content.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
-  content.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
   content.querySelector<HTMLButtonElement>("#download-backup")?.addEventListener("click", downloadProductBackup);
   const backupInput = content.querySelector<HTMLInputElement>("#import-backup");
   content.querySelector<HTMLButtonElement>("#choose-backup")?.addEventListener("click", () => backupInput?.click());
@@ -641,22 +728,11 @@ function downloadJson(filename: string, source: string): void {
   URL.revokeObjectURL(url);
 }
 
-function downloadRoundDiagnostics(): void {
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    round: product.round,
-    exercise: product.round.exercise,
-    summary: product.summary,
-    traces: product.session.traces,
-  };
-  downloadJson(`bopomofo-round-${Date.now()}.json`, JSON.stringify(payload, null, 2));
-}
-
-function downloadPilotExport(): void {
-  downloadJson(
-    "bopomofo-pilot.json",
-    createPilotExport(environment, product.progress, pilotHistory),
-  );
+function syncRangeFill(input: HTMLInputElement): void {
+  const min = Number(input.min || "0");
+  const max = Number(input.max || "100");
+  const percent = max === min ? 0 : ((Number(input.value) - min) / (max - min)) * 100;
+  input.style.setProperty("--fill", `${percent}%`);
 }
 
 function bindInfluenceControl(
@@ -667,8 +743,10 @@ function bindInfluenceControl(
 ): void {
   const input = content.querySelector<HTMLInputElement>(`#${inputId}`);
   const output = content.querySelector<HTMLOutputElement>(`#${outputId}`);
+  if (input !== null) syncRangeFill(input);
   input?.addEventListener("input", () => {
     if (output !== null) output.value = `${input.value}%`;
+    if (input !== null) syncRangeFill(input);
   });
   input?.addEventListener("change", () => {
     selectionTuning = { ...selectionTuning, [key]: Number(input.value) / 100 };
@@ -680,9 +758,9 @@ function bindInfluenceControl(
     );
     try {
       saveSelectionTuning(localStorage, selectionTuning);
-      panelNotice = "權重已更新，下一題生效。";
+      tuningNotice = "權重已更新，下一題生效。";
     } catch {
-      panelNotice = "權重已套用，但無法保存。";
+      tuningNotice = "權重已套用，但無法保存。";
     }
     renderInformationPanel();
   });
@@ -693,7 +771,7 @@ function downloadProductBackup(): void {
     `bopomofo-backup-${new Date().toISOString().slice(0, 10)}.json`,
     createProductBackup(product.progress, pilotHistory, selectionTuning),
   );
-  panelNotice = "存檔已匯出。";
+  dataNotice = "存檔已匯出。";
   renderInformationPanel();
 }
 
@@ -707,7 +785,7 @@ async function importProductBackup(input: HTMLInputElement): Promise<void> {
     STANDARD_BOPOMOFO_LAYOUT.id,
   );
   if (backup === null) {
-    panelNotice = "無法讀取這份存檔。";
+    dataNotice = "無法讀取這份存檔。";
     renderInformationPanel();
     return;
   }
@@ -734,7 +812,7 @@ async function importProductBackup(input: HTMLInputElement): Promise<void> {
     // Progress persistence below provides the visible storage warning.
   }
   persistProgress();
-  panelNotice = "存檔已匯入。";
+  dataNotice = "存檔已匯入。";
   capture.value = "";
   mountPracticeRound(true);
   updateTopbar();

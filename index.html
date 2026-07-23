@@ -9,6 +9,17 @@
     />
     <link rel="stylesheet" href="/src/app/utterance.css" />
     <title>注音輸入訓練器</title>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("bopomofo-trainer.theme.v1") === "dark") {
+            document.documentElement.dataset.theme = "dark";
+          }
+        } catch (error) {
+          // Storage may be blocked; default light theme still applies.
+        }
+      })();
+    </script>
   </head>
   <body>
     <textarea
