@@ -2,6 +2,7 @@
   --glyph-step: clamp(74px, 5.6vw, 78px);
   --han-size: clamp(48px, 4.2vw, 56px);
   --reading-size: clamp(17px, 1.55vw, 20px);
+  --reading-upcoming: rgba(36, 35, 33, .42);
   display: grid;
   width: max-content;
   max-width: 100%;
@@ -65,8 +66,8 @@
   min-height: 1.5em;
   justify-content: center;
   gap: .08em;
-  color: var(--ink-upcoming);
-  font-family: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  color: var(--reading-upcoming);
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   font-size: var(--reading-size);
   font-kerning: none;
   letter-spacing: 0;
@@ -81,9 +82,9 @@
   min-width: 0;
   flex: 0 0 .82em;
   place-items: start center;
-  color: var(--ink-upcoming);
+  color: var(--reading-upcoming);
   font-size: 1em;
-  font-weight: 470;
+  font-weight: 520;
   line-height: 1.15;
   transition: color 80ms ease, transform 80ms ease;
 }
