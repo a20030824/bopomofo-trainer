@@ -88,6 +88,19 @@ describe("continuous practice presentation", () => {
     }
   });
 
+  it("keeps each displayed syllable within four symbols including its tone", () => {
+    let maximumTokenCount = 0;
+    for (const entry of [...PRACTICE_CATALOG, ...EVALUATION_CATALOG]) {
+      for (const syllable of entry.syllables) {
+        maximumTokenCount = Math.max(maximumTokenCount, syllable.tokens.length);
+        expect(syllable.tokens.length, entry.id).toBeGreaterThan(0);
+        expect(syllable.tokens.length, entry.id).toBeLessThanOrEqual(4);
+        expect(syllable.tokens.at(-1)?.startsWith("tone:"), entry.id).toBe(true);
+      }
+    }
+    expect(maximumTokenCount).toBe(4);
+  });
+
   it("fails closed when reviewed characters and syllables cannot align", () => {
     const malformed: Exercise = {
       ...exercise,
