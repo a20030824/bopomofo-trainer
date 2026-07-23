@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - agent/formal-syntax-system
   workflow_dispatch:
     inputs:
       run_research:
@@ -27,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Apply fail-closed production-constraint boundary
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'agent/formal-syntax-system'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'agent/formal-syntax-system') || (github.event_name == 'push' && github.ref_name == 'agent/formal-syntax-system')
         shell: bash
         run: |
           set -euo pipefail
