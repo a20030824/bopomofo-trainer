@@ -5,7 +5,7 @@ export interface FixedTemplateRemovalEvidence {
   readonly syntaxEvidenceSchemaVersion: string;
   readonly legacyCandidateParityPassed: boolean;
   readonly browserSessionMigrationPassed: boolean;
-  readonly progressMigrationPassed: boolean;
+  readonly progressGenerationResetPassed: boolean;
   readonly heldOutIsolationPassed: boolean;
   readonly formalRuntimeDefaultEnabled: boolean;
 }
@@ -38,7 +38,9 @@ export function evaluateFixedTemplateRemovalGate(
   }
   if (!evidence.legacyCandidateParityPassed) blockingReasons.push("legacy-candidate-parity-not-passed");
   if (!evidence.browserSessionMigrationPassed) blockingReasons.push("browser-session-migration-not-passed");
-  if (!evidence.progressMigrationPassed) blockingReasons.push("progress-migration-not-passed");
+  if (!evidence.progressGenerationResetPassed) {
+    blockingReasons.push("progress-generation-reset-not-passed");
+  }
   if (!evidence.heldOutIsolationPassed) blockingReasons.push("held-out-isolation-not-passed");
   if (!evidence.formalRuntimeDefaultEnabled) blockingReasons.push("formal-runtime-not-default");
   return {
