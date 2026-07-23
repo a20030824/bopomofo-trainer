@@ -34,9 +34,11 @@ import {
   saveLocalProductProgress,
 } from "./local-progress.js";
 import {
-  buildPracticeGlyphs,
+  buildPracticeEntries,
   continuousExerciseText,
 } from "./presentation-model.js";
+
+type VisualState = "done" | "current" | "upcoming";
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -257,81 +259,133 @@ function renderNotices(): void {
   ).join("");
 }
 
-function latestFeedback(): string {
+function practiceEntryMarkup(): string {
+  const entries = buildPracticeEntries(product.round.exercise);
+  const punctuation = product.round.selection.utterance.punctuation ?? "";
+  return entries.map((entry, entryIndex) => {
+    const glyphs = entry.glyphs.map((glyph) => {
+      const reading = glyph.tokens.map((tokenId, tokenIndex) => {
+        const position = glyph.tokenStart + tokenIndex;
+        return `<span class="reading-token upcoming" data-position="${position}">${escapeHtml(tokenLabel(tokenId))}</span>`;
+      }).join("");
+      return `<span class="practice-glyph upcoming" data-token-start="${glyph.tokenStart}" data-token-end="${glyph.tokenEnd}">
+        <span class="han-character">${escapeHtml(glyph.character)}</span>
+        <span class="syllable-reading" aria-hidden="true">${reading}</span>
+      </span>`;
+    }).join("");
+    const suffix = entryIndex === entries.length - 1 && punctuation
+      ? `<span class="utterance-punctuation" aria-hidden="true">${escapeHtml(punctuation)}</span>`
+      : "";
+    return `<span class="practice-entry" data-entry-index="${entry.entryIndex}">${glyphs}${suffix}</span>`;
+  }).join("");
+}
+
+function mountPracticeRound(animateRound = false): void {
+  const stage = requireElement<HTMLElement>("#practice-stage");
+  stage.innerHTML = `
+    <div class="practice-center">
+      <div class="utterance-runway" aria-label="${escapeHtml(utteranceText())}">
+        ${practiceEntryMarkup()}
+      </div>
+      <div id="practice-feedback" class="practice-feedback" aria-live="polite"></div>
+      <div class="progress-line" aria-hidden="true"><span id="progress-fill"></span></div>
+      <div class="progress-caption"><span id="progress-count"></span></div>
+    </div>`;
+  updatePracticeState();
+
+  if (!animateRound) return;
+  stage.classList.remove("round-enter");
+  void stage.offsetWidth;
+  stage.classList.add("round-enter");
+  stage.addEventListener("animationend", () => {
+    stage.classList.remove("round-enter");
+  }, { once: true });
+}
+
+function glyphVisualState(tokenStart: number, tokenEnd: number): VisualState {
+  if (product.session.position >= tokenEnd) return "done";
+  if (product.session.position >= tokenStart) return "current";
+  return "upcoming";
+}
+
+function tokenVisualState(position: number): VisualState {
+  if (position < product.session.position) return "done";
+  if (position === product.session.position) return "current";
+  return "upcoming";
+}
+
+function applyVisualState(element: HTMLElement, state: VisualState): void {
+  element.classList.remove("done", "current", "upcoming");
+  element.classList.add(state);
+  if (state === "current") element.setAttribute("aria-current", "true");
+  else element.removeAttribute("aria-current");
+}
+
+function updatePracticeFeedback(): void {
+  const feedback = requireElement<HTMLElement>("#practice-feedback");
+  feedback.className = "practice-feedback";
+  feedback.setAttribute("aria-live", "polite");
+
   if (imeWarning) {
-    return `<div class="ime-blocker" role="alert">
+    feedback.classList.add("ime");
+    feedback.setAttribute("aria-live", "assertive");
+    feedback.innerHTML = `<div class="ime-blocker" role="alert">
       <span>輸入暫停</span>
       <strong>偵測到中文輸入法</strong>
       <p>切換到英文鍵盤後按 Esc，繼續目前這一句。</p>
     </div>`;
+    return;
   }
 
   const latest = product.session.traces.at(-1);
   if (latest?.outcome === "incorrect") {
     const actual = latest.actualToken === null ? "未映射鍵" : tokenLabel(latest.actualToken);
-    return `<div class="practice-feedback error" aria-live="assertive">按到 ${escapeHtml(actual)}，應為 ${escapeHtml(tokenLabel(latest.expectedToken))}</div>`;
+    feedback.classList.add("error");
+    feedback.setAttribute("aria-live", "assertive");
+    feedback.textContent = `按到 ${actual}，應為 ${tokenLabel(latest.expectedToken)}`;
+    return;
   }
   if (latest?.outcome === "unmapped") {
-    return '<div class="practice-feedback muted" aria-live="polite">未映射，進度未移動</div>';
+    feedback.classList.add("muted");
+    feedback.textContent = "未映射，進度未移動";
+    return;
   }
 
   const current = product.session.targets[product.session.position];
   if (!showPhysicalHint || current === undefined) {
-    return '<div class="practice-feedback" aria-live="polite"></div>';
+    feedback.textContent = "";
+    return;
   }
   const code = reverseBindings.get(current.tokenId);
   const key = code === undefined ? "—" : physicalKeyLabel(code);
-  return `<div class="practice-feedback hint" aria-live="polite">${escapeHtml(tokenLabel(current.tokenId))}<span>${escapeHtml(key)}</span></div>`;
+  feedback.classList.add("hint");
+  feedback.innerHTML = `${escapeHtml(tokenLabel(current.tokenId))}<span>${escapeHtml(key)}</span>`;
 }
 
-function renderPractice(animateRound = false): void {
+function updatePracticeState(): void {
   const stage = requireElement<HTMLElement>("#practice-stage");
-  const glyphs = buildPracticeGlyphs(product.round.exercise);
   const latest = product.session.traces.at(-1);
-  const punctuation = product.round.selection.utterance.punctuation ?? "";
-  const glyphMarkup = glyphs.map((glyph) => {
-    const state = product.session.position >= glyph.tokenEnd
-      ? "done"
-      : product.session.position >= glyph.tokenStart
-        ? "current"
-        : "upcoming";
-    const tokens = glyph.tokens.map((tokenId, tokenIndex) => {
-      const position = glyph.tokenStart + tokenIndex;
-      const tokenState = position < product.session.position
-        ? "done"
-        : position === product.session.position
-          ? "current"
-          : "upcoming";
-      const hasError = tokenState === "current"
-        && latest?.position === position
-        && latest.outcome === "incorrect";
-      return `<span class="reading-token ${tokenState}${hasError ? " error" : ""}" data-position="${position}"${tokenState === "current" ? ' aria-current="true"' : ""}>${escapeHtml(tokenLabel(tokenId))}</span>`;
-    }).join("");
-    return `<span class="practice-glyph ${state}" data-entry-index="${glyph.entryIndex}">
-      <span class="han-character">${escapeHtml(glyph.character)}</span>
-      <span class="syllable-reading">${tokens}</span>
-    </span>`;
-  }).join("");
-  const progressPercent = currentProgressPercent();
 
-  stage.innerHTML = `
-    <div class="practice-center">
-      <div class="utterance-runway" aria-label="${escapeHtml(utteranceText())}">
-        ${glyphMarkup}<span class="utterance-punctuation" aria-hidden="true">${escapeHtml(punctuation)}</span>
-      </div>
-      ${latestFeedback()}
-      <div class="progress-line" aria-hidden="true"><span style="width:${progressPercent}%"></span></div>
-      <div class="progress-caption">
-        <span>${product.session.position} / ${product.session.targets.length}</span>
-        <span>${progressPercent}%</span>
-      </div>
-    </div>`;
-
-  if (animateRound) {
-    stage.classList.remove("round-enter");
-    void stage.offsetWidth;
-    stage.classList.add("round-enter");
+  for (const glyph of stage.querySelectorAll<HTMLElement>(".practice-glyph")) {
+    const tokenStart = Number(glyph.dataset.tokenStart);
+    const tokenEnd = Number(glyph.dataset.tokenEnd);
+    applyVisualState(glyph, glyphVisualState(tokenStart, tokenEnd));
   }
+
+  for (const token of stage.querySelectorAll<HTMLElement>(".reading-token")) {
+    const position = Number(token.dataset.position);
+    const state = tokenVisualState(position);
+    applyVisualState(token, state);
+    const hasError = state === "current"
+      && latest?.position === position
+      && latest.outcome === "incorrect";
+    token.classList.toggle("error", hasError);
+  }
+
+  requireElement<HTMLElement>("#progress-fill").style.width = `${currentProgressPercent()}%`;
+  requireElement<HTMLElement>("#progress-count").textContent =
+    `${product.session.position} / ${product.session.targets.length}`;
+  updatePracticeFeedback();
 }
 
 function updateTopbar(): void {
@@ -340,11 +394,20 @@ function updateTopbar(): void {
     const latency = previousResult.cleanLatencyMedianMs === null
       ? ""
       : ` · ${Math.round(previousResult.cleanLatencyMedianMs)} ms`;
+    status.setAttribute("aria-label", "上一句結果");
     status.innerHTML = `<span>上一句</span><strong>${accuracyLabel(previousResult.attempts, previousResult.errors)}${latency}</strong>`;
     return;
   }
   const { attempts, errors } = mappedRoundCounts();
-  status.innerHTML = `<span>第 ${currentRoundNumber()} 句</span><strong>${accuracyLabel(attempts, errors)}</strong>`;
+  status.setAttribute("aria-label", `第 ${currentRoundNumber()} 句，目前正確率 ${accuracyLabel(attempts, errors)}`);
+  status.innerHTML = `<span>${currentRoundNumber()}</span><strong>${accuracyLabel(attempts, errors)}</strong>`;
+}
+
+function clearPreviousResult(): void {
+  previousResult = null;
+  if (previousResultTimer !== null) window.clearTimeout(previousResultTimer);
+  previousResultTimer = null;
+  updateTopbar();
 }
 
 function showPreviousResult(record: PilotRoundRecord): void {
@@ -355,7 +418,7 @@ function showPreviousResult(record: PilotRoundRecord): void {
     previousResult = null;
     previousResultTimer = null;
     updateTopbar();
-  }, 2800);
+  }, 1400);
 }
 
 function historyPhaseLabel(record: PilotRoundRecord): string {
@@ -440,7 +503,7 @@ function renderInformationPanel(): void {
     <section class="panel-section">
       <div class="panel-heading"><span>Display</span><h3>顯示</h3></div>
       <label class="setting-row" for="toggle-physical-hint">
-        <span><strong>實體鍵提示</strong><small>只在目前注音下方顯示下一個實體鍵。</small></span>
+        <span><strong>實體鍵提示</strong><small>只顯示目前注音對應的下一個實體鍵。</small></span>
         <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
       </label>
     </section>
@@ -476,7 +539,7 @@ function renderInformationPanel(): void {
   content.querySelector<HTMLInputElement>("#toggle-physical-hint")?.addEventListener("change", (event) => {
     if (!(event.currentTarget instanceof HTMLInputElement)) return;
     showPhysicalHint = event.currentTarget.checked;
-    renderPractice();
+    updatePracticeState();
   });
   content.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
   content.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
@@ -555,15 +618,13 @@ function resetProgress(): void {
   pilotHistory = migratePilotHistory(progress);
   recoveredFromInvalidState = false;
   recoveredPilotHistory = false;
-  previousResult = null;
-  if (previousResultTimer !== null) window.clearTimeout(previousResultTimer);
-  previousResultTimer = null;
+  clearPreviousResult();
   if (canPersist) persistProgress();
   imeWarning = false;
   capture.value = "";
   requireElement<HTMLDialogElement>("#information-dialog").close();
   renderNotices();
-  renderPractice(true);
+  mountPracticeRound(true);
   updateTopbar();
 }
 
@@ -583,14 +644,14 @@ function completeRoundAndAdvance(): void {
   product = startNextProductRound(environment, product, performance.now());
   imeWarning = false;
   capture.value = "";
-  renderPractice(true);
+  mountPracticeRound(true);
   showPreviousResult(record);
 }
 
 capture.addEventListener("compositionstart", () => {
   compositionActive = true;
   imeWarning = true;
-  renderPractice();
+  updatePracticeState();
 });
 
 capture.addEventListener("compositionend", () => {
@@ -615,22 +676,31 @@ capture.addEventListener("keydown", (event) => {
   );
   if (input.composing) {
     imeWarning = true;
-    renderPractice();
+    updatePracticeState();
     return;
   }
   if (event.code === "Space" || event.code === "Tab") event.preventDefault();
-  const before = product.summary;
+  const beforeSummary = product.summary;
+  const beforeTraceCount = product.session.traces.length;
   product = applyProductInput(
     environment,
     product,
     input,
     new Date().toISOString(),
   );
-  if (before === null && product.summary !== null) {
+  const latest = product.session.traces.at(-1);
+  if (
+    previousResult !== null
+    && product.session.traces.length > beforeTraceCount
+    && latest?.outcome === "correct"
+  ) {
+    clearPreviousResult();
+  }
+  if (beforeSummary === null && product.summary !== null) {
     completeRoundAndAdvance();
     return;
   }
-  renderPractice();
+  updatePracticeState();
   updateTopbar();
 });
 
@@ -643,7 +713,7 @@ document.addEventListener("keydown", (event) => {
   if (imeWarning) {
     imeWarning = false;
     capture.value = "";
-    renderPractice();
+    updatePracticeState();
     focusCapture();
     return;
   }
@@ -654,7 +724,7 @@ window.addEventListener("focus", focusCapture);
 
 mountShell();
 renderNotices();
-renderPractice();
+mountPracticeRound();
 updateTopbar();
 if (loadedProgress === null) persistProgress();
 focusCapture();
