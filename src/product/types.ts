@@ -17,7 +17,7 @@ import type { GrammarAnnotation } from "../grammar/types.js";
 import type { MeasurementPolicy, MeasurementSummary } from "../measurement/types.js";
 import type { InteractionSessionState } from "../practice/interaction-session.js";
 
-export const PRODUCT_PROGRESS_SCHEMA_VERSION = 2 as const;
+export const PRODUCT_PROGRESS_SCHEMA_VERSION = 3 as const;
 
 export type ProductRoundKind = "practice" | "evaluation";
 
