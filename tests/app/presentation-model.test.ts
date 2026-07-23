@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { Exercise } from "../../src/core/model.js";
 import {
+  EVALUATION_CATALOG,
+  PRACTICE_CATALOG,
+} from "../../src/app/generated/catalog.js";
+import {
+  buildPracticeEntries,
   buildPracticeGlyphs,
   continuousExerciseText,
 } from "../../src/app/presentation-model.js";
@@ -36,7 +41,7 @@ const exercise: Exercise = {
 };
 
 describe("continuous practice presentation", () => {
-  it("joins entries without exposing word boundaries", () => {
+  it("joins entries without exposing word boundaries in the display text", () => {
     expect(continuousExerciseText(exercise)).toBe("我們今天");
   });
 
@@ -49,11 +54,51 @@ describe("continuous practice presentation", () => {
     ]);
   });
 
-  it("keeps a multi-character prompt intact when it has one reviewed syllable", () => {
-    const compact: Exercise = {
+  it("retains invisible entry groups as legal line-break units", () => {
+    expect(buildPracticeEntries(exercise)).toEqual([
+      expect.objectContaining({
+        entryId: "我們|ㄨㄛ3 ㄇㄣ5",
+        entryIndex: 0,
+        tokenStart: 0,
+        tokenEnd: 6,
+        glyphs: [
+          expect.objectContaining({ character: "我" }),
+          expect.objectContaining({ character: "們" }),
+        ],
+      }),
+      expect.objectContaining({
+        entryId: "今天|ㄐㄧㄣ1 ㄊㄧㄢ1",
+        entryIndex: 1,
+        tokenStart: 6,
+        tokenEnd: 14,
+        glyphs: [
+          expect.objectContaining({ character: "今" }),
+          expect.objectContaining({ character: "天" }),
+        ],
+      }),
+    ]);
+  });
+
+  it("keeps every active catalog entry character-aligned", () => {
+    for (const entry of [...PRACTICE_CATALOG, ...EVALUATION_CATALOG]) {
+      expect(
+        Array.from(entry.prompt.text).length,
+        entry.id,
+      ).toBe(entry.syllables.length);
+    }
+  });
+
+  it("fails closed when reviewed characters and syllables cannot align", () => {
+    const malformed: Exercise = {
       ...exercise,
-      entries: [{ ...exercise.entries[0]!, prompt: { text: "測試", locale: "zh-TW" }, syllables: [{ tokens: ["tone:1"] }] }],
+      entries: [{
+        ...exercise.entries[0]!,
+        prompt: { text: "測試", locale: "zh-TW" },
+        syllables: [{ tokens: ["tone:1"] }],
+      }],
     };
-    expect(buildPracticeGlyphs(compact)[0]?.character).toBe("測試");
+    expect(() => buildPracticeEntries(malformed)).toThrow(
+      "Cannot align practice entry 我們|ㄨㄛ3 ㄇㄣ5: 2 characters for 1 syllables",
+    );
   });
 });
