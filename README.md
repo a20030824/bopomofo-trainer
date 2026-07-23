@@ -3,35 +3,42 @@
 [![CI](https://github.com/a20030824/bopomofo-trainer/actions/workflows/check.yml/badge.svg)](https://github.com/a20030824/bopomofo-trainer/actions/workflows/check.yml)
 [![Deploy Pages](https://github.com/a20030824/bopomofo-trainer/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/a20030824/bopomofo-trainer/actions/workflows/deploy-pages.yml)
 
-一個在瀏覽器中運作、資料留在本機的繁體中文注音鍵盤訓練雛型。它不把詞隨機串起來，而是先推導正式句法結構，再依句法相容性、詞頻與有限的學習紀錄填入詞槽。
+一個在瀏覽器中運作、資料留在本機的繁體中文注音鍵盤訓練雛型。它以常用詞為基礎，記住真正按錯或明顯卡住的注音，讓這些弱點在後續題目中更常出現；句法規則負責讓練習內容維持可讀，而不是任意拼接詞語。
 
 **[開啟線上雛型](https://a20030824.github.io/bopomofo-trainer/)**
 
 ## 現在能做什麼
 
 - 使用標準注音鍵盤配置進行逐音節輸入練習。
-- 從 1,786 筆審核詞條中生成練習內容，其中 1,776 筆用於練習、10 筆保留作評量。
-- 以正式句法骨架和 2,691 個執行期句法 profile 產生題目。
-- 以常用度為主要選詞依據，錯誤與乾淨輸入時間只提供有上限的調整。
-- 將進度、測量與 pilot history 保存在瀏覽器 localStorage。
+- 從審核過的常用詞中產生練習內容，另保留一小部分作評量。
+- 分別記錄目標注音的錯誤與乾淨輸入時間，用來調整後續選題。
+- 可調整錯誤與慢速訊號的影響，常用度仍是選詞基礎。
+- 將進度、量測與練習紀錄保存在瀏覽器，也能匯出或匯入完整存檔。
+- 以句法規則限制詞槽，避免產生任意詞列。
 - 使用固定 seed 重現相同 catalog 與進度下的選題結果。
 - 按 `F8` 暫時跳到下一個預覽題，不會寫入假進度。
 
 > 目前保證的是句法 profile 與句型規則相容，不保證每一句都具備自然的語意搭配。這是雛型現階段刻意保留的界線。
 
-## 句子怎麼產生
+## 錯誤怎麼影響下一題
 
 ```text
-正式句法規則
-    ↓ 推導句子形狀
-相容詞槽
-    ↓ 句法 profile 過濾
-常用度 + 有上限的學習權重
-    ↓ seeded weighted selection
-完整練習句
+常用度建立基礎權重
+        ＋
+目標注音的錯誤紀錄
+        ＋
+乾淨輸入的慢速訊號
+        ↓
+有限度提高弱點出現機率
+        ↓
+在句法相容的候選中選出下一題
 ```
 
-產品路徑沒有內建完整句子 template，也不會退回任意詞列或單詞 fallback。打包時會先套用 fail-closed 句法合法清單；缺少合法 profile 的詞條不會進入網站 catalog。
+只有題目原本要求的注音會累積錯誤；使用者誤按的另一顆鍵不會反過來獲得權重。慢速訊號只採用沒有錯誤或輸入干擾的樣本。學習紀錄不會直接指定整句，而是輕推含有容易出錯注音或按鍵轉換的合法候選。
+
+## 句子怎麼產生
+
+句法生成只負責約束句形與詞槽；選題核心仍是常用度加學習權重。缺少相容句法資料的詞不會進入網站題庫。
 
 ## 本機執行
 
@@ -51,8 +58,6 @@ npm run check
 ```
 
 這會依序執行 TypeScript typecheck、快速 Vitest、Python source-adapter 測試、catalog 驗證與 production build。
-
-目前 catalog 驗證涵蓋 1,786 個詞條、3,267 個音節與 42 個注音 token。
 
 ## 主要目錄
 
