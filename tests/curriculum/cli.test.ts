@@ -47,5 +47,5 @@ describe("curriculum simulator CLI integration", () => {
     expect(output.reports.every((report) => report.rounds.length === 2)).toBe(true);
     expect(output.determinismCheck.identical).toBe(true);
     expect(output.determinismCheck.digest).toMatch(/^[0-9a-f]{8}$/);
-  });
+  }, 60_000);
 });

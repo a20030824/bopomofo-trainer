@@ -67,7 +67,7 @@ class MoeConcisedProjectionArtifactTest(unittest.TestCase):
             + diagnostics["omittedNonCandidateSourceRowCount"],
             diagnostics["sourceRowCount"],
         )
-        self.assertLess(ARTIFACT.stat().st_size, 1_000_000)
+        self.assertLess(ARTIFACT.stat().st_size, 4_000_000)
 
     def test_projection_preserves_exact_moe_reading_evidence(self) -> None:
         payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))

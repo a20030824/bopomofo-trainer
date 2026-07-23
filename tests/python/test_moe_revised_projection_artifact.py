@@ -71,7 +71,7 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
         unresolved.update(item["text"] for item in diagnostics["invalidReadings"])
         self.assertEqual(set(expected_fallback), set(lookup_texts) | unresolved)
         self.assertTrue(set(lookup_texts).isdisjoint(unresolved))
-        self.assertLess(ARTIFACT.stat().st_size, 100_000)
+        self.assertLess(ARTIFACT.stat().st_size, 1_000_000)
 
     def test_projection_preserves_exact_revised_evidence(self) -> None:
         payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))

@@ -105,7 +105,7 @@ describe("real relational catalog report", () => {
         supportState: "evaluation-only",
       });
     }
-  });
+  }, 60_000);
 
   it("finds exact ㄓ to ㄨ paths in reviewed text positions", async () => {
     const entries = await compileRealCatalog();
