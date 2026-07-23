@@ -2,15 +2,12 @@ name: four-symbol-desktop-gate
 
 on:
   pull_request:
-  push:
-    branches:
-      - agent/ultra-minimal-practice-ui
 
 permissions:
   contents: write
 
 concurrency:
-  group: four-symbol-desktop-gate
+  group: four-symbol-desktop-gate-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
@@ -200,7 +197,7 @@ jobs:
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
-          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/app/style.css src/app/utterance.css
           git commit -m "Give four-symbol readings full-width columns"
           git push origin HEAD:agent/ultra-minimal-practice-ui
