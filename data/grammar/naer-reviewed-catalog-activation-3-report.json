@@ -50,7 +50,7 @@
   "commonnessRowCount": 114,
   "heldDecisionCount": 16,
   "outputChecksumsSha256": {
-    "data/commonness/naer-1141208-active-catalog-rows.json": "ca4321024edcb4f6355d2673bbe2dc7dfa1bc7eb6d42ba5bd5033fa10d455411",
+    "data/commonness/naer-1141208-active-catalog-rows.json": "e6b1433ff266b1f77fed7bfaa7dc64d4092030e18d8a12a7f10b23a3825ef742",
     "data/identity/cedict-active-catalog-hints.json": "a7c6391a347dd13979da54f453c774f7ca89b3f3b69e5bf058ea03a1db48e33c",
     "data/provenance.csv": "2c2a8cd28c82755f456f5ae21dba50fa2127d6d1d223a59fee87ca32fa5be4cf",
     "data/readings/moe-concised-2014_20260626-active-catalog.json": "b3d20c64c6eab62d52ff2480a87b68d5c06e8cc33fe9a6dd8a5649e648eab6a6",
@@ -58,7 +58,7 @@
     "data/source/grammar.sample.csv": "8ef86c5d8be733409a29312d5895c51b3d0f59186a7014553c4ca051d10aedf0",
     "data/source/words.sample.csv": "93296ce425217cf14ce56b91335d693850daab74e96a8c8b1677f9acbc568839"
   },
-  "determinismDigest": "83491c59ce0c863f556b31da9f106c2d5e63376b2f9f90db14b2e3fab6485a9c",
+  "determinismDigest": "7ee14173a33ff1d5b65c6da981835547461c3a377b4da530f7177a3b8fd1e5d8",
   "policy": {
     "stageEligibilityChange": "forbidden",
     "heldCandidateActivation": "forbidden",
