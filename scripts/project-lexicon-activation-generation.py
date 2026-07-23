@@ -12,11 +12,14 @@ import argparse
 import csv
 import hashlib
 import json
+import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+ROOT = SCRIPT_DIR.parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
@@ -46,6 +49,30 @@ def display_path(path: Path) -> str:
         return resolved.relative_to(Path.cwd().resolve()).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def convert_numbered_pinyin(values: list[str]) -> list[str]:
+    """Convert CEDICT numbered pinyin through the repository's single TS table."""
+    if not values:
+        return []
+    result = subprocess.run(
+        ["npx", "tsx", str(SCRIPT_DIR / "convert-numbered-pinyin.ts")],
+        input=json.dumps(values),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=ROOT,
+        shell=(os.name == "nt"),
+        check=False,
+    )
+    if result.returncode != 0:
+        raise ValueError(f"numbered pinyin conversion failed: {result.stderr}")
+    payload = json.loads(result.stdout)
+    if not isinstance(payload, list) or len(payload) != len(values):
+        raise ValueError("numbered pinyin conversion returned an invalid result")
+    if any(not isinstance(value, str) or not value for value in payload):
+        raise ValueError("numbered pinyin conversion returned an empty reading")
+    return payload
 
 
 def load_active_catalog(path: Path) -> tuple[set[tuple[str, str]], set[str]]:
@@ -126,6 +153,8 @@ def build_reading_lookup(
             "evidenceType": "trainer-bopomofo",
             "evidence": reading,
         }
+
+    cedict_sources: list[tuple[str, str]] = []
     for text, row in cedict_rows.items():
         if row.get("status") != "unique-record":
             continue
@@ -137,10 +166,15 @@ def build_reading_lookup(
         pinyin = records[0].get("pinyin") if isinstance(records[0], dict) else None
         if not isinstance(pinyin, str) or not pinyin:
             raise ValueError(f"CEDICT row lacks numbered pinyin: {text}")
+        cedict_sources.append((text, pinyin))
+    converted = convert_numbered_pinyin([pinyin for _, pinyin in cedict_sources])
+    for (text, pinyin), reading in zip(cedict_sources, converted, strict=True):
         lookup[text] = {
             "authority": "cedict-unique",
-            "evidenceType": "numbered-pinyin",
-            "evidence": pinyin,
+            "evidenceType": "trainer-bopomofo",
+            "evidence": reading,
+            "sourceEvidenceType": "numbered-pinyin",
+            "sourceEvidence": pinyin,
         }
 
     unresolved: dict[str, str] = {}
@@ -323,6 +357,8 @@ def write_activation_csv(path: Path, report: dict[str, Any]) -> None:
                 "reading_authority",
                 "reading_evidence_type",
                 "reading_evidence",
+                "reading_source_evidence_type",
+                "reading_source_evidence",
                 "reading_review_status",
                 "ud_observed",
                 "ud_occurrence_count",
@@ -340,6 +376,8 @@ def write_activation_csv(path: Path, report: dict[str, Any]) -> None:
                 "reading_authority": reading.get("authority", ""),
                 "reading_evidence_type": reading.get("evidenceType", ""),
                 "reading_evidence": reading.get("evidence", ""),
+                "reading_source_evidence_type": reading.get("sourceEvidenceType", ""),
+                "reading_source_evidence": reading.get("sourceEvidence", ""),
                 "reading_review_status": row.get("readingReviewStatus") or "",
                 "ud_observed": syntax.get("observed", ""),
                 "ud_occurrence_count": syntax.get("occurrenceCount", ""),
