@@ -24,6 +24,13 @@ const evidenceUrl = new URL(
   import.meta.url,
 );
 const outputUrl = new URL("../data/grammar/", import.meta.url);
+const profilesUrl = new URL("formal-syntax-current-catalog-profiles.json", outputUrl);
+const coverageUrl = new URL("formal-syntax-current-catalog-coverage.json", outputUrl);
+const argumentsList = process.argv.slice(2);
+if (argumentsList.some((argument) => argument !== "--verify")) {
+  throw new Error(`unknown formal syntax coverage argument: ${argumentsList.join(" ")}`);
+}
+const verifyOnly = argumentsList.includes("--verify");
 
 const [resolvedSource, provenanceSource, evidenceSource] = await Promise.all([
   loadResolvedCatalogSource(),
@@ -87,19 +94,30 @@ const coverageArtifact = {
   profileProjectionDigest: projection.projectionDigest,
   profileArtifactDigest: profileDigest,
 };
+const profileText = `${JSON.stringify({ ...profileArtifact, determinismDigest: profileDigest })}\n`;
+const coverageText = `${JSON.stringify(coverageArtifact)}\n`;
 
-await mkdir(outputUrl, { recursive: true });
-await Promise.all([
-  writeFile(
-    new URL("formal-syntax-current-catalog-profiles.json", outputUrl),
-    `${JSON.stringify({ ...profileArtifact, determinismDigest: profileDigest })}\n`,
-  ),
-  writeFile(
-    new URL("formal-syntax-current-catalog-coverage.json", outputUrl),
-    `${JSON.stringify(coverageArtifact)}\n`,
-  ),
-]);
+if (verifyOnly) {
+  const [committedProfiles, committedCoverage] = await Promise.all([
+    readFile(profilesUrl, "utf8"),
+    readFile(coverageUrl, "utf8"),
+  ]);
+  if (committedProfiles !== profileText) {
+    throw new Error("committed formal syntax profile artifact is stale; run npm run grammar:formal-syntax-coverage");
+  }
+  if (committedCoverage !== coverageText) {
+    throw new Error("committed formal syntax coverage artifact is stale; run npm run grammar:formal-syntax-coverage");
+  }
+} else {
+  await mkdir(outputUrl, { recursive: true });
+  await Promise.all([
+    writeFile(profilesUrl, profileText),
+    writeFile(coverageUrl, coverageText),
+  ]);
+}
+
 console.log(JSON.stringify({
+  mode: verifyOnly ? "verify" : "write",
   catalogEntryCount: catalog.entries.length,
   profileCount: projection.profiles.length,
   noUdEvidenceEntryCount: projection.noUdEvidenceEntryIds.length,
