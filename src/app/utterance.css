@@ -2,21 +2,26 @@
   --glyph-step: clamp(64px, 5vw, 68px);
   --han-size: clamp(48px, 4.2vw, 56px);
   --reading-size: clamp(17px, 1.55vw, 20px);
-  display: block;
+  display: grid;
   width: max-content;
   max-width: 100%;
   margin-inline: auto;
-  margin-bottom: -26px;
+  gap: 26px;
   color: var(--ink-upcoming);
   font-variant-numeric: tabular-nums;
   text-align: left;
-  text-wrap: balance;
   word-break: keep-all;
+}
+
+.practice-line {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .practice-entry {
   display: inline-flex;
-  margin-bottom: 26px;
   align-items: flex-start;
   vertical-align: top;
   white-space: nowrap;
@@ -169,9 +174,8 @@
     --glyph-step: clamp(50px, 13vw, 54px);
     --han-size: clamp(38px, 10.8vw, 46px);
     --reading-size: clamp(14.5px, 4vw, 16px);
-    margin-bottom: -20px;
+    gap: 20px;
   }
-  .practice-entry { margin-bottom: 20px; }
   .practice-glyph { height: calc(var(--han-size) + 41px); }
   .syllable-reading { top: calc(var(--han-size) + 8px); }
   .practice-center .progress-line,
