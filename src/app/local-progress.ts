@@ -84,7 +84,7 @@ export function loadLocalProductProgress(
   );
   return {
     progress,
-    recoveredFromInvalidState: progress === null || discardedObsoleteState,
+    recoveredFromInvalidState: progress === null,
   };
 }
 
