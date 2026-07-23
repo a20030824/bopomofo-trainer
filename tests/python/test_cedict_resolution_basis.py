@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import csv
 import sys
 import unittest
 from pathlib import Path
@@ -46,16 +47,20 @@ class CedictResolutionBasisTest(unittest.TestCase):
 
         self.assertEqual(candidate_count, active_catalog_size())
         self.assertEqual(len(accepted), active_concised_count() + active_revised_count())
-        # The exact target set grows every time a new batch adds
-        # CEDICT-sourced words, so only the self-consistent count and a
-        # long-standing subset are checked here rather than a fixed list.
         # Unresolved is a distinct-text set (not a row count): a heteronym
         # text can have several active rows, all sharing the same identity.
         self.assertEqual(
             len(unresolved),
             active_catalog_text_count() - active_concised_count() - active_revised_count(),
         )
-        self.assertTrue({"台灣", "很好", "想要", "東西", "看到", "聽到"}.issubset(unresolved))
+        with CANDIDATES.open("r", encoding="utf-8-sig", newline="") as source:
+            candidate_texts = {
+                row["text"]
+                for row in csv.DictReader(source)
+                if row.get("status") != "excluded"
+            }
+        self.assertEqual(unresolved, sorted(candidate_texts - accepted))
+        self.assertTrue(accepted.isdisjoint(unresolved))
 
 
 if __name__ == "__main__":

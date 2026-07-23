@@ -6,6 +6,8 @@ export interface ProductCatalogPartition {
   readonly evaluation: readonly CatalogEntry[];
 }
 
+export const DEFAULT_PRODUCT_EVALUATION_CATALOG_SIZE = 10;
+
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
 }
@@ -16,7 +18,7 @@ function requiredSupport(original: number, minimumPracticeSupport: number): numb
 
 export function partitionCatalogForProduct(
   entries: readonly CatalogEntry[],
-  evaluationEntryCount = 5,
+  evaluationEntryCount = DEFAULT_PRODUCT_EVALUATION_CATALOG_SIZE,
   minimumPracticeSupport = 3,
 ): ProductCatalogPartition {
   if (!Number.isInteger(evaluationEntryCount) || evaluationEntryCount <= 0) {

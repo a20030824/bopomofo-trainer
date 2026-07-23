@@ -8,11 +8,12 @@ Selection order is:
 
 1. determine the unlocked frequency stage;
 2. filter the catalog to entries in that stage;
-3. enumerate only utterances accepted by the reviewed grammar layer;
-4. give every utterance a frequency base;
-5. add bounded learner-specific weight from expected-token errors, identifiable binding timing, and exact within-syllable transition timing;
-6. apply recent entry, utterance, and template penalties;
-7. make one deterministic seeded weighted selection.
+3. sample a bounded derivation rooted at the formal `Sentence` category;
+4. fill each lexical slot only from compatible admitted syntax profiles;
+5. give compatible entries and the completed utterance a frequency base;
+6. add bounded learner-specific weight from expected-token errors, identifiable binding timing, and exact within-syllable transition timing;
+7. apply recent entry and utterance penalties;
+8. make one deterministic seeded weighted selection.
 
 ## Frequency stages
 
@@ -35,7 +36,6 @@ utteranceWeight = frequencyBase
                 × boundedLearnerBoost
                 × recentEntryFactor
                 × recentUtteranceFactor
-                × recentTemplateFactor
 ```
 
 `frequencyBase` is the geometric mean of the versioned frequency weights of the entries in the utterance. Each entry uses its reviewed `commonnessBase.selectionWeight` when available, then falls back to its band weight. The geometric mean avoids automatically rewarding or punishing a candidate merely because it has more words.
@@ -78,16 +78,15 @@ For example, a slow clean `ㄓ → ㄨ` aggregate may raise a grammar-valid utte
 
 ## Grammar boundary
 
-The selector receives candidates from `composeGrammarCandidates`. It cannot bypass grammar metadata or templates to obtain a higher weakness score.
+The production selector requires compact profiles admitted by the full formal
+rule index. It cannot bypass slot compatibility to obtain a higher weakness
+score, and it has no template, standalone utterance, lexical prompt, or random
+word-list fallback. If no complete `Sentence` derivation can be realized, the
+round fails closed with explicit reasons.
 
-Fallback order remains:
-
-1. complete reviewed template;
-2. reviewed standalone utterance;
-3. reviewed standalone lexical prompt;
-4. no candidate with explicit reasons.
-
-There is no fallback to a random word list.
+Caller-supplied template and standalone behavior remains isolated in legacy
+compatibility APIs and tests; `product/session.ts` calls only the formal syntax
+selector.
 
 ## Evaluation boundary
 

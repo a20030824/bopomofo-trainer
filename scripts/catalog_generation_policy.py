@@ -146,21 +146,6 @@ def convert_numbered_pinyin(values: Sequence[str]) -> list[str]:
     return readings
 
 
-def significant_upos(row: dict[str, Any], minimum_count: int, minimum_share: float) -> list[str]:
-    occurrence_count = row.get("occurrenceCount")
-    counts = row.get("uposCounts")
-    if not isinstance(occurrence_count, int) or occurrence_count <= 0 or not isinstance(counts, dict):
-        return []
-    return sorted(
-        tag
-        for tag, count in counts.items()
-        if isinstance(tag, str)
-        and isinstance(count, int)
-        and count >= minimum_count
-        and count / occurrence_count >= minimum_share
-    )
-
-
 def _parse_counts(value: str) -> dict[str, int]:
     if not value:
         return {}

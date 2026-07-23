@@ -304,6 +304,44 @@ class LexiconActivationGenerationTest(unittest.TestCase):
         self.assertEqual(compound_row["reading"]["authority"], "derived-component-concatenation")
         self.assertEqual(compound_row["reading"]["evidence"], "ㄗㄡˇ3 ㄉㄠˋ4")
 
+    def test_component_derivation_never_overrides_a_compounds_own_ambiguous_record(self) -> None:
+        write_candidate_generation(
+            self.candidates,
+            self.manifest,
+            rows=[(1, "東"), (2, "西"), (3, "東西")],
+        )
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 3,
+            "reviewQueue": [{"text": "東西", "status": "ambiguous-cedict"}],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.concised, {
+            "adapterVersion": "moe-concised-reading-adapter-v1",
+            "rows": [
+                {"lookupText": "東", "trainerReading": "ㄉㄨㄥ1"},
+                {"lookupText": "西", "trainerReading": "ㄒㄧ1"},
+            ],
+        })
+
+        report = self.adapter.project_activation_generation(
+            candidates=self.candidates,
+            candidate_manifest=self.manifest,
+            reading_coverage_path=self.reading_coverage,
+            concised_path=self.concised,
+            revised_path=self.revised,
+            cedict_path=self.cedict,
+            active_catalog_path=self.catalog,
+        )
+
+        self.assertEqual(
+            report["statusCounts"],
+            {"resolved-new-identity": 2, "reading-review-required": 1},
+        )
+        compound_row = next(row for row in report["rows"] if row["text"] == "東西")
+        self.assertIsNone(compound_row["reading"])
+        self.assertEqual(compound_row["readingReviewStatus"], "ambiguous-cedict")
+
     def test_component_derivation_skips_tone_sandhi_risk_characters(self) -> None:
         write_candidate_generation(
             self.candidates,

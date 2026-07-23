@@ -11,7 +11,7 @@ import { deriveMeasurementDecisions } from "../measurement/derive-observations.j
 import { PHASE_3_MEASUREMENT_POLICY } from "../measurement/policy.js";
 import {
   FREQUENCY_FIRST_UTTERANCE_POLICY,
-  selectFrequencyFirstUtterance,
+  selectFormalSyntaxUtterance,
   updateFrequencyFirstSelectionState,
   validateFrequencyFirstUtterancePolicy,
   type FrequencyFirstUtterancePolicy,
@@ -40,16 +40,25 @@ import type {
 export const DEFAULT_EVALUATION_INTERVAL = 5;
 export const DEFAULT_EVALUATION_ENTRY_COUNT = 3;
 
-function validateGrammarCoverage(catalogs: ProductCatalogs): void {
-  const allEntries = [...catalogs.practice, ...catalogs.evaluation];
-  for (const entry of allEntries) {
-    const annotation = catalogs.grammarAnnotations[entry.id];
-    if (annotation === undefined) {
-      throw new Error(`product catalog entry is missing grammar annotation: ${entry.id}`);
+function validateSyntaxProfileCoverage(catalogs: ProductCatalogs): void {
+  const entryIds = new Set(
+    [...catalogs.practice, ...catalogs.evaluation].map((entry) => entry.id),
+  );
+  const profileIds = new Set<string>();
+  const profiledEntryIds = new Set<string>();
+  for (const profile of catalogs.syntaxProfiles) {
+    if (profileIds.has(profile.id)) {
+      throw new Error(`product syntax profiles contain duplicate ID: ${profile.id}`);
     }
-    if (annotation.entryId !== entry.id) {
-      throw new Error(`grammar annotation identity mismatch: ${entry.id}`);
+    if (!entryIds.has(profile.entryId)) {
+      throw new Error(`product syntax profile references unknown entry: ${profile.entryId}`);
     }
+    profileIds.add(profile.id);
+    profiledEntryIds.add(profile.entryId);
+  }
+  const missing = [...entryIds].filter((entryId) => !profiledEntryIds.has(entryId));
+  if (missing.length > 0) {
+    throw new Error(`product catalog entry is missing syntax profiles: ${missing.join(", ")}`);
   }
 }
 
@@ -79,7 +88,7 @@ export function createProductEnvironment(
   if ([...evaluationIds].some((entryId) => practiceIds.has(entryId))) {
     throw new Error("practice and evaluation catalogs must be disjoint");
   }
-  validateGrammarCoverage(catalogs);
+  validateSyntaxProfileCoverage(catalogs);
   validateFrequencyFirstUtterancePolicy(utterancePolicy);
   return {
     catalogs,
@@ -125,11 +134,10 @@ function selectRound(
   progress: ProductProgress,
 ): ProductRound {
   const evaluation = evaluationDue(progress, environment);
-  const selection = selectFrequencyFirstUtterance({
+  const selection = selectFormalSyntaxUtterance({
     entries: evaluation
       ? environment.catalogs.evaluation
       : environment.catalogs.practice,
-    annotations: environment.catalogs.grammarAnnotations,
     measurement: evaluation
       ? createEmptyMeasurementSummary(environment.measurementPolicy)
       : progress.measurements,
@@ -148,6 +156,7 @@ function selectRound(
         recentTemplateIds: progress.selection.recentTemplateIds,
       },
     policy: environment.utterancePolicy,
+    profiles: environment.catalogs.syntaxProfiles,
     random: createSeededRandom(
       evaluation
         ? `${progress.seed}:evaluation:${progress.evaluationRoundsCompleted}`

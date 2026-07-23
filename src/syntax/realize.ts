@@ -1,22 +1,22 @@
 import type { CatalogEntry } from "../core/model.js";
-import { sha256Canonical } from "../reference/importers/canonical-json.js";
+import { stableRuntimeDigest } from "../core/stable-id.js";
 import type { StructuralDerivationShape, StructuralLexicalSlot } from "./derive.js";
 import type {
+  RuntimeSyntaxProfile,
   SurfaceRealization,
   SurfaceToken,
-  SyntaxProfile,
 } from "./types.js";
 
 export interface LexicalRealizationOptions {
   readonly entries: readonly CatalogEntry[];
-  readonly profiles: readonly SyntaxProfile[];
+  readonly profiles: readonly RuntimeSyntaxProfile[];
   readonly seed?: string;
   readonly profileOffsetsBySlotId?: Readonly<Record<string, number>>;
   readonly punctuationToken?: string;
 }
 
 export interface LexicalProfileIndex {
-  readonly profilesByUpos: Readonly<Record<string, readonly SyntaxProfile[]>>;
+  readonly profilesByUpos: Readonly<Record<string, readonly RuntimeSyntaxProfile[]>>;
   readonly entriesById: ReadonlyMap<string, CatalogEntry>;
 }
 
@@ -26,10 +26,10 @@ function compareText(left: string, right: string): number {
 
 export function buildLexicalProfileIndex(
   entries: readonly CatalogEntry[],
-  profiles: readonly SyntaxProfile[],
+  profiles: readonly RuntimeSyntaxProfile[],
 ): LexicalProfileIndex {
   const entriesById = new Map(entries.map((entry) => [entry.id, entry]));
-  const grouped: Record<string, SyntaxProfile[]> = {};
+  const grouped: Record<string, RuntimeSyntaxProfile[]> = {};
   for (const profile of [...profiles].sort((left, right) => compareText(left.id, right.id))) {
     if (!entriesById.has(profile.entryId)) {
       throw new Error(`syntax profile references missing catalog entry ${profile.entryId}`);
@@ -39,7 +39,7 @@ export function buildLexicalProfileIndex(
   return { profilesByUpos: grouped, entriesById };
 }
 
-function featureMatches(slot: StructuralLexicalSlot, profile: SyntaxProfile): boolean {
+function featureMatches(slot: StructuralLexicalSlot, profile: RuntimeSyntaxProfile): boolean {
   for (const [feature, value] of Object.entries(slot.requiredFeatures)) {
     switch (feature) {
       case "upos":
@@ -69,7 +69,7 @@ function featureMatches(slot: StructuralLexicalSlot, profile: SyntaxProfile): bo
 export function compatibleProfilesForSlot(
   slot: StructuralLexicalSlot,
   index: LexicalProfileIndex,
-): readonly SyntaxProfile[] {
+): readonly RuntimeSyntaxProfile[] {
   const candidates = slot.allowedUpos.length === 0
     ? Object.values(index.profilesByUpos).flat()
     : slot.allowedUpos.flatMap((upos) => index.profilesByUpos[upos] ?? []);
@@ -81,7 +81,7 @@ export function compatibleProfilesForSlot(
 }
 
 function seededOffset(seed: string, slotId: string, size: number): number {
-  const digest = sha256Canonical({ seed, slotId });
+  const digest = stableRuntimeDigest({ seed, slotId });
   const prefix = digest.slice(0, 12);
   return Number.parseInt(prefix, 16) % size;
 }
@@ -139,7 +139,7 @@ export function realizeStructuralDerivation(
     tokens,
   };
   return {
-    id: `surface-realization:${sha256Canonical(identity)}`,
+    id: `surface-realization:${stableRuntimeDigest(identity)}`,
     grammarVersion: shape.grammarVersion,
     derivationId: shape.id,
     productionRulePath: shape.productionRulePath,

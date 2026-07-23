@@ -10,6 +10,7 @@ only active catalog inputs and human decisions.
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -87,6 +88,8 @@ def main() -> None:
     cedict_output = output_dir / "cedict-hints.json"
     ud_evidence = output_dir / "ud-evidence.json"
     ud_coverage = output_dir / "ud-coverage.json"
+    syntax_profiles = output_dir / "syntax-profiles.json"
+    syntax_rule_index = output_dir / "syntax-rule-index.json"
     activation_report = output_dir / "activation-report.json"
     activation_csv = output_dir / "activation-review.csv"
 
@@ -122,6 +125,15 @@ def main() -> None:
         "--coverage-output", str(ud_coverage),
     )
     run(
+        "npm.cmd" if os.name == "nt" else "npm",
+        "run", "grammar:lexicon-syntax-generation", "--",
+        "--candidates", str(candidates),
+        "--candidate-manifest", str(manifest),
+        "--evidence", str(ud_evidence),
+        "--profiles-output", str(syntax_profiles),
+        "--rule-index-output", str(syntax_rule_index),
+    )
+    run(
         sys.executable, "scripts/project-lexicon-activation-generation.py",
         "--candidates", str(candidates),
         "--candidate-manifest", str(manifest),
@@ -138,6 +150,8 @@ def main() -> None:
 
     print(f"\ngeneration workspace: {output_dir.relative_to(ROOT)}")
     print(f"human review:         {activation_csv.relative_to(ROOT)}")
+    print(f"syntax profiles:      {syntax_profiles.relative_to(ROOT)}")
+    print(f"syntax rule index:    {syntax_rule_index.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

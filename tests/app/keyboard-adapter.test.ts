@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { keyboardEventToInput } from "../../src/app/keyboard-adapter.js";
+import {
+  isInspectionAdvanceShortcut,
+  keyboardEventToInput,
+} from "../../src/app/keyboard-adapter.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../../src/scheme/standard-layout.js";
 
 function event(overrides: Partial<{
@@ -10,6 +13,7 @@ function event(overrides: Partial<{
   altKey: boolean;
   ctrlKey: boolean;
   metaKey: boolean;
+  shiftKey: boolean;
 }> = {}) {
   return {
     code: overrides.code ?? "Digit5",
@@ -19,6 +23,7 @@ function event(overrides: Partial<{
     altKey: overrides.altKey ?? false,
     ctrlKey: overrides.ctrlKey ?? false,
     metaKey: overrides.metaKey ?? false,
+    shiftKey: overrides.shiftKey ?? false,
   };
 }
 
@@ -64,5 +69,24 @@ describe("keyboardEventToInput", () => {
       42,
       false,
     ).modifierOnly).toBe(true);
+  });
+
+  it("reserves plain F8 as the hidden inspection advance key", () => {
+    expect(isInspectionAdvanceShortcut(event({ code: "F8", key: "F8" }))).toBe(true);
+    expect(isInspectionAdvanceShortcut(event({
+      code: "F8",
+      key: "F8",
+      repeat: true,
+    }))).toBe(false);
+    expect(isInspectionAdvanceShortcut(event({
+      code: "F8",
+      key: "F8",
+      shiftKey: true,
+    }))).toBe(false);
+    expect(isInspectionAdvanceShortcut(event({
+      code: "F8",
+      key: "F8",
+      isComposing: true,
+    }))).toBe(false);
   });
 });

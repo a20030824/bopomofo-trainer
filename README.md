@@ -8,13 +8,13 @@ The browser now follows one deliberately simple policy:
 
 1. common vocabulary determines the initial practice pool;
 2. lower-frequency vocabulary unlocks gradually;
-3. reviewed grammar metadata produces complete utterance candidates;
+3. formal syntax profiles derive a sentence shape and fill only compatible lexical slots;
 4. expected-token errors and clean timing add only bounded weight;
 5. exact within-syllable transition latency may raise candidates containing that ordered transition;
 6. the actual wrong token and directional confusion aggregate do not affect curriculum selection;
 7. held-out evaluation remains separate and never updates training state.
 
-A round is one grammar-valid utterance, not six independently sampled words. The meaning may occasionally be unusual, but every multi-entry candidate must match a reviewed Mandarin template. Fallback never returns an arbitrary word list.
+A round is one grammar-valid utterance, not six independently sampled words. The meaning may occasionally be unusual, but every candidate must be realized from the formal Mandarin grammar and compatible observed syntax profiles. Product selection has no template, standalone, or arbitrary word-list fallback.
 
 ## Evidence model
 
@@ -37,13 +37,13 @@ These channels remain separate:
 
 The product includes:
 
-- validated Bopomofo readings, provenance, and a 322-entry reviewed catalog;
+- validated Bopomofo readings, provenance, and a 1,786-entry reviewed catalog;
 - manifest-linked lexicon generations in disposable, Git-ignored workspaces;
-- complete grammar sidecar coverage for the current catalog;
-- explicit lexical roles, predicate valency, standalone utterances, and deterministic templates;
+- a fail-closed formal-syntax legality allowlist and compact runtime profiles for the active catalog;
+- sentence-shape derivation followed by compatible, weighted lexical-slot realization;
 - frequency stages 1–3 with conservative unlock gates;
 - frequency-dominant utterance scoring with capped learner evidence;
-- deterministic seeded selection and recent entry/utterance/template penalties;
+- deterministic seeded selection and recent entry/utterance penalties;
 - guided keyboard interaction and context-aware raw traces;
 - versioned binding, transition, and confusion aggregation;
 - generation-scoped local progress with obsolete-key deletion and no legacy migration;

@@ -1,5 +1,4 @@
 import type { CatalogEntry } from "../core/model.js";
-import { DEFAULT_GRAMMAR_TEMPLATES } from "./templates.js";
 import type {
   GrammarAnnotation,
   GrammarCompositionOptions,
@@ -147,7 +146,7 @@ function standaloneCandidates(
 export function composeGrammarCandidates(
   entries: readonly CatalogEntry[],
   annotations: Readonly<Record<string, GrammarAnnotation>>,
-  templates: readonly GrammarTemplate[] = DEFAULT_GRAMMAR_TEMPLATES,
+  templates: readonly GrammarTemplate[] = [],
   options: Partial<GrammarCompositionOptions> = {},
 ): GrammarCompositionResult {
   const resolved: GrammarCompositionOptions = { ...DEFAULT_OPTIONS, ...options };

@@ -11,7 +11,12 @@ import {
   parseProductProgress,
   serializeProductProgress,
 } from "../../src/product/progress.js";
-import { EVALUATION, PRACTICE, PRODUCT_CATALOGS } from "./fixtures.js";
+import {
+  EVALUATION,
+  PRACTICE,
+  PRODUCT_CATALOGS,
+  SYNTAX_PROFILES,
+} from "./fixtures.js";
 
 const environment = createProductEnvironment(PRODUCT_CATALOGS);
 
@@ -40,7 +45,7 @@ function complete(state: ReturnType<typeof createProductState>) {
 }
 
 describe("frequency-first grammatical product session loop", () => {
-  it("requires unique disjoint annotated practice and evaluation catalogs", () => {
+  it("requires unique disjoint syntax-profiled practice and evaluation catalogs", () => {
     expect(() => createProductEnvironment({
       ...PRODUCT_CATALOGS,
       practice: PRACTICE,
@@ -54,8 +59,8 @@ describe("frequency-first grammatical product session loop", () => {
     expect(() => createProductEnvironment({
       practice: PRACTICE,
       evaluation: EVALUATION,
-      grammarAnnotations: {},
-    })).toThrow(/grammar annotation/);
+      syntaxProfiles: [],
+    })).toThrow(/missing syntax profiles/);
   });
 
   it("builds one complete grammar-valid utterance instead of six unrelated entries", () => {
@@ -70,7 +75,8 @@ describe("frequency-first grammatical product session loop", () => {
     expect(state.round.exercise.entries.map((entry) => entry.id)).toEqual(
       state.round.selection.utterance.entries.map((entry) => entry.id),
     );
-    expect(state.round.exercise.entries).toHaveLength(1);
+    expect(state.round.exercise.entries.length).toBeGreaterThan(1);
+    expect(state.round.selection.utterance.kind).toBe("formal-syntax");
   });
 
   it("reports interaction accuracy across boundaries without counting browser noise", () => {

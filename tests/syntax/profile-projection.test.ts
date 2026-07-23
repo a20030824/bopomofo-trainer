@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { CatalogEntry } from "../../src/core/model.js";
 import {
   projectSyntaxProfiles,
+  projectSyntaxProfilesForLexemes,
   type SyntaxEvidenceArtifact,
 } from "../../src/syntax/profile-projection.js";
 
@@ -120,5 +121,29 @@ describe("syntax profile projection", () => {
         syntaxProfileEvidence: [verbEvidence],
       }],
     })).toThrow(/missing UPOS: NOUN/u);
+  });
+
+  it("projects manifest lexemes without inventing catalog readings", () => {
+    const artifact: SyntaxEvidenceArtifact = {
+      source: { sourceId: "ud:test" },
+      rows: [{
+        text: "同形",
+        observed: true,
+        occurrenceCount: 4,
+        uposCounts: { NOUN: 4 },
+        syntaxProfileEvidence: [nounEvidence],
+      }],
+    };
+    const result = projectSyntaxProfilesForLexemes([
+      { id: "candidate:1", text: "同形" },
+      { id: "candidate:2", text: "同形" },
+      { id: "candidate:3", text: "未見" },
+    ], artifact);
+
+    expect(result.profilesByEntryId["candidate:1"]?.[0]?.dependencyEvidence)
+      .toEqual(result.profilesByEntryId["candidate:2"]?.[0]?.dependencyEvidence);
+    expect(result.profilesByEntryId["candidate:1"]?.[0]?.id)
+      .not.toBe(result.profilesByEntryId["candidate:2"]?.[0]?.id);
+    expect(result.noUdEvidenceEntryIds).toEqual(["candidate:3"]);
   });
 });

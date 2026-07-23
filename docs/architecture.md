@@ -167,13 +167,17 @@ The browser product now composes complete grammar-valid utterances, selects them
 The data pipeline pins the active-catalog commonness and reading projections.
 Lexicon expansion runs in a disposable, manifest-linked generation workspace;
 only reviewed catalog mutations and current active-catalog evidence are
-committed. Pronunciation, lexical identity, grammar role, valency, and
-provenance remain review-gated before an entry reaches the browser catalog.
+committed. Product compilation additionally verifies a compact allowlist
+derived from the full formal-syntax rule index and packages only identities
+that reach a `Sentence` production. A stale, incomplete, or digest-mismatched
+allowlist fails the build. Pronunciation, lexical identity, grammar role,
+valency, and provenance remain review-gated before an entry reaches the browser
+catalog.
 
 Word meaning and semantics are outside the architecture boundary. Catalog
 processing, annotation, composition, selection, validation, and evaluation may
 use form, pronunciation records, frequency, morphosyntactic tags, dependency
-evidence, surface distribution, valency, and declared templates, but must not
+evidence, surface distribution, valency, and declared formal production rules, but must not
 consume or infer definitions, senses, semantic roles, plausibility, world
 knowledge, embeddings, language-model judgments, or semantic proxies. An
 unresolved case must retain every otherwise valid form or fail closed; semantic

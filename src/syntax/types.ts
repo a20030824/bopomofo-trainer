@@ -87,14 +87,17 @@ export interface AnonymousDependencySkeletonEvidence {
   readonly skeleton: AnonymousDependencySkeletonNode;
 }
 
-export interface DependencyEvidence {
+export interface SyntaxCompatibilityEvidence {
+  readonly dependencyRelationCounts: DependencyCountMap;
+  readonly surfacePositionCounts: DependencyCountMap;
+}
+
+export interface DependencyEvidence extends SyntaxCompatibilityEvidence {
   readonly evidenceScope: SyntaxEvidenceScope;
   readonly occurrenceCount: number;
-  readonly dependencyRelationCounts: DependencyCountMap;
   readonly morphologicalFeatureCounts: DependencyCountMap;
   readonly parentUposCounts: DependencyCountMap;
   readonly headDirectionCounts: DependencyCountMap;
-  readonly surfacePositionCounts: DependencyCountMap;
   readonly childRelationCounts: DependencyCountMap;
   readonly childDirectionRelationCounts: DependencyCountMap;
   readonly childRelationMultisetCounts: DependencyCountMap;
@@ -105,14 +108,18 @@ export interface DependencyEvidence {
   readonly rootCount: number;
 }
 
-export interface SyntaxProfile {
+export interface RuntimeSyntaxProfile {
   readonly id: string;
   readonly entryId: string;
   readonly upos: Upos;
   readonly functions: readonly SyntacticFunction[];
   readonly valencyFrames: readonly ValencyFrame[];
-  readonly dependencyEvidence: DependencyEvidence;
+  readonly dependencyEvidence: SyntaxCompatibilityEvidence;
   readonly provenanceIds: readonly string[];
+}
+
+export interface SyntaxProfile extends RuntimeSyntaxProfile {
+  readonly dependencyEvidence: DependencyEvidence;
 }
 
 export interface SyntaxProfileProjectionResult {

@@ -13,9 +13,9 @@ import type {
   FrequencyFirstUtteranceSelection,
   FrequencyStage,
 } from "../curriculum/frequency-first-utterance.js";
-import type { GrammarAnnotation } from "../grammar/types.js";
 import type { MeasurementPolicy, MeasurementSummary } from "../measurement/types.js";
 import type { InteractionSessionState } from "../practice/interaction-session.js";
+import type { RuntimeSyntaxProfile } from "../syntax/types.js";
 
 export const PRODUCT_PROGRESS_SCHEMA_VERSION = 3 as const;
 
@@ -24,7 +24,7 @@ export type ProductRoundKind = "practice" | "evaluation";
 export interface ProductCatalogs {
   readonly practice: readonly CatalogEntry[];
   readonly evaluation: readonly CatalogEntry[];
-  readonly grammarAnnotations: Readonly<Record<string, GrammarAnnotation>>;
+  readonly syntaxProfiles: readonly RuntimeSyntaxProfile[];
 }
 
 export interface ProductRound {

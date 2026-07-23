@@ -28,12 +28,15 @@ It contains:
 - MOE Concised/Revised and CC-CEDICT projections;
 - reading coverage;
 - UD evidence and coverage;
+- manifest-linked syntax profiles and a formal rule-reachability index
+  (`syntax-profiles.json`, `syntax-rule-index.json`);
 - the machine activation report;
 - a compact human review CSV.
 
 The workspace stays intact because reviewed apply tools need the CEDICT and
-UD evidence. Delete the directory whenever the run is no longer needed; the
-pinned sources under `data/external/` can reproduce it.
+UD evidence, and `npm run app:syntax-legality` needs the rule index. Delete
+the directory whenever the run is no longer needed; the pinned sources under
+`data/external/` can reproduce it.
 
 ## Review CSV
 
@@ -56,9 +59,13 @@ The source-ranked candidate list preserves original NAER ranks. Invalid or
 duplicate lexical rows are reported and excluded without renumbering later
 candidates.
 
-## Current syntax exception
+## Browser catalog syntax gate
 
-The committed `ud-syntax-evidence-v2` artifact is still the default input to
-formal syntax verification. It remains committed until that build is migrated
-to an active-catalog-scoped projection; it is not part of the retired lexical
-activation replay pipeline.
+`npm run app:syntax-legality` projects the workspace's full-scope rule index
+into a compact, committed allowlist at
+`data/grammar/formal-syntax-active-catalog-legality.json`, scoped to the
+current active catalog only. `npm run app:catalog` packages only entries
+whose source rule-index status is `indexed` and fails the build if the
+allowlist is stale, incomplete, or digest-mismatched against the compiled
+catalog. There is no separate pinned top-N evidence snapshot to keep in
+sync; the allowlist is regenerated from a fresh generation run.

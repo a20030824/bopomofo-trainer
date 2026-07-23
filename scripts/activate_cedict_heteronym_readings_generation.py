@@ -52,7 +52,6 @@ from catalog_generation_policy import (  # noqa: E402
     refresh_concised_scope,
     refresh_revised_scope,
     sha256_text,
-    significant_upos,
 )
 from lexicon_candidate_set import load_candidate_set  # noqa: E402
 
@@ -90,7 +89,7 @@ def load_ud_v2(
     candidate_set: set[str],
     evidence: dict[str, Any],
     coverage: dict[str, Any],
-) -> tuple[dict[str, dict[str, Any]], set[str], int, float]:
+) -> tuple[dict[str, dict[str, Any]], set[str]]:
     if evidence.get("adapterVersion") != "ud-chinese-gsd-grammar-evidence-adapter-v2":
         raise ValueError("unexpected UD evidence adapter version")
     if coverage.get("adapterVersion") != "ud-chinese-gsd-grammar-evidence-adapter-v2":
@@ -116,32 +115,17 @@ def load_ud_v2(
     if None in review_set or not review_set.issubset(candidate_set):
         raise ValueError("UD review set is invalid")
 
-    mixed_policy = coverage.get("reviewPolicy", {}).get("mixedUpos", {})
-    min_count = mixed_policy.get("minimumCountPerCategory")
-    min_share = mixed_policy.get("minimumOccurrenceSharePerCategory")
-    if not isinstance(min_count, int) or min_count <= 0:
-        raise ValueError("invalid UD significant-UPOS count threshold")
-    if not isinstance(min_share, (int, float)) or not 0 < float(min_share) <= 1:
-        raise ValueError("invalid UD significant-UPOS share threshold")
-    return rows, review_set, min_count, float(min_share)
+    return rows, review_set
 
 
 def eligible_dominant_upos(
     ud: dict[str, Any],
-    significant_min_count: int,
-    significant_min_share: float,
     min_occurrences: int,
 ) -> str | None:
     if ud.get("occurrenceCount", 0) < min_occurrences:
         return None
     dominant = ud.get("dominantUpos")
-    significant = significant_upos(ud, significant_min_count, significant_min_share)
-    if (
-        not isinstance(dominant, list)
-        or len(dominant) != 1
-        or len(significant) != 1
-        or dominant[0] != significant[0]
-    ):
+    if not isinstance(dominant, list) or len(dominant) != 1:
         return None
     tag = dominant[0]
     return tag if tag in REVIEW_LANES else None
@@ -200,7 +184,7 @@ def build_heteronym_activations(
             row["roles"], row["predicate_frame"], row["standalone_kind"],
         ))
 
-    ud_rows, ud_review, significant_min_count, significant_min_share = load_ud_v2(
+    ud_rows, ud_review = load_ud_v2(
         candidate_set,
         load_json(ud_evidence_path),
         load_json(ud_coverage_path),
@@ -238,9 +222,7 @@ def build_heteronym_activations(
             ud = ud_rows.get(text)
             if ud is None:
                 continue
-            dominant_upos = eligible_dominant_upos(
-                ud, significant_min_count, significant_min_share, min_occurrences
-            )
+            dominant_upos = eligible_dominant_upos(ud, min_occurrences)
             if dominant_upos is None:
                 continue
             decision, roles, frame, standalone, rationale = classify(

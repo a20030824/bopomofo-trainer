@@ -19,7 +19,11 @@ ACTIVE_REVISED = ROOT / "data" / "readings" / "moe-revised-2015_20260625-active-
 
 def active_catalog_size() -> int:
     with ACTIVE_WORDS.open("r", encoding="utf-8-sig", newline="") as source:
-        return sum(1 for _ in csv.DictReader(source))
+        return sum(
+            1
+            for row in csv.DictReader(source)
+            if row.get("status") != "excluded"
+        )
 
 
 def active_catalog_text_count() -> int:
@@ -28,7 +32,13 @@ def active_catalog_text_count() -> int:
     be smaller than `active_catalog_size()`, which counts rows.
     """
     with ACTIVE_WORDS.open("r", encoding="utf-8-sig", newline="") as source:
-        return len({row["text"] for row in csv.DictReader(source)})
+        return len(
+            {
+                row["text"]
+                for row in csv.DictReader(source)
+                if row.get("status") != "excluded"
+            }
+        )
 
 
 def active_concised_count() -> int:

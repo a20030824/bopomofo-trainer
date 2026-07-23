@@ -60,6 +60,10 @@ describe("relational partition policies", () => {
     });
   });
 
+  // Five relational partition strategies over the full active catalog
+  // (1,786 entries); the default test timeout no longer covers this since
+  // the top-10000 lexicon generation grew the catalog past its former
+  // 322-entry size.
   it("runs all five strategies on the current catalog", async () => {
     const entries = await compileRealCatalog();
     const input = createPartitionInput(entries);
@@ -94,7 +98,7 @@ describe("relational partition policies", () => {
     for (const decision of decisions.slice(1)) {
       expect(decision.metrics.evaluationOnlyRelationCount).toBe(0);
     }
-  }, 15_000);
+  }, 30_000);
 
   it("preserves relation support on the feasible paired fixture", async () => {
     const input = createPartitionInput(await readPartitionFixture("feasible"));

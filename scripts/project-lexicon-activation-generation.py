@@ -166,12 +166,24 @@ def derive_component_readings(
     """Resolves a multi-character candidate by concatenating already-resolved
     single-character readings from the same batch (e.g. 走到 from 走 + 到).
 
-    Only applies when every character is itself a clean single-character
-    resolution in `lookup` with no undeclared alternate reading, and the word
-    contains no tone-sandhi-risk character. Mutates both maps in place,
-    moving qualifying texts from `unresolved` into `lookup`.
+    Only applies when the compound itself has zero direct dictionary evidence
+    (`unresolved[text] == "unmatched"`) -- never when an authority already has
+    an entry for the exact compound, even an ambiguous one. A compound with
+    its own dictionary record can have a non-compositional reading no
+    per-character concatenation would produce: CC-CEDICT records 東西 as
+    "dong1 xi1" (east-west) or "dong1 xi5" (things, second syllable
+    lexicalized to neutral tone) -- concatenating 東's and 西's own citation
+    readings gives the wrong answer for the far more common "things" sense,
+    silently overriding a correctly-flagged ambiguity instead of resolving it.
+
+    Also requires every character to be a clean single-character resolution
+    in `lookup` with no undeclared alternate reading, and the word to contain
+    no tone-sandhi-risk character. Mutates both maps in place, moving
+    qualifying texts from `unresolved` into `lookup`.
     """
     for text in [text for text in unresolved if len(text) > 1]:
+        if unresolved[text] != "unmatched":
+            continue
         characters = list(text)
         if TONE_SANDHI_RISK_CHARACTERS & set(characters):
             continue

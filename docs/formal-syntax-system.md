@@ -4,7 +4,7 @@
 
 This document defines `mandarin-formal-grammar-v1`, the formal syntax contract for practice utterance generation.
 
-The system replaces the assumption that one catalog entry has one product grammar role and that a fixed list of complete templates defines the candidate universe. The compatibility composer remains available during migration, but new syntax work must follow this contract.
+The system replaces the assumption that one catalog entry has one product grammar role and that a fixed list of complete templates defines the candidate universe. There is no built-in fixed-template list. The legacy compatibility composer can operate only when a caller supplies templates explicitly; new syntax work must follow this contract.
 
 ## Product boundary
 
@@ -456,7 +456,7 @@ Permitted post-derivation weighting remains:
 
 Forbidden weighting includes sentence meaning, naturalness, collocation quality, semantic plausibility, embeddings, or LLM reranking.
 
-The existing 11-template composer remains a compatibility path until the new derivation system passes parity and product migration tests. Removal requires a separate commit that proves no runtime import remains.
+The former 11-template default was removed. Large lexical generations now project every observed UPOS profile and compute rule reachability without enumerating the sentence Cartesian product. Product/browser cutover is a separate consumer concern and must not reintroduce built-in templates.
 
 ## Validation and coverage
 
@@ -525,7 +525,7 @@ Every artifact declares:
 
 The implementation sequence is:
 
-1. preserve the 322-entry catalog and heteronym identity baseline;
+1. preserve the current reviewed catalog and heteronym identity baseline;
 2. freeze this specification;
 3. project UD syntax evidence v2;
 4. add multi-profile syntax schema;
@@ -535,7 +535,9 @@ The implementation sequence is:
 8. add complements and special constructions;
 9. add recursive complex clauses;
 10. integrate lazy derivation with the frequency-first curriculum;
-11. remove the fixed-template runtime path after parity;
-12. emit the complete syntax coverage report.
+11. emit manifest-linked lexical profile and rule-reachability artifacts;
+12. gate the browser catalog with a compact allowlist derived from the full rule-reachability index;
+13. reject stale or incomplete allowlists during product compilation;
+14. emit the complete syntax coverage report.
 
 Every commit must leave catalog build and the ordinary product checks runnable. No commit may temporarily route product selection around grammar validation.

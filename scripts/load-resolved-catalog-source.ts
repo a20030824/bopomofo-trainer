@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { parseCsv } from "../src/catalog/csv.js";
 import {
+  acceptReviewedCatalogReadings,
   resolveCatalogReadings,
   type CatalogReadingResolutionResult,
 } from "../src/readings/catalog-resolution.js";
@@ -39,15 +40,18 @@ export async function loadResolvedCatalogSource(
   paths: Partial<ResolvedCatalogSourcePaths> = {},
 ): Promise<CatalogReadingResolutionResult> {
   const resolvedPaths = { ...DEFAULT_RESOLVED_CATALOG_SOURCE_PATHS, ...paths };
-  const [words, concised, revised, cedict, manual] = await Promise.all([
-    readFile(resolvedPaths.words, "utf8"),
+  const words = await readFile(resolvedPaths.words, "utf8");
+  const catalogRecords = parseCsv(words).records;
+  const reviewed = acceptReviewedCatalogReadings(catalogRecords);
+  if (reviewed !== null) return reviewed;
+  const [concised, revised, cedict, manual] = await Promise.all([
     readFile(resolvedPaths.concised, "utf8"),
     readFile(resolvedPaths.revised, "utf8"),
     readFile(resolvedPaths.cedict, "utf8"),
     readFile(resolvedPaths.manual, "utf8"),
   ]);
   return resolveCatalogReadings({
-    catalogRecords: parseCsv(words).records,
+    catalogRecords,
     moeConcisedProjection: JSON.parse(concised) as unknown,
     moeRevisedProjection: JSON.parse(revised) as unknown,
     cedictProjection: JSON.parse(cedict) as unknown,

@@ -20,6 +20,18 @@ export interface KeyboardLikeEvent {
   readonly altKey: boolean;
   readonly ctrlKey: boolean;
   readonly metaKey: boolean;
+  readonly shiftKey: boolean;
+}
+
+/** Hidden local-review shortcut; intentionally absent from the visible UI. */
+export function isInspectionAdvanceShortcut(event: KeyboardLikeEvent): boolean {
+  return event.code === "F8"
+    && !event.repeat
+    && !event.isComposing
+    && !event.altKey
+    && !event.ctrlKey
+    && !event.metaKey
+    && !event.shiftKey;
 }
 
 export function keyboardEventToInput(

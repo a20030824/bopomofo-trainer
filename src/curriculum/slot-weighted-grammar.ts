@@ -1,5 +1,4 @@
 import type { CatalogEntry, RandomSource } from "../core/model.js";
-import { DEFAULT_GRAMMAR_TEMPLATES } from "../grammar/templates.js";
 import type {
   GrammarAnnotation,
   GrammarSlotAssignment,
@@ -195,7 +194,7 @@ export function generateSlotWeightedGrammar(
 ): SlotWeightedGrammarGeneration {
   validateAnnotations(input.entries, input.annotations);
   const entries = [...input.entries].sort((left, right) => compareText(left.id, right.id));
-  const templates = [...(input.templates ?? DEFAULT_GRAMMAR_TEMPLATES)]
+  const templates = [...(input.templates ?? [])]
     .sort((left, right) => compareText(left.id, right.id));
   const feasible = templates.filter((template) => canAssignAll(
     template.slots.map((slot, index) => ({ index, slot })),

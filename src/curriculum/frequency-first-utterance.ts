@@ -16,6 +16,8 @@ import type {
   GrammarTemplate,
   GrammarUtteranceCandidate,
 } from "../grammar/types.js";
+import type { RuntimeSyntaxProfile } from "../syntax/types.js";
+import { composeFormalSyntaxUtterances } from "./formal-syntax-utterance.js";
 import {
   generateSlotWeightedGrammar,
   type GrammarSlotSelectionTrace,
@@ -166,7 +168,18 @@ export interface FrequencyFirstUtteranceInput {
   readonly history: UtteranceSelectionHistory;
   readonly policy: FrequencyFirstUtterancePolicy;
   readonly random: RandomSource;
+  /** Production path: compact profiles admitted by the formal syntax gate. */
+  readonly profiles?: readonly RuntimeSyntaxProfile[];
+  /** Explicit compatibility-only templates. Production has no built-in list. */
+  readonly templates?: readonly GrammarTemplate[];
 }
+
+export type FormalSyntaxUtteranceSelectionInput = Omit<
+  FrequencyFirstUtteranceInput,
+  "annotations" | "profiles" | "templates"
+> & {
+  readonly profiles: readonly RuntimeSyntaxProfile[];
+};
 
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -411,18 +424,48 @@ function generateOnce(
   input: FrequencyFirstUtteranceInput,
 ): SlotWeightedGrammarGeneration {
   const entryScores = new Map<string, EntrySelectionScore>();
+  const entryWeight = (entry: CatalogEntry): number => {
+    const existing = entryScores.get(entry.id);
+    if (existing !== undefined) return existing.totalWeight;
+    const score = scoreEntry(entry, input);
+    entryScores.set(entry.id, score);
+    return score.totalWeight;
+  };
+  if (input.profiles !== undefined) {
+    const composition = composeFormalSyntaxUtterances({
+      eligibleEntries,
+      profiles: input.profiles,
+      random: input.random,
+      entryWeightsById: Object.fromEntries(
+        eligibleEntries.map((entry) => [entry.id, entryWeight(entry)]),
+      ),
+      maximumCandidates: 1,
+      maximumAttempts: 64,
+      bounds: {
+        maximumPhraseDepth: 3,
+        maximumClauseNesting: 1,
+        maximumClausesPerSentence: 2,
+        maximumCoordinationItems: 2,
+        maximumConsecutiveModifiers: 2,
+        maximumComplementsPerPredicate: 1,
+        maximumLexicalEntriesPerUtterance: 6,
+      },
+    });
+    return {
+      candidate: composition.candidates[0] ?? null,
+      templateCandidates: [],
+      slotSelections: [],
+      slotAttempts: 0,
+      fallbackReasons: composition.fallbackReasons,
+    };
+  }
   const templateScores = new Map<string, TemplateSelectionScore>();
   return generateSlotWeightedGrammar({
     entries: eligibleEntries,
     annotations: input.annotations,
+    ...(input.templates === undefined ? {} : { templates: input.templates }),
     random: input.random,
-    entryWeight: (entry) => {
-      const existing = entryScores.get(entry.id);
-      if (existing !== undefined) return existing.totalWeight;
-      const score = scoreEntry(entry, input);
-      entryScores.set(entry.id, score);
-      return score.totalWeight;
-    },
+    entryWeight,
     templateWeight: (template) => {
       const existing = templateScores.get(template.id);
       if (existing !== undefined) return existing.totalWeight;
@@ -545,6 +588,13 @@ export function selectFrequencyFirstUtterance(
     generationAttempts,
     grammarFallbackReasons: generation.fallbackReasons,
   };
+}
+
+/** Production selector: no template or standalone fallback is reachable. */
+export function selectFormalSyntaxUtterance(
+  input: FormalSyntaxUtteranceSelectionInput,
+): FrequencyFirstUtteranceSelection {
+  return selectFrequencyFirstUtterance({ ...input, annotations: {} });
 }
 
 function appendRecent(

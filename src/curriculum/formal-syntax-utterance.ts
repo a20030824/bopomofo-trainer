@@ -10,11 +10,15 @@ import {
   realizeStructuralDerivation,
 } from "../syntax/realize.js";
 import { sampleStructuralDerivation } from "../syntax/sample.js";
-import type { DerivationBounds, ProductionRule, SyntaxProfile } from "../syntax/types.js";
+import type {
+  DerivationBounds,
+  ProductionRule,
+  RuntimeSyntaxProfile,
+} from "../syntax/types.js";
 
 export interface FormalSyntaxUtteranceInput {
   readonly eligibleEntries: readonly CatalogEntry[];
-  readonly profiles: readonly SyntaxProfile[];
+  readonly profiles: readonly RuntimeSyntaxProfile[];
   readonly random: RandomSource;
   readonly entryWeightsById?: Readonly<Record<string, number>>;
   readonly maximumCandidates: number;
@@ -53,13 +57,13 @@ function weightedIndex(
 }
 
 function selectCompatibleProfile(
-  compatible: readonly SyntaxProfile[],
+  compatible: readonly RuntimeSyntaxProfile[],
   usedEntryIds: ReadonlySet<string>,
   entriesById: ReadonlyMap<string, CatalogEntry>,
   entryWeightsById: Readonly<Record<string, number>> | undefined,
   random: RandomSource,
-): SyntaxProfile | null {
-  const profilesByEntryId = new Map<string, SyntaxProfile[]>();
+): RuntimeSyntaxProfile | null {
+  const profilesByEntryId = new Map<string, RuntimeSyntaxProfile[]>();
   for (const profile of compatible) {
     if (usedEntryIds.has(profile.entryId)) continue;
     const profiles = profilesByEntryId.get(profile.entryId) ?? [];

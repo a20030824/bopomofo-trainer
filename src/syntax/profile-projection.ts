@@ -64,6 +64,17 @@ export interface SyntaxProfileProjectionOptions {
   readonly provenanceIds?: readonly string[];
 }
 
+/** Minimal lexical identity needed by syntax projection.
+ *
+ * Reading/catalog metadata is deliberately absent: UD evidence is attached to
+ * a written form, so large candidate generations do not need fake readings or
+ * product catalog entries before they can receive syntax profiles.
+ */
+export interface SyntaxProfileLexeme {
+  readonly id: string;
+  readonly text: string;
+}
+
 const UPOS_SET = new Set<string>(UPOS_VALUES);
 const COMPLEMENT_RELATIONS = ["obj", "iobj", "ccomp", "xcomp", "obl"] as const;
 
@@ -280,7 +291,7 @@ function rawProfiles(row: SyntaxEvidenceRow): readonly {
 }
 
 function buildProfile(
-  entry: CatalogEntry,
+  entryId: string,
   upos: Upos,
   dependencyEvidence: DependencyEvidence,
   provenanceIds: readonly string[],
@@ -288,7 +299,7 @@ function buildProfile(
   const functions = deriveFunctions(dependencyEvidence);
   const valencyFrames = deriveValencyFrames(upos, dependencyEvidence);
   const identity = {
-    entryId: entry.id,
+    entryId,
     upos,
     functions,
     valencyFrames,
@@ -296,7 +307,7 @@ function buildProfile(
   };
   return {
     id: `syntax-profile:${sha256Canonical(identity)}`,
-    entryId: entry.id,
+    entryId,
     upos,
     functions,
     valencyFrames,
@@ -305,8 +316,8 @@ function buildProfile(
   };
 }
 
-export function projectSyntaxProfiles(
-  entries: readonly CatalogEntry[],
+export function projectSyntaxProfilesForLexemes(
+  lexemes: readonly SyntaxProfileLexeme[],
   artifact: SyntaxEvidenceArtifact,
   options: SyntaxProfileProjectionOptions = {},
 ): SyntaxProfileProjectionResult {
@@ -328,19 +339,24 @@ export function projectSyntaxProfiles(
   const profiles: SyntaxProfile[] = [];
   const profilesByEntryId: Record<string, readonly SyntaxProfile[]> = {};
   const noUdEvidenceEntryIds: string[] = [];
-  const orderedEntries = [...entries].sort((left, right) => compareText(left.id, right.id));
-  for (const entry of orderedEntries) {
-    const row = rowsByText.get(entry.prompt.text);
+  const orderedLexemes = [...lexemes].sort((left, right) => compareText(left.id, right.id));
+  const seenLexemeIds = new Set<string>();
+  for (const lexeme of orderedLexemes) {
+    if (!lexeme.id || !lexeme.text || seenLexemeIds.has(lexeme.id)) {
+      throw new Error(`invalid or duplicate syntax lexeme identity: ${lexeme.id}`);
+    }
+    seenLexemeIds.add(lexeme.id);
+    const row = rowsByText.get(lexeme.text);
     const candidates = row === undefined ? [] : rawProfiles(row);
     const unique = new Map<string, SyntaxProfile>();
     for (const candidate of candidates) {
-      const profile = buildProfile(entry, candidate.upos, candidate.evidence, provenanceIds);
+      const profile = buildProfile(lexeme.id, candidate.upos, candidate.evidence, provenanceIds);
       unique.set(profile.id, profile);
     }
     const entryProfiles = [...unique.values()].sort((left, right) => compareText(left.id, right.id));
-    profilesByEntryId[entry.id] = entryProfiles;
+    profilesByEntryId[lexeme.id] = entryProfiles;
     profiles.push(...entryProfiles);
-    if (entryProfiles.length === 0) noUdEvidenceEntryIds.push(entry.id);
+    if (entryProfiles.length === 0) noUdEvidenceEntryIds.push(lexeme.id);
   }
   const orderedProfiles = [...profiles].sort((left, right) => compareText(left.id, right.id));
   const projectionDigest = sha256Canonical({
@@ -353,4 +369,16 @@ export function projectSyntaxProfiles(
     noUdEvidenceEntryIds,
     projectionDigest,
   };
+}
+
+export function projectSyntaxProfiles(
+  entries: readonly CatalogEntry[],
+  artifact: SyntaxEvidenceArtifact,
+  options: SyntaxProfileProjectionOptions = {},
+): SyntaxProfileProjectionResult {
+  return projectSyntaxProfilesForLexemes(
+    entries.map((entry) => ({ id: entry.id, text: entry.prompt.text })),
+    artifact,
+    options,
+  );
 }

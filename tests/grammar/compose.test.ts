@@ -1,7 +1,54 @@
 import { describe, expect, it } from "vitest";
 import type { CatalogEntry } from "../../src/core/model.js";
 import { composeGrammarCandidates } from "../../src/grammar/compose.js";
-import type { GrammarAnnotation } from "../../src/grammar/types.js";
+import type { GrammarAnnotation, GrammarTemplate } from "../../src/grammar/types.js";
+
+const TEST_TEMPLATES: readonly GrammarTemplate[] = [
+  {
+    id: "temporal-subject-modal-verb",
+    slots: [
+      { key: "temporal", role: "temporal" },
+      { key: "subject", role: "subject" },
+      { key: "modal", role: "modal", predicateFrames: ["modal"] },
+      { key: "verb", role: "verb", predicateFrames: ["intransitive", "ambitransitive"] },
+    ],
+    punctuation: "。",
+  },
+  {
+    id: "subject-modal-verb-object",
+    slots: [
+      { key: "subject", role: "subject" },
+      { key: "modal", role: "modal", predicateFrames: ["modal"] },
+      { key: "verb", role: "verb", predicateFrames: ["transitive", "ambitransitive"] },
+      { key: "object", role: "object" },
+    ],
+    punctuation: "。",
+  },
+  {
+    id: "subject-temporal-transitive-object",
+    slots: [
+      { key: "subject", role: "subject" },
+      { key: "temporal", role: "temporal" },
+      { key: "predicate", role: "transitive-predicate", predicateFrames: ["transitive", "ambitransitive"] },
+      { key: "object", role: "object" },
+    ],
+    punctuation: "。",
+  },
+  {
+    id: "subject-transitive-object",
+    slots: [
+      { key: "subject", role: "subject" },
+      { key: "predicate", role: "transitive-predicate", predicateFrames: ["transitive", "ambitransitive"] },
+      { key: "object", role: "object" },
+    ],
+    punctuation: "。",
+  },
+  {
+    id: "formulaic-utterance",
+    slots: [{ key: "formulaic", role: "formulaic", predicateFrames: ["none"] }],
+    punctuation: "。",
+  },
+];
 
 function entry(id: string, text: string): CatalogEntry {
   return {
@@ -67,7 +114,7 @@ const annotations: Readonly<Record<string, GrammarAnnotation>> = {
 
 describe("grammar-aware composition", () => {
   it("enumerates complete Mandarin template candidates", () => {
-    const result = composeGrammarCandidates(entries, annotations);
+    const result = composeGrammarCandidates(entries, annotations, TEST_TEMPLATES);
     const texts = new Set(result.candidates.map((candidate) => candidate.text));
     expect(texts).toContain("今天 我們 開始 練習");
     expect(texts).toContain("老師 可以 使用 電腦");
@@ -78,7 +125,7 @@ describe("grammar-aware composition", () => {
 
   it("enforces predicate valency for modal verb templates", () => {
     const texts = new Set(
-      composeGrammarCandidates(entries, annotations).candidates
+      composeGrammarCandidates(entries, annotations, TEST_TEMPLATES).candidates
         .map((candidate) => candidate.text),
     );
     expect(texts).not.toContain("老師 可以 使用");
@@ -87,7 +134,7 @@ describe("grammar-aware composition", () => {
   });
 
   it("never places formulaic utterances into ordinary slots", () => {
-    const result = composeGrammarCandidates(entries, annotations);
+    const result = composeGrammarCandidates(entries, annotations, TEST_TEMPLATES);
     const ordinary = result.candidates.filter((candidate) =>
       candidate.templateId !== "formulaic-utterance"
     );
@@ -97,7 +144,7 @@ describe("grammar-aware composition", () => {
   });
 
   it("balances a bounded candidate set across available templates", () => {
-    const result = composeGrammarCandidates(entries, annotations, undefined, {
+    const result = composeGrammarCandidates(entries, annotations, TEST_TEMPLATES, {
       maximumCandidates: 4,
     });
     expect(result.candidates).toHaveLength(4);
@@ -106,11 +153,11 @@ describe("grammar-aware composition", () => {
   });
 
   it("is invariant to entry and annotation input order", () => {
-    const forward = composeGrammarCandidates(entries, annotations, undefined, {
+    const forward = composeGrammarCandidates(entries, annotations, TEST_TEMPLATES, {
       maximumCandidates: 300,
     });
     const reversedAnnotations = Object.fromEntries(Object.entries(annotations).reverse());
-    const reversed = composeGrammarCandidates([...entries].reverse(), reversedAnnotations, undefined, {
+    const reversed = composeGrammarCandidates([...entries].reverse(), reversedAnnotations, TEST_TEMPLATES, {
       maximumCandidates: 300,
     });
     expect(reversed).toEqual(forward);

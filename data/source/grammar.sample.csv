@@ -1,323 +1,1787 @@
 text,reading,roles,predicate_frame,standalone_kind,provenance_ids
-中文,ㄓㄨㄥ1 ㄨㄣ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-工程,ㄍㄨㄥ1 ㄔㄥ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-我們,ㄨㄛ3 ㄇㄣ2,subject,none,lexical-prompt,local:grammar-review-v1
-現在,ㄒㄧㄢ4 ㄗㄞ4,temporal,none,lexical-prompt,local:grammar-review-v1
-媽媽,ㄇㄚ1 ㄇㄚ5,subject,none,lexical-prompt,local:grammar-review-v1
-設計,ㄕㄜ4 ㄐㄧ4,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-系統,ㄒㄧ4 ㄊㄨㄥ3,subject;object,none,lexical-prompt,local:grammar-review-v1
-資料,ㄗ1 ㄌㄧㄠ4,subject;object,none,lexical-prompt,local:grammar-review-v1
-問題,ㄨㄣ4 ㄊㄧ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-可以,ㄎㄜ3 ㄧ3,modal,modal,lexical-prompt,local:grammar-review-v1
-使用,ㄕ3 ㄩㄥ4,transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-時間,ㄕ2 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:grammar-review-v1
-開始,ㄎㄞ1 ㄕ3,modal,modal,lexical-prompt,local:grammar-review-v1
-知道,ㄓ1 ㄉㄠ4,transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-朋友,ㄆㄥ2 ㄧㄡ3,subject;object,none,lexical-prompt,local:grammar-review-v1
-東西,ㄉㄨㄥ1 ㄒㄧ5,subject;object,none,lexical-prompt,local:grammar-review-v1
-今天,ㄐㄧㄣ1 ㄊㄧㄢ1,temporal,none,lexical-prompt,local:grammar-review-v1
-明天,ㄇㄧㄥ2 ㄊㄧㄢ1,temporal,none,lexical-prompt,local:grammar-review-v1
-建築,ㄐㄧㄢ4 ㄓㄨ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-台灣,ㄊㄞ2 ㄨㄢ1,subject;object,none,lexical-prompt,local:grammar-review-v1
-注音,ㄓㄨ4 ㄧㄣ1,subject;object,none,lexical-prompt,local:grammar-review-v1
-鍵盤,ㄐㄧㄢ4 ㄆㄢ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-練習,ㄌㄧㄢ4 ㄒㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:grammar-review-v1
-學習,ㄒㄩㄝ2 ㄒㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:grammar-review-v1
-速度,ㄙㄨ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:grammar-review-v1
-正確,ㄓㄥ4 ㄑㄩㄝ4,adjectival-predicate,adjectival,lexical-prompt,local:grammar-review-v1
-聲調,ㄕㄥ1 ㄉㄧㄠ4,subject;object,none,lexical-prompt,local:grammar-review-v1
-輸入,ㄕㄨ1 ㄖㄨ4,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-文字,ㄨㄣ2 ㄗ4,subject;object,none,lexical-prompt,local:grammar-review-v1
-電腦,ㄉㄧㄢ4 ㄋㄠ3,subject;object,none,lexical-prompt,local:grammar-review-v1
-老師,ㄌㄠ3 ㄕ1,subject,none,lexical-prompt,local:grammar-review-v1
-學生,ㄒㄩㄝ2 ㄕㄥ1,subject,none,lexical-prompt,local:grammar-review-v1
-工作,ㄍㄨㄥ1 ㄗㄨㄛ4,object;intransitive-predicate;verb,intransitive,lexical-prompt,local:grammar-review-v1
-方法,ㄈㄤ1 ㄈㄚ3,subject;object,none,lexical-prompt,local:grammar-review-v1
-簡單,ㄐㄧㄢ3 ㄉㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:grammar-review-v1
-困難,ㄎㄨㄣ4 ㄋㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:grammar-review-v1
-看到,ㄎㄢ4 ㄉㄠ4,transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-聽到,ㄊㄧㄥ1 ㄉㄠ4,transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-想要,ㄒㄧㄤ3 ㄧㄠ4,modal,modal,lexical-prompt,local:grammar-review-v1
-一起,ㄧ1 ㄑㄧ3,adverbial,none,lexical-prompt,local:grammar-review-v1
-很好,ㄏㄣ3 ㄏㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:grammar-review-v1
-謝謝,ㄒㄧㄝ4 ㄒㄧㄝ5,formulaic,none,utterance,local:grammar-review-v1
-對不起,ㄉㄨㄟ4 ㄅㄨ4 ㄑㄧ3,formulaic,none,utterance,local:grammar-review-v1
-沒關係,ㄇㄟ2 ㄍㄨㄢ1 ㄒㄧ4,formulaic,none,utterance,local:grammar-review-v1
-兒子,ㄦ2 ㄗ5,subject;object,none,lexical-prompt,local:grammar-review-v1
-女兒,ㄋㄩ3 ㄦ2,subject;object,none,lexical-prompt,local:grammar-review-v1
-月亮,ㄩㄝ4 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:grammar-review-v1
-選擇,ㄒㄩㄢ3 ㄗㄜ2,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-測試,ㄘㄜ4 ㄕ4,object;transitive-predicate;verb,transitive,lexical-prompt,local:grammar-review-v1
-我,ㄨㄛ3,subject;object,none,lexical-prompt,local:activation-review-v1
-他,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
-你,ㄋㄧ3,subject;object,none,lexical-prompt,local:activation-review-v1
-她,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
-它,ㄊㄚ1,subject;object,none,lexical-prompt,local:activation-review-v1
-自己,ㄗ4 ㄐㄧ3,subject;object,none,lexical-prompt,local:activation-review-v1
-他們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v1
-地方,ㄉㄧ4 ㄈㄤ1,subject;object,none,lexical-prompt,local:activation-review-v1
-孩子,ㄏㄞ2 ㄗ5,subject;object,none,lexical-prompt,local:activation-review-v1
-一樣,ㄧ1 ㄧㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v1
-不會,ㄅㄨ4 ㄏㄨㄟ4,modal,modal,lexical-prompt,local:activation-review-v1
-重要,ㄓㄨㄥ4 ㄧㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v2
-美國,ㄇㄟ3 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v2
-中國,ㄓㄨㄥ1 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v2
-政府,ㄓㄥ4 ㄈㄨ3,subject;object,none,lexical-prompt,local:activation-review-v2
-社會,ㄕㄜ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v2
-世界,ㄕ4 ㄐㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v2
-活動,ㄏㄨㄛ2 ㄉㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
-公司,ㄍㄨㄥ1 ㄙ1,subject;object,none,lexical-prompt,local:activation-review-v2
-民眾,ㄇㄧㄣ2 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
-不同,ㄅㄨ4 ㄊㄨㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v2
-關係,ㄍㄨㄢ1 ㄒㄧ4,subject;object,none,lexical-prompt,local:activation-review-v2
-能夠,ㄋㄥ2 ㄍㄡ4,modal,modal,lexical-prompt,local:activation-review-v2
-不能,ㄅㄨ4 ㄋㄥ2,modal,modal,lexical-prompt,local:activation-review-v2
-事情,ㄕ4 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:activation-review-v2
-最後,ㄗㄨㄟ4 ㄏㄡ4,temporal,none,lexical-prompt,local:activation-review-v2
-國家,ㄍㄨㄛ2 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:activation-review-v2
-方式,ㄈㄤ1 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v2
-必須,ㄅㄧ4 ㄒㄩ1,modal,modal,lexical-prompt,local:activation-review-v2
-走,ㄗㄡ3,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v2
-環境,ㄏㄨㄢ2 ㄐㄧㄥ4,subject;object,none,lexical-prompt,local:activation-review-v2
-文化,ㄨㄣ2 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:activation-review-v3
-大陸,ㄉㄚ4 ㄌㄨ4,subject;object,none,lexical-prompt,local:activation-review-v3
-大學,ㄉㄚ4 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:activation-review-v3
-目前,ㄇㄨ4 ㄑㄧㄢ2,temporal,none,lexical-prompt,local:activation-review-v3
-部分,ㄅㄨ4 ㄈㄣ4,subject;object,none,lexical-prompt,local:activation-review-v3
-日本,ㄖ4 ㄅㄣ3,subject;object,none,lexical-prompt,local:activation-review-v3
-未來,ㄨㄟ4 ㄌㄞ2,subject;object,none,lexical-prompt,local:activation-review-v3
-學校,ㄒㄩㄝ2 ㄒㄧㄠ4,subject;object,none,lexical-prompt,local:activation-review-v3
-經濟,ㄐㄧㄥ1 ㄐㄧ4,subject;object,none,lexical-prompt,local:activation-review-v3
-當時,ㄉㄤ1 ㄕ2,temporal,none,lexical-prompt,local:activation-review-v3
-過程,ㄍㄨㄛ4 ㄔㄥ2,subject;object,none,lexical-prompt,local:activation-review-v3
-感覺,ㄍㄢ3 ㄐㄩㄝ2,subject;object,none,lexical-prompt,local:activation-review-v3
-結果,ㄐㄧㄝ2 ㄍㄨㄛ3,subject;object,none,lexical-prompt,local:activation-review-v3
-後來,ㄏㄡ4 ㄌㄞ2,temporal,none,lexical-prompt,local:activation-review-v3
-機會,ㄐㄧ1 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v3
-故事,ㄍㄨ4 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v3
-變成,ㄅㄧㄢ4 ㄔㄥ2,transitive-predicate,transitive,lexical-prompt,local:activation-review-v3
-先生,ㄒㄧㄢ1 ㄕㄥ1,subject;object,none,lexical-prompt,local:activation-review-v3
-同時,ㄊㄨㄥ2 ㄕ2,temporal,none,lexical-prompt,local:activation-review-v3
-市場,ㄕ4 ㄔㄤ3,subject;object,none,lexical-prompt,local:activation-review-v3
-中心,ㄓㄨㄥ1 ㄒㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v3
-狀況,ㄓㄨㄤ4 ㄎㄨㄤ4,subject;object,none,lexical-prompt,local:activation-review-v3
-身體,ㄕㄣ1 ㄊㄧ3,subject;object,none,lexical-prompt,local:activation-review-v3
-生命,ㄕㄥ1 ㄇㄧㄥ4,subject;object,none,lexical-prompt,local:activation-review-v3
-歷史,ㄌㄧ4 ㄕ3,subject;object,none,lexical-prompt,local:activation-review-v3
-電影,ㄉㄧㄢ4 ㄧㄥ3,subject;object,none,lexical-prompt,local:activation-review-v3
-人員,ㄖㄣ2 ㄩㄢ2,subject;object,none,lexical-prompt,local:activation-review-v3
-家庭,ㄐㄧㄚ1 ㄊㄧㄥ2,subject;object,none,lexical-prompt,local:activation-review-v3
-經驗,ㄐㄧㄥ1 ㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v3
-能力,ㄋㄥ2 ㄌㄧ4,subject;object,none,lexical-prompt,local:activation-review-v3
-政治,ㄓㄥ4 ㄓ4,subject;object,none,lexical-prompt,local:activation-review-v3
-企業,ㄑㄧ4 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v3
-總統,ㄗㄨㄥ3 ㄊㄨㄥ3,subject;object,none,lexical-prompt,local:activation-review-v3
-進入,ㄐㄧㄣ4 ㄖㄨ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v3
-美,ㄇㄟ3,subject;object,none,lexical-prompt,local:activation-review-v4
-情況,ㄑㄧㄥ2 ㄎㄨㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
-醫院,ㄧ1 ㄩㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-如此,ㄖㄨ2 ㄘ3,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-社區,ㄕㄜ4 ㄑㄩ1,subject;object,none,lexical-prompt,local:activation-review-v4
-作品,ㄗㄨㄛ4 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
-藝術,ㄧ4 ㄕㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-父親,ㄈㄨ4 ㄑㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
-地區,ㄉㄧ4 ㄑㄩ1,subject;object,none,lexical-prompt,local:activation-review-v4
-方面,ㄈㄤ1 ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-空間,ㄎㄨㄥ1 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:activation-review-v4
-久,ㄐㄧㄡ3,subject;object,none,lexical-prompt,local:activation-review-v4
-臺灣,ㄊㄞ2 ㄨㄢ1,subject;object,none,lexical-prompt,local:activation-review-v4
-產業,ㄔㄢ3 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
-辦法,ㄅㄢ4 ㄈㄚ3,subject;object,none,lexical-prompt,local:activation-review-v4
-事實,ㄕ4 ㄕ2,subject;object,none,lexical-prompt,local:activation-review-v4
-精神,ㄐㄧㄥ1 ㄕㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
-住,ㄓㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-醫師,ㄧ1 ㄕ1,subject;object,none,lexical-prompt,local:activation-review-v4
-政策,ㄓㄥ4 ㄘㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
-得到,ㄉㄜ2 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-出來,ㄔㄨ1 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-知,ㄓ1,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-原因,ㄩㄢ2 ㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
-時代,ㄕ2 ㄉㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
-母親,ㄇㄨ3 ㄑㄧㄣ1,subject;object,none,lexical-prompt,local:activation-review-v4
-土地,ㄊㄨ3 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-現場,ㄒㄧㄢ4 ㄔㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
-父母,ㄈㄨ4 ㄇㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
-基本,ㄐㄧ1 ㄅㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
-全球,ㄑㄩㄢ2 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:activation-review-v4
-真正,ㄓㄣ1 ㄓㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-行為,ㄒㄧㄥ2 ㄨㄟ2,subject;object,none,lexical-prompt,local:activation-review-v4
-分鐘,ㄈㄣ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
-不少,ㄅㄨ4 ㄕㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-人類,ㄖㄣ2 ㄌㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
-產品,ㄔㄢ3 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:activation-review-v4
-資源,ㄗ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
-力量,ㄌㄧ4 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
-技術,ㄐㄧ4 ㄕㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-食物,ㄕ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-目標,ㄇㄨ4 ㄅㄧㄠ1,subject;object,none,lexical-prompt,local:activation-review-v4
-壓力,ㄧㄚ1 ㄌㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-年輕,ㄋㄧㄢ2 ㄑㄧㄥ1,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-回到,ㄏㄨㄟ2 ㄉㄠ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
-音樂,ㄧㄣ1 ㄩㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
-中央,ㄓㄨㄥ1 ㄧㄤ1,subject;object,none,lexical-prompt,local:activation-review-v4
-當中,ㄉㄤ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
-價值,ㄐㄧㄚ4 ㄓ2,subject;object,none,lexical-prompt,local:activation-review-v4
-事件,ㄕ4 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-動物,ㄉㄨㄥ4 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-意義,ㄧ4 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-網路,ㄨㄤ3 ㄌㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-媒體,ㄇㄟ2 ㄊㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
-歡迎,ㄏㄨㄢ1 ㄧㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-意思,ㄧ4 ㄙ5,subject;object,none,lexical-prompt,local:activation-review-v4
-推動,ㄊㄨㄟ1 ㄉㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-擔任,ㄉㄢ1 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-份,ㄈㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
-家人,ㄐㄧㄚ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
-遭,ㄗㄠ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-當地,ㄉㄤ1 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-實際,ㄕ2 ㄐㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-鼓勵,ㄍㄨ3 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-科技,ㄎㄜ1 ㄐㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-內容,ㄋㄟ4 ㄖㄨㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
-穿,ㄔㄨㄢ1,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
-單位,ㄉㄢ1 ㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
-顆,ㄎㄜ1,subject;object,none,lexical-prompt,local:activation-review-v4
-觀眾,ㄍㄨㄢ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v4
-功能,ㄍㄨㄥ1 ㄋㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
-城市,ㄔㄥ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
-來到,ㄌㄞ2 ㄉㄠ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
-加入,ㄐㄧㄚ1 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-女性,ㄋㄩ3 ㄒㄧㄥ4,subject;object,none,lexical-prompt,local:activation-review-v4
-情緒,ㄑㄧㄥ2 ㄒㄩ4,subject;object,none,lexical-prompt,local:activation-review-v4
-期間,ㄑㄧ2 ㄐㄧㄢ1,temporal,none,lexical-prompt,local:activation-review-v4
-動作,ㄉㄨㄥ4 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:activation-review-v4
-教授,ㄐㄧㄠ4 ㄕㄡ4,subject;object,none,lexical-prompt,local:activation-review-v4
-態度,ㄊㄞ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-角色,ㄐㄩㄝ2 ㄙㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
-代,ㄉㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
-叫做,ㄐㄧㄠ4 ㄗㄨㄛ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
-她們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
-針對,ㄓㄣ1 ㄉㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-香港,ㄒㄧㄤ1 ㄍㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
-銀行,ㄧㄣ2 ㄏㄤ2,subject;object,none,lexical-prompt,local:activation-review-v4
-感到,ㄍㄢ3 ㄉㄠ4,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-長期,ㄔㄤ2 ㄑㄧ2,temporal,none,lexical-prompt,local:activation-review-v4
-英國,ㄧㄥ1 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:activation-review-v4
-博士,ㄅㄛ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
-男,ㄋㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
-團體,ㄊㄨㄢ2 ㄊㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
-比賽,ㄅㄧ3 ㄙㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
-下午,ㄒㄧㄚ4 ㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
-節目,ㄐㄧㄝ2 ㄇㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-生態,ㄕㄥ1 ㄊㄞ4,subject;object,none,lexical-prompt,local:activation-review-v4
-植物,ㄓ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-知識,ㄓ1 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
-附近,ㄈㄨ4 ㄐㄧㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
-科學,ㄎㄜ1 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:activation-review-v4
-具有,ㄐㄩ4 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-人民,ㄖㄣ2 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
-公園,ㄍㄨㄥ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
-主義,ㄓㄨ3 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-人們,ㄖㄣ2 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
-資訊,ㄗ1 ㄒㄩㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
-需求,ㄒㄩ1 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:activation-review-v4
-情形,ㄑㄧㄥ2 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
-效果,ㄒㄧㄠ4 ㄍㄨㄛ3,subject;object,none,lexical-prompt,local:activation-review-v4
-報告,ㄅㄠ4 ㄍㄠ4,subject;object,none,lexical-prompt,local:activation-review-v4
-公尺,ㄍㄨㄥ1 ㄔ3,subject;object,none,lexical-prompt,local:activation-review-v4
-具,ㄐㄩ4,transitive-predicate,transitive,lexical-prompt,local:activation-review-v4
-新聞,ㄒㄧㄣ1 ㄨㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
-前往,ㄑㄧㄢ2 ㄨㄤ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-品牌,ㄆㄧㄣ3 ㄆㄞ2,subject;object,none,lexical-prompt,local:activation-review-v4
-概念,ㄍㄞ4 ㄋㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-方向,ㄈㄤ1 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
-課程,ㄎㄜ4 ㄔㄥ2,subject;object,none,lexical-prompt,local:activation-review-v4
-現象,ㄒㄧㄢ4 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
-協會,ㄒㄧㄝ2 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
-積極,ㄐㄧ1 ㄐㄧ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-醫生,ㄧ1 ㄕㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
-步,ㄅㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-人士,ㄖㄣ2 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
-它們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:activation-review-v4
-電視,ㄉㄧㄢ4 ㄕ4,subject;object,none,lexical-prompt,local:activation-review-v4
-醫療,ㄧ1 ㄌㄧㄠ2,subject;object,none,lexical-prompt,local:activation-review-v4
-居民,ㄐㄩ1 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:activation-review-v4
-會議,ㄏㄨㄟ4 ㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-系列,ㄒㄧ4 ㄌㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
-階段,ㄐㄧㄝ1 ㄉㄨㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-等等,ㄉㄥ3 ㄉㄥ3,subject;object,none,lexical-prompt,local:activation-review-v4
-員工,ㄩㄢ2 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
-電話,ㄉㄧㄢ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:activation-review-v4
-時期,ㄕ2 ㄑㄧ2,subject;object,none,lexical-prompt,local:activation-review-v4
-那樣,ㄋㄚ4 ㄧㄤ4,subject;object,none,lexical-prompt,local:activation-review-v4
-屆,ㄐㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
-北京,ㄅㄟ3 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:activation-review-v4
-人物,ㄖㄣ2 ㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-那裡,ㄋㄚ4 ㄌㄧ5,subject;object,none,lexical-prompt,local:activation-review-v4
-專家,ㄓㄨㄢ1 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:activation-review-v4
-畢業,ㄅㄧ4 ㄧㄝ4,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-倍,ㄅㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
-唯一,ㄨㄟ2 ㄧ1,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-部落,ㄅㄨ4 ㄌㄨㄛ4,subject;object,none,lexical-prompt,local:activation-review-v4
-特色,ㄊㄜ4 ㄙㄜ4,subject;object,none,lexical-prompt,local:activation-review-v4
-基礎,ㄐㄧ1 ㄔㄨ3,subject;object,none,lexical-prompt,local:activation-review-v4
-米,ㄇㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
-國內,ㄍㄨㄛ2 ㄋㄟ4,subject;object,none,lexical-prompt,local:activation-review-v4
-程度,ㄔㄥ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:activation-review-v4
-興趣,ㄒㄧㄥ4 ㄑㄩ4,subject;object,none,lexical-prompt,local:activation-review-v4
-北,ㄅㄟ3,subject;object,none,lexical-prompt,local:activation-review-v4
-心理,ㄒㄧㄣ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
-條件,ㄊㄧㄠ2 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-影片,ㄧㄥ3 ㄆㄧㄢ4,subject;object,none,lexical-prompt,local:activation-review-v4
-空氣,ㄎㄨㄥ1 ㄑㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-申請,ㄕㄣ1 ㄑㄧㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-公里,ㄍㄨㄥ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:activation-review-v4
-結構,ㄐㄧㄝ2 ㄍㄡ4,subject;object,none,lexical-prompt,local:activation-review-v4
-位置,ㄨㄟ4 ㄓ4,subject;object,none,lexical-prompt,local:activation-review-v4
-遊戲,ㄧㄡ2 ㄒㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-進,ㄐㄧㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-校長,ㄒㄧㄠ4 ㄓㄤ3,subject;object,none,lexical-prompt,local:activation-review-v4
-如今,ㄖㄨ2 ㄐㄧㄣ1,temporal,none,lexical-prompt,local:activation-review-v4
-責任,ㄗㄜ2 ㄖㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
-下來,ㄒㄧㄚ4 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:activation-review-v4
-農業,ㄋㄨㄥ2 ㄧㄝ4,subject;object,none,lexical-prompt,local:activation-review-v4
-永遠,ㄩㄥ3 ㄩㄢ3,temporal,none,lexical-prompt,local:activation-review-v4
-集團,ㄐㄧ2 ㄊㄨㄢ2,subject;object,none,lexical-prompt,local:activation-review-v4
-黑,ㄏㄟ1,subject;object,none,lexical-prompt,local:activation-review-v4
-呈現,ㄔㄥ2 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v4
-主題,ㄓㄨ3 ㄊㄧ2,subject;object,none,lexical-prompt,local:activation-review-v4
-豐富,ㄈㄥ1 ㄈㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v4
-狗,ㄍㄡ3,subject;object,none,lexical-prompt,local:activation-review-v4
-目的,ㄇㄨ4 ㄉㄧ4,subject;object,none,lexical-prompt,local:activation-review-v4
-信,ㄒㄧㄣ4,subject;object,none,lexical-prompt,local:activation-review-v4
-了,ㄌㄜ5,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-了,ㄌㄧㄠ3,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-了,ㄌㄧㄠ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-作,ㄗㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-作,ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-個,ㄍㄜ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-個,ㄍㄜ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-句,ㄍㄡ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-句,ㄐㄩ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-可,ㄎㄜ3,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-可,ㄎㄜ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-台中,ㄊㄞ2 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-台北,ㄊㄞ2 ㄅㄟ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-種,ㄓㄨㄥ3,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-種,ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-著,ㄓㄜ5,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-著,ㄓㄠ1,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-著,ㄓㄠ2,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-著,ㄓㄨ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-著,ㄓㄨㄛ2,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-要,ㄧㄠ1,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-要,ㄧㄠ4,modal,modal,lexical-prompt,local:activation-review-v5-heteronym
-說,ㄕㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-說,ㄕㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-讀,ㄉㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-讀,ㄉㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:activation-review-v5-heteronym
-難,ㄋㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v5-heteronym
-難,ㄋㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:activation-review-v5-heteronym
-高中,ㄍㄠ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-高中,ㄍㄠ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
-東西,ㄉㄨㄥ1 ㄒㄧ1,subject;object,none,lexical-prompt,local:activation-review-v5-heteronym
+是,ㄕ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+有,ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+人,ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+讓,ㄖㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+年,ㄋㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+到,ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+沒有,ㄇㄟ2 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+去,ㄑㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+做,ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+能,ㄋㄥ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+被,ㄅㄟ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+什麼,ㄕㄣ2 ㄇㄜ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+時候,ㄕ2 ㄏㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+等,ㄉㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+這樣,ㄓㄜ4 ㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+用,ㄩㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+次,ㄘ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+想,ㄒㄧㄤ3,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+覺得,ㄐㄩㄝ2 ㄉㄜ5,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+天,ㄊㄧㄢ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+像,ㄒㄧㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+可能,ㄎㄜ3 ㄋㄥ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+月,ㄩㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+表示,ㄅㄧㄠ3 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+位,ㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+一些,ㄧ1 ㄒㄧㄝ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+元,ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+事,ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+日,ㄖ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+裡面,ㄌㄧ3 ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生活,ㄕㄥ1 ㄏㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+希望,ㄒㄧ1 ㄨㄤ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+內,ㄋㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+由,ㄧㄡ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+歲,ㄙㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+此,ㄘ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發現,ㄈㄚ1 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+名,ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高,ㄍㄠ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+認為,ㄖㄣ4 ㄨㄟ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+其,ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+一定,ㄧ1 ㄉㄧㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+水,ㄕㄨㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發展,ㄈㄚ1 ㄓㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+愛,ㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+帶,ㄉㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+件,ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發生,ㄈㄚ1 ㄕㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+請,ㄑㄧㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+影響,ㄧㄥ3 ㄒㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+這裡,ㄓㄜ4 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+喜歡,ㄒㄧ3 ㄏㄨㄢ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+如,ㄖㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+研究,ㄧㄢ2 ㄐㄧㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+無法,ㄨ2 ㄈㄚ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+手,ㄕㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+進行,ㄐㄧㄣ4 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+找,ㄓㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+叫,ㄐㄧㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+包括,ㄅㄠ1 ㄍㄨㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+出現,ㄔㄨ1 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+造成,ㄗㄠ4 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+受,ㄕㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+指出,ㄓ3 ㄔㄨ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+過去,ㄍㄨㄛ4 ㄑㄩ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+寫,ㄒㄧㄝ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+條,ㄊㄧㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+場,ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+放,ㄈㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+邊,ㄅㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+提供,ㄊㄧ2 ㄍㄨㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+張,ㄓㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+一般,ㄧ1 ㄅㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+其中,ㄑㄧ2 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+使,ㄕ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+決定,ㄐㄩㄝ2 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+教育,ㄐㄧㄠ4 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國際,ㄍㄨㄛ2 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主要,ㄓㄨ3 ㄧㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+段,ㄉㄨㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+健康,ㄐㄧㄢ4 ㄎㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+要求,ㄧㄠ1 ㄑㄧㄡ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+項,ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+服務,ㄈㄨ2 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+起來,ㄑㄧ3 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+誰,ㄕㄟ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+花,ㄏㄨㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+改變,ㄍㄞ3 ㄅㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+打,ㄉㄚ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+非,ㄈㄟ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+自然,ㄗ4 ㄖㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+變,ㄅㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+完成,ㄨㄢ2 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+隻,ㄓ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+繼續,ㄐㄧ4 ㄒㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+令,ㄌㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+運動,ㄩㄣ4 ㄉㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+開,ㄎㄞ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+接受,ㄐㄧㄝ1 ㄕㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+參加,ㄘㄢ1 ㄐㄧㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+代表,ㄉㄞ4 ㄅㄧㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+準備,ㄓㄨㄣ3 ㄅㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+處理,ㄔㄨ3 ㄌㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+增加,ㄗㄥ1 ㄐㄧㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+合作,ㄏㄜ2 ㄗㄨㄛ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+是否,ㄕ4 ㄈㄡ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+回,ㄏㄨㄟ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+幫助,ㄅㄤ1 ㄓㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+塊,ㄎㄨㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成,ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+小時,ㄒㄧㄠ3 ㄕ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+首,ㄕㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+支持,ㄓ1 ㄔ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+產生,ㄔㄢ3 ㄕㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+即,ㄐㄧ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+安全,ㄢ1 ㄑㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+傳統,ㄔㄨㄢ2 ㄊㄨㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+利用,ㄌㄧ4 ㄩㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+面對,ㄇㄧㄢ4 ㄉㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+成功,ㄔㄥ2 ㄍㄨㄥ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+相關,ㄒㄧㄤ1 ㄍㄨㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+出,ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+加上,ㄐㄧㄚ1 ㄕㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+超過,ㄔㄠ1 ㄍㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+嚴重,ㄧㄢ2 ㄓㄨㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+提出,ㄊㄧ2 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+就是,ㄐㄧㄡ4 ㄕ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+強調,ㄑㄧㄤ2 ㄉㄧㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+相信,ㄒㄧㄤ1 ㄒㄧㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+受到,ㄕㄡ4 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+死,ㄙ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+舉辦,ㄐㄩ3 ㄅㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+行動,ㄒㄧㄥ2 ㄉㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+獲得,ㄏㄨㄛ4 ㄉㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+參與,ㄘㄢ1 ㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+找到,ㄓㄠ3 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+解決,ㄐㄧㄝ3 ㄐㄩㄝ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+成長,ㄔㄥ2 ㄓㄤ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+個人,ㄍㄜ4 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+表現,ㄅㄧㄠ3 ㄒㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+管理,ㄍㄨㄢ3 ㄌㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+調查,ㄉㄧㄠ4 ㄔㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+討論,ㄊㄠ3 ㄌㄨㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+建議,ㄐㄧㄢ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+指,ㄓ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+持續,ㄔ2 ㄒㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+組織,ㄗㄨ3 ㄓ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+協助,ㄒㄧㄝ2 ㄓㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+畫,ㄏㄨㄚ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+推出,ㄊㄨㄟ1 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+治療,ㄓ4 ㄌㄧㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+言,ㄧㄢ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+加,ㄐㄧㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+只有,ㄓ3 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+投資,ㄊㄡ2 ㄗ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+離開,ㄌㄧ2 ㄎㄞ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+座,ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成立,ㄔㄥ2 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+本身,ㄅㄣ3 ㄕㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+注意,ㄓㄨ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+擁有,ㄩㄥ3 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+專業,ㄓㄨㄢ1 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+最近,ㄗㄨㄟ4 ㄐㄧㄣ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+存在,ㄘㄨㄣ2 ㄗㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+有關,ㄧㄡ3 ㄍㄨㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+周,ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+例如,ㄌㄧ4 ㄖㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+達,ㄉㄚ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+經營,ㄐㄧㄥ1 ㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+快樂,ㄎㄨㄞ4 ㄌㄜ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+帶來,ㄉㄞ4 ㄌㄞ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+光,ㄍㄨㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+眼,ㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+提到,ㄊㄧ2 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+自由,ㄗ4 ㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+減少,ㄐㄧㄢ3 ㄕㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+訓練,ㄒㄩㄣ4 ㄌㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+保護,ㄅㄠ3 ㄏㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+結合,ㄐㄧㄝ2 ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+形成,ㄒㄧㄥ2 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+說明,ㄕㄨㄛ1 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+結束,ㄐㄧㄝ2 ㄕㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+變化,ㄅㄧㄢ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+馬,ㄇㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+吸引,ㄒㄧ1 ㄧㄣ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+維持,ㄨㄟ2 ㄔ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+演出,ㄧㄢ3 ㄔㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+解釋,ㄐㄧㄝ3 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+創作,ㄔㄨㄤ4 ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+導致,ㄉㄠ3 ㄓ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+建立,ㄐㄧㄢ4 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+生產,ㄕㄥ1 ㄔㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+除,ㄔㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+分析,ㄈㄣ1 ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+反應,ㄈㄢ3 ㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+白,ㄅㄞ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+舉行,ㄐㄩ3 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+避免,ㄅㄧ4 ㄇㄧㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+選舉,ㄒㄩㄢ3 ㄐㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+達到,ㄉㄚ2 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+需,ㄒㄩ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+挑戰,ㄊㄧㄠ3 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+規定,ㄍㄨㄟ1 ㄉㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+絕對,ㄐㄩㄝ2 ㄉㄨㄟ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+換,ㄏㄨㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+開放,ㄎㄞ1 ㄈㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+堅持,ㄐㄧㄢ1 ㄔ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+交通,ㄐㄧㄠ1 ㄊㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+製作,ㄓ4 ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+適合,ㄕ4 ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+層,ㄘㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+控制,ㄎㄨㄥ4 ㄓ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+負責,ㄈㄨ4 ㄗㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+遇到,ㄩ4 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+確定,ㄑㄩㄝ4 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+反,ㄈㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+明顯,ㄇㄧㄥ2 ㄒㄧㄢ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+季,ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+選,ㄒㄩㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+標準,ㄅㄧㄠ1 ㄓㄨㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+顯示,ㄒㄧㄢ3 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+介紹,ㄐㄧㄝ4 ㄕㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+投入,ㄊㄡ2 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+表演,ㄅㄧㄠ3 ㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地球,ㄉㄧ4 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+安排,ㄢ1 ㄆㄞ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+開發,ㄎㄞ1 ㄈㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+引起,ㄧㄣ3 ㄑㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+邀請,ㄧㄠ1 ㄑㄧㄥ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+正常,ㄓㄥ4 ㄔㄤ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+大量,ㄉㄚ4 ㄌㄧㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+表達,ㄅㄧㄠ3 ㄉㄚ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+平均,ㄆㄧㄥ2 ㄐㄩㄣ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+建設,ㄐㄧㄢ4 ㄕㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+死亡,ㄙ3 ㄨㄤ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+取得,ㄑㄩ3 ㄉㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+穩定,ㄨㄣ3 ㄉㄧㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+保持,ㄅㄠ3 ㄔ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+支,ㄓ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+價格,ㄐㄧㄚ4 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+提升,ㄊㄧ2 ㄕㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+名字,ㄇㄧㄥ2 ㄗ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+家長,ㄐㄧㄚ1 ㄓㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+意見,ㄧ4 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+套,ㄊㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+批,ㄆㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主任,ㄓㄨ3 ㄖㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+檢查,ㄐㄧㄢ3 ㄔㄚ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+語言,ㄩ3 ㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廣告,ㄍㄨㄤ3 ㄍㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+肯定,ㄎㄣ3 ㄉㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+殺,ㄕㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+兒童,ㄦ2 ㄊㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+獲,ㄏㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+領域,ㄌㄧㄥ3 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+今,ㄐㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+創造,ㄔㄨㄤ4 ㄗㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+道路,ㄉㄠ4 ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+疾病,ㄐㄧ2 ㄅㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+男子,ㄋㄢ2 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+特殊,ㄊㄜ4 ㄕㄨ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+執行,ㄓ2 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+實驗,ㄕ2 ㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+制度,ㄓ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+彼此,ㄅㄧ3 ㄘ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+危險,ㄨㄟ2 ㄒㄧㄢ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+議員,ㄧ4 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+當年,ㄉㄤ1 ㄋㄧㄢ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+商品,ㄕㄤ1 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+事業,ㄕ4 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+調整,ㄊㄧㄠ2 ㄓㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+不可,ㄅㄨ4 ㄎㄜ3,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+現代,ㄒㄧㄢ4 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+狀態,ㄓㄨㄤ4 ㄊㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+距離,ㄐㄩ4 ㄌㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+意外,ㄧ4 ㄨㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+牠們,ㄊㄚ1 ㄇㄣ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+皇帝,ㄏㄨㄤ2 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+模式,ㄇㄛ2 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+顏色,ㄧㄢ2 ㄙㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+面,ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+接觸,ㄐㄧㄝ1 ㄔㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+教學,ㄐㄧㄠ4 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+最佳,ㄗㄨㄟ4 ㄐㄧㄚ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+旅遊,ㄌㄩ3 ㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+颱風,ㄊㄞ2 ㄈㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+紀錄,ㄐㄧ4 ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+因素,ㄧㄣ1 ㄙㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+方便,ㄈㄤ1 ㄅㄧㄢ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+放棄,ㄈㄤ4 ㄑㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+包,ㄅㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+人口,ㄖㄣ2 ㄎㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+小說,ㄒㄧㄠ3 ㄕㄨㄛ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+理論,ㄌㄧ3 ㄌㄨㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+類似,ㄌㄟ4 ㄙ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+引發,ㄧㄣ3 ㄈㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+同意,ㄊㄨㄥ2 ㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+發表,ㄈㄚ1 ㄅㄧㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+作用,ㄗㄨㄛ4 ㄩㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+製造,ㄓ4 ㄗㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+入,ㄖㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+失去,ㄕ1 ㄑㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+重點,ㄓㄨㄥ4 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+長大,ㄓㄤ3 ㄉㄚ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+生物,ㄕㄥ1 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成績,ㄔㄥ2 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+何,ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+法國,ㄈㄚ3 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宣布,ㄒㄩㄢ1 ㄅㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+意識,ㄧ4 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+青年,ㄑㄧㄥ1 ㄋㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+不足,ㄅㄨ4 ㄗㄨ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+美麗,ㄇㄟ3 ㄌㄧ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+神,ㄕㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+篇,ㄆㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中間,ㄓㄨㄥ1 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+官員,ㄍㄨㄢ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+蔡,ㄘㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成本,ㄔㄥ2 ㄅㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+結婚,ㄐㄧㄝ2 ㄏㄨㄣ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+獨立,ㄉㄨ2 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+消息,ㄒㄧㄠ1 ㄒㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+班,ㄅㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+交流,ㄐㄧㄠ1 ㄌㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+方,ㄈㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+有效,ㄧㄡ3 ㄒㄧㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+留下,ㄌㄧㄡ2 ㄒㄧㄚ5,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+歐洲,ㄡ1 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+範圍,ㄈㄢ4 ㄨㄟ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+區域,ㄑㄩ1 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+感情,ㄍㄢ3 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+重視,ㄓㄨㄥ4 ㄕ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+電子,ㄉㄧㄢ4 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+黃,ㄏㄨㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+符合,ㄈㄨ2 ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+證明,ㄓㄥ4 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+機構,ㄐㄧ1 ㄍㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+反對,ㄈㄢ3 ㄉㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+戰爭,ㄓㄢ4 ㄓㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+須,ㄒㄩ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+降低,ㄐㄧㄤ4 ㄉㄧ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+退休,ㄊㄨㄟ4 ㄒㄧㄡ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+改革,ㄍㄞ3 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+理解,ㄌㄧ3 ㄐㄧㄝ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+作者,ㄗㄨㄛ4 ㄓㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+食品,ㄕ2 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成員,ㄔㄥ2 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+人數,ㄖㄣ2 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+提高,ㄊㄧ2 ㄍㄠ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+競爭,ㄐㄧㄥ4 ㄓㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+房間,ㄈㄤ2 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+行政,ㄒㄧㄥ2 ㄓㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+哥哥,ㄍㄜ1 ㄍㄜ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公共,ㄍㄨㄥ1 ㄍㄨㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+工廠,ㄍㄨㄥ1 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+免費,ㄇㄧㄢ3 ㄈㄟ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+公開,ㄍㄨㄥ1 ㄎㄞ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+餐廳,ㄘㄢ1 ㄊㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+金,ㄐㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+傷害,ㄕㄤ1 ㄏㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貿易,ㄇㄠ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+上海,ㄕㄤ4 ㄏㄞ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+從事,ㄘㄨㄥ2 ㄕ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+經典,ㄐㄧㄥ1 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+西,ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+考慮,ㄎㄠ3 ㄌㄩ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+任務,ㄖㄣ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+太陽,ㄊㄞ4 ㄧㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+攻擊,ㄍㄨㄥ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+文章,ㄨㄣ2 ㄓㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+此外,ㄘ3 ㄨㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+法律,ㄈㄚ3 ㄌㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+近年,ㄐㄧㄣ4 ㄋㄧㄢ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+海洋,ㄏㄞ3 ㄧㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+障礙,ㄓㄤ4 ㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+兄弟,ㄒㄩㄥ1 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+經歷,ㄐㄧㄥ1 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+展開,ㄓㄢ3 ㄎㄞ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+加強,ㄐㄧㄚ1 ㄑㄧㄤ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+連續,ㄌㄧㄢ2 ㄒㄩ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+恢復,ㄏㄨㄟ1 ㄈㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+記者,ㄐㄧ4 ㄓㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+金融,ㄐㄧㄣ1 ㄖㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+亞洲,ㄧㄚ4 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+真實,ㄓㄣ1 ㄕ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+做出,ㄗㄨㄛ4 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+統計,ㄊㄨㄥ3 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+留,ㄌㄧㄡ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+享受,ㄒㄧㄤ3 ㄕㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+學者,ㄒㄩㄝ2 ㄓㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+拍攝,ㄆㄞ1 ㄕㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+使得,ㄕ3 ㄉㄜ5,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+最多,ㄗㄨㄟ4 ㄉㄨㄛ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+咖啡,ㄎㄚ1 ㄈㄟ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+神經,ㄕㄣ2 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+重大,ㄓㄨㄥ4 ㄉㄚ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+整體,ㄓㄥ3 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+風險,ㄈㄥ1 ㄒㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設備,ㄕㄜ4 ㄅㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+能量,ㄋㄥ2 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+文學,ㄨㄣ2 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+風格,ㄈㄥ1 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聯盟,ㄌㄧㄢ2 ㄇㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+策略,ㄘㄜ4 ㄌㄩㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+水果,ㄕㄨㄟ3 ㄍㄨㄛ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+德國,ㄉㄜ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主角,ㄓㄨ3 ㄐㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+形式,ㄒㄧㄥ2 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+早期,ㄗㄠ3 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+夜,ㄧㄝ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+限制,ㄒㄧㄢ4 ㄓ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+工具,ㄍㄨㄥ1 ㄐㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+戶,ㄏㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+警察,ㄐㄧㄥ3 ㄔㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+對象,ㄉㄨㄟ4 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+教師,ㄐㄧㄠ4 ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+樓,ㄌㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+掌握,ㄓㄤ3 ㄨㄛ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+學會,ㄒㄩㄝ2 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+衝突,ㄔㄨㄥ1 ㄊㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+接,ㄐㄧㄝ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+方案,ㄈㄤ1 ㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+收入,ㄕㄡ1 ㄖㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高度,ㄍㄠ1 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+相同,ㄒㄧㄤ1 ㄊㄨㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+缺乏,ㄑㄩㄝ1 ㄈㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+複雜,ㄈㄨ4 ㄗㄚ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+宗教,ㄗㄨㄥ1 ㄐㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+材料,ㄘㄞ2 ㄌㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+進步,ㄐㄧㄣ4 ㄅㄨ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+說法,ㄕㄨㄛ1 ㄈㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+包含,ㄅㄠ1 ㄏㄢ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+和平,ㄏㄜ2 ㄆㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+火,ㄏㄨㄛ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+民間,ㄇㄧㄣ2 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+民主,ㄇㄧㄣ2 ㄓㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+陳,ㄔㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+球,ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+輛,ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+採取,ㄘㄞ3 ㄑㄩ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+規模,ㄍㄨㄟ1 ㄇㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公布,ㄍㄨㄥ1 ㄅㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+雜誌,ㄗㄚ2 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+汽車,ㄑㄧ4 ㄔㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大型,ㄉㄚ4 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+擴大,ㄎㄨㄛ4 ㄉㄚ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+購買,ㄍㄡ4 ㄇㄞ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+出版,ㄔㄨ1 ㄅㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+滿足,ㄇㄢ3 ㄗㄨ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+消費,ㄒㄧㄠ1 ㄈㄟ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+肉,ㄖㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+氣候,ㄑㄧ4 ㄏㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+批評,ㄆㄧ1 ㄆㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+溫度,ㄨㄣ1 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+校園,ㄒㄧㄠ4 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貓,ㄇㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+夫人,ㄈㄨ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地位,ㄉㄧ4 ㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+思想,ㄙ1 ㄒㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+現實,ㄒㄧㄢ4 ㄕ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+市民,ㄕ4 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+拒絕,ㄐㄩ4 ㄐㄩㄝ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+平台,ㄆㄧㄥ2 ㄊㄞ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+利益,ㄌㄧ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+林,ㄌㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+受傷,ㄕㄡ4 ㄕㄤ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+主張,ㄓㄨ3 ㄓㄤ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+森林,ㄙㄣ1 ㄌㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+懷疑,ㄏㄨㄞ2 ㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+旅行,ㄌㄩ3 ㄒㄧㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+個性,ㄍㄜ4 ㄒㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+尋找,ㄒㄩㄣ2 ㄓㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+接近,ㄐㄧㄝ1 ㄐㄧㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+短,ㄉㄨㄢ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+觀點,ㄍㄨㄢ1 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+失敗,ㄕ1 ㄅㄞ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+地點,ㄉㄧ4 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+隨,ㄙㄨㄟ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+組成,ㄗㄨ3 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+出生,ㄔㄨ1 ㄕㄥ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+物質,ㄨ4 ㄓ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大眾,ㄉㄚ4 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主席,ㄓㄨ3 ㄒㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+丈夫,ㄓㄤ4 ㄈㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+讀者,ㄉㄨ2 ㄓㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+女子,ㄋㄩ3 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發出,ㄈㄚ1 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+背景,ㄅㄟ4 ㄐㄧㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+演員,ㄧㄢ3 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+措施,ㄘㄨㄛ4 ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+面積,ㄇㄧㄢ4 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+強烈,ㄑㄧㄤ2 ㄌㄧㄝ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+規劃,ㄍㄨㄟ1 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公分,ㄍㄨㄥ1 ㄈㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+錯誤,ㄘㄨㄛ4 ㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+工業,ㄍㄨㄥ1 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+款,ㄎㄨㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+固定,ㄍㄨ4 ㄉㄧㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+達成,ㄉㄚ2 ㄔㄥ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+聯合,ㄌㄧㄢ2 ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+印度,ㄧㄣ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+過來,ㄍㄨㄛ4 ㄌㄞ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+有限,ㄧㄡ3 ㄒㄧㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+細胞,ㄒㄧ4 ㄅㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+來源,ㄌㄞ2 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+舉,ㄐㄩ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+弟弟,ㄉㄧ4 ㄉㄧ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+形容,ㄒㄧㄥ2 ㄖㄨㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+業務,ㄧㄝ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+種植,ㄓㄨㄥ4 ㄓ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+族群,ㄗㄨ2 ㄑㄩㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+形象,ㄒㄧㄥ2 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+嘗試,ㄔㄤ2 ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+採用,ㄘㄞ3 ㄩㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+清,ㄑㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+數量,ㄕㄨ4 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+部門,ㄅㄨ4 ㄇㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+機車,ㄐㄧ1 ㄔㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+知名,ㄓ1 ㄇㄧㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+家族,ㄐㄧㄚ1 ㄗㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生長,ㄕㄥ1 ㄓㄤ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+赴,ㄈㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+項目,ㄒㄧㄤ4 ㄇㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+都市,ㄉㄨ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+機制,ㄐㄧ1 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+預算,ㄩ4 ㄙㄨㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+培養,ㄆㄟ2 ㄧㄤ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+機關,ㄐㄧ1 ㄍㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+出發,ㄔㄨ1 ㄈㄚ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+民國,ㄇㄧㄣ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+手術,ㄕㄡ3 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大樓,ㄉㄚ4 ㄌㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+見到,ㄐㄧㄢ4 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+封,ㄈㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+妹妹,ㄇㄟ4 ㄇㄟ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+帶領,ㄉㄞ4 ㄌㄧㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+棵,ㄎㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東,ㄉㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+作家,ㄗㄨㄛ4 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+關,ㄍㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+多數,ㄉㄨㄛ1 ㄕㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+辦理,ㄅㄢ4 ㄌㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+運作,ㄩㄣ4 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+內部,ㄋㄟ4 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+西方,ㄒㄧ1 ㄈㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+整理,ㄓㄥ3 ㄌㄧ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+立場,ㄌㄧ4 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+小學,ㄒㄧㄠ3 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設置,ㄕㄜ4 ㄓ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+大小,ㄉㄚ4 ㄒㄧㄠ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+描述,ㄇㄧㄠ2 ㄕㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+考試,ㄎㄠ3 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+李,ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+實現,ㄕ2 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+藥物,ㄧㄠ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+男性,ㄋㄢ2 ㄒㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+年齡,ㄋㄧㄢ2 ㄌㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中華,ㄓㄨㄥ1 ㄏㄨㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+打算,ㄉㄚ3 ㄙㄨㄢ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+醫學,ㄧ1 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+欣賞,ㄒㄧㄣ1 ㄕㄤ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+領導,ㄌㄧㄥ3 ㄉㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+商業,ㄕㄤ1 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+銷售,ㄒㄧㄠ1 ㄕㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+改,ㄍㄞ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+飛機,ㄈㄟ1 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+左,ㄗㄨㄛ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設,ㄕㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+恐怖,ㄎㄨㄥ3 ㄅㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+情感,ㄑㄧㄥ2 ㄍㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+路線,ㄌㄨ4 ㄒㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設施,ㄕㄜ4 ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+右,ㄧㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+刀,ㄉㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+權力,ㄑㄩㄢ2 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+給予,ㄐㄧ3 ㄩ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+中共,ㄓㄨㄥ1 ㄍㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+命,ㄇㄧㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+基金,ㄐㄧ1 ㄐㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+承認,ㄔㄥ2 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+爭議,ㄓㄥ1 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+陽光,ㄧㄤ2 ㄍㄨㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+執政,ㄓ2 ㄓㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+記錄,ㄐㄧ4 ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+優惠,ㄧㄡ1 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+扮演,ㄅㄢ4 ㄧㄢ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+流行,ㄌㄧㄡ2 ㄒㄧㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+年代,ㄋㄧㄢ2 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+優勢,ㄧㄡ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+象徵,ㄒㄧㄤ4 ㄓㄥ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+民族,ㄇㄧㄣ2 ㄗㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+學院,ㄒㄩㄝ2 ㄩㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+化學,ㄏㄨㄚ4 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+軍事,ㄐㄩㄣ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+參考,ㄘㄢ1 ㄎㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+天然,ㄊㄧㄢ1 ㄖㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+數字,ㄕㄨ4 ㄗ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+客戶,ㄎㄜ4 ㄏㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+資金,ㄗ1 ㄐㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+夏天,ㄒㄧㄚ4 ㄊㄧㄢ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+飛,ㄈㄟ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+周邊,ㄓㄡ1 ㄅㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+深入,ㄕㄣ1 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+研發,ㄧㄢ2 ㄈㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+婚姻,ㄏㄨㄣ1 ㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+應用,ㄧㄥ4 ㄩㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+機場,ㄐㄧ1 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+突破,ㄊㄨ2 ㄆㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+程序,ㄔㄥ2 ㄒㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+集中,ㄐㄧ2 ㄓㄨㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+不久,ㄅㄨ4 ㄐㄧㄡ3,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+公路,ㄍㄨㄥ1 ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+數據,ㄕㄨ4 ㄐㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+日常,ㄖ4 ㄔㄤ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+威脅,ㄨㄟ1 ㄒㄧㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+委員,ㄨㄟ3 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+最終,ㄗㄨㄟ4 ㄓㄨㄥ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+登記,ㄉㄥ1 ㄐㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+生存,ㄕㄥ1 ㄘㄨㄣ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+法院,ㄈㄚ3 ㄩㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+此時,ㄘ3 ㄕ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+表面,ㄅㄧㄠ3 ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+興建,ㄒㄧㄥ1 ㄐㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+將軍,ㄐㄧㄤ1 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+指導,ㄓ3 ㄉㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+教練,ㄐㄧㄠ4 ㄌㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+差異,ㄔㄚ1 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+保留,ㄅㄠ3 ㄌㄧㄡ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+新鮮,ㄒㄧㄣ1 ㄒㄧㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+訪問,ㄈㄤ3 ㄨㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+對手,ㄉㄨㄟ4 ㄕㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+保存,ㄅㄠ3 ㄘㄨㄣ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+攝影,ㄕㄜ4 ㄧㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+愛情,ㄞ4 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+確認,ㄑㄩㄝ4 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+停止,ㄊㄧㄥ2 ㄓ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+營運,ㄧㄥ2 ㄩㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+資產,ㄗ1 ㄔㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+新竹,ㄒㄧㄣ1 ㄓㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+抗議,ㄎㄤ4 ㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+主人,ㄓㄨ3 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+核心,ㄏㄜ2 ㄒㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+婦女,ㄈㄨ4 ㄋㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+具體,ㄐㄩ4 ㄊㄧ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+白色,ㄅㄞ2 ㄙㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+預期,ㄩ4 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+少數,ㄕㄠ3 ㄕㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+衛生,ㄨㄟ4 ㄕㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+韓國,ㄏㄢ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貢獻,ㄍㄨㄥ4 ㄒㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+小組,ㄒㄧㄠ3 ㄗㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宣傳,ㄒㄩㄢ1 ㄔㄨㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+子女,ㄗ3 ㄋㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+居住,ㄐㄩ1 ㄓㄨ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+事物,ㄕ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+保障,ㄅㄠ3 ㄓㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+收到,ㄕㄡ1 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+統一,ㄊㄨㄥ3 ㄧ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+過度,ㄍㄨㄛ4 ㄉㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+信任,ㄒㄧㄣ4 ㄖㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國會,ㄍㄨㄛ2 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+病毒,ㄅㄧㄥ4 ㄉㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+不滿,ㄅㄨ4 ㄇㄢ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+取代,ㄑㄩ3 ㄉㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+反映,ㄈㄢ3 ㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+如同,ㄖㄨ2 ㄊㄨㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+海外,ㄏㄞ3 ㄨㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+陷入,ㄒㄧㄢ4 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+球員,ㄑㄧㄡ2 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成熟,ㄔㄥ2 ㄕㄡ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+協調,ㄒㄧㄝ2 ㄊㄧㄠ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+廣場,ㄍㄨㄤ3 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+操作,ㄘㄠ1 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+冠軍,ㄍㄨㄢ4 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設立,ㄕㄜ4 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+玻璃,ㄅㄛ1 ㄌㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+勞工,ㄌㄠ2 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+良好,ㄌㄧㄤ2 ㄏㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+職業,ㄓ2 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+嚴格,ㄧㄢ2 ㄍㄜ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+紐約,ㄋㄧㄡ3 ㄩㄝ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+儀式,ㄧ2 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+機器,ㄐㄧ1 ㄑㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+律師,ㄌㄩ4 ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+毛,ㄇㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+得知,ㄉㄜ2 ㄓ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+明確,ㄇㄧㄥ2 ㄑㄩㄝ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+交給,ㄐㄧㄠ1 ㄍㄟ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+元素,ㄩㄢ2 ㄙㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分類,ㄈㄣ1 ㄌㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+常見,ㄔㄤ2 ㄐㄧㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+基地,ㄐㄧ1 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+細節,ㄒㄧ4 ㄐㄧㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+畫家,ㄏㄨㄚ4 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+召開,ㄓㄠ4 ㄎㄞ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+人工,ㄖㄣ2 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+適應,ㄕ4 ㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+成分,ㄔㄥ2 ㄈㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+吸收,ㄒㄧ1 ㄕㄡ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+色彩,ㄙㄜ4 ㄘㄞ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+興奮,ㄒㄧㄥ1 ㄈㄣ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+認知,ㄖㄣ4 ㄓ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主持,ㄓㄨ3 ㄔ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+特定,ㄊㄜ4 ㄉㄧㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+旅客,ㄌㄩ3 ㄎㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+尋求,ㄒㄩㄣ2 ㄑㄧㄡ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+遭到,ㄗㄠ1 ㄉㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+黑色,ㄏㄟ1 ㄙㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+乃,ㄋㄞ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+車輛,ㄔㄜ1 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+巨大,ㄐㄩ4 ㄉㄚ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+合理,ㄏㄜ2 ㄌㄧ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+鏡頭,ㄐㄧㄥ4 ㄊㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+協議,ㄒㄧㄝ2 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+報紙,ㄅㄠ4 ㄓ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+火車,ㄏㄨㄛ3 ㄔㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+不得,ㄅㄨ4 ㄉㄜ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+寫作,ㄒㄧㄝ3 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+冬天,ㄉㄨㄥ1 ㄊㄧㄢ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+損失,ㄙㄨㄣ3 ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+越南,ㄩㄝ4 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+抵達,ㄉㄧ3 ㄉㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+適當,ㄕ4 ㄉㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+計算,ㄐㄧ4 ㄙㄨㄢ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+命運,ㄇㄧㄥ4 ㄩㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+移動,ㄧ2 ㄉㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+革命,ㄍㄜ2 ㄇㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+基因,ㄐㄧ1 ㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+促進,ㄘㄨ4 ㄐㄧㄣ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+著名,ㄓㄨ4 ㄇㄧㄥ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+亮,ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+建,ㄐㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+官方,ㄍㄨㄢ1 ㄈㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+新加坡,ㄒㄧㄣ1 ㄐㄧㄚ1 ㄆㄛ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+重建,ㄔㄨㄥ2 ㄐㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+今日,ㄐㄧㄣ1 ㄖ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+外交,ㄨㄞ4 ㄐㄧㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+體系,ㄊㄧ3 ㄒㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+傳承,ㄔㄨㄢ2 ㄔㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+現,ㄒㄧㄢ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+住宅,ㄓㄨ4 ㄓㄞ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+獨特,ㄉㄨ2 ㄊㄜ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+世紀,ㄕ4 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+韓,ㄏㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+投票,ㄊㄡ2 ㄆㄧㄠ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+供應,ㄍㄨㄥ1 ㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+大會,ㄉㄚ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+信仰,ㄒㄧㄣ4 ㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+土壤,ㄊㄨ3 ㄖㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+保險,ㄅㄠ3 ㄒㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+喜愛,ㄒㄧ3 ㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+案件,ㄢ4 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+明,ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+規則,ㄍㄨㄟ1 ㄗㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+自動,ㄗ4 ㄉㄨㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+做法,ㄗㄨㄛ4 ㄈㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+偉大,ㄨㄟ3 ㄉㄚ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+發電,ㄈㄚ1 ㄉㄧㄢ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+噸,ㄉㄨㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+爆發,ㄅㄠ4 ㄈㄚ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+競賽,ㄐㄧㄥ4 ㄙㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+組合,ㄗㄨ3 ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+巴黎,ㄅㄚ1 ㄌㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+打擊,ㄉㄚ3 ㄐㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+移民,ㄧ2 ㄇㄧㄣ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+水庫,ㄕㄨㄟ3 ㄎㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+戰略,ㄓㄢ4 ㄌㄩㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+教導,ㄐㄧㄠ4 ㄉㄠ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+預防,ㄩ4 ㄈㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+星期,ㄒㄧㄥ1 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+側,ㄘㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生涯,ㄕㄥ1 ㄧㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+航空,ㄏㄤ2 ㄎㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+部份,ㄅㄨ4 ㄈㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+下降,ㄒㄧㄚ4 ㄐㄧㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+一致,ㄧ1 ㄓ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+類型,ㄌㄟ4 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+傳播,ㄔㄨㄢ2 ㄅㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+年度,ㄋㄧㄢ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+帝國,ㄉㄧ4 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+修正,ㄒㄧㄡ1 ㄓㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+端,ㄉㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+晚間,ㄨㄢ3 ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+視,ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+鐵路,ㄊㄧㄝ3 ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+道德,ㄉㄠ4 ㄉㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+上市,ㄕㄤ4 ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+國民,ㄍㄨㄛ2 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國王,ㄍㄨㄛ2 ㄨㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+院長,ㄩㄢ4 ㄓㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+就讀,ㄐㄧㄡ4 ㄉㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+抗,ㄎㄤ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+權利,ㄑㄩㄢ2 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+暴力,ㄅㄠ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+當選,ㄉㄤ1 ㄒㄩㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+上升,ㄕㄤ4 ㄕㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+動力,ㄉㄨㄥ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發明,ㄈㄚ1 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+裝置,ㄓㄨㄤ1 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+義大利,ㄧ4 ㄉㄚ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+自身,ㄗ4 ㄕㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宇宙,ㄩ3 ㄓㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+司法,ㄙ1 ㄈㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+禁止,ㄐㄧㄣ4 ㄓ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+總部,ㄗㄨㄥ3 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+輪,ㄌㄨㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+對抗,ㄉㄨㄟ4 ㄎㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+計劃,ㄐㄧ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+激烈,ㄐㄧ1 ㄌㄧㄝ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+武器,ㄨ3 ㄑㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+議會,ㄧ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+架,ㄐㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東京,ㄉㄨㄥ1 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+有些,ㄧㄡ3 ㄒㄧㄝ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+季節,ㄐㄧ4 ㄐㄧㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+臨時,ㄌㄧㄣ2 ㄕ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+車站,ㄔㄜ1 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+立,ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+集,ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+部隊,ㄅㄨ4 ㄉㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+山區,ㄕㄢ1 ㄑㄩ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+軍隊,ㄐㄩㄣ1 ㄉㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+優秀,ㄧㄡ1 ㄒㄧㄡ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+數學,ㄕㄨ4 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+母,ㄇㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+資格,ㄗ1 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+助理,ㄓㄨ4 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+詞,ㄘ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+寬,ㄎㄨㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+文明,ㄨㄣ2 ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+吳,ㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+名單,ㄇㄧㄥ2 ㄉㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+權益,ㄑㄩㄢ2 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+古代,ㄍㄨ3 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+提名,ㄊㄧ2 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+眾,ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+性格,ㄒㄧㄥ4 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貨幣,ㄏㄨㄛ4 ㄅㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+外國,ㄨㄞ4 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+領袖,ㄌㄧㄥ3 ㄒㄧㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+泰國,ㄊㄞ4 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+俄羅斯,ㄜ2 ㄌㄨㄛ2 ㄙ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+交換,ㄐㄧㄠ1 ㄏㄨㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+學術,ㄒㄩㄝ2 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+艘,ㄙㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+手段,ㄕㄡ3 ㄉㄨㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+網站,ㄨㄤ3 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+定義,ㄉㄧㄥ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+展出,ㄓㄢ3 ㄔㄨ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+戲劇,ㄒㄧ4 ㄐㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+劉,ㄌㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東方,ㄉㄨㄥ1 ㄈㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+港,ㄍㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+哲學,ㄓㄜ2 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+記載,ㄐㄧ4 ㄗㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+行業,ㄏㄤ2 ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聯繫,ㄌㄧㄢ2 ㄒㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+前後,ㄑㄧㄢ2 ㄏㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+駐,ㄓㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+到達,ㄉㄠ4 ㄉㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+涉及,ㄕㄜ4 ㄐㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+展示,ㄓㄢ3 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+參賽,ㄘㄢ1 ㄙㄞ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+人次,ㄖㄣ2 ㄘ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+市區,ㄕ4 ㄑㄩ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+事務,ㄕ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+改造,ㄍㄞ3 ㄗㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+決策,ㄐㄩㄝ2 ㄘㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公主,ㄍㄨㄥ1 ㄓㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+房屋,ㄈㄤ2 ㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+施工,ㄕ1 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+指揮,ㄓ3 ㄏㄨㄟ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+勢力,ㄕ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+澳洲,ㄠ4 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+手法,ㄕㄡ3 ㄈㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+南部,ㄋㄢ2 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+樂團,ㄩㄝ4 ㄊㄨㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+形狀,ㄒㄧㄥ2 ㄓㄨㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+最早,ㄗㄨㄟ4 ㄗㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+發行,ㄈㄚ1 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+公民,ㄍㄨㄥ1 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+轉變,ㄓㄨㄢ3 ㄅㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+飲料,ㄧㄣ3 ㄌㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+上帝,ㄕㄤ4 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+超級,ㄔㄠ1 ㄐㄧ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+歌手,ㄍㄜ1 ㄕㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+勞動,ㄌㄠ2 ㄉㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+許,ㄒㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+佔,ㄓㄢ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+意味,ㄧ4 ㄨㄟ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+非洲,ㄈㄟ1 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+農,ㄋㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+展覽,ㄓㄢ3 ㄌㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地圖,ㄉㄧ4 ㄊㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+污染,ㄨ1 ㄖㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+藝人,ㄧ4 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+首都,ㄕㄡ3 ㄉㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+敘利亞,ㄒㄩ4 ㄌㄧ4 ㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+運輸,ㄩㄣ4 ㄕㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+球隊,ㄑㄧㄡ2 ㄉㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+工人,ㄍㄨㄥ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+出身,ㄔㄨ1 ㄕㄣ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+勝利,ㄕㄥ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+一帶,ㄧ1 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+敵人,ㄉㄧ2 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大臣,ㄉㄚ4 ㄔㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+好友,ㄏㄠ3 ㄧㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+否認,ㄈㄡ3 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+含有,ㄏㄢ2 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+倫敦,ㄌㄨㄣ2 ㄉㄨㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+菲律賓,ㄈㄟ1 ㄌㄩ4 ㄅㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+統治,ㄊㄨㄥ3 ㄓ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+龐大,ㄆㄤ2 ㄉㄚ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+試圖,ㄕ4 ㄊㄨ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+北部,ㄅㄟ3 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發動,ㄈㄚ1 ㄉㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+歌曲,ㄍㄜ1 ㄑㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中學,ㄓㄨㄥ1 ㄒㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+席,ㄒㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+佛教,ㄈㄛ2 ㄐㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+繪畫,ㄏㄨㄟ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+承擔,ㄔㄥ2 ㄉㄢ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+支援,ㄓ1 ㄩㄢ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+初期,ㄔㄨ1 ㄑㄧ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+長達,ㄔㄤ2 ㄉㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+綜合,ㄗㄨㄥ4 ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+取消,ㄑㄩ3 ㄒㄧㄠ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+融合,ㄖㄨㄥ2 ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+物品,ㄨ4 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設定,ㄕㄜ4 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+監督,ㄐㄧㄢ1 ㄉㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+產量,ㄔㄢ3 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+造,ㄗㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+構成,ㄍㄡ4 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+秋,ㄑㄧㄡ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+周圍,ㄓㄡ1 ㄨㄟ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+專輯,ㄓㄨㄢ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+顧問,ㄍㄨ4 ㄨㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+排名,ㄆㄞ2 ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+劍,ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+名稱,ㄇㄧㄥ2 ㄔㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+現任,ㄒㄧㄢ4 ㄖㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+場所,ㄔㄤ3 ㄙㄨㄛ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聯絡,ㄌㄧㄢ2 ㄌㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+贏得,ㄧㄥ2 ㄉㄜ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+上述,ㄕㄤ4 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+命令,ㄇㄧㄥ4 ㄌㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+私人,ㄙ1 ㄖㄣ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+本土,ㄅㄣ3 ㄊㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聚集,ㄐㄩ4 ㄐㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+花園,ㄏㄨㄚ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分配,ㄈㄣ1 ㄆㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+聲明,ㄕㄥ1 ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+判決,ㄆㄢ4 ㄐㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+英,ㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+指示,ㄓ3 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+強大,ㄑㄧㄤ2 ㄉㄚ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+遭遇,ㄗㄠ1 ㄩ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+發布,ㄈㄚ1 ㄅㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+治,ㄓ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+評論,ㄆㄧㄥ2 ㄌㄨㄣ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+邏輯,ㄌㄨㄛ2 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高級,ㄍㄠ1 ㄐㄧ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+各界,ㄍㄜ4 ㄐㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+懷孕,ㄏㄨㄞ2 ㄩㄣ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+軟體,ㄖㄨㄢ3 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+原始,ㄩㄢ2 ㄕ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+經理,ㄐㄧㄥ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+局長,ㄐㄩ2 ㄓㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+意,ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+真相,ㄓㄣ1 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+企圖,ㄑㄧ4 ㄊㄨ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+體制,ㄊㄧ3 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+海岸,ㄏㄞ3 ㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+教會,ㄐㄧㄠ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+詩人,ㄕ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+歐,ㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+海水,ㄏㄞ3 ㄕㄨㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+財產,ㄘㄞ2 ㄔㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+楊,ㄧㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+階級,ㄐㄧㄝ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+修復,ㄒㄧㄡ1 ㄈㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+發起,ㄈㄚ1 ㄑㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+政權,ㄓㄥ4 ㄑㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+教堂,ㄐㄧㄠ4 ㄊㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+娛樂,ㄩ2 ㄌㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+增長,ㄗㄥ1 ㄓㄤ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+商店,ㄕㄤ1 ㄉㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+特徵,ㄊㄜ4 ㄓㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+普通,ㄆㄨ3 ㄊㄨㄥ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+傳說,ㄔㄨㄢ2 ㄕㄨㄛ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+童年,ㄊㄨㄥ2 ㄋㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+酒店,ㄐㄧㄡ3 ㄉㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+合法,ㄏㄜ2 ㄈㄚ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+金屬,ㄐㄧㄣ1 ㄕㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+電池,ㄉㄧㄢ4 ㄔ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+皇后,ㄏㄨㄤ2 ㄏㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+比如,ㄅㄧ3 ㄖㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+善,ㄕㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+指定,ㄓ3 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+介入,ㄐㄧㄝ4 ㄖㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+秘密,ㄇㄧ4 ㄇㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+古蹟,ㄍㄨ3 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+電力,ㄉㄧㄢ4 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+形態,ㄒㄧㄥ2 ㄊㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+本人,ㄅㄣ3 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+種類,ㄓㄨㄥ3 ㄌㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+朱,ㄓㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+加工,ㄐㄧㄚ1 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+資本,ㄗ1 ㄅㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+平等,ㄆㄧㄥ2 ㄉㄥ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+周年,ㄓㄡ1 ㄋㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+性別,ㄒㄧㄥ4 ㄅㄧㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+典型,ㄉㄧㄢ3 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+診斷,ㄓㄣ3 ㄉㄨㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+情節,ㄑㄧㄥ2 ㄐㄧㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+溫泉,ㄨㄣ1 ㄑㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+隧道,ㄙㄨㄟ4 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+作戰,ㄗㄨㄛ4 ㄓㄢ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+食用,ㄕ2 ㄩㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+藍色,ㄌㄢ2 ㄙㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+男友,ㄋㄢ2 ㄧㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+慶祝,ㄑㄧㄥ4 ㄓㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+鄰近,ㄌㄧㄣ2 ㄐㄧㄣ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+當局,ㄉㄤ1 ㄐㄩ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地理,ㄉㄧ4 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高速,ㄍㄠ1 ㄙㄨ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+埃及,ㄞ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+總理,ㄗㄨㄥ3 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廣播,ㄍㄨㄤ3 ㄅㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+現有,ㄒㄧㄢ4 ㄧㄡ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+西班牙,ㄒㄧ1 ㄅㄢ1 ㄧㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+希臘,ㄒㄧ1 ㄌㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+馬來西亞,ㄇㄚ3 ㄌㄞ2 ㄒㄧ1 ㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+允許,ㄩㄣ3 ㄒㄩ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+財政,ㄘㄞ2 ㄓㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+空中,ㄎㄨㄥ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+慈善,ㄘ2 ㄕㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宋,ㄙㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+事故,ㄕ4 ㄍㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+牙齒,ㄧㄚ2 ㄔ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+祖先,ㄗㄨ3 ㄒㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+說服,ㄕㄨㄟ4 ㄈㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+有用,ㄧㄡ3 ㄩㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+領先,ㄌㄧㄥ3 ㄒㄧㄢ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+請求,ㄑㄧㄥ3 ㄑㄧㄡ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+群眾,ㄑㄩㄣ2 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宿舍,ㄙㄨ4 ㄕㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+性質,ㄒㄧㄥ4 ㄓ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+場地,ㄔㄤ3 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+神奇,ㄕㄣ2 ㄑㄧ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+海軍,ㄏㄞ3 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+列車,ㄌㄧㄝ4 ㄔㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+羅馬,ㄌㄨㄛ2 ㄇㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+簽署,ㄑㄧㄢ1 ㄕㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+淡水,ㄉㄢ4 ㄕㄨㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+會長,ㄏㄨㄟ4 ㄓㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+乾隆,ㄑㄧㄢ2 ㄌㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+列,ㄌㄧㄝ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+大戰,ㄉㄚ4 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+職務,ㄓ2 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+止,ㄓ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+旗,ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+啟用,ㄑㄧ3 ㄩㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+軍人,ㄐㄩㄣ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+落後,ㄌㄨㄛ4 ㄏㄡ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+飛行,ㄈㄟ1 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+父,ㄈㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+財富,ㄘㄞ2 ㄈㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分成,ㄈㄣ1 ㄔㄥ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+部長,ㄅㄨ4 ㄓㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+原理,ㄩㄢ2 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+場合,ㄔㄤ3 ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+技能,ㄐㄧ4 ㄋㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+架構,ㄐㄧㄚ4 ㄍㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+荷蘭,ㄏㄜ2 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+建造,ㄐㄧㄢ4 ㄗㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+呈,ㄔㄥ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+版本,ㄅㄢ3 ㄅㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+飾演,ㄕ4 ㄧㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+世,ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+合併,ㄏㄜ2 ㄅㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+鋼琴,ㄍㄤ1 ㄑㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+連任,ㄌㄧㄢ2 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+廣泛,ㄍㄨㄤ3 ㄈㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+翻譯,ㄈㄢ1 ㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+通訊,ㄊㄨㄥ1 ㄒㄩㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+河川,ㄏㄜ2 ㄔㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+小型,ㄒㄧㄠ3 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+先進,ㄒㄧㄢ1 ㄐㄧㄣ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+士兵,ㄕ4 ㄅㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地形,ㄉㄧ4 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+返回,ㄈㄢ3 ㄏㄨㄟ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+棒球,ㄅㄤ4 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+工藝,ㄍㄨㄥ1 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+乘客,ㄔㄥ2 ㄎㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+升,ㄕㄥ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+文物,ㄨㄣ2 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+冒險,ㄇㄠ4 ㄒㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高山,ㄍㄠ1 ㄕㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+模型,ㄇㄛ2 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+開設,ㄎㄞ1 ㄕㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+漫畫,ㄇㄢ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+賽事,ㄙㄞ4 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+用品,ㄩㄥ4 ㄆㄧㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+相比,ㄒㄧㄤ1 ㄅㄧ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+收藏,ㄕㄡ1 ㄘㄤ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+替代,ㄊㄧ4 ㄉㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+古老,ㄍㄨ3 ㄌㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+旗下,ㄑㄧ2 ㄒㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+俄國,ㄜ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公寓,ㄍㄨㄥ1 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+最初,ㄗㄨㄟ4 ㄔㄨ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+朝廷,ㄔㄠ2 ㄊㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+選區,ㄒㄩㄢ3 ㄑㄩ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+邊緣,ㄅㄧㄢ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+圖案,ㄊㄨ2 ㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+裝飾,ㄓㄨㄤ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+諮詢,ㄗ1 ㄒㄩㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+野生,ㄧㄝ3 ㄕㄥ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+贊助,ㄗㄢ4 ㄓㄨ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+延伸,ㄧㄢ2 ㄕㄣ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+轉換,ㄓㄨㄢ3 ㄏㄨㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+蘇,ㄙㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+海域,ㄏㄞ3 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+相機,ㄒㄧㄤ4 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+代理,ㄉㄞ4 ㄌㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+阻止,ㄗㄨ3 ㄓ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+加拿大,ㄐㄧㄚ1 ㄋㄚ2 ㄉㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+鄉鎮,ㄒㄧㄤ1 ㄓㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+去世,ㄑㄩ4 ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+著作,ㄓㄨ4 ㄗㄨㄛ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+謂,ㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+民,ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+球場,ㄑㄧㄡ2 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+退出,ㄊㄨㄟ4 ㄔㄨ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+商人,ㄕㄤ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+下令,ㄒㄧㄚ4 ㄌㄧㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+評價,ㄆㄧㄥ2 ㄐㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+故宮,ㄍㄨ4 ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+體育,ㄊㄧ3 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+南京,ㄋㄢ2 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+爆炸,ㄅㄠ4 ㄓㄚ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+義務,ㄧ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+相似,ㄒㄧㄤ1 ㄙ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+節省,ㄐㄧㄝ2 ㄕㄥ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+宣稱,ㄒㄩㄢ1 ㄔㄥ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+碼頭,ㄇㄚ3 ㄊㄡ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+升級,ㄕㄥ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+王子,ㄨㄤ2 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+立法,ㄌㄧ4 ㄈㄚ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+石油,ㄕ2 ㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+早年,ㄗㄠ3 ㄋㄧㄢ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+編輯,ㄅㄧㄢ1 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主流,ㄓㄨ3 ㄌㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+原有,ㄩㄢ2 ㄧㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+以色列,ㄧ3 ㄙㄜ4 ㄌㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東部,ㄉㄨㄥ1 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+製成,ㄓ4 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+岸,ㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東北,ㄉㄨㄥ1 ㄅㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+繼承,ㄐㄧ4 ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+內閣,ㄋㄟ4 ㄍㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+戰場,ㄓㄢ4 ㄔㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+無關,ㄨ2 ㄍㄨㄢ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+中山,ㄓㄨㄥ1 ㄕㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中部,ㄓㄨㄥ1 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+現今,ㄒㄧㄢ4 ㄐㄧㄣ1,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+德,ㄉㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+長官,ㄓㄤ3 ㄍㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+騎士,ㄑㄧ2 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+法案,ㄈㄚ3 ㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+演唱,ㄧㄢ3 ㄔㄤ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+通車,ㄊㄨㄥ1 ㄔㄜ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+延長,ㄧㄢ2 ㄔㄤ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+創立,ㄔㄨㄤ4 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+轉移,ㄓㄨㄢ3 ㄧ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+後者,ㄏㄡ4 ㄓㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+外科,ㄨㄞ4 ㄎㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+誕生,ㄉㄢ4 ㄕㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+種族,ㄓㄨㄥ3 ㄗㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+獎勵,ㄐㄧㄤ3 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+負,ㄈㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+奧運,ㄠ4 ㄩㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+日期,ㄖ4 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+街道,ㄐㄧㄝ1 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分布,ㄈㄣ1 ㄅㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+演奏,ㄧㄢ3 ㄗㄡ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+動畫,ㄉㄨㄥ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+隊員,ㄉㄨㄟ4 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+河流,ㄏㄜ2 ㄌㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+物種,ㄨ4 ㄓㄨㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大道,ㄉㄚ4 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+選出,ㄒㄩㄢ3 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+主體,ㄓㄨ3 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公會,ㄍㄨㄥ1 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+釋放,ㄕ4 ㄈㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+南方,ㄋㄢ2 ㄈㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廣東,ㄍㄨㄤ3 ㄉㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+遊行,ㄧㄡ2 ㄒㄧㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+風暴,ㄈㄥ1 ㄅㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+傳奇,ㄔㄨㄢ2 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+保守,ㄅㄠ3 ㄕㄡ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+分裂,ㄈㄣ1 ㄌㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+率領,ㄕㄨㄞ4 ㄌㄧㄥ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+題材,ㄊㄧ2 ㄘㄞ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+氣體,ㄑㄧ4 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+混合,ㄏㄨㄣ4 ㄏㄜ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+注重,ㄓㄨ4 ㄓㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+傑出,ㄐㄧㄝ2 ㄔㄨ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+表明,ㄅㄧㄠ3 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+濃度,ㄋㄨㄥ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+軌道,ㄍㄨㄟ3 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+神話,ㄕㄣ2 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+唐,ㄊㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+恐龍,ㄎㄨㄥ3 ㄌㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+緬甸,ㄇㄧㄢ3 ㄉㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+客運,ㄎㄜ4 ㄩㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聚會,ㄐㄩ4 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+樓梯,ㄌㄡ2 ㄊㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+符號,ㄈㄨ2 ㄏㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+珊瑚,ㄕㄢ1 ㄏㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+血壓,ㄒㄧㄝ3 ㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+清朝,ㄑㄧㄥ1 ㄔㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+董事,ㄉㄨㄥ3 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+物理,ㄨ4 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+走廊,ㄗㄡ3 ㄌㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+等級,ㄉㄥ3 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廣州,ㄍㄨㄤ3 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+並非,ㄅㄧㄥ4 ㄈㄟ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+發達,ㄈㄚ1 ㄉㄚ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+工資,ㄍㄨㄥ1 ㄗ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+列入,ㄌㄧㄝ4 ㄖㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+擊敗,ㄐㄧ2 ㄅㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+市政,ㄕ4 ㄓㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+個體,ㄍㄜ4 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+巴西,ㄅㄚ1 ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+湯姆,ㄊㄤ1 ㄇㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+趙,ㄓㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+鳥類,ㄋㄧㄠ3 ㄌㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+巴士,ㄅㄚ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+制定,ㄓ4 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+階層,ㄐㄧㄝ1 ㄘㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+文獻,ㄨㄣ2 ㄒㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+職,ㄓ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+實體,ㄕ2 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+福建,ㄈㄨ2 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+島嶼,ㄉㄠ3 ㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+瑞士,ㄖㄨㄟ4 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貴族,ㄍㄨㄟ4 ㄗㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+設有,ㄕㄜ4 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+頻率,ㄆㄧㄣ2 ㄌㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+土耳其,ㄊㄨ3 ㄦ3 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+播出,ㄅㄛ4 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+聯邦,ㄌㄧㄢ2 ㄅㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+加州,ㄐㄧㄚ1 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+完善,ㄨㄢ2 ㄕㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+入侵,ㄖㄨ4 ㄑㄧㄣ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+興起,ㄒㄧㄥ1 ㄑㄧ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+黑人,ㄏㄟ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+四川,ㄙ4 ㄔㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+引擎,ㄧㄣ3 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+上映,ㄕㄤ4 ㄧㄥ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+電梯,ㄉㄧㄢ4 ㄊㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+票房,ㄆㄧㄠ4 ㄈㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+物體,ㄨ4 ㄊㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+王朝,ㄨㄤ2 ㄔㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+劇情,ㄐㄩ4 ㄑㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+任職,ㄖㄣ4 ㄓ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+乾燥,ㄍㄢ1 ㄗㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+強度,ㄑㄧㄤ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+西部,ㄒㄧ1 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+外來,ㄨㄞ4 ㄌㄞ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+程,ㄔㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+連接,ㄌㄧㄢ2 ㄐㄧㄝ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+緊密,ㄐㄧㄣ3 ㄇㄧ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+持有,ㄔ2 ㄧㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+名義,ㄇㄧㄥ2 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+核,ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+鬥爭,ㄉㄡ4 ㄓㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+口號,ㄎㄡ3 ㄏㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+倫理,ㄌㄨㄣ2 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+幻想,ㄏㄨㄢ4 ㄒㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+唱片,ㄔㄤ4 ㄆㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+自稱,ㄗ4 ㄔㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+榮譽,ㄖㄨㄥ2 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+專用,ㄓㄨㄢ1 ㄩㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+漢,ㄏㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+王國,ㄨㄤ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大使,ㄉㄚ4 ㄕ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+空軍,ㄎㄨㄥ1 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+復興,ㄈㄨ4 ㄒㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+籃球,ㄌㄢ2 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+全家,ㄑㄩㄢ2 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+特有,ㄊㄜ4 ㄧㄡ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+法庭,ㄈㄚ3 ㄊㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+帶走,ㄉㄞ4 ㄗㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+出任,ㄔㄨ1 ㄖㄣ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+國軍,ㄍㄨㄛ2 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+行走,ㄒㄧㄥ2 ㄗㄡ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+虛擬,ㄒㄩ1 ㄋㄧ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+弟子,ㄉㄧ4 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+沿海,ㄧㄢ2 ㄏㄞ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+平原,ㄆㄧㄥ2 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+否定,ㄈㄡ3 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+描寫,ㄇㄧㄠ2 ㄒㄧㄝ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+多達,ㄉㄨㄛ1 ㄉㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+開展,ㄎㄞ1 ㄓㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+進攻,ㄐㄧㄣ4 ㄍㄨㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+試驗,ㄕ4 ㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+姓名,ㄒㄧㄥ4 ㄇㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+枚,ㄇㄟ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+推行,ㄊㄨㄟ1 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+搜索,ㄙㄡ1 ㄙㄨㄛ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+彭,ㄆㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+冬季,ㄉㄨㄥ1 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+殖民,ㄓ2 ㄇㄧㄣ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+國防,ㄍㄨㄛ2 ㄈㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+足球,ㄗㄨ2 ㄑㄧㄡ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+約翰,ㄩㄝ1 ㄏㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+始,ㄕ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+依靠,ㄧ1 ㄎㄠ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+自治,ㄗ4 ㄓ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+標誌,ㄅㄧㄠ1 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+輔助,ㄈㄨ3 ㄓㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+身份,ㄕㄣ1 ㄈㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成年,ㄔㄥ2 ㄋㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+專利,ㄓㄨㄢ1 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+通道,ㄊㄨㄥ1 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+特點,ㄊㄜ4 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+注入,ㄓㄨ4 ㄖㄨ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+衛星,ㄨㄟ4 ㄒㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+貨車,ㄏㄨㄛ4 ㄔㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+用地,ㄩㄥ4 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+蔣,ㄐㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+喬治,ㄑㄧㄠ2 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+港口,ㄍㄤ3 ㄎㄡ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+鐵道,ㄊㄧㄝ3 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+實行,ㄕ2 ㄒㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+長度,ㄔㄤ2 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+郭,ㄍㄨㄛ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+覆蓋,ㄈㄨ4 ㄍㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+上訴,ㄕㄤ4 ㄙㄨ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+簽約,ㄑㄧㄢ1 ㄩㄝ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+學位,ㄒㄩㄝ2 ㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+鄭,ㄓㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發育,ㄈㄚ1 ㄩ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+地質,ㄉㄧ4 ㄓ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+酒精,ㄐㄧㄡ3 ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+胡,ㄏㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+信託,ㄒㄧㄣ4 ㄊㄨㄛ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+播放,ㄅㄛ4 ㄈㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+投降,ㄊㄡ2 ㄒㄧㄤ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+俱樂部,ㄐㄩ4 ㄌㄜ4 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+皇家,ㄏㄨㄤ2 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+更換,ㄍㄥ1 ㄏㄨㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+秘書,ㄇㄧ4 ㄕㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高等,ㄍㄠ1 ㄉㄥ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+神秘,ㄕㄣ2 ㄇㄧ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+遺傳,ㄧ2 ㄔㄨㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+蘇聯,ㄙㄨ1 ㄌㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+毀,ㄏㄨㄟ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+南北,ㄋㄢ2 ㄅㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+水平,ㄕㄨㄟ3 ㄆㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+內戰,ㄋㄟ4 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+接任,ㄐㄧㄝ1 ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+通往,ㄊㄨㄥ1 ㄨㄤ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+習俗,ㄒㄧ2 ㄙㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+拍賣,ㄆㄞ1 ㄇㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+公元,ㄍㄨㄥ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+抵抗,ㄉㄧ3 ㄎㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+公眾,ㄍㄨㄥ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+晚會,ㄨㄢ3 ㄏㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+真理,ㄓㄣ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+書記,ㄕㄨ1 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+熱帶,ㄖㄜ4 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+地下,ㄉㄧ4 ㄒㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+創辦,ㄔㄨㄤ4 ㄅㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+任命,ㄖㄣ4 ㄇㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+結局,ㄐㄧㄝ2 ㄐㄩ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+圖像,ㄊㄨ2 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+遺址,ㄧ2 ㄓ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+太空,ㄊㄞ4 ㄎㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+爵士,ㄐㄩㄝ2 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+抗戰,ㄎㄤ4 ㄓㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+作出,ㄗㄨㄛ4 ㄔㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+中東,ㄓㄨㄥ1 ㄉㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+平面,ㄆㄧㄥ2 ㄇㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+海拔,ㄏㄞ3 ㄅㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+燃料,ㄖㄢ2 ㄌㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廈門,ㄒㄧㄚ4 ㄇㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+演化,ㄧㄢ3 ㄏㄨㄚ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+山脈,ㄕㄢ1 ㄇㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+洪,ㄏㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+西南,ㄒㄧ1 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+尾巴,ㄨㄟ3 ㄅㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+加熱,ㄐㄧㄚ1 ㄖㄜ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+華盛頓,ㄏㄨㄚ2 ㄕㄥ4 ㄉㄨㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+簽訂,ㄑㄧㄢ1 ㄉㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+審判,ㄕㄣ3 ㄆㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+徐,ㄒㄩ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+頻道,ㄆㄧㄣ2 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+葡萄,ㄆㄨ2 ㄊㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+戰鬥,ㄓㄢ4 ㄉㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+稱呼,ㄔㄥ1 ㄏㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+航線,ㄏㄤ2 ㄒㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+命名,ㄇㄧㄥ4 ㄇㄧㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+深圳,ㄕㄣ1 ㄓㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+艱難,ㄐㄧㄢ1 ㄋㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+瀑布,ㄆㄨ4 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+複製,ㄈㄨ4 ㄓ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+秦,ㄑㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+學科,ㄒㄩㄝ2 ㄎㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+主演,ㄓㄨ3 ㄧㄢ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+戰後,ㄓㄢ4 ㄏㄡ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+改編,ㄍㄞ3 ㄅㄧㄢ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+陸軍,ㄌㄨ4 ㄐㄩㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+辭職,ㄘ2 ㄓ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+近代,ㄐㄧㄣ4 ㄉㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+圖書,ㄊㄨ2 ㄕㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+友誼,ㄧㄡ3 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+較多,ㄐㄧㄠ4 ㄉㄨㄛ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+對應,ㄉㄨㄟ4 ㄧㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+大氣,ㄉㄚ4 ㄑㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+梁,ㄌㄧㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+海峽,ㄏㄞ3 ㄒㄧㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+密度,ㄇㄧ4 ㄉㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+察覺,ㄔㄚ2 ㄐㄩㄝ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+宣佈,ㄒㄩㄢ1 ㄅㄨ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+南非,ㄋㄢ2 ㄈㄟ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+墨西哥,ㄇㄛ4 ㄒㄧ1 ㄍㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+神聖,ㄕㄣ2 ㄕㄥ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+著重,ㄓㄨㄛ2 ㄓㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+長江,ㄔㄤ2 ㄐㄧㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+首相,ㄕㄡ3 ㄒㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+澳門,ㄠ4 ㄇㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+船隻,ㄔㄨㄢ2 ㄓ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+姐姐,ㄐㄧㄝ3 ㄐㄧㄝ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+溫,ㄨㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+浙江,ㄓㄜ4 ㄐㄧㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+任期,ㄖㄣ4 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+雕刻,ㄉㄧㄠ1 ㄎㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+天皇,ㄊㄧㄢ1 ㄏㄨㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國旗,ㄍㄨㄛ2 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+合成,ㄏㄜ2 ㄔㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+派遣,ㄆㄞ4 ㄑㄧㄢ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+發射,ㄈㄚ1 ㄕㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+殺害,ㄕㄚ1 ㄏㄞ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+接收,ㄐㄧㄝ1 ㄕㄡ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+曹,ㄘㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+錄音,ㄌㄨ4 ㄧㄣ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+小吃,ㄒㄧㄠ3 ㄔ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+柏林,ㄅㄛ2 ㄌㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+精確,ㄐㄧㄥ1 ㄑㄩㄝ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+羅,ㄌㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+大同,ㄉㄚ4 ㄊㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+聲稱,ㄕㄥ1 ㄔㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+出售,ㄔㄨ1 ㄕㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+重慶,ㄔㄨㄥ2 ㄑㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+輿論,ㄩ2 ㄌㄨㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+孔,ㄎㄨㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+蒙古,ㄇㄥ3 ㄍㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+穆斯林,ㄇㄨ4 ㄙ1 ㄌㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+邱,ㄑㄧㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+魔法,ㄇㄛ2 ㄈㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+解放,ㄐㄧㄝ3 ㄈㄤ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+耶穌,ㄧㄝ1 ㄙㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+總督,ㄗㄨㄥ3 ㄉㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+軍官,ㄐㄩㄣ1 ㄍㄨㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+衍生,ㄧㄢ3 ㄕㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+決賽,ㄐㄩㄝ2 ㄙㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+回國,ㄏㄨㄟ2 ㄍㄨㄛ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+東海,ㄉㄨㄥ1 ㄏㄞ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+邊境,ㄅㄧㄢ1 ㄐㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+密碼,ㄇㄧ4 ㄇㄚ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+出色,ㄔㄨ1 ㄙㄜ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+武裝,ㄨ3 ㄓㄨㄤ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+輻射,ㄈㄨ2 ㄕㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+字母,ㄗ4 ㄇㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+洛杉磯,ㄌㄨㄛ4 ㄕㄢ1 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+學堂,ㄒㄩㄝ2 ㄊㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+末期,ㄇㄛ4 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+簡稱,ㄐㄧㄢ3 ㄔㄥ1,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+瑞典,ㄖㄨㄟ4 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+超人,ㄔㄠ1 ㄖㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+京,ㄐㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公務,ㄍㄨㄥ1 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+信息,ㄒㄧㄣ4 ㄒㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+跑道,ㄆㄠ3 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+股份,ㄍㄨ3 ㄈㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+西藏,ㄒㄧ1 ㄗㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+撤銷,ㄔㄜ4 ㄒㄧㄠ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+雕塑,ㄉㄧㄠ1 ㄙㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+亨利,ㄏㄥ1 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+唐朝,ㄊㄤ2 ㄔㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+領土,ㄌㄧㄥ3 ㄊㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廢除,ㄈㄟ4 ㄔㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+蕭,ㄒㄧㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+朝鮮,ㄔㄠ2 ㄒㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+烏克蘭,ㄨ1 ㄎㄜ4 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宮廷,ㄍㄨㄥ1 ㄊㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+後期,ㄏㄡ4 ㄑㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+條約,ㄊㄧㄠ2 ㄩㄝ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+定居,ㄉㄧㄥ4 ㄐㄩ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+山東,ㄕㄢ1 ㄉㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+終點,ㄓㄨㄥ1 ㄉㄧㄢ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+認可,ㄖㄣ4 ㄎㄜ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+安裝,ㄢ1 ㄓㄨㄤ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+蘇格蘭,ㄙㄨ1 ㄍㄜ2 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+太平,ㄊㄞ4 ㄆㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+辦公,ㄅㄢ4 ㄍㄨㄥ1,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+澳,ㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生下,ㄕㄥ1 ㄒㄧㄚ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+體型,ㄊㄧ3 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+戰役,ㄓㄢ4 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+俄,ㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+來往,ㄌㄞ2 ㄨㄤ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+化石,ㄏㄨㄚ4 ㄕ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+天津,ㄊㄧㄢ1 ㄐㄧㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+流域,ㄌㄧㄡ2 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+多樣,ㄉㄨㄛ1 ㄧㄤ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+城堡,ㄔㄥ2 ㄅㄠ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+雲南,ㄩㄣ2 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+此後,ㄘ3 ㄏㄡ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+標本,ㄅㄧㄠ1 ㄅㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+同年,ㄊㄨㄥ2 ㄋㄧㄢ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+潮濕,ㄔㄠ2 ㄕ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+西北,ㄒㄧ1 ㄅㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+北極,ㄅㄟ3 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國泰,ㄍㄨㄛ2 ㄊㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+迫使,ㄆㄛ4 ㄕ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+體現,ㄊㄧ3 ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+平民,ㄆㄧㄥ2 ㄇㄧㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+反射,ㄈㄢ3 ㄕㄜ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+詹姆斯,ㄓㄢ1 ㄇㄨ3 ㄙ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+毫米,ㄏㄠ2 ㄇㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+效力,ㄒㄧㄠ4 ㄌㄧ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+進軍,ㄐㄧㄣ4 ㄐㄩㄣ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+建國,ㄐㄧㄢ4 ㄍㄨㄛ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+教宗,ㄐㄧㄠ4 ㄗㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+杭州,ㄏㄤ2 ㄓㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+講述,ㄐㄧㄤ3 ㄕㄨ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+入選,ㄖㄨ4 ㄒㄩㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+火箭,ㄏㄨㄛ3 ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+防禦,ㄈㄤ2 ㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+航班,ㄏㄤ2 ㄅㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+發送,ㄈㄚ1 ㄙㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+政務,ㄓㄥ4 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+落成,ㄌㄨㄛ4 ㄔㄥ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+伊斯蘭,ㄧ1 ㄙ1 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+宣言,ㄒㄩㄢ1 ㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+容納,ㄖㄨㄥ2 ㄋㄚ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+湖南,ㄏㄨ2 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+底部,ㄉㄧ3 ㄅㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+無線,ㄨ2 ㄒㄧㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+身亡,ㄕㄣ1 ㄨㄤ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+紐西蘭,ㄋㄧㄡ3 ㄒㄧ1 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+文藝,ㄨㄣ2 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+奴隸,ㄋㄨ2 ㄌㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+春秋,ㄔㄨㄣ1 ㄑㄧㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+批准,ㄆㄧ1 ㄓㄨㄣ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+隨機,ㄙㄨㄟ2 ㄐㄧ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+搖滾,ㄧㄠ2 ㄍㄨㄣ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+波蘭,ㄅㄛ1 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+玩家,ㄨㄢ2 ㄐㄧㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+城鎮,ㄔㄥ2 ㄓㄣ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+球季,ㄑㄧㄡ2 ㄐㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+襲擊,ㄒㄧ2 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廖,ㄌㄧㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+觀測,ㄍㄨㄢ1 ㄘㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+吉他,ㄐㄧ2 ㄊㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+內地,ㄋㄟ4 ㄉㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+江蘇,ㄐㄧㄤ1 ㄙㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+明治,ㄇㄧㄥ2 ㄓ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+河道,ㄏㄜ2 ㄉㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+擴展,ㄎㄨㄛ4 ㄓㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+羽毛,ㄩ3 ㄇㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+質量,ㄓ2 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+收視,ㄕㄡ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+體積,ㄊㄧ3 ㄐㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+師範,ㄕ1 ㄈㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+棲息,ㄑㄧ1 ㄒㄧ2,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+專科,ㄓㄨㄢ1 ㄎㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+成都,ㄔㄥ2 ㄉㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+芝加哥,ㄓ1 ㄐㄧㄚ1 ㄍㄜ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+壁畫,ㄅㄧ4 ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東南,ㄉㄨㄥ1 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+親王,ㄑㄧㄣ1 ㄨㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+公式,ㄍㄨㄥ1 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+新型,ㄒㄧㄣ1 ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+流量,ㄌㄧㄡ2 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+起源,ㄑㄧ3 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+幾何,ㄐㄧ3 ㄏㄜ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+別墅,ㄅㄧㄝ2 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+出場,ㄔㄨ1 ㄔㄤ3,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+河南,ㄏㄜ2 ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中期,ㄓㄨㄥ1 ㄑㄧ2,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+侵略,ㄑㄧㄣ1 ㄌㄩㄝ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+辦事,ㄅㄢ4 ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+平方公里,ㄆㄧㄥ2 ㄈㄤ1 ㄍㄨㄥ1 ㄌㄧ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+其後,ㄑㄧ2 ㄏㄡ4,temporal,none,lexical-prompt,local:naer-top-10000-generation-v1
+大廈,ㄉㄚ4 ㄒㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+總量,ㄗㄨㄥ3 ㄌㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+供奉,ㄍㄨㄥ4 ㄈㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+艦隊,ㄐㄧㄢ4 ㄉㄨㄟ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+廣西,ㄍㄨㄤ3 ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+蜘蛛,ㄓ1 ㄓㄨ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+攻打,ㄍㄨㄥ1 ㄉㄚ3,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+威廉,ㄨㄟ1 ㄌㄧㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+直徑,ㄓ2 ㄐㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+芬蘭,ㄈㄣ1 ㄌㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+逝世,ㄕ4 ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+丹麥,ㄉㄢ1 ㄇㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+解散,ㄐㄧㄝ3 ㄙㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+射擊,ㄕㄜ4 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+匈奴,ㄒㄩㄥ1 ㄋㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+火星,ㄏㄨㄛ3 ㄒㄧㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+接管,ㄐㄧㄝ1 ㄍㄨㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+病逝,ㄅㄧㄥ4 ㄕ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+戰國,ㄓㄢ4 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+國籍,ㄍㄨㄛ2 ㄐㄧ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+原子,ㄩㄢ2 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+總數,ㄗㄨㄥ3 ㄕㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+中立,ㄓㄨㄥ1 ㄌㄧ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+地鐵,ㄉㄧ4 ㄊㄧㄝ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+進程,ㄐㄧㄣ4 ㄔㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+棉花,ㄇㄧㄢ2 ㄏㄨㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+虛構,ㄒㄩ1 ㄍㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+猶太,ㄧㄡ2 ㄊㄞ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+古巴,ㄍㄨ3 ㄅㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+悠久,ㄧㄡ1 ㄐㄧㄡ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+理事,ㄌㄧ3 ㄕ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+冷卻,ㄌㄥ3 ㄑㄩㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+飾,ㄕ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+天文,ㄊㄧㄢ1 ㄨㄣ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+信號,ㄒㄧㄣ4 ㄏㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+常務,ㄔㄤ2 ㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+上陣,ㄕㄤ4 ㄓㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+半島,ㄅㄢ4 ㄉㄠ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+司令,ㄙ1 ㄌㄧㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+馬達,ㄇㄚ3 ㄉㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+前身,ㄑㄧㄢ2 ㄕㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+山西,ㄕㄢ1 ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+滅亡,ㄇㄧㄝ4 ㄨㄤ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+公安,ㄍㄨㄥ1 ㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+辭去,ㄘ2 ㄑㄩ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+奪得,ㄉㄨㄛ2 ㄉㄜ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+裁判,ㄘㄞ2 ㄆㄢ4,intransitive-predicate,intransitive,lexical-prompt,local:naer-top-10000-generation-v1
+稱作,ㄔㄥ1 ㄗㄨㄛ4,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1
+莊園,ㄓㄨㄤ1 ㄩㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+通用,ㄊㄨㄥ1 ㄩㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+秦國,ㄑㄧㄣ2 ㄍㄨㄛ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+乘,ㄔㄥ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+乘,ㄕㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+了,ㄌㄜ5,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+了,ㄌㄧㄠ3,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+了,ㄌㄧㄠ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+予,ㄩ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+予,ㄩ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+任,ㄖㄣ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+任,ㄖㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+作,ㄗㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+作,ㄗㄨㄛ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+供,ㄍㄨㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+供,ㄍㄨㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+個,ㄍㄜ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+個,ㄍㄜ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分,ㄈㄣ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+分,ㄈㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+分子,ㄈㄣ1 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分子,ㄈㄣ4 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+分子,ㄈㄣ4 ㄗ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+南,ㄋㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+南,ㄋㄢ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+句,ㄍㄡ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+句,ㄐㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+可,ㄎㄜ3,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+可,ㄎㄜ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+台中,ㄊㄞ2 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+台北,ㄊㄞ2 ㄅㄟ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+吃,ㄔ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+合,ㄍㄜ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+合,ㄏㄜ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+夏,ㄒㄧㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+女,ㄋㄩ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+女,ㄖㄨ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+好,ㄏㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+好,ㄏㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+妻,ㄑㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+妻,ㄑㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+妻子,ㄑㄧ1 ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+妻子,ㄑㄧ1 ㄗ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+子,ㄗ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+子,ㄗ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+孫,ㄙㄨㄣ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+少,ㄕㄠ3,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+少,ㄕㄠ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+屬,ㄓㄨ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+屬,ㄕㄨ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+強,ㄐㄧㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+強,ㄑㄧㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+強,ㄑㄧㄤ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+應,ㄧㄥ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+應,ㄧㄥ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+於,ㄨ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+於,ㄩ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+於,ㄩ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+施,ㄕ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+明朝,ㄇㄧㄥ2 ㄓㄠ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+明朝,ㄇㄧㄥ2 ㄔㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+會,ㄎㄨㄞ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+會,ㄏㄨㄟ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+東西,ㄉㄨㄥ1 ㄒㄧ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+東西,ㄉㄨㄥ1 ㄒㄧ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+歸,ㄍㄨㄟ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+為,ㄨㄟ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+為,ㄨㄟ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+無,ㄇㄛ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+無,ㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+王,ㄨㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+王,ㄨㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生意,ㄕㄥ1 ㄧ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+生意,ㄕㄥ1 ㄧ5,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+番,ㄆㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+番,ㄈㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+看,ㄎㄢ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+看,ㄎㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+石,ㄉㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+石,ㄕ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+種,ㄓㄨㄥ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+種,ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+稱,ㄔㄣ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+稱,ㄔㄥ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+稱,ㄔㄥ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+紅,ㄍㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+紅,ㄏㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+給,ㄍㄟ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+給,ㄐㄧ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+般,ㄅㄛ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+般,ㄅㄢ1,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+般,ㄆㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+華,ㄏㄨㄚ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+華,ㄏㄨㄚ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+華,ㄏㄨㄚ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+葉,ㄧㄝ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+著,ㄓㄜ5,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+著,ㄓㄠ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+著,ㄓㄠ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+著,ㄓㄨ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+著,ㄓㄨㄛ2,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+藏,ㄗㄤ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+藏,ㄘㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+號,ㄏㄠ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+號,ㄏㄠ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+行,ㄏㄤ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+行,ㄏㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+行,ㄒㄧㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+要,ㄧㄠ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+要,ㄧㄠ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+見,ㄐㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+見,ㄒㄧㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+角,ㄐㄧㄠ3,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+角,ㄐㄩㄝ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+說,ㄕㄨㄛ1,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+說,ㄕㄨㄟ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+讀,ㄉㄡ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+讀,ㄉㄨ2,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+足,ㄐㄩ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+足,ㄗㄨ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+轉,ㄓㄨㄞ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+轉,ㄓㄨㄢ3,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+轉,ㄓㄨㄢ4,object;intransitive-predicate;transitive-predicate;verb,ambitransitive,lexical-prompt,local:naer-top-10000-generation-v1
+過,ㄍㄨㄛ1,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+過,ㄍㄨㄛ4,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+過,ㄍㄨㄛ5,modal,modal,lexical-prompt,local:naer-top-10000-generation-v1
+重,ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+重,ㄔㄨㄥ2,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+間,ㄐㄧㄢ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+間,ㄐㄧㄢ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+陸,ㄌㄧㄡ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+陸,ㄌㄨ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+難,ㄋㄢ2,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+難,ㄋㄢ4,adjectival-predicate,adjectival,lexical-prompt,local:naer-top-10000-generation-v1
+高中,ㄍㄠ1 ㄓㄨㄥ1,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高中,ㄍㄠ1 ㄓㄨㄥ4,subject;object,none,lexical-prompt,local:naer-top-10000-generation-v1
+高達,ㄍㄠ1 ㄉㄚ2,transitive-predicate,transitive,lexical-prompt,local:naer-top-10000-generation-v1

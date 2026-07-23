@@ -210,7 +210,7 @@ describe("frequency-first grammatical utterance policy", () => {
     expect(repeated.utterance.id).toBe(baseline.utterance.id);
     expect(repeated.score.recentEntryFactor).toBeLessThan(1);
     expect(repeated.score.recentUtteranceFactor).toBeLessThan(1);
-    expect(repeated.score.recentTemplateFactor).toBeLessThan(1);
+    expect(repeated.score.recentTemplateFactor).toBe(1);
     expect(repeated.score.totalWeight).toBeLessThan(baseline.score.totalWeight);
   });
 

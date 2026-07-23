@@ -474,6 +474,20 @@ def project(
         total_valency.update(observation.valency_relations)
         total_constructions.update(observation.construction_relations)
 
+    # "unseen-in-treebank" means no syntax evidence exists at all -- that
+    # candidate genuinely cannot get a formal syntax profile yet.
+    #
+    # "mixed-upos-evidence" and "mixed-object-frame-evidence" do NOT mean
+    # the same thing. They mark a candidate as ineligible for the legacy
+    # single-dominant-UPOS auto-classifier (auto_classify_activation_batch.
+    # classify, used by the historical activation-review batches and by
+    # activate_cedict_heteronym_readings_generation.py's eligibility gate).
+    # The current formal syntax profile layer has no such restriction --
+    # docs/formal-syntax-system.md declares "no dominant-UPOS reduction is
+    # allowed" and every significant observed UPOS gets its own profile, the
+    # same way a heteronym gets every distinct reading instead of one picked
+    # for it. A candidate flagged only with these two reasons already has
+    # usable syntax evidence; it just needs more than one profile.
     review_queue: list[dict[str, Any]] = []
     reason_counts: Counter[str] = Counter()
     for item in candidates:

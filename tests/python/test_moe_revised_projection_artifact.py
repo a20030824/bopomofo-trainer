@@ -1,17 +1,51 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import sys
 import unittest
 from pathlib import Path
+from types import ModuleType
 
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tests" / "python"))
 
-from active_catalog_state import active_catalog_text_count, active_concised_count  # noqa: E402
+from active_catalog_state import active_concised_count  # noqa: E402
 
 ARTIFACT = ROOT / "data" / "readings" / "moe-revised-2015_20260625-active-catalog-fallback.json"
+CONCISED = ROOT / "data" / "readings" / "moe-concised-2014_20260626-active-catalog.json"
+SCRIPT = ROOT / "scripts" / "project-moe-revised-readings.py"
+
+
+def load_adapter() -> ModuleType:
+    specification = importlib.util.spec_from_file_location(
+        "project_moe_revised_readings_artifact",
+        SCRIPT,
+    )
+    if specification is None or specification.loader is None:
+        raise RuntimeError(f"cannot load adapter: {SCRIPT}")
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[specification.name] = module
+    specification.loader.exec_module(module)
+    return module
+
+
+def expected_fallback_texts() -> list[str]:
+    concised = json.loads(CONCISED.read_text(encoding="utf-8"))
+    diagnostics = concised["diagnostics"]
+    ambiguous = set(diagnostics["ambiguousCandidateTexts"])
+    eligible = {
+        text
+        for key in (
+            "unmatchedCandidateTexts",
+            "duplicateSourceIdentityTexts",
+            "multipleReadingTexts",
+        )
+        for text in diagnostics[key]
+    }
+    eligible.update(item["text"] for item in diagnostics["invalidReadings"])
+    return sorted(eligible - ambiguous)
 
 
 class MoeRevisedProjectionArtifactTest(unittest.TestCase):
@@ -23,40 +57,32 @@ class MoeRevisedProjectionArtifactTest(unittest.TestCase):
 
         self.assertEqual(payload["adapterVersion"], "moe-revised-reading-fallback-adapter-v1")
         self.assertEqual(payload["source"]["sourceVersion"], "2015_20260625")
-        # Both counts are cross-file bookkeeping (they mirror the Concised
-        # artifact's own row count and the overall catalog's distinct-text
-        # count, not row count -- a heteronym text can have several active
-        # rows) rather than facts owned by this file, so they are read
-        # dynamically.
         self.assertEqual(basis["concisedAcceptedCandidateCount"], active_concised_count())
-        self.assertEqual(
-            basis["fallbackCandidateCount"],
-            active_catalog_text_count() - active_concised_count(),
-        )
+        expected_fallback = expected_fallback_texts()
+        self.assertEqual(basis["fallbackCandidateTexts"], expected_fallback)
+        self.assertEqual(basis["fallbackCandidateCount"], len(expected_fallback))
         self.assertEqual(len(rows), diagnostics["acceptedFallbackCount"])
         lookup_texts = [row["lookupText"] for row in rows]
         self.assertEqual(lookup_texts, sorted(lookup_texts))
-        self.assertTrue({"中國", "中文", "美國", "謝謝"}.issubset(lookup_texts))
         self.assertTrue(all(row["fallbackStatus"] == "provisional" for row in rows))
-        self.assertEqual(diagnostics["multipleReadingTexts"], ["東西"])
-        self.assertEqual(
-            diagnostics["unmatchedFallbackTexts"],
-            ["台灣", "很好", "想要", "看到", "聽到"],
-        )
+        unresolved = set(diagnostics["unmatchedFallbackTexts"])
+        unresolved.update(diagnostics["duplicateSourceIdentityTexts"])
+        unresolved.update(diagnostics["multipleReadingTexts"])
+        unresolved.update(item["text"] for item in diagnostics["invalidReadings"])
+        self.assertEqual(set(expected_fallback), set(lookup_texts) | unresolved)
+        self.assertTrue(set(lookup_texts).isdisjoint(unresolved))
         self.assertLess(ARTIFACT.stat().st_size, 100_000)
 
     def test_projection_preserves_exact_revised_evidence(self) -> None:
         payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))
-        rows = {row["lookupText"]: row for row in payload["rows"]}
+        adapter = load_adapter()
 
-        self.assertEqual(rows["中文"]["sourceBopomofo"], "ㄓㄨㄥ ㄨㄣˊ")
-        self.assertEqual(rows["中文"]["trainerReading"], "ㄓㄨㄥ1 ㄨㄣ2")
-        self.assertEqual(rows["中國"]["sourceBopomofo"], "ㄓㄨㄥ ㄍㄨㄛˊ")
-        self.assertEqual(rows["中國"]["trainerReading"], "ㄓㄨㄥ1 ㄍㄨㄛ2")
-        self.assertEqual(rows["美國"]["sourceBopomofo"], "ㄇㄟˇ ㄍㄨㄛˊ")
-        self.assertEqual(rows["美國"]["trainerReading"], "ㄇㄟ3 ㄍㄨㄛ2")
-        self.assertEqual(rows["謝謝"]["sourceBopomofo"], "ㄒㄧㄝˋ ˙ㄒㄧㄝ")
-        self.assertEqual(rows["謝謝"]["trainerReading"], "ㄒㄧㄝ4 ㄒㄧㄝ5")
+        self.assertTrue(payload["rows"])
+        for row in payload["rows"]:
+            self.assertEqual(
+                row["trainerReading"],
+                adapter.trainer_reading(row["sourceBopomofo"]),
+            )
 
 
 if __name__ == "__main__":

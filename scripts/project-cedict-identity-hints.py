@@ -234,9 +234,13 @@ def unresolved_after_moe(
     if not all_accepted.issubset(candidate_set):
         raise ValueError("MOE projections contain identities outside the candidate set")
 
-    concised_count = concised.get("candidateSet", {}).get("entryCount")
-    if concised_count != len(candidate_set):
+    concised_candidate_set = concised.get("candidateSet", {})
+    concised_count = concised_candidate_set.get("entryCount")
+    if concised_count not in {len(candidate_items), len(candidate_set)}:
         raise ValueError("MOE Concised projection candidate entry count mismatch")
+    concised_text_count = concised_candidate_set.get("normalizedTextCount", concised_count)
+    if concised_text_count != len(candidate_set):
+        raise ValueError("MOE Concised projection normalized candidate count mismatch")
     fallback_texts = {
         normalize_text(text)
         for text in revised.get("fallbackBasis", {}).get("fallbackCandidateTexts", [])

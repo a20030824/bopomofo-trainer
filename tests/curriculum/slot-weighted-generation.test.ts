@@ -8,8 +8,31 @@ import { generateSlotWeightedGrammar } from "../../src/curriculum/slot-weighted-
 import type {
   GrammarAnnotation,
   GrammarRole,
+  GrammarTemplate,
   PredicateFrame,
 } from "../../src/grammar/types.js";
+
+const TEST_TEMPLATES: readonly GrammarTemplate[] = [
+  {
+    id: "subject-transitive-object",
+    slots: [
+      { key: "subject", role: "subject" },
+      { key: "predicate", role: "transitive-predicate", predicateFrames: ["transitive", "ambitransitive"] },
+      { key: "object", role: "object" },
+    ],
+    punctuation: "。",
+  },
+  {
+    id: "subject-modal-verb-object",
+    slots: [
+      { key: "subject", role: "subject" },
+      { key: "modal", role: "modal", predicateFrames: ["modal"] },
+      { key: "verb", role: "verb", predicateFrames: ["transitive", "ambitransitive"] },
+      { key: "object", role: "object" },
+    ],
+    punctuation: "。",
+  },
+];
 import type { MeasurementSummary } from "../../src/measurement/types.js";
 
 const measurement: MeasurementSummary = {
@@ -85,6 +108,7 @@ function select(
     },
     policy: FREQUENCY_FIRST_UTTERANCE_POLICY,
     random,
+    templates: TEST_TEMPLATES,
   });
 }
 
@@ -219,6 +243,7 @@ describe("bounded slot-weighted utterance generation", () => {
       random: constantRandom(0.999_999),
       entryWeight: () => 1,
       templateWeight: () => 1,
+      templates: TEST_TEMPLATES,
     });
 
     expect(generated.candidate?.templateId).toBe("subject-transitive-object");

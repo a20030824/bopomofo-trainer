@@ -1,5 +1,5 @@
 import type { RandomSource } from "../core/model.js";
-import { sha256Canonical } from "../reference/importers/canonical-json.js";
+import { stableRuntimeDigest } from "../core/stable-id.js";
 import { DEFAULT_DERIVATION_BOUNDS, FORMAL_GRAMMAR_VERSION } from "./features.js";
 import type {
   StructuralDerivationShape,
@@ -88,7 +88,7 @@ function makeSlot(
   };
   return {
     kind: "lexical-slot",
-    id: `syntax-slot:${sha256Canonical(identity)}`,
+    id: `syntax-slot:${stableRuntimeDigest(identity)}`,
     constituentKey: constituent.key,
     occurrenceIndex,
     allowedUpos: constituent.allowedUpos,
@@ -173,7 +173,7 @@ function sampleCategory(
     };
     const node: StructuralSyntaxNode = {
       kind: "syntax-node",
-      id: `syntax-node:${sha256Canonical(identity)}`,
+      id: `syntax-node:${stableRuntimeDigest(identity)}`,
       category,
       productionRuleId: rule.id,
       surfaceOrderId: order.id,
@@ -218,7 +218,7 @@ export function sampleStructuralDerivation(
       productionRulePath: sampled.rulePath,
     };
     return {
-      id: `derivation-shape:${sha256Canonical(identity)}`,
+      id: `derivation-shape:${stableRuntimeDigest(identity)}`,
       grammarVersion: FORMAL_GRAMMAR_VERSION,
       root: sampled.element,
       productionRulePath: sampled.rulePath,

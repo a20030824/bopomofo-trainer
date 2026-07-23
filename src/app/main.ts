@@ -19,10 +19,13 @@ import type { ProductProgress, ProductState } from "../product/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
 import {
   EVALUATION_CATALOG,
-  GRAMMAR_ANNOTATIONS,
   PRACTICE_CATALOG,
+  SYNTAX_PROFILES,
 } from "./generated/catalog.js";
-import { keyboardEventToInput } from "./keyboard-adapter.js";
+import {
+  isInspectionAdvanceShortcut,
+  keyboardEventToInput,
+} from "./keyboard-adapter.js";
 import {
   clearLocalPilotHistory,
   loadLocalPilotHistory,
@@ -51,7 +54,7 @@ const capture = requireElement<HTMLTextAreaElement>("#keyboard-capture");
 const environment = createProductEnvironment({
   practice: PRACTICE_CATALOG,
   evaluation: EVALUATION_CATALOG,
-  grammarAnnotations: GRAMMAR_ANNOTATIONS,
+  syntaxProfiles: SYNTAX_PROFILES,
 });
 
 function newSeed(): string {
@@ -100,6 +103,7 @@ let imeWarning = false;
 let showPhysicalHint = false;
 let previousResult: PilotRoundRecord | null = null;
 let previousResultTimer: number | null = null;
+let inspectionAdvanceCount = 0;
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -165,6 +169,9 @@ function focusDescription(): string {
 }
 
 function templateDescription(): string {
+  if (product.round.selection.utterance.kind === "formal-syntax") {
+    return "正式句法生成";
+  }
   const templateId = product.round.selection.utterance.templateId;
   if (templateId === null) {
     return product.round.selection.utterance.kind === "standalone-utterance"
@@ -618,6 +625,7 @@ function resetProgress(): void {
   pilotHistory = migratePilotHistory(progress);
   recoveredFromInvalidState = false;
   recoveredPilotHistory = false;
+  inspectionAdvanceCount = 0;
   clearPreviousResult();
   if (canPersist) persistProgress();
   imeWarning = false;
@@ -646,6 +654,36 @@ function completeRoundAndAdvance(): void {
   capture.value = "";
   mountPracticeRound(true);
   showPreviousResult(record);
+}
+
+function advanceRoundForInspection(): void {
+  const preservedProgress = product.progress;
+  const previousUtteranceId = product.round.selection.utterance.id;
+  let preview = product;
+
+  // Selection is deterministic by seed. Vary only the temporary selection
+  // seed and retry a few times so F8 normally shows a genuinely different
+  // prompt without recording a fake completion or modifying learner state.
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    inspectionAdvanceCount += 1;
+    preview = createProductState(
+      environment,
+      {
+        ...preservedProgress,
+        seed: `${preservedProgress.seed}:inspection:${inspectionAdvanceCount}`,
+      },
+      performance.now(),
+    );
+    if (preview.round.selection.utterance.id !== previousUtteranceId) break;
+  }
+
+  product = { ...preview, progress: preservedProgress };
+  imeWarning = false;
+  capture.value = "";
+  clearPreviousResult();
+  mountPracticeRound(true);
+  updateTopbar();
+  focusCapture();
 }
 
 capture.addEventListener("compositionstart", () => {
@@ -705,6 +743,19 @@ capture.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.code === "F8") {
+    event.preventDefault();
+    event.stopPropagation();
+    if (
+      isInspectionAdvanceShortcut(event)
+      && !compositionActive
+      && !imeWarning
+      && !requireElement<HTMLDialogElement>("#information-dialog").open
+    ) {
+      advanceRoundForInspection();
+    }
+    return;
+  }
   if (event.code !== "Escape") return;
   const dialog = requireElement<HTMLDialogElement>("#information-dialog");
   if (dialog.open) return;
