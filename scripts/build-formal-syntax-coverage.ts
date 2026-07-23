@@ -20,7 +20,7 @@ interface CommittedSyntaxEvidenceArtifact extends SyntaxEvidenceArtifact {
 
 const provenanceUrl = new URL("../data/provenance.csv", import.meta.url);
 const evidenceUrl = new URL(
-  "../data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json",
+  "../data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json",
   import.meta.url,
 );
 const outputUrl = new URL("../data/grammar/", import.meta.url);

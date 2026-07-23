@@ -129,8 +129,8 @@ This must not be promoted directly to one product frame. Missing objects can ref
 ## Outputs
 
 ```text
-data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json
-data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json
+data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json
+data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json
 ```
 
 The evidence artifact contains one sparse row per ranked candidate. The coverage artifact contains aggregate counts, rank buckets, complete UPOS coverage, dependency and valency relation totals, review policy, review queue, and legacy/formal schema audits.

@@ -18,10 +18,10 @@ SOURCE_LICENSE = "CC BY-SA 4.0"
 DEFAULT_CANDIDATES = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
 DEFAULT_SOURCE_DIR = Path("data/external/ud/chinese-gsd/r2.18")
 DEFAULT_EVIDENCE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json"
+    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json"
 )
 DEFAULT_COVERAGE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json"
+    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json"
 )
 EXPECTED_CANDIDATE_COUNT = 1_000
 EXPECTED_CANDIDATE_CANONICAL_SHA256 = (
