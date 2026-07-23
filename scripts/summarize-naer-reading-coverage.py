@@ -23,12 +23,6 @@ if str(SCRIPT_DIR) not in sys.path:
 from lexicon_candidate_set import CandidateSet, load_candidate_set, rank_intervals
 
 ADAPTER_VERSION = "naer-reading-coverage-summary-v1"
-DEFAULT_CANDIDATES = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
-DEFAULT_CANDIDATE_MANIFEST = Path("data/lexicon/naer-1141208-top-1000-manifest.json")
-DEFAULT_CONCISED = Path("data/readings/moe-concised-2014_20260626-naer-top-1000.json")
-DEFAULT_REVISED = Path("data/readings/moe-revised-2015_20260625-naer-top-1000-fallback.json")
-DEFAULT_CEDICT = Path("data/identity/cedict-2026-07-21-naer-top-1000-hints.json")
-DEFAULT_OUTPUT = Path("data/lexicon/naer-1141208-top-1000-reading-coverage.json")
 
 
 def canonical_text_bytes(path: Path) -> bytes:
@@ -284,12 +278,12 @@ def summarize_coverage(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES)
-    parser.add_argument("--candidate-manifest", type=Path)
-    parser.add_argument("--concised-projection", type=Path, default=DEFAULT_CONCISED)
-    parser.add_argument("--revised-projection", type=Path, default=DEFAULT_REVISED)
-    parser.add_argument("--cedict-projection", type=Path, default=DEFAULT_CEDICT)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--candidates", type=Path, required=True)
+    parser.add_argument("--candidate-manifest", type=Path, required=True)
+    parser.add_argument("--concised-projection", type=Path, required=True)
+    parser.add_argument("--revised-projection", type=Path, required=True)
+    parser.add_argument("--cedict-projection", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
     arguments = parser.parse_args()
 
     payload = summarize_coverage(

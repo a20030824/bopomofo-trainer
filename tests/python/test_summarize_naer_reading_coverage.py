@@ -140,31 +140,5 @@ class SummarizeNaerReadingCoverageTest(unittest.TestCase):
                 self.cedict,
             )
 
-    def test_committed_top_1000_artifact_is_reproducible(self) -> None:
-        candidate_path = ROOT / "data" / "lexicon" / "naer-1141208-top-1000-candidates.csv"
-        concised_path = ROOT / "data" / "readings" / "moe-concised-2014_20260626-naer-top-1000.json"
-        revised_path = ROOT / "data" / "readings" / "moe-revised-2015_20260625-naer-top-1000-fallback.json"
-        cedict_path = ROOT / "data" / "identity" / "cedict-2026-07-21-naer-top-1000-hints.json"
-        expected_path = ROOT / "data" / "lexicon" / "naer-1141208-top-1000-reading-coverage.json"
-        required = [candidate_path, concised_path, revised_path, cedict_path, expected_path]
-        if not all(path.exists() for path in required):
-            self.skipTest("top-1,000 generated artifacts are not committed yet")
-
-        observed = self.adapter.summarize_coverage(
-            candidate_path,
-            concised_path,
-            revised_path,
-            cedict_path,
-        )
-        expected = json.loads(expected_path.read_text(encoding="utf-8"))
-        self.assertEqual(observed, expected)
-        self.assertEqual(observed["coverage"]["automaticallyResolved"], 911)
-        self.assertEqual(observed["coverage"]["reviewRequired"], 89)
-        self.assertEqual(
-            [row["text"] for row in observed["reviewQueue"] if row["status"] == "unmatched"],
-            ["很多", "更多", "第三", "太多"],
-        )
-
-
 if __name__ == "__main__":
     unittest.main()

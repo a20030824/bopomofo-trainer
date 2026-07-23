@@ -37,8 +37,12 @@ def write_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def write_candidate_generation(candidate_path: Path, manifest_path: Path) -> None:
-    rows = [(1, "甲"), (10_000, "乙")]
+def write_candidate_generation(
+    candidate_path: Path,
+    manifest_path: Path,
+    rows: list[tuple[int, str]] | None = None,
+) -> None:
+    rows = rows if rows is not None else [(1, "甲"), (10_000, "乙")]
     with candidate_path.open("w", encoding="utf-8", newline="") as destination:
         writer = csv.DictWriter(
             destination,
@@ -81,8 +85,8 @@ def write_candidate_generation(candidate_path: Path, manifest_path: Path) -> Non
         "adapterVersion": "naer-lexicon-candidates-adapter-v2",
         "selection": {
             "limit": 10_000,
-            "selectedCount": 2,
-            "normalizedTextCount": 2,
+            "selectedCount": len(rows),
+            "normalizedTextCount": len({text for _, text in rows}),
             "determinismDigest": canonical_digest(digest_rows),
         },
         "rows": manifest_rows,
@@ -149,6 +153,39 @@ class LexiconActivationGenerationTest(unittest.TestCase):
         self.assertEqual(report["rows"][1]["generalRank"], 10_000)
         self.assertNotIn("syntaxEvidence", report["rows"][1])
 
+    def test_human_review_csv_keeps_only_decision_fields(self) -> None:
+        report = self.adapter.project_activation_generation(
+            candidates=self.candidates,
+            candidate_manifest=self.manifest,
+            reading_coverage_path=self.reading_coverage,
+            concised_path=self.concised,
+            revised_path=self.revised,
+            cedict_path=self.cedict,
+            active_catalog_path=self.catalog,
+        )
+        output = self.root / "activation-review.csv"
+        self.adapter.write_activation_csv(output, report)
+
+        with output.open("r", encoding="utf-8", newline="") as source:
+            reader = csv.DictReader(source)
+            rows = list(reader)
+
+        self.assertEqual(
+            reader.fieldnames,
+            [
+                "general_rank",
+                "text",
+                "status",
+                "reading_authority",
+                "reading",
+                "reading_review_status",
+                "ud_occurrence_count",
+                "ud_upos",
+            ],
+        )
+        self.assertEqual(rows[0]["reading"], "ㄐㄧㄚ3")
+        self.assertEqual(rows[1]["reading_review_status"], "unmatched")
+
     def test_converts_cedict_pinyin_before_catalog_identity_comparison(self) -> None:
         write_json(self.reading_coverage, {
             "adapterVersion": "naer-reading-coverage-summary-v1",
@@ -171,7 +208,7 @@ class LexiconActivationGenerationTest(unittest.TestCase):
         with mock.patch.object(
             self.adapter,
             "convert_numbered_pinyin",
-            return_value=["ㄧ3"],
+            return_value=[("ㄧ3", None)],
         ) as converter:
             report = self.adapter.project_activation_generation(
                 candidates=self.candidates,
@@ -192,6 +229,158 @@ class LexiconActivationGenerationTest(unittest.TestCase):
         self.assertEqual(reading["evidenceType"], "trainer-bopomofo")
         self.assertEqual(reading["evidence"], "ㄧ3")
         self.assertEqual(reading["sourceEvidence"], "yi3")
+
+    def test_unsupported_cedict_pinyin_syllable_routes_to_review_instead_of_raising(self) -> None:
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 2,
+            "reviewQueue": [],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.cedict, {
+            "adapterVersion": "cedict-identity-hints-adapter-v1",
+            "rows": [{
+                "lookupText": "乙",
+                "status": "unique-record",
+                "records": [{"pinyin": "na3 r5"}],
+            }],
+        })
+
+        with mock.patch.object(
+            self.adapter,
+            "convert_numbered_pinyin",
+            return_value=[(None, 'unsupported pinyin final "" in syllable "r"')],
+        ):
+            report = self.adapter.project_activation_generation(
+                candidates=self.candidates,
+                candidate_manifest=self.manifest,
+                reading_coverage_path=self.reading_coverage,
+                concised_path=self.concised,
+                revised_path=self.revised,
+                cedict_path=self.cedict,
+                active_catalog_path=self.catalog,
+            )
+
+        self.assertEqual(
+            report["statusCounts"],
+            {"already-active-exact-identity": 1, "reading-review-required": 1},
+        )
+        review_row = report["rows"][1]
+        self.assertEqual(review_row["generalRank"], 10_000)
+        self.assertIn("cedict-numbered-pinyin-unsupported", review_row["readingReviewStatus"])
+
+    def test_unmatched_compound_derives_reading_from_resolved_components(self) -> None:
+        write_candidate_generation(
+            self.candidates,
+            self.manifest,
+            rows=[(1, "走"), (2, "到"), (3, "走到")],
+        )
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 3,
+            "reviewQueue": [{"text": "走到", "status": "unmatched"}],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.concised, {
+            "adapterVersion": "moe-concised-reading-adapter-v1",
+            "rows": [
+                {"lookupText": "走", "trainerReading": "ㄗㄡˇ3"},
+                {"lookupText": "到", "trainerReading": "ㄉㄠˋ4"},
+            ],
+        })
+
+        report = self.adapter.project_activation_generation(
+            candidates=self.candidates,
+            candidate_manifest=self.manifest,
+            reading_coverage_path=self.reading_coverage,
+            concised_path=self.concised,
+            revised_path=self.revised,
+            cedict_path=self.cedict,
+            active_catalog_path=self.catalog,
+        )
+
+        self.assertEqual(report["statusCounts"], {"resolved-new-identity": 3})
+        compound_row = next(row for row in report["rows"] if row["text"] == "走到")
+        self.assertEqual(compound_row["reading"]["authority"], "derived-component-concatenation")
+        self.assertEqual(compound_row["reading"]["evidence"], "ㄗㄡˇ3 ㄉㄠˋ4")
+
+    def test_component_derivation_skips_tone_sandhi_risk_characters(self) -> None:
+        write_candidate_generation(
+            self.candidates,
+            self.manifest,
+            rows=[(1, "一"), (2, "定"), (3, "一定")],
+        )
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 3,
+            "reviewQueue": [
+                {"text": "一", "status": "unmatched"},
+                {"text": "一定", "status": "unmatched"},
+            ],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.concised, {
+            "adapterVersion": "moe-concised-reading-adapter-v1",
+            "rows": [{"lookupText": "定", "trainerReading": "ㄉㄧㄥˋ4"}],
+        })
+
+        report = self.adapter.project_activation_generation(
+            candidates=self.candidates,
+            candidate_manifest=self.manifest,
+            reading_coverage_path=self.reading_coverage,
+            concised_path=self.concised,
+            revised_path=self.revised,
+            cedict_path=self.cedict,
+            active_catalog_path=self.catalog,
+        )
+
+        self.assertEqual(
+            report["statusCounts"],
+            {"resolved-new-identity": 1, "reading-review-required": 2},
+        )
+        compound_row = next(row for row in report["rows"] if row["text"] == "一定")
+        self.assertIsNone(compound_row["reading"])
+
+    def test_component_derivation_skips_character_with_undeclared_alternate_reading(self) -> None:
+        write_candidate_generation(
+            self.candidates,
+            self.manifest,
+            rows=[(1, "台"), (2, "北"), (3, "台北")],
+        )
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 3,
+            "reviewQueue": [{"text": "台北", "status": "unmatched"}],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.concised, {
+            "adapterVersion": "moe-concised-reading-adapter-v1",
+            "rows": [
+                {
+                    "lookupText": "台",
+                    "trainerReading": "ㄧ2",
+                    "multiReadingReference": "(二)ㄊㄞˊ　　tái（▲1348臺）",
+                },
+                {"lookupText": "北", "trainerReading": "ㄅㄟˇ3"},
+            ],
+        })
+
+        report = self.adapter.project_activation_generation(
+            candidates=self.candidates,
+            candidate_manifest=self.manifest,
+            reading_coverage_path=self.reading_coverage,
+            concised_path=self.concised,
+            revised_path=self.revised,
+            cedict_path=self.cedict,
+            active_catalog_path=self.catalog,
+        )
+
+        self.assertEqual(
+            report["statusCounts"],
+            {"resolved-new-identity": 2, "reading-review-required": 1},
+        )
+        compound_row = next(row for row in report["rows"] if row["text"] == "台北")
+        self.assertIsNone(compound_row["reading"])
 
 
 if __name__ == "__main__":

@@ -63,6 +63,13 @@ def optional_number(value: str | None, *, label: str) -> float | None:
     return number
 
 
+def canonical_frequency(value: float | None) -> int | float | None:
+    """Match the writer's whole-number collapse so digests survive CSV round-trips."""
+    if value is None:
+        return None
+    return int(value) if value.is_integer() else value
+
+
 @dataclass(frozen=True)
 class RankedCandidate:
     text: str
@@ -75,8 +82,8 @@ class RankedCandidate:
         return {
             "generalRank": self.general_rank,
             "lexicalText": self.text,
-            "spokenPerMillion": self.spoken_per_million,
-            "writtenPerMillion": self.written_per_million,
+            "spokenPerMillion": canonical_frequency(self.spoken_per_million),
+            "writtenPerMillion": canonical_frequency(self.written_per_million),
         }
 
     def manifest_row(self) -> dict[str, Any]:

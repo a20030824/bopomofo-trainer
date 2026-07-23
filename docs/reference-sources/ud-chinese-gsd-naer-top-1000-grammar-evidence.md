@@ -142,7 +142,7 @@ Generated JSON is deterministic compact UTF-8 with LF line endings on every plat
 Place the pinned CoNLL-U files in the local ignored directory, then run:
 
 ```bash
-npm run grammar:ud-evidence
+npm run lexicon:generation-pipeline -- --limit 1000
 ```
 
 The command does not download data.

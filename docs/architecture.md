@@ -164,7 +164,11 @@ Only explicit experimental seams are preserved:
 
 The browser product now composes complete grammar-valid utterances, selects them with reviewed commonness plus bounded learner evidence, persists schema-versioned local progress, keeps held-out evaluation isolated, and exports pilot diagnostics. The archived relational importer, partition policies, variable-length composer, synthetic learner, strategy matrix, cohort experiment, and confirmation harness remain reproducible research evidence rather than the production selection path.
 
-The data pipeline has also pinned the active-catalog commonness projection and produced a ranked NAER top-1,000 lexical review queue. Runtime vocabulary expansion remains review-gated: pronunciation resolution, lexical identity, grammar role, valency, and provenance must be accepted before an entry reaches the browser catalog.
+The data pipeline pins the active-catalog commonness and reading projections.
+Lexicon expansion runs in a disposable, manifest-linked generation workspace;
+only reviewed catalog mutations and current active-catalog evidence are
+committed. Pronunciation, lexical identity, grammar role, valency, and
+provenance remain review-gated before an entry reaches the browser catalog.
 
 Word meaning and semantics are outside the architecture boundary. Catalog
 processing, annotation, composition, selection, validation, and evaluation may
@@ -177,8 +181,8 @@ interpretation must never decide it.
 
 ## Deferred
 
-- runtime expansion beyond the 49 reviewed entries;
-- manual resolution of the 89 ambiguous or unmatched top-1,000 identities;
+- broader runtime expansion beyond the current reviewed catalog;
+- resolution of ambiguous or unmatched identities surfaced by a current generation;
 - human pilot validation and evidence-based threshold changes;
 - sentence-variety refinement after the reviewed lexicon grows;
 - recall curriculum;

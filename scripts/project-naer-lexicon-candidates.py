@@ -27,10 +27,7 @@ from typing import Any, Literal
 ADAPTER_VERSION = "naer-lexicon-candidates-adapter-v1"
 REPORT_MODE_ADAPTER_VERSION = "naer-lexicon-candidates-adapter-v2"
 ELIGIBILITY_REPORT_VERSION = "naer-lexicon-eligibility-report-v1"
-DEFAULT_LIMIT = 1_000
 DEFAULT_WORKBOOK = Path("data/external/naer/1141208/通用詞頻表.xlsx")
-DEFAULT_OUTPUT = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
-DEFAULT_MANIFEST = Path("data/lexicon/naer-1141208-top-1000-manifest.json")
 InvalidRowPolicy = Literal["error", "report"]
 
 
@@ -402,9 +399,9 @@ def write_json(path: Path, payload: Any) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--workbook", type=Path, default=DEFAULT_WORKBOOK)
-    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--manifest-output", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--limit", type=int, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--manifest-output", type=Path, required=True)
     parser.add_argument(
         "--invalid-row-policy",
         choices=("error", "report"),

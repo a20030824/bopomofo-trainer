@@ -152,7 +152,7 @@ class SourceReading:
     source_headword: str
     source_entry_id: str
     multi_reading_order: int
-    source_bopomofo: str
+    source_bopomofo: str | None
     multi_reading_reference: str | None
 
 
@@ -373,7 +373,7 @@ def read_source_rows(
                 source_headword=source_headword,
                 source_entry_id=required_string(cells, 4, f"D{physical_row_number}"),
                 multi_reading_order=nonnegative_integer(cells, 8, f"H{physical_row_number}"),
-                source_bopomofo=required_string(cells, 9, f"I{physical_row_number}"),
+                source_bopomofo=optional_string(cells, 9, f"I{physical_row_number}"),
                 multi_reading_reference=optional_string(cells, 17, f"Q{physical_row_number}"),
             )
             matched.setdefault(lookup_text, []).append(row)
@@ -426,6 +426,9 @@ def project_revised_fallback(
             continue
 
         source_row = source_rows[0]
+        if source_row.source_bopomofo is None:
+            invalid_readings.append({"text": lookup_text, "reason": "source row has a blank Bopomofo field"})
+            continue
         try:
             normalized_reading = trainer_reading(source_row.source_bopomofo)
         except ValueError as error:

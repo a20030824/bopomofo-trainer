@@ -13,6 +13,7 @@ import csv
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -51,8 +52,13 @@ def display_path(path: Path) -> str:
         return path.as_posix()
 
 
-def convert_numbered_pinyin(values: list[str]) -> list[str]:
-    """Convert CEDICT numbered pinyin through the repository's single TS table."""
+def convert_numbered_pinyin(values: list[str]) -> list[tuple[str, str] | tuple[None, str]]:
+    """Convert CEDICT numbered pinyin through the repository's single TS table.
+
+    Returns one `(reading, None)` or `(None, failureReason)` pair per input value.
+    A single unsupported syllable (e.g. a bare erhua "r" final) must not abort
+    conversion for every other candidate in the batch.
+    """
     if not values:
         return []
     result = subprocess.run(
@@ -70,9 +76,21 @@ def convert_numbered_pinyin(values: list[str]) -> list[str]:
     payload = json.loads(result.stdout)
     if not isinstance(payload, list) or len(payload) != len(values):
         raise ValueError("numbered pinyin conversion returned an invalid result")
-    if any(not isinstance(value, str) or not value for value in payload):
-        raise ValueError("numbered pinyin conversion returned an empty reading")
-    return payload
+    outcomes: list[tuple[str, str] | tuple[None, str]] = []
+    for item in payload:
+        if not isinstance(item, dict) or "ok" not in item:
+            raise ValueError("numbered pinyin conversion returned an invalid item")
+        if item["ok"]:
+            reading = item.get("reading")
+            if not isinstance(reading, str) or not reading:
+                raise ValueError("numbered pinyin conversion returned an empty reading")
+            outcomes.append((reading, None))
+        else:
+            reason = item.get("reason")
+            if not isinstance(reason, str) or not reason:
+                raise ValueError("numbered pinyin conversion failure is missing a reason")
+            outcomes.append((None, reason))
+    return outcomes
 
 
 def load_active_catalog(path: Path) -> tuple[set[tuple[str, str]], set[str]]:
@@ -116,6 +134,63 @@ def projection_rows(
     return result
 
 
+# Characters whose citation-form reading shifts by tone sandhi depending on
+# the following syllable (e.g. 一 yi1 -> yi2/yi4, 不 bu4 -> bu2) rather than
+# by dictionary lookup. A word containing one cannot be resolved by naive
+# per-character concatenation, so it is left for human review instead of
+# risking a systematically wrong reading.
+TONE_SANDHI_RISK_CHARACTERS = frozenset({"一", "不"})
+
+# MOE Concised occasionally records a headword's second reading only as free
+# text inside multiReadingReference (e.g. 台's entry is "(一) yi2" with
+# "(二)ㄊㄞˊ tái" mentioned only in a note) instead of a separate structured
+# row, so the adapter's own "unique reading" is not reliably the dominant
+# modern reading. A component whose concised entry carries such a note is
+# unsafe to reuse in a compound.
+BOPOMOFO_PATTERN = re.compile(r"[ㄅ-ㄩ]")
+
+
+def has_undeclared_alternate_reading(concised_rows: dict[str, dict[str, Any]], character: str) -> bool:
+    row = concised_rows.get(character)
+    if row is None:
+        return False
+    reference = row.get("multiReadingReference")
+    return isinstance(reference, str) and bool(BOPOMOFO_PATTERN.search(reference))
+
+
+def derive_component_readings(
+    lookup: dict[str, dict[str, str]],
+    unresolved: dict[str, str],
+    concised_rows: dict[str, dict[str, Any]],
+) -> None:
+    """Resolves a multi-character candidate by concatenating already-resolved
+    single-character readings from the same batch (e.g. 走到 from 走 + 到).
+
+    Only applies when every character is itself a clean single-character
+    resolution in `lookup` with no undeclared alternate reading, and the word
+    contains no tone-sandhi-risk character. Mutates both maps in place,
+    moving qualifying texts from `unresolved` into `lookup`.
+    """
+    for text in [text for text in unresolved if len(text) > 1]:
+        characters = list(text)
+        if TONE_SANDHI_RISK_CHARACTERS & set(characters):
+            continue
+        if any(has_undeclared_alternate_reading(concised_rows, character) for character in characters):
+            continue
+        components = [lookup.get(character) for character in characters]
+        if any(component is None for component in components):
+            continue
+        readings = " ".join(component["evidence"] for component in components)
+        lookup[text] = {
+            "authority": "derived-component-concatenation",
+            "evidenceType": "trainer-bopomofo",
+            "evidence": readings,
+            "sourceEvidenceType": "component-texts",
+            "sourceEvidence": ",".join(characters),
+        }
+        del unresolved[text]
+
+
 def build_reading_lookup(
     generation: CandidateSet,
     reading_coverage: dict[str, Any],
@@ -154,6 +229,8 @@ def build_reading_lookup(
             "evidence": reading,
         }
 
+    unresolved: dict[str, str] = {}
+
     cedict_sources: list[tuple[str, str]] = []
     for text, row in cedict_rows.items():
         if row.get("status") != "unique-record":
@@ -168,7 +245,10 @@ def build_reading_lookup(
             raise ValueError(f"CEDICT row lacks numbered pinyin: {text}")
         cedict_sources.append((text, pinyin))
     converted = convert_numbered_pinyin([pinyin for _, pinyin in cedict_sources])
-    for (text, pinyin), reading in zip(cedict_sources, converted, strict=True):
+    for (text, pinyin), (reading, failure_reason) in zip(cedict_sources, converted, strict=True):
+        if reading is None:
+            unresolved[text] = f"cedict-numbered-pinyin-unsupported: {failure_reason}"
+            continue
         lookup[text] = {
             "authority": "cedict-unique",
             "evidenceType": "trainer-bopomofo",
@@ -177,7 +257,6 @@ def build_reading_lookup(
             "sourceEvidence": pinyin,
         }
 
-    unresolved: dict[str, str] = {}
     review_queue = reading_coverage.get("reviewQueue")
     if not isinstance(review_queue, list):
         raise ValueError("reading coverage reviewQueue must be an array")
@@ -191,6 +270,8 @@ def build_reading_lookup(
         if not isinstance(status, str) or not status:
             raise ValueError("reading review row is missing status")
         unresolved[text] = status
+
+    derive_component_readings(lookup, unresolved, concised_rows)
 
     if set(lookup) & set(unresolved):
         raise ValueError("resolved and unresolved reading sets overlap")
@@ -355,12 +436,8 @@ def write_activation_csv(path: Path, report: dict[str, Any]) -> None:
                 "text",
                 "status",
                 "reading_authority",
-                "reading_evidence_type",
-                "reading_evidence",
-                "reading_source_evidence_type",
-                "reading_source_evidence",
+                "reading",
                 "reading_review_status",
-                "ud_observed",
                 "ud_occurrence_count",
                 "ud_upos",
             ],
@@ -374,12 +451,8 @@ def write_activation_csv(path: Path, report: dict[str, Any]) -> None:
                 "text": row["text"],
                 "status": row["status"],
                 "reading_authority": reading.get("authority", ""),
-                "reading_evidence_type": reading.get("evidenceType", ""),
-                "reading_evidence": reading.get("evidence", ""),
-                "reading_source_evidence_type": reading.get("sourceEvidenceType", ""),
-                "reading_source_evidence": reading.get("sourceEvidence", ""),
+                "reading": reading.get("evidence", ""),
                 "reading_review_status": row.get("readingReviewStatus") or "",
-                "ud_observed": syntax.get("observed", ""),
                 "ud_occurrence_count": syntax.get("occurrenceCount", ""),
                 "ud_upos": ";".join(syntax.get("observedUpos", [])),
             })

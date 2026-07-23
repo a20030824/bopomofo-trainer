@@ -188,45 +188,5 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
         self.assertNotIn(b"\r\n", content)
         self.assertTrue(content.endswith(b"\n"))
 
-    def test_committed_artifacts_are_internally_locked(self) -> None:
-        evidence_path = ROOT / "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json"
-        coverage_path = ROOT / "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json"
-        candidate_path = ROOT / "data/lexicon/naer-1141208-top-1000-candidates.csv"
-        if not evidence_path.exists() or not coverage_path.exists():
-            self.skipTest("UD top-1,000 grammar evidence artifacts are not committed yet")
-        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-        coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
-        evidence_core = {
-            "candidateCount": evidence["candidateCount"],
-            "rows": evidence["rows"],
-        }
-        if "schemaVersion" in evidence:
-            evidence_core = {
-                "schemaVersion": evidence["schemaVersion"],
-                **evidence_core,
-            }
-        coverage_core = {
-            key: value for key, value in coverage.items()
-            if key not in {
-                "adapterVersion", "sourceId", "release", "evidenceDigest", "determinismDigest"
-            }
-        }
-        self.assertEqual(evidence["determinismDigest"], adapter.canonical_digest(evidence_core))
-        self.assertEqual(coverage["determinismDigest"], adapter.canonical_digest(coverage_core))
-        self.assertEqual(coverage["evidenceDigest"], evidence["determinismDigest"])
-        self.assertEqual(coverage["observedCandidateCount"], 942)
-        self.assertEqual(coverage["unseenCandidateCount"], 58)
-        self.assertEqual(coverage["matchedOccurrenceCount"], 52_938)
-        self.assertEqual(coverage["reviewCandidateCount"], 403)
-        self.assertEqual(
-            evidence["candidateSource"]["canonicalChecksumSha256"],
-            adapter.canonical_text_sha256(candidate_path),
-        )
-        with candidate_path.open("r", encoding="utf-8-sig", newline="") as source:
-            candidates = {row["text"] for row in csv.DictReader(source)}
-        self.assertEqual({row["text"] for row in evidence["rows"]}, candidates)
-        self.assertTrue({row["text"] for row in coverage["reviewQueue"]}.issubset(candidates))
-
-
 if __name__ == "__main__":
     unittest.main()

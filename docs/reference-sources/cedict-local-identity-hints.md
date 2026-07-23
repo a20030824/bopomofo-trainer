@@ -118,7 +118,7 @@ Multiple records, including one headword with multiple pinyin readings, remain
 `ambiguous-records` at this adapter layer -- it only classifies unique vs.
 ambiguous and never guesses a single reading itself.
 
-`scripts/activate_cedict_heteronym_readings.py` activates every distinct
+`scripts/activate_cedict_heteronym_readings_generation.py` activates every distinct
 converted reading as its own `(text, reading)` practice identity when the text
 has usable syntax-only grammar evidence. Existing catalog membership is checked
 at that pair identity, never at text alone: an already active reading does not

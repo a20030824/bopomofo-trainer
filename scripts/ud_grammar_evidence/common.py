@@ -15,18 +15,7 @@ SOURCE_RELEASE = "r2.18"
 SOURCE_REPOSITORY = "https://github.com/UniversalDependencies/UD_Chinese-GSD"
 SOURCE_LICENSE = "CC BY-SA 4.0"
 
-DEFAULT_CANDIDATES = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
 DEFAULT_SOURCE_DIR = Path("data/external/ud/chinese-gsd/r2.18")
-DEFAULT_EVIDENCE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json"
-)
-DEFAULT_COVERAGE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json"
-)
-EXPECTED_CANDIDATE_COUNT = 1_000
-EXPECTED_CANDIDATE_CANONICAL_SHA256 = (
-    "a47bdf18e0cd9d33784c9c868066ab64e56ef92c4c5360ba5cf579458d0dd710"
-)
 EXPECTED_FILES: Mapping[str, Mapping[str, Any]] = {
     "zh_gsd-ud-train.conllu": {
         "split": "train",

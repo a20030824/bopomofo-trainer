@@ -194,6 +194,24 @@ class ProjectMoeRevisedReadingsTest(unittest.TestCase):
         self.assertEqual(payload["diagnostics"]["duplicateSourceIdentityTexts"], ["重複"])
         self.assertEqual(payload["diagnostics"]["multipleReadingTexts"], ["行"])
 
+    def test_treats_blank_bopomofo_as_invalid_reading(self) -> None:
+        rows = [
+            {"headword": "冒", "entry_id": "1", "bopomofo": ""},
+            {"headword": "八", "entry_id": "2", "bopomofo": "ㄅㄚ"},
+        ]
+        main, guide = fixture_archive(self.archive, self.adapter, rows)
+        self.pin_fixture(main, guide, len(rows))
+        fixture_candidates(self.candidates, ["冒", "八"])
+        fixture_concised(self.concised, [], unmatched=["冒", "八"])
+
+        payload = self.adapter.project_revised_fallback(self.archive, self.candidates, self.concised)
+
+        self.assertEqual([row["lookupText"] for row in payload["rows"]], ["八"])
+        self.assertEqual(
+            payload["diagnostics"]["invalidReadings"],
+            [{"text": "冒", "reason": "source row has a blank Bopomofo field"}],
+        )
+
     def test_rejects_concised_accepted_fallback_overlap(self) -> None:
         main, guide = fixture_archive(
             self.archive,

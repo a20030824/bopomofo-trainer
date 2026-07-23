@@ -110,7 +110,10 @@ Exit condition: reviewed commonness evidence can replace coarse frequency bands 
 
 ### Phase 9 — Reviewed lexicon expansion and human validation
 
-The next constraint is no longer selection architecture. It is catalog size and the absence of human evidence. The catalog has grown across several activation waves (49 → 114 → 291 → 321 entries), followed by a missing-heteronym repair to 322 entries, using the committed NAER top-1,000 queue in bounded review batches.
+The next constraint is no longer selection architecture. It is catalog size and
+the absence of human evidence. Earlier bounded activation waves grew the
+catalog to 322 entries; their replay artifacts were retired after the accepted
+results became part of the active catalog and Git history.
 
 #### Phase 9A — Rank-ordered catalog expansion
 
@@ -118,9 +121,17 @@ Status: in progress; the review-rigor policy below changed partway through.
 
 The first waves reviewed every candidate by hand: accept one evidenced lexical identity and reading, or record an explicit exclusion reason; review lexical role, standalone/formulaic status, and predicate valency; retain source and decision provenance; measure added grammar-candidate variety before merging.
 
-Product decision (this changed the rule below): later waves explicitly traded manual grammar review for lexicon growth speed. `scripts/auto_classify_activation_batch.py` approves grammar roles directly from UD evidence with no per-word human review, and separately, CC-CEDICT heteronyms (words with more than one valid reading) are activated with every distinct reading as its own entry rather than picking one — see `docs/reference-sources/cedict-local-identity-hints.md`. Both carry an accepted, unmeasured error rate with no planned correction pass. A word's own identity/reading resolution (which authority a word's Bopomofo comes from) still fails closed on ambiguity; only the *grammar role* assignment and *heteronym reading inclusion* steps were loosened.
+Product decision (this changed the rule below): later waves explicitly traded
+manual grammar review for lexicon growth speed. The forward-generation policy
+can assign existing grammar roles directly from stable UD evidence, and
+CC-CEDICT heteronyms are activated with every distinct reading as its own
+entry rather than picking one. Both carry an accepted, unmeasured error rate.
+A word's ordinary identity/reading resolution still fails closed on ambiguity;
+only grammar classification and explicit heteronym inclusion are looser.
 
-Exit condition: the full top-1,000 queue has a complete include/exclude ledger, every included entry passes the existing catalog and grammar gates, and the browser's candidate universe shows materially lower repetition than the original 49-entry baseline.
+Exit condition: a current manifest-linked generation has a reviewed apply
+ledger, every included entry passes catalog and grammar gates, and the
+browser's candidate universe shows materially lower repetition.
 
 #### Phase 9B — Local human pilot
 

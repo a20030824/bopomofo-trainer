@@ -37,8 +37,8 @@ These channels remain separate:
 
 The product includes:
 
-- validated Bopomofo readings, provenance, and a 49-entry provisional catalog;
-- a ranked top-1,000 lexicon review queue with 911 automatically resolvable readings and 89 identities requiring review;
+- validated Bopomofo readings, provenance, and a 322-entry reviewed catalog;
+- manifest-linked lexicon generations in disposable, Git-ignored workspaces;
 - complete grammar sidecar coverage for the current catalog;
 - explicit lexical roles, predicate valency, standalone utterances, and deterministic templates;
 - frequency stages 1–3 with conservative unlock gates;

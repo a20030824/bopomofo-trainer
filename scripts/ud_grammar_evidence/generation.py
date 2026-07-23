@@ -67,7 +67,6 @@ def project_generation(
 
     original_load_candidates = projector.load_candidates
     original_rank_bucket_summary = projector.rank_bucket_summary
-    original_default_candidates = projector.DEFAULT_CANDIDATES
 
     def load_generation_candidates(
         path: Path,
@@ -92,7 +91,6 @@ def project_generation(
 
     projector.load_candidates = load_generation_candidates
     projector.rank_bucket_summary = summarize_generation_buckets
-    projector.DEFAULT_CANDIDATES = candidate_path
     try:
         evidence, coverage = projector.project(
             candidate_path,
@@ -104,7 +102,6 @@ def project_generation(
     finally:
         projector.load_candidates = original_load_candidates
         projector.rank_bucket_summary = original_rank_bucket_summary
-        projector.DEFAULT_CANDIDATES = original_default_candidates
 
     evidence["source"]["redistributionBoundary"] = (
         "complete CoNLL-U files and source sentences remain local; committed outputs "

@@ -7,10 +7,7 @@ from typing import Any, Mapping
 
 from .common import (
     ADAPTER_VERSION,
-    DEFAULT_CANDIDATES,
     EVIDENCE_SCHEMA_VERSION,
-    EXPECTED_CANDIDATE_CANONICAL_SHA256,
-    EXPECTED_CANDIDATE_COUNT,
     EXPECTED_FILES,
     MIXED_VALENCY_MIN_COUNT,
     MIXED_VALENCY_MIN_SHARE,
@@ -390,8 +387,8 @@ def project(
     candidate_path: Path,
     source_dir: Path,
     *,
-    expected_candidate_count: int = EXPECTED_CANDIDATE_COUNT,
-    expected_candidate_checksum: str = EXPECTED_CANDIDATE_CANONICAL_SHA256,
+    expected_candidate_count: int,
+    expected_candidate_checksum: str,
     expected_files: Mapping[str, Mapping[str, Any]] = EXPECTED_FILES,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     candidates = load_candidates(
@@ -441,11 +438,11 @@ def project(
             "redistributionBoundary": (
                 "complete CoNLL-U files and source sentences remain local; committed "
                 "outputs contain only aggregate anonymous syntax evidence for the "
-                "pinned NAER top-1,000 candidate identities"
+                "the requested manifest-linked candidate identities"
             ),
         },
         "candidateSource": {
-            "path": DEFAULT_CANDIDATES.as_posix(),
+            "path": candidate_path.as_posix(),
             "canonicalChecksumSha256": canonical_text_sha256(candidate_path),
         },
         **evidence_core,
