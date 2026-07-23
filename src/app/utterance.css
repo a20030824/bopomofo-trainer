@@ -1,5 +1,5 @@
 .utterance-runway {
-  --glyph-step: clamp(64px, 5vw, 68px);
+  --glyph-step: clamp(74px, 5.6vw, 78px);
   --han-size: clamp(48px, 4.2vw, 56px);
   --reading-size: clamp(17px, 1.55vw, 20px);
   display: grid;
@@ -61,10 +61,10 @@
   top: calc(var(--han-size) + 10px);
   left: 50%;
   display: inline-flex;
-  width: 3.25em;
+  width: 3.6em;
   min-height: 1.5em;
   justify-content: center;
-  gap: .06em;
+  gap: .08em;
   color: var(--ink-upcoming);
   font-family: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
   font-size: var(--reading-size);
@@ -78,7 +78,8 @@
 .reading-token {
   position: relative;
   display: inline-grid;
-  min-width: .74em;
+  min-width: 0;
+  flex: 0 0 .82em;
   place-items: start center;
   color: var(--ink-upcoming);
   font-size: 1em;
@@ -172,7 +173,7 @@
 
 @media (max-width: 720px) {
   .utterance-runway {
-    --glyph-step: clamp(50px, 13vw, 54px);
+    --glyph-step: clamp(60px, 15vw, 64px);
     --han-size: clamp(38px, 10.8vw, 46px);
     --reading-size: clamp(14.5px, 4vw, 16px);
     gap: 20px;
