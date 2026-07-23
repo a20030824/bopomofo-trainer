@@ -1,50 +1,81 @@
 .utterance-runway {
+  --glyph-size: clamp(48px, 4.2vw, 56px);
+  --reading-size: clamp(17px, 1.55vw, 20px);
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
   flex-wrap: wrap;
-  row-gap: 22px;
-  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  row-gap: 26px;
   font-variant-numeric: tabular-nums;
 }
 
-.practice-glyph {
+.practice-entry {
   display: inline-flex;
-  min-width: .98em;
-  flex-direction: column;
-  align-items: center;
-  color: var(--ink-faint);
-  transition: color 90ms ease, opacity 90ms ease;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  white-space: nowrap;
 }
-.practice-glyph.done { color: var(--ink); }
+
+.practice-glyph {
+  position: relative;
+  display: inline-grid;
+  width: var(--glyph-size);
+  height: calc(var(--glyph-size) + 44px);
+  flex: 0 0 var(--glyph-size);
+  place-items: start center;
+  color: var(--ink-upcoming);
+  transition: color 90ms ease;
+}
+.practice-glyph.done,
 .practice-glyph.current { color: var(--ink); }
-.practice-glyph.upcoming { color: var(--ink-faint); }
+.practice-glyph.upcoming { color: var(--ink-upcoming); }
 
 .han-character {
-  min-height: 1.12em;
-  padding: 0 .015em;
-  font-size: clamp(42px, 6.2vw, 66px);
+  position: relative;
+  display: grid;
+  width: var(--glyph-size);
+  height: calc(var(--glyph-size) * 1.06);
+  place-items: start center;
+  padding: 0;
+  font-size: var(--glyph-size);
   font-weight: 540;
   letter-spacing: -.025em;
   line-height: 1.06;
   white-space: nowrap;
 }
+.practice-glyph.current .han-character::after {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+  transform: translateX(-50%);
+}
 
 .syllable-reading {
+  position: absolute;
+  top: calc(var(--glyph-size) + 10px);
+  left: 50%;
   display: inline-flex;
-  min-height: 1.55em;
-  margin-top: 12px;
+  min-height: 1.5em;
   justify-content: center;
   white-space: nowrap;
+  transform: translateX(-50%);
 }
 
 .reading-token {
   position: relative;
   display: inline-grid;
-  min-width: .84em;
+  min-width: .65em;
   place-items: start center;
-  color: var(--ink-faint);
-  font-size: clamp(20px, 2.8vw, 29px);
+  color: var(--ink-upcoming);
+  font-size: var(--reading-size);
   font-weight: 470;
   line-height: 1.15;
   transition: color 80ms ease, transform 80ms ease;
@@ -57,9 +88,9 @@
 }
 .reading-token.current::after {
   position: absolute;
-  right: .08em;
+  right: .06em;
   bottom: -.38em;
-  left: .08em;
+  left: .06em;
   height: 2px;
   background: var(--accent);
   content: "";
@@ -72,10 +103,11 @@
 .reading-token.current.error::after { background: var(--danger); }
 
 .utterance-punctuation {
-  align-self: flex-start;
-  margin-left: .04em;
-  color: var(--ink-faint);
-  font-size: clamp(42px, 6.2vw, 66px);
+  display: inline-block;
+  width: calc(var(--glyph-size) * .58);
+  flex: 0 0 calc(var(--glyph-size) * .58);
+  color: var(--ink-upcoming);
+  font-size: var(--glyph-size);
   font-weight: 500;
   line-height: 1.06;
 }
@@ -90,15 +122,18 @@
 }
 
 @media (max-width: 720px) {
-  .utterance-runway { row-gap: 18px; }
-  .han-character,
-  .utterance-punctuation { font-size: clamp(34px, 10vw, 48px); }
-  .syllable-reading { margin-top: 9px; }
-  .reading-token { font-size: clamp(18px, 5.5vw, 24px); }
+  .utterance-runway {
+    --glyph-size: clamp(38px, 10.8vw, 46px);
+    --reading-size: clamp(15px, 4.2vw, 18px);
+    row-gap: 20px;
+  }
+  .practice-glyph { height: calc(var(--glyph-size) + 39px); }
+  .syllable-reading { top: calc(var(--glyph-size) + 8px); }
 }
 
 @media (max-width: 400px) {
-  .han-character,
-  .utterance-punctuation { font-size: clamp(31px, 9.8vw, 41px); }
-  .reading-token { font-size: clamp(17px, 5.1vw, 22px); }
+  .utterance-runway {
+    --glyph-size: clamp(36px, 10.5vw, 41px);
+    --reading-size: clamp(14px, 4vw, 16px);
+  }
 }
