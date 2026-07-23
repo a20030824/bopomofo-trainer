@@ -9,7 +9,7 @@ import type {
   ProductRoundSummary,
 } from "./types.js";
 
-export const PILOT_HISTORY_SCHEMA_VERSION = 1 as const;
+export const PILOT_HISTORY_SCHEMA_VERSION = 2 as const;
 export const PILOT_HISTORY_LIMIT = 24;
 
 export interface PilotRoundRecord {
