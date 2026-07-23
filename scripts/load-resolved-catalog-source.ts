@@ -8,11 +8,11 @@ import {
 export type CatalogSourceLocation = string | URL;
 
 export interface ResolvedCatalogSourcePaths {
-  readonly words: CatalogSourceLocation;
-  readonly concised: CatalogSourceLocation;
-  readonly revised: CatalogSourceLocation;
-  readonly cedict: CatalogSourceLocation;
-  readonly manual: CatalogSourceLocation;
+  words: CatalogSourceLocation;
+  concised: CatalogSourceLocation;
+  revised: CatalogSourceLocation;
+  cedict: CatalogSourceLocation;
+  manual: CatalogSourceLocation;
 }
 
 export const DEFAULT_RESOLVED_CATALOG_SOURCE_PATHS: ResolvedCatalogSourcePaths = {
