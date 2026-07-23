@@ -1,9 +1,13 @@
 import "./main.js";
 import { planBalancedPracticeLines } from "./presentation-model.js";
 
-const stage = document.querySelector<HTMLElement>("#practice-stage");
-if (stage === null) throw new Error("Missing practice stage after app mount");
+function requirePracticeStage(): HTMLElement {
+  const element = document.querySelector<HTMLElement>("#practice-stage");
+  if (element === null) throw new Error("Missing practice stage after app mount");
+  return element;
+}
 
+const stage = requirePracticeStage();
 let layoutFrame: number | null = null;
 let centerResizeObserver: ResizeObserver | null = null;
 
