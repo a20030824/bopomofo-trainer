@@ -1,126 +1,94 @@
-# Bopomofo Trainer
+# 注音輸入訓練器
 
-A local-first Bopomofo keyboard trainer that presents reviewed Traditional Chinese utterances and adapts their selection without hiding the underlying evidence.
+[![CI](https://github.com/a20030824/bopomofo-trainer/actions/workflows/check.yml/badge.svg)](https://github.com/a20030824/bopomofo-trainer/actions/workflows/check.yml)
+[![Deploy Pages](https://github.com/a20030824/bopomofo-trainer/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/a20030824/bopomofo-trainer/actions/workflows/deploy-pages.yml)
 
-## Product direction
+一個在瀏覽器中運作、資料留在本機的繁體中文注音鍵盤訓練雛型。它不把詞隨機串起來，而是先推導正式句法結構，再依句法相容性、詞頻與有限的學習紀錄填入詞槽。
 
-The browser now follows one deliberately simple policy:
+**[開啟線上雛型](https://a20030824.github.io/bopomofo-trainer/)**
 
-1. common vocabulary determines the initial practice pool;
-2. lower-frequency vocabulary unlocks gradually;
-3. formal syntax profiles derive a sentence shape and fill only compatible lexical slots;
-4. expected-token errors and clean timing add only bounded weight;
-5. exact within-syllable transition latency may raise candidates containing that ordered transition;
-6. the actual wrong token and directional confusion aggregate do not affect curriculum selection;
-7. held-out evaluation remains separate and never updates training state.
+## 現在能做什麼
 
-A round is one grammar-valid utterance, not six independently sampled words. The meaning may occasionally be unusual, but every candidate must be realized from the formal Mandarin grammar and compatible observed syntax profiles. Product selection has no template, standalone, or arbitrary word-list fallback.
+- 使用標準注音鍵盤配置進行逐音節輸入練習。
+- 從 1,786 筆審核詞條中生成練習內容，其中 1,776 筆用於練習、10 筆保留作評量。
+- 以正式句法骨架和 2,691 個執行期句法 profile 產生題目。
+- 以常用度為主要選詞依據，錯誤與乾淨輸入時間只提供有上限的調整。
+- 將進度、測量與 pilot history 保存在瀏覽器 localStorage。
+- 使用固定 seed 重現相同 catalog 與進度下的選題結果。
+- 按 `F8` 暫時跳到下一個預覽題，不會寫入假進度。
 
-## Evidence model
+> 目前保證的是句法 profile 與句型規則相容，不保證每一句都具備自然的語意搭配。這是雛型現階段刻意保留的界線。
 
-Bopomofo practice retains several linked structures:
+## 句子怎麼產生
 
-1. Chinese context and reviewed pronunciation;
-2. semantic Bopomofo token paths;
-3. layout-specific symbol-to-key bindings;
-4. directional within-syllable key transitions;
-5. directional expected-to-actual confusions.
+```text
+正式句法規則
+    ↓ 推導句子形狀
+相容詞槽
+    ↓ 句法 profile 過濾
+常用度 + 有上限的學習權重
+    ↓ seeded weighted selection
+完整練習句
+```
 
-These channels remain separate:
+產品路徑沒有內建完整句子 template，也不會退回任意詞列或單詞 fallback。打包時會先套用 fail-closed 句法合法清單；缺少合法 profile 的詞條不會進入網站 catalog。
 
-- binding correctness updates the expected token;
-- accepted binding timing may add a capped token boost;
-- clean adjacent timing belongs to an exact transition edge;
-- confusion observations remain diagnostic and exportable, but do not raise the actual wrong token or create a curriculum target.
+## 本機執行
 
-## Current product status
-
-The product includes:
-
-- validated Bopomofo readings, provenance, and a 1,786-entry reviewed catalog;
-- manifest-linked lexicon generations in disposable, Git-ignored workspaces;
-- a fail-closed formal-syntax legality allowlist and compact runtime profiles for the active catalog;
-- sentence-shape derivation followed by compatible, weighted lexical-slot realization;
-- frequency stages 1–3 with conservative unlock gates;
-- frequency-dominant utterance scoring with capped learner evidence;
-- deterministic seeded selection and recent entry/utterance penalties;
-- guided keyboard interaction and context-aware raw traces;
-- versioned binding, transition, and confusion aggregation;
-- generation-scoped local progress with obsolete-key deletion and no legacy migration;
-- grammar-valid held-out evaluation;
-- local pilot history, diagnostics, and deterministic export.
-
-Run the browser with:
+需要 Node.js 22 與 Python 3.12。
 
 ```bash
 npm ci
 npm run dev
 ```
 
-## Research archive
+Vite 啟動後，開啟終端顯示的本機網址即可。
 
-Phase 7 built a deterministic relational research environment:
-
-- exact binding/transition catalog indexing and support reports;
-- deterministic external reference importing into a manual review queue;
-- relation-preserving partitions and budgeted composers;
-- latent relational learners that emit ordinary interaction traces;
-- a four-axis strategy matrix;
-- seeded cohort experiments, analysis, and targeted confirmation.
-
-The factorial cohort executed 750 runs / 1,500 rounds. Candidate confirmation executed 770 runs / 6,160 rounds. Neither candidate survived its anchor scenario, so no experimental objective/composer combination was promoted as the product strategy.
-
-Those results remain reproducible comparison evidence. They do not block the browser product, and simulation is not treated as proof of human learning effectiveness.
-
-## Commands
+## 驗證
 
 ```bash
-npm install
 npm run check
-npm run build
-npm run integration:research
-npm run strategy:matrix
-npm run experiment:relational
-npm run analysis:relational
-npm run confirmation:relational
-npm run curriculum:simulate
-npm run measurement:analyze -- path/to/bopomofo-round.json
 ```
 
-- `npm run check` runs typecheck, tests, catalog validation, and production build.
-- `npm run integration:research` verifies the single-policy cross-module fixture twice.
-- `npm run strategy:matrix` verifies the complete declaration matrix and digest.
-- `npm run experiment:relational` reproduces the committed factorial cohort.
-- `npm run analysis:relational` reproduces the canonical strategy findings.
-- `npm run confirmation:relational` reproduces the extended candidate stress test.
+這會依序執行 TypeScript typecheck、快速 Vitest、Python source-adapter 測試、catalog 驗證與 production build。
 
-## Principles
+目前 catalog 驗證涵蓋 1,786 個詞條、3,267 個音節與 42 個注音 token。
 
-- Semantic tokens are not physical keys.
-- Syllables and catalog entries are ordered paths, not unordered token sets.
-- Frequency determines eligibility and the dominant selection base.
-- Learner-specific boosts are sample-gated, explainable, and capped.
-- A locked frequency stage cannot be bypassed by a weakness score.
-- The actual wrong token does not receive curriculum weight.
-- Exact transitions never cross syllable or entry boundaries.
-- Grammar validity is established before scoring.
-- Formulaic utterances cannot occupy ordinary sentence slots.
-- Held-out text never updates training estimates or stage state.
-- External reference candidates stop at a manual review queue.
-- Simulation can validate internal behavior and replayability, not human effectiveness.
+## 主要目錄
 
-## Documents
+```text
+src/app/          瀏覽器介面與鍵盤輸入
+src/product/      練習、評量、進度與 session
+src/curriculum/   選題、權重與句子生成入口
+src/syntax/       正式句法推導、profile 與合法性檢查
+data/source/      目前啟用的審核 catalog
+data/grammar/     網站使用的句法合法清單與精簡 profiles
+scripts/          catalog、讀音與句法生成工具
+tests/            TypeScript 與 Python 驗證
+docs/             架構、政策、證據與歷史研究文件
+```
 
-- [Vision](docs/vision.md)
-- [Domain model](docs/domain-model.md)
-- [Architecture](docs/architecture.md)
+## 設計原則
+
+- 詞頻決定可用範圍與主要抽樣權重。
+- 學習者訊號必須有足夠樣本、可解釋且有權重上限。
+- 實際按錯的 token 不會反過來獲得課程權重。
+- transition 不跨越音節或詞條邊界。
+- 句法合法性先於選題評分。
+- 評量詞不更新訓練估計。
+- 模擬只能驗證內部行為與可重現性，不能證明真實學習效果。
+
+## 文件
+
+- [正式句法系統](docs/formal-syntax-system.md)
+- [正式句法實作狀態](docs/formal-syntax-implementation-status.md)
+- [選題政策](docs/frequency-first-utterance-policy.md)
+- [架構](docs/architecture.md)
+- [領域模型](docs/domain-model.md)
+- [測量政策](docs/measurement-policy.md)
 - [Roadmap](docs/roadmap.md)
-- [Grammar-aware practice composition](docs/grammar-aware-practice.md)
-- [Frequency-first utterance policy](docs/frequency-first-utterance-policy.md)
-- [Measurement policy](docs/measurement-policy.md)
-- [Existing product prototype history](docs/archive/thin-product-prototype.md)
-- [Pilot instrumentation](docs/pilot-validation.md)
-- [Relational skill model](docs/archive/relational-skill-model.md)
-- [Relational strategy findings](docs/archive/research/strategy-findings.md)
-- [Relational strategy confirmation](docs/archive/research/strategy-confirmation.md)
-- [Architecture decisions](docs/decisions/)
+- [架構決策](docs/decisions/)
+
+## GitHub Pages
+
+合併到 `main` 後，[Pages workflow](.github/workflows/deploy-pages.yml) 會以 repository 子路徑建置 Vite，並部署 `dist/`。也可以從 Actions 頁面手動觸發部署。
