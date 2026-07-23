@@ -12,7 +12,7 @@ The branch currently provides:
 
 - the versioned `mandarin-formal-grammar-v1` contract;
 - complete representation of all 17 UD UPOS values;
-- syntax-only UD evidence v2 projection code;
+- committed syntax-only UD evidence v2 artifacts replayed from pinned r2.18 sources;
 - per-UPOS evidence partitioning without `dominantUpos` reduction;
 - multiple `SyntaxProfile` records per exact `(text, reading)` entry;
 - written-form evidence sharing across all active readings without semantic disambiguation;
@@ -25,6 +25,15 @@ The branch currently provides:
 - machine-readable syntax coverage and a fixed-template removal gate.
 
 The complete grammar inventory currently contains 83 production rules and 192 positive/negative fixtures.
+
+The committed v2 replay preserves the locked aggregate results:
+
+```text
+observed candidates  942
+unseen candidates     58
+matching occurrences  52,938
+review candidates     403
+```
 
 ## Fixed-template removal gate
 
@@ -45,35 +54,14 @@ The old composer must not be removed when any condition is false.
 
 ## Current blockers
 
-The following blockers remain on this branch:
-
-### Committed UD artifact replay
-
-The adapter and fixture tests implement `ud-syntax-evidence-v2`, but the large committed top-1,000 JSON artifacts have not been replayed from the pinned ignored CoNLL-U files in this execution environment.
-
-The required local source files are:
-
-```text
-data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-train.conllu
-data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-dev.conllu
-data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-test.conllu
-```
-
-They must match the checksums documented in `docs/reference-sources/ud-chinese-gsd-naer-top-1000-grammar-evidence.md`. Once present, replay with:
-
-```bash
-npm run grammar:ud-evidence
-```
-
-The replay must preserve the locked candidate and occurrence counts before accepting the new v2 determinism digests.
+The following blockers remain on this branch.
 
 ### Full-catalog profile and reachability report
 
-The coverage generator is implemented, but the final committed report still requires:
+The coverage generator is implemented and the v2 top-1,000 evidence artifacts are committed. The final current-catalog report still requires:
 
-- the current 322-entry catalog;
-- profiles projected from the regenerated v2 evidence artifact;
-- complete bounded structural shape counts;
+- projection against the current 322 exact `(text, reading)` entries;
+- complete bounded structural shape counts for the accepted grammar bounds;
 - confirmation that `unrealizableProfileCount` is zero for the admitted product index.
 
 Entries without evidence must remain listed under `noUdEvidenceEntryIds`; they must not receive guessed profiles.
@@ -92,12 +80,11 @@ The formal composer is available as an explicit compatibility module, but it is 
 
 The safe continuation is:
 
-1. replay and commit the pinned v2 UD artifacts;
-2. project profiles for the current catalog;
-3. emit the full machine-readable coverage report;
-4. count structural derivation shapes for the accepted bounds;
-5. complete legacy parity and product migration tests;
-6. enable the formal path as the default only after those tests pass;
-7. remove the fixed-template production path in a separate commit only when the gate returns `removalAllowed: true`.
+1. project the current 322-entry catalog from the committed v2 evidence artifact;
+2. emit the full machine-readable current-catalog coverage report;
+3. count structural derivation shapes for the accepted bounds;
+4. complete legacy parity and product migration tests;
+5. enable the formal path as the default only after those tests pass;
+6. remove the fixed-template production path in a separate commit only when the gate returns `removalAllowed: true`.
 
 Until then, retaining the old composer is required by the migration contract, not an incomplete deletion.
