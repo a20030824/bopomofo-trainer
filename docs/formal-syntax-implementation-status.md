@@ -64,6 +64,12 @@ The 17 entries without UD evidence remain explicitly listed in the coverage arti
 
 `npm run grammar:formal-syntax-verify` rebuilds both artifacts in memory and compares them byte-for-byte with the committed files. It is part of the ordinary PR check. The former workflow that granted `contents: write` and pushed generated commits back to the PR branch has been removed.
 
+## Final re-review
+
+The narrow final re-review checked artifact versioning, workflow permissions, fail-closed validation, candidate identity, entry weighting, profile multiplicity, punctuation handling, and temporary-file residue.
+
+One blocker was found and corrected: the IR exposed rule-level `constraints`, while exhaustive derivation, random sampling, and structural counting did not execute them. The validator now rejects all non-empty constraints for grammar v1, with a regression test proving the boundary. No current production rule uses this reserved field, so the committed coverage and shape counts are unchanged.
+
 ## Fixed-template removal gate
 
 `evaluateFixedTemplateRemovalGate()` permits removal only when all of the following are true:
