@@ -35,17 +35,36 @@ Median clean latency is calculated only from non-null binding-observation timing
 
 ## Interface hierarchy
 
-The refined product UI follows the measured task rather than presenting every system detail with equal weight:
+The primary product is a continuous sentence runway rather than a dashboard of product and research state.
 
-1. the current Chinese entry and its complete Bopomofo reading are the primary surface;
-2. the current token is stronger than completed and upcoming tokens;
-3. wrong-key feedback appears both on the current token and beside the active entry;
-4. the six-entry order remains visible as a compact queue;
-5. completion metrics and the next-round action form one continuous result panel;
-6. pilot history uses expandable rows, with evaluation visually distinct;
-7. raw traces, diagnostics export, and destructive reset remain outside the primary flow.
+1. One complete Traditional Chinese utterance is the visual unit. Catalog-entry and word boundaries remain in the domain model but are not rendered as cards, gaps, queue rows, or numbered states. Invisible entry wrappers are indivisible line-breaking units, so a reviewed word cannot split across lines.
+2. Each displayed character uses a fixed visual step that is independent of reading length. The syllable row reserves four readable symbol positions — initial, medial, final, and tone where present — without compressing token spacing. Shorter syllables remain centered in that same slot.
+3. The browser measures every entry at the current rendered font and container width, then uses a deterministic dynamic-programming planner to assign contiguous entry ranges to explicit lines. The planner minimizes ragged unused width and applies a strong penalty to a short single-entry final orphan whenever another legal distribution exists. Lines share one stable left edge, and punctuation remains inside the final entry.
+4. Completed, current, and upcoming tokens use restrained ink contrast. The current Bopomofo token receives the persistent accent; the Chinese row does not add a second decorative locator.
+5. Wrong-key feedback appears at the current token and in one fixed-height feedback line. Unmapped input remains quiet and does not move layout.
+6. IME composition remains blocking, but its warning overlays and dims the stable practice surface instead of increasing feedback height or shifting the sentence and progress line.
+7. The primary view retains only the utterance, Bopomofo path, compact round status, a restrained two-pixel progress line, and one numeric position count.
+8. Completing the final token persists product progress and Pilot history once, then immediately creates the next round through the existing product transition. There is no completion card, next-round button, mouse action, or timed result gate.
+9. The previous round's compact accuracy and clean median remain for at most 1.4 seconds and disappear earlier on the first correct input of the next sentence.
+10. Pressing `Escape` opens a keyboard-operable information surface: a right-side drawer on desktop and a bottom sheet on narrow screens. The same key closes the native dialog and restores the hidden keyboard-capture target.
+11. Current policy facts, optional physical-key hint, local history, Pilot export, raw traces, diagnostics export, and destructive reset live inside that surface.
+12. Desktop and narrow layouts preserve the same hierarchy without visible entry spacing or horizontal scrolling.
 
-Desktop and mobile layouts preserve the same hierarchy. The mobile version stacks the current entry, queue, summary, and history instead of compressing the desktop grid.
+The implementation keeps the hidden textarea so real composition events remain observable. Space and Tab are prevented from moving the page only while the practice capture target owns input; controls inside the information surface retain normal keyboard navigation.
+
+## Motion boundary
+
+Motion supports state continuity but never becomes a reward layer:
+
+- the sentence DOM is mounted once per round and existing token/glyph classes update in place;
+- initial mount, container resize, and final font availability may reparent the existing entry nodes into newly planned line wrappers without recreating glyph or token nodes;
+- token progress uses an 80–90 ms color and underline transition;
+- an incorrect current token receives one small horizontal nudge;
+- a newly created sentence receives a 150 ms opacity and four-pixel entrance;
+- the desktop drawer or narrow-screen sheet uses one restrained entrance transition;
+- `prefers-reduced-motion` reduces every transition and animation to an effectively immediate state change.
+
+There are no success bursts, card scaling, staggered character entrances, animated counters, or background motion.
 
 ## Pilot export
 
@@ -62,15 +81,17 @@ The export omits the random product seed, export time, account data, and any con
 
 ## Human pilot protocol
 
-1. Complete 10–20 rounds without clearing progress.
-2. Do not tune policy after only one or two rounds.
-3. Observe the transition from coverage to adaptive focus.
-4. Note whether focused tokens look plausible and whether repetition becomes annoying.
-5. Confirm evaluation appears after every five practice rounds.
-6. Confirm evaluation rows remain distinct and do not change adaptive measurements.
-7. Reload at least twice and verify completed history remains ordered.
-8. Confirm wrong-key, unmapped-key, IME, hint, completion, and next-round states remain visually clear.
-9. Check one narrow/mobile viewport and one normal desktop viewport.
-10. Download the Pilot JSON and keep qualitative notes on repetition, feedback, and visual friction separately.
+1. Complete 10–20 rounds without clearing progress or using the pointer.
+2. Confirm the final correct token moves directly to an active next sentence and creates one history record.
+3. Hold the final physical key long enough to generate key repeat and confirm the next sentence does not advance.
+4. Open and close the information drawer with `Escape`; confirm focus returns to practice and Tab navigation remains inside the surface while open.
+5. Toggle the physical-key hint and confirm only the next expected key is exposed.
+6. Trigger wrong-key, unmapped-key, and IME states without causing sentence or progress layout shifts.
+7. Confirm evaluation appears after every five practice rounds and remains distinct in history without changing adaptive measurements.
+8. Reload at least twice and verify completed current-generation history remains ordered and the deterministic next utterance is reproduced.
+9. Check one 320 px viewport and one normal desktop viewport. Use a long sentence that would greedily leave one short final entry, and confirm the measured planner moves an earlier entry to produce a more even final line while preserving entry order.
+10. Resize across at least one line-break threshold and confirm only entry grouping changes: entered token state, current token, punctuation attachment, and sentence identity remain unchanged.
+11. Confirm a four-symbol syllable including its tone remains visibly separated, and that shorter syllables do not change Chinese character spacing.
+12. Download the Pilot JSON and one raw round diagnostic; keep qualitative notes on repetition, feedback, and visual friction separately.
 
-Curriculum thresholds should change only after a repeatable failure mode appears in this pilot. UI changes after Phase 6 should likewise respond to observed friction rather than decoration alone.
+Curriculum thresholds should change only after a repeatable failure mode appears in this pilot. UI changes should likewise respond to observed task friction rather than decoration alone.

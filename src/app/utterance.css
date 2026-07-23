@@ -1,53 +1,185 @@
-.utterance-overview {
+.utterance-runway {
+  --glyph-step: clamp(74px, 5.6vw, 78px);
+  --han-size: clamp(48px, 4.2vw, 56px);
+  --reading-size: clamp(17px, 1.55vw, 20px);
+  display: grid;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  gap: 26px;
+  color: var(--ink-upcoming);
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  word-break: keep-all;
+}
+
+.practice-line {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 14px;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  background: var(--paper-soft);
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-.utterance-overview > div {
+.practice-entry {
+  display: inline-flex;
+  justify-self: start;
+  align-items: flex-start;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.practice-glyph {
+  position: relative;
+  display: inline-grid;
+  width: var(--glyph-step);
+  height: calc(var(--han-size) + 46px);
+  flex: 0 0 var(--glyph-step);
+  place-items: start center;
+  color: var(--ink-upcoming);
+  transition: color 90ms ease;
+}
+.practice-glyph.done,
+.practice-glyph.current { color: var(--ink); }
+.practice-glyph.upcoming { color: var(--ink-upcoming); }
+
+.han-character {
+  display: grid;
+  width: var(--glyph-step);
+  height: calc(var(--han-size) * 1.06);
+  place-items: start center;
+  padding: 0;
+  font-size: var(--han-size);
+  font-weight: 540;
+  letter-spacing: -.025em;
+  line-height: 1.06;
+  white-space: nowrap;
+}
+
+/* Four readable positions cover initial, medial, final, and tone without compression. */
+.syllable-reading {
+  position: absolute;
+  top: calc(var(--han-size) + 10px);
+  left: 50%;
+  display: inline-flex;
+  width: 3.6em;
+  min-height: 1.5em;
+  justify-content: center;
+  gap: .08em;
+  color: var(--ink-upcoming);
+  font-family: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  font-size: var(--reading-size);
+  font-kerning: none;
+  letter-spacing: 0;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.reading-token {
+  position: relative;
+  display: inline-grid;
   min-width: 0;
+  flex: 0 0 .82em;
+  place-items: start center;
+  color: var(--ink-upcoming);
+  font-size: 1em;
+  font-weight: 470;
+  line-height: 1.15;
+  transition: color 80ms ease, transform 80ms ease;
+}
+.reading-token.done { color: var(--ink); }
+.reading-token.current {
+  color: var(--ink);
+  font-weight: 620;
+  transform: translateY(-1px);
+}
+.reading-token.current::after {
+  position: absolute;
+  right: .06em;
+  bottom: -.38em;
+  left: .06em;
+  height: 2px;
+  background: var(--accent);
+  content: "";
+  animation: current-token-in 90ms ease-out both;
+}
+.reading-token.current.error {
+  color: var(--danger);
+  animation: token-nudge 120ms ease-in-out 1;
+}
+.reading-token.current.error::after { background: var(--danger); }
+
+.utterance-punctuation {
+  display: inline-block;
+  width: calc(var(--glyph-step) * .58);
+  flex: 0 0 calc(var(--glyph-step) * .58);
+  color: var(--ink-upcoming);
+  font-size: var(--han-size);
+  font-weight: 500;
+  line-height: 1.06;
+  vertical-align: top;
 }
 
-.utterance-overview span,
-.utterance-overview small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+.practice-center {
+  position: relative;
 }
 
-.utterance-overview strong {
-  display: block;
-  margin-top: 7px;
-  font-size: clamp(24px, 4vw, 42px);
-  font-weight: 900;
-  letter-spacing: .05em;
-  line-height: 1.25;
+.practice-center .progress-line,
+.practice-center .progress-caption {
+  width: min(720px, 100%);
+  margin-inline: auto;
 }
 
-.utterance-overview small {
-  flex: 0 0 auto;
-  max-width: 34ch;
-  text-align: right;
-  text-transform: none;
+.practice-center .progress-line {
+  margin-top: 34px;
+}
+
+.practice-center .practice-feedback.ime {
+  min-height: 28px;
+  margin-top: 26px;
+}
+
+.practice-center .ime-blocker {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100% - 32px));
+  transform: translate(-50%, -50%);
+  box-shadow: 0 18px 54px rgba(36, 35, 33, .16);
+}
+
+.practice-center:has(.practice-feedback.ime) .utterance-runway,
+.practice-center:has(.practice-feedback.ime) .progress-line,
+.practice-center:has(.practice-feedback.ime) .progress-caption {
+  opacity: .18;
+  transition: opacity 100ms ease;
+}
+
+.round-status span::after {
+  margin-left: 8px;
+  color: var(--ink-faint);
+  content: "·";
+}
+
+@keyframes current-token-in {
+  from { transform: scaleX(.45); opacity: .25; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+@keyframes token-nudge {
+  0%, 100% { transform: translateX(0) translateY(-1px); }
+  45% { transform: translateX(3px) translateY(-1px); }
 }
 
 @media (max-width: 720px) {
-  .utterance-overview {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+  .utterance-runway {
+    --glyph-step: clamp(60px, 15vw, 64px);
+    --han-size: clamp(38px, 10.8vw, 46px);
+    --reading-size: clamp(14.5px, 4vw, 16px);
+    gap: 20px;
   }
-
-  .utterance-overview small {
-    max-width: none;
-    text-align: left;
-  }
+  .practice-glyph { height: calc(var(--han-size) + 41px); }
+  .syllable-reading { top: calc(var(--han-size) + 8px); }
+  .practice-center .progress-line,
+  .practice-center .progress-caption { width: min(620px, 100%); }
 }

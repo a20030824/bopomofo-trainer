@@ -33,6 +33,12 @@ import {
   loadLocalProductProgress,
   saveLocalProductProgress,
 } from "./local-progress.js";
+import {
+  buildPracticeEntries,
+  continuousExerciseText,
+} from "./presentation-model.js";
+
+type VisualState = "done" | "current" | "upcoming";
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -81,7 +87,7 @@ try {
   pilotHistory = loaded.history;
   recoveredPilotHistory = loaded.recoveredFromInvalidState;
 } catch {
-  storageWarning = "瀏覽器無法讀取完整本機資料；練習仍可使用，但 Pilot 歷史可能無法保存。";
+  storageWarning = "瀏覽器無法讀取完整本機資料；練習仍可使用，但練習歷史可能無法保存。";
 }
 
 let product: ProductState = createProductState(
@@ -92,6 +98,8 @@ let product: ProductState = createProductState(
 let compositionActive = false;
 let imeWarning = false;
 let showPhysicalHint = false;
+let previousResult: PilotRoundRecord | null = null;
+let previousResultTimer: number | null = null;
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -126,17 +134,13 @@ function escapeHtml(value: string): string {
   })[character] ?? character);
 }
 
-function focusCapture(): void {
-  capture.focus({ preventScroll: true });
-}
-
 function completedRoundCount(): number {
   return product.progress.practiceRoundsCompleted
     + product.progress.evaluationRoundsCompleted;
 }
 
 function currentRoundNumber(): number {
-  return product.summary === null ? completedRoundCount() + 1 : completedRoundCount();
+  return completedRoundCount() + 1;
 }
 
 function currentProgressPercent(): number {
@@ -147,7 +151,7 @@ function currentProgressPercent(): number {
 }
 
 function roundKindLabel(): string {
-  return product.round.kind === "evaluation" ? "保留語句檢查" : "常用語句練習";
+  return product.round.kind === "evaluation" ? "保留語句評估" : "常用語句練習";
 }
 
 function phaseLabel(): string {
@@ -171,188 +175,250 @@ function templateDescription(): string {
 }
 
 function utteranceText(): string {
-  const utterance = product.round.selection.utterance;
-  return `${utterance.text}${utterance.punctuation ?? ""}`;
+  const punctuation = product.round.selection.utterance.punctuation ?? "";
+  return `${continuousExerciseText(product.round.exercise)}${punctuation}`;
 }
 
-function entryStartPositions(): readonly number[] {
-  let position = 0;
-  return product.round.exercise.entries.map((entry) => {
-    const start = position;
-    position += entry.syllables.reduce(
-      (total, syllable) => total + syllable.tokens.length,
-      0,
-    );
-    return start;
+function mappedRoundCounts(): { readonly attempts: number; readonly errors: number } {
+  let attempts = 0;
+  let errors = 0;
+  for (const trace of product.session.traces) {
+    if (trace.outcome !== "correct" && trace.outcome !== "incorrect") continue;
+    attempts += 1;
+    if (trace.outcome === "incorrect") errors += 1;
+  }
+  return { attempts, errors };
+}
+
+function accuracyLabel(attempts: number, errors: number): string {
+  if (attempts === 0) return "—";
+  return `${Math.round(((attempts - errors) / attempts) * 100)}%`;
+}
+
+function focusCapture(): void {
+  const dialog = document.querySelector<HTMLDialogElement>("#information-dialog");
+  if (dialog?.open || imeWarning) return;
+  capture.focus({ preventScroll: true });
+}
+
+function mountShell(): void {
+  root.innerHTML = `
+    <main class="shell">
+      <header class="topbar">
+        <div class="wordmark" aria-label="注音鍵位練習">注音</div>
+        <div class="topbar-actions">
+          <div id="round-status" class="round-status" aria-live="polite"></div>
+          <button id="open-information" class="information-button" type="button" aria-label="開啟練習資訊與設定" aria-keyshortcuts="Escape">i</button>
+        </div>
+      </header>
+      <div id="notice-region" class="notice-region" aria-live="polite"></div>
+      <section id="practice-stage" class="practice-stage" aria-label="注音語句練習區"></section>
+      <dialog id="information-dialog" class="information-dialog" aria-labelledby="information-title">
+        <div class="dialog-shell">
+          <header class="dialog-header">
+            <div>
+              <span>Practice details</span>
+              <h2 id="information-title">練習資訊</h2>
+            </div>
+            <form method="dialog">
+              <button class="dialog-close" type="submit" aria-label="關閉資訊面板">Esc</button>
+            </form>
+          </header>
+          <div id="information-content" class="information-content"></div>
+        </div>
+      </dialog>
+    </main>`;
+
+  requireElement<HTMLButtonElement>("#open-information").addEventListener("click", openInformationPanel);
+  const dialog = requireElement<HTMLDialogElement>("#information-dialog");
+  dialog.addEventListener("close", focusCapture);
+  dialog.addEventListener("click", (event) => {
+    if (event.target !== dialog) return;
+    const bounds = dialog.getBoundingClientRect();
+    const outside = event.clientX < bounds.left
+      || event.clientX > bounds.right
+      || event.clientY < bounds.top
+      || event.clientY > bounds.bottom;
+    if (outside) dialog.close();
   });
+  requireElement<HTMLElement>("#practice-stage").addEventListener("click", focusCapture);
 }
 
-function renderReading(entryIndex: number, compact = false): string {
-  const entry = product.round.exercise.entries[entryIndex];
-  if (entry === undefined) return "";
-  let position = entryStartPositions()[entryIndex] ?? 0;
-  const latest = product.session.traces.at(-1);
+function renderNotices(): void {
+  const notices = [
+    recoveredFromInvalidState
+      ? "舊版或無效的本機進度已刪除，已從新的進度世代重新開始。"
+      : "",
+    recoveredPilotHistory
+      ? "舊版或無效的 Pilot 歷史已刪除；目前世代可由有效完成摘要補齊。"
+      : "",
+    storageWarning,
+  ].filter(Boolean);
+  requireElement<HTMLElement>("#notice-region").innerHTML = notices.map((notice) =>
+    `<div class="notice${notice === storageWarning && storageWarning ? " warning" : ""}">${escapeHtml(notice)}</div>`
+  ).join("");
+}
 
-  return entry.syllables.map((syllable) => {
-    const tokens = syllable.tokens.map((tokenId) => {
-      const isDone = position < product.session.position;
-      const isCurrent = position === product.session.position;
-      const hasError = isCurrent
-        && latest?.position === position
-        && latest.outcome === "incorrect";
-      const stateClass = [
-        "token",
-        isDone ? "done" : "",
-        isCurrent ? "current" : "",
-        hasError ? "error" : "",
-        compact ? "compact" : "",
-      ].filter(Boolean).join(" ");
-      const expectedCode = reverseBindings.get(tokenId);
-      const hint = !compact && showPhysicalHint && expectedCode !== undefined
-        ? `<small>${escapeHtml(physicalKeyLabel(expectedCode))}</small>`
-        : "";
-      const token = `<span class="${stateClass}" data-position="${position}"${isCurrent ? ' aria-current="true"' : ""}><b>${escapeHtml(tokenLabel(tokenId))}</b>${hint}</span>`;
-      position += 1;
-      return token;
+function practiceEntryMarkup(): string {
+  const entries = buildPracticeEntries(product.round.exercise);
+  const punctuation = product.round.selection.utterance.punctuation ?? "";
+  return entries.map((entry, entryIndex) => {
+    const glyphs = entry.glyphs.map((glyph) => {
+      const reading = glyph.tokens.map((tokenId, tokenIndex) => {
+        const position = glyph.tokenStart + tokenIndex;
+        return `<span class="reading-token upcoming" data-position="${position}">${escapeHtml(tokenLabel(tokenId))}</span>`;
+      }).join("");
+      return `<span class="practice-glyph upcoming" data-token-start="${glyph.tokenStart}" data-token-end="${glyph.tokenEnd}">
+        <span class="han-character">${escapeHtml(glyph.character)}</span>
+        <span class="syllable-reading" aria-hidden="true">${reading}</span>
+      </span>`;
     }).join("");
-    return `<span class="syllable">${tokens}</span>`;
+    const suffix = entryIndex === entries.length - 1 && punctuation
+      ? `<span class="utterance-punctuation" aria-hidden="true">${escapeHtml(punctuation)}</span>`
+      : "";
+    return `<span class="practice-entry" data-entry-index="${entry.entryIndex}">${glyphs}${suffix}</span>`;
   }).join("");
 }
 
-function compactReading(entryIndex: number): string {
-  const entry = product.round.exercise.entries[entryIndex];
-  if (entry === undefined) return "";
-  return entry.syllables.map((syllable) =>
-    syllable.tokens.map(tokenLabel).join("")
-  ).join(" ");
+function mountPracticeRound(animateRound = false): void {
+  const stage = requireElement<HTMLElement>("#practice-stage");
+  stage.innerHTML = `
+    <div class="practice-center">
+      <div class="utterance-runway" aria-label="${escapeHtml(utteranceText())}">
+        ${practiceEntryMarkup()}
+      </div>
+      <div id="practice-feedback" class="practice-feedback" aria-live="polite"></div>
+      <div class="progress-line" aria-hidden="true"><span id="progress-fill"></span></div>
+      <div class="progress-caption"><span id="progress-count"></span></div>
+    </div>`;
+  updatePracticeState();
+
+  if (!animateRound) return;
+  stage.classList.remove("round-enter");
+  void stage.offsetWidth;
+  stage.classList.add("round-enter");
+  stage.addEventListener("animationend", () => {
+    stage.classList.remove("round-enter");
+  }, { once: true });
 }
 
-function activeEntryIndex(): number {
-  const current = product.session.targets[product.session.position];
-  if (current !== undefined) return current.entryIndex;
-  return Math.max(0, product.round.exercise.entries.length - 1);
+function glyphVisualState(tokenStart: number, tokenEnd: number): VisualState {
+  if (product.session.position >= tokenEnd) return "done";
+  if (product.session.position >= tokenStart) return "current";
+  return "upcoming";
 }
 
-function latestInputMarkup(): string {
+function tokenVisualState(position: number): VisualState {
+  if (position < product.session.position) return "done";
+  if (position === product.session.position) return "current";
+  return "upcoming";
+}
+
+function applyVisualState(element: HTMLElement, state: VisualState): void {
+  element.classList.remove("done", "current", "upcoming");
+  element.classList.add(state);
+  if (state === "current") element.setAttribute("aria-current", "true");
+  else element.removeAttribute("aria-current");
+}
+
+function updatePracticeFeedback(): void {
+  const feedback = requireElement<HTMLElement>("#practice-feedback");
+  feedback.className = "practice-feedback";
+  feedback.setAttribute("aria-live", "polite");
+
+  if (imeWarning) {
+    feedback.classList.add("ime");
+    feedback.setAttribute("aria-live", "assertive");
+    feedback.innerHTML = `<div class="ime-blocker" role="alert">
+      <span>輸入暫停</span>
+      <strong>偵測到中文輸入法</strong>
+      <p>切換到英文鍵盤後按 Esc，繼續目前這一句。</p>
+    </div>`;
+    return;
+  }
+
   const latest = product.session.traces.at(-1);
   if (latest?.outcome === "incorrect") {
     const actual = latest.actualToken === null ? "未映射鍵" : tokenLabel(latest.actualToken);
-    return `<div class="inline-feedback error"><strong>按到 ${escapeHtml(actual)}</strong><span>停在 ${escapeHtml(tokenLabel(latest.expectedToken))}，請再按一次正確鍵。</span></div>`;
+    feedback.classList.add("error");
+    feedback.setAttribute("aria-live", "assertive");
+    feedback.textContent = `按到 ${actual}，應為 ${tokenLabel(latest.expectedToken)}`;
+    return;
   }
   if (latest?.outcome === "unmapped") {
-    return '<div class="inline-feedback noise"><strong>這個鍵沒有注音映射</strong><span>進度沒有前進，也不計入正確率。</span></div>';
+    feedback.classList.add("muted");
+    feedback.textContent = "未映射，進度未移動";
+    return;
   }
-  return "";
-}
 
-function renderExercise(): string {
-  const activeIndex = activeEntryIndex();
-  const active = product.round.exercise.entries[activeIndex];
-  if (active === undefined) return "";
   const current = product.session.targets[product.session.position];
-  const activeState = product.summary !== null
-    ? "完成"
-    : current?.entryIndex === activeIndex
-      ? "輸入中"
-      : "待輸入";
-
-  const queue = product.round.exercise.entries.map((entry, entryIndex) => {
-    const state = product.summary !== null || entryIndex < activeIndex
-      ? "done"
-      : entryIndex === activeIndex
-        ? "current"
-        : "upcoming";
-    const stateLabel = state === "done" ? "完成" : state === "current" ? "現在" : "稍後";
-    return `<li class="queue-entry ${state}">
-      <span class="queue-index">${String(entryIndex + 1).padStart(2, "0")}</span>
-      <span class="queue-copy"><strong>${escapeHtml(entry.prompt.text)}</strong><small>${escapeHtml(compactReading(entryIndex))}</small></span>
-      <span class="queue-state">${stateLabel}</span>
-    </li>`;
-  }).join("");
-
-  return `<div class="utterance-overview">
-      <div><span>本句</span><strong>${escapeHtml(utteranceText())}</strong></div>
-      <small>${escapeHtml(templateDescription())}</small>
-    </div>
-    <div class="exercise-layout">
-      <article class="active-entry${product.session.traces.at(-1)?.outcome === "incorrect" ? " has-error" : ""}">
-        <div class="active-entry-head">
-          <span>句內第 ${String(activeIndex + 1).padStart(2, "0")} 詞</span>
-          <strong>${activeState}</strong>
-        </div>
-        <div class="active-han">${escapeHtml(active.prompt.text)}</div>
-        <div class="active-reading" aria-label="目前詞的完整注音">${renderReading(activeIndex)}</div>
-        ${latestInputMarkup()}
-      </article>
-      <aside class="entry-queue-wrap" aria-label="句內詞序">
-        <div class="queue-heading"><span>句內詞序</span><strong>${product.round.exercise.entries.length}</strong></div>
-        <ol class="entry-queue">${queue}</ol>
-      </aside>
-    </div>`;
+  if (!showPhysicalHint || current === undefined) {
+    feedback.textContent = "";
+    return;
+  }
+  const code = reverseBindings.get(current.tokenId);
+  const key = code === undefined ? "—" : physicalKeyLabel(code);
+  feedback.classList.add("hint");
+  feedback.innerHTML = `${escapeHtml(tokenLabel(current.tokenId))}<span>${escapeHtml(key)}</span>`;
 }
 
-function feedbackMarkup(): string {
-  if (imeWarning) {
-    return `<div class="input-feedback warning" aria-live="assertive">
-      <span class="feedback-label">輸入法</span>
-      <strong>偵測到組字，請先切換到英文鍵盤。</strong>
-      <button id="clear-warning" type="button">已切換，清除提示</button>
-    </div>`;
-  }
-  if (product.summary !== null) {
-    const message = product.round.kind === "evaluation"
-      ? "結果已獨立保存，不會改變下一句的出題權重。"
-      : "量測、常用度階段與最近句型已保存。";
-    return `<div class="input-feedback complete" aria-live="polite"><span class="feedback-label">完成</span><strong>${message}</strong></div>`;
-  }
+function updatePracticeState(): void {
+  const stage = requireElement<HTMLElement>("#practice-stage");
   const latest = product.session.traces.at(-1);
-  if (latest?.outcome === "incorrect") {
-    return `<div class="input-feedback error" aria-live="assertive"><span class="feedback-label">錯鍵</span><strong>游標未移動，直接重按 ${escapeHtml(tokenLabel(latest.expectedToken))}。</strong></div>`;
+
+  for (const glyph of stage.querySelectorAll<HTMLElement>(".practice-glyph")) {
+    const tokenStart = Number(glyph.dataset.tokenStart);
+    const tokenEnd = Number(glyph.dataset.tokenEnd);
+    applyVisualState(glyph, glyphVisualState(tokenStart, tokenEnd));
   }
-  if (latest?.outcome === "unmapped") {
-    return '<div class="input-feedback quiet" aria-live="polite"><span class="feedback-label">未映射</span><strong>這次輸入已忽略。</strong></div>';
+
+  for (const token of stage.querySelectorAll<HTMLElement>(".reading-token")) {
+    const position = Number(token.dataset.position);
+    const state = tokenVisualState(position);
+    applyVisualState(token, state);
+    const hasError = state === "current"
+      && latest?.position === position
+      && latest.outcome === "incorrect";
+    token.classList.toggle("error", hasError);
   }
-  const current = product.session.targets[product.session.position];
-  if (current === undefined) return "";
-  const expectedCode = reverseBindings.get(current.tokenId) ?? "unmapped";
-  const key = showPhysicalHint
-    ? ` · 實體鍵 ${escapeHtml(physicalKeyLabel(expectedCode))}`
-    : "";
-  return `<div class="input-feedback" aria-live="polite"><span class="feedback-label">下一鍵</span><strong>${escapeHtml(tokenLabel(current.tokenId))}${key}</strong></div>`;
+
+  requireElement<HTMLElement>("#progress-fill").style.width = `${currentProgressPercent()}%`;
+  requireElement<HTMLElement>("#progress-count").textContent =
+    `${product.session.position} / ${product.session.targets.length}`;
+  updatePracticeFeedback();
 }
 
-function metric(label: string, value: string, detail: string): string {
-  return `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(detail)}</small></div>`;
+function updateTopbar(): void {
+  const status = requireElement<HTMLElement>("#round-status");
+  if (previousResult !== null) {
+    const latency = previousResult.cleanLatencyMedianMs === null
+      ? ""
+      : ` · ${Math.round(previousResult.cleanLatencyMedianMs)} ms`;
+    status.setAttribute("aria-label", "上一句結果");
+    status.innerHTML = `<span>上一句</span><strong>${accuracyLabel(previousResult.attempts, previousResult.errors)}${latency}</strong>`;
+    return;
+  }
+  const { attempts, errors } = mappedRoundCounts();
+  status.setAttribute("aria-label", `第 ${currentRoundNumber()} 句，目前正確率 ${accuracyLabel(attempts, errors)}`);
+  status.innerHTML = `<span>${currentRoundNumber()}</span><strong>${accuracyLabel(attempts, errors)}</strong>`;
 }
 
-function renderSummary(): string {
-  const summary = product.summary;
-  if (summary === null) return "";
-  const accuracy = summary.attempts === 0
-    ? "—"
-    : `${Math.round(((summary.attempts - summary.errors) / summary.attempts) * 100)}%`;
-  const latestPilot = pilotHistory.records.at(-1);
-  const median = latestPilot?.roundNumber === completedRoundCount()
-    && latestPilot.cleanLatencyMedianMs !== null
-    ? `${Math.round(latestPilot.cleanLatencyMedianMs)} ms`
-    : "—";
-  const title = summary.kind === "evaluation" ? "保留語句檢查完成" : "這一句完成了";
-  const copy = summary.kind === "evaluation"
-    ? "這份結果只觀察保留詞表現，不回灌練習權重。"
-    : `下一句仍以常用度階段 ${product.progress.selection.stage} 為主，錯誤與慢速只做有限加權。`;
-  return `<section class="completion-card" aria-labelledby="completion-title">
-    <div class="completion-copy">
-      <p class="eyebrow">Round ${String(completedRoundCount()).padStart(2, "0")}</p>
-      <h2 id="completion-title">${title}</h2>
-      <p>${copy}</p>
-    </div>
-    <div class="summary-metrics">
-      ${metric("正確率", accuracy, `${summary.errors} 次錯誤`)}
-      ${metric("按鍵嘗試", String(summary.attempts), "所有已映射按鍵")}
-      ${metric("乾淨中位時間", median, `${summary.timingSamples} 個合格樣本`)}
-    </div>
-    <button id="next-round" class="primary next-round" type="button">開始下一句 <span aria-hidden="true">→</span></button>
-  </section>`;
+function clearPreviousResult(): void {
+  previousResult = null;
+  if (previousResultTimer !== null) window.clearTimeout(previousResultTimer);
+  previousResultTimer = null;
+  updateTopbar();
+}
+
+function showPreviousResult(record: PilotRoundRecord): void {
+  previousResult = record;
+  if (previousResultTimer !== null) window.clearTimeout(previousResultTimer);
+  updateTopbar();
+  previousResultTimer = window.setTimeout(() => {
+    previousResult = null;
+    previousResultTimer = null;
+    updateTopbar();
+  }, 1400);
 }
 
 function historyPhaseLabel(record: PilotRoundRecord): string {
@@ -364,11 +430,6 @@ function historyFocusLabel(record: PilotRoundRecord): string {
   if (record.focusTokenId === null) return "文法語句";
   const evidence = record.focusEvidence === "timed" ? "時間＋正確" : "正確率";
   return `${tokenLabel(record.focusTokenId)} · ${evidence}`;
-}
-
-function historyAccuracy(record: PilotRoundRecord): string {
-  if (record.attempts === 0) return "—";
-  return `${Math.round(((record.attempts - record.errors) / record.attempts) * 100)}%`;
 }
 
 function historyCompletedAt(value: string): string {
@@ -384,44 +445,6 @@ function historyCompletedAt(value: string): string {
     });
 }
 
-function renderPilotHistory(): string {
-  const records = [...pilotHistory.records].reverse();
-  const evaluationCount = records.filter((record) => record.kind === "evaluation").length;
-  const rows = records.map((record) => {
-    const latency = record.cleanLatencyMedianMs === null
-      ? "—"
-      : `${Math.round(record.cleanLatencyMedianMs)} ms`;
-    return `<details class="history-record ${record.kind}">
-      <summary>
-        <span class="history-round">${String(record.roundNumber).padStart(2, "0")}</span>
-        <span class="history-kind">${record.kind === "evaluation" ? "評估" : "練習"}</span>
-        <span class="history-focus"><small>${historyPhaseLabel(record)}</small><strong>${escapeHtml(historyFocusLabel(record))}</strong></span>
-        <span class="history-stat"><small>正確率</small><strong>${historyAccuracy(record)}</strong></span>
-        <span class="history-stat"><small>中位時間</small><strong>${latency}</strong></span>
-        <span class="history-date">${escapeHtml(historyCompletedAt(record.completedAt))}</span>
-        <span class="history-open" aria-hidden="true">＋</span>
-      </summary>
-      <div class="history-detail">
-        <span><small>錯誤 / 嘗試</small><strong>${record.errors} / ${record.attempts}</strong></span>
-        <span><small>乾淨樣本</small><strong>${record.timingSamples}</strong></span>
-        <span class="history-entry-list"><small>句內詞 ID</small><strong>${escapeHtml(record.entryIds.join(" · "))}</strong></span>
-      </div>
-    </details>`;
-  }).join("");
-
-  return `<section class="history-section" aria-labelledby="pilot-history-title">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Local pilot</p>
-        <h2 id="pilot-history-title">練習紀錄</h2>
-        <p>保留最近 ${pilotHistory.records.length} 輪，其中 ${evaluationCount} 輪為保留語句評估。這些數字是觀察證據，不是熟練度分數。</p>
-      </div>
-      <button id="download-pilot" class="secondary" type="button">下載 Pilot JSON</button>
-    </div>
-    <div class="history-list">${rows || '<div class="history-empty"><strong>還沒有完成紀錄</strong><span>完成第一句後，這裡會顯示正確率與乾淨中位時間。</span></div>'}</div>
-  </section>`;
-}
-
 function traceRows(): string {
   return product.session.traces.slice(-60).reverse().map((trace) => `<tr>
     <td>${trace.sequence}</td>
@@ -434,6 +457,103 @@ function traceRows(): string {
   </tr>`).join("");
 }
 
+function renderHistoryRows(): string {
+  const records = [...pilotHistory.records].reverse();
+  if (records.length === 0) {
+    return '<div class="history-empty">完成第一句後，這裡會保留最近的正確率與乾淨中位時間。</div>';
+  }
+  return records.map((record) => {
+    const latency = record.cleanLatencyMedianMs === null
+      ? "—"
+      : `${Math.round(record.cleanLatencyMedianMs)} ms`;
+    return `<details class="history-record ${record.kind}">
+      <summary>
+        <span class="history-round">${String(record.roundNumber).padStart(2, "0")}</span>
+        <span class="history-main"><strong>${accuracyLabel(record.attempts, record.errors)}</strong><small>${historyPhaseLabel(record)} · ${escapeHtml(historyFocusLabel(record))}</small></span>
+        <span class="history-latency">${latency}</span>
+        <span class="history-date">${escapeHtml(historyCompletedAt(record.completedAt))}</span>
+        <span class="history-plus" aria-hidden="true">＋</span>
+      </summary>
+      <div class="history-detail">
+        <span><small>類型</small><strong>${record.kind === "evaluation" ? "評估" : "練習"}</strong></span>
+        <span><small>錯誤 / 嘗試</small><strong>${record.errors} / ${record.attempts}</strong></span>
+        <span><small>乾淨樣本</small><strong>${record.timingSamples}</strong></span>
+        <span><small>句內詞 ID</small><strong>${escapeHtml(record.entryIds.join(" · "))}</strong></span>
+      </div>
+    </details>`;
+  }).join("");
+}
+
+function renderInformationPanel(): void {
+  const { attempts, errors } = mappedRoundCounts();
+  const content = requireElement<HTMLElement>("#information-content");
+  content.innerHTML = `
+    <section class="panel-section current-round-section">
+      <div class="panel-heading"><span>Current round</span><h3>${escapeHtml(roundKindLabel())}</h3></div>
+      <dl class="fact-grid">
+        <div><dt>輪次</dt><dd>${currentRoundNumber()}</dd></div>
+        <div><dt>目前正確率</dt><dd>${accuracyLabel(attempts, errors)}</dd></div>
+        <div><dt>策略</dt><dd>${escapeHtml(phaseLabel())}</dd></div>
+        <div><dt>選題</dt><dd>${escapeHtml(focusDescription())}</dd></div>
+        <div><dt>句型</dt><dd>${escapeHtml(templateDescription())}</dd></div>
+        <div><dt>輸入</dt><dd>英文鍵盤 · Space 一聲</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel-section">
+      <div class="panel-heading"><span>Display</span><h3>顯示</h3></div>
+      <label class="setting-row" for="toggle-physical-hint">
+        <span><strong>實體鍵提示</strong><small>只顯示目前注音對應的下一個實體鍵。</small></span>
+        <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
+      </label>
+    </section>
+
+    <section class="panel-section">
+      <div class="panel-heading history-heading">
+        <div><span>Local history</span><h3>練習紀錄</h3></div>
+        <button id="download-pilot" class="text-button" type="button">下載 Pilot JSON</button>
+      </div>
+      <div class="history-list">${renderHistoryRows()}</div>
+    </section>
+
+    <section class="panel-section developer-section">
+      <details class="developer-tools">
+        <summary>開發與量測診斷</summary>
+        <div class="developer-tools-body">
+          <div class="developer-copy">
+            <strong>Raw trace</strong>
+            <p>原始事件只用於檢查量測與出題權重，不代表學習分數。</p>
+            <button id="download-round" class="text-button" type="button">下載本句診斷</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>context</th><th>expected</th><th>actual</th><th>code</th><th>outcome</th><th>ms</th></tr></thead>
+              <tbody>${traceRows()}</tbody>
+            </table>
+          </div>
+          <button id="reset-progress" class="danger-button" type="button">清除所有本機進度</button>
+        </div>
+      </details>
+    </section>`;
+
+  content.querySelector<HTMLInputElement>("#toggle-physical-hint")?.addEventListener("change", (event) => {
+    if (!(event.currentTarget instanceof HTMLInputElement)) return;
+    showPhysicalHint = event.currentTarget.checked;
+    updatePracticeState();
+  });
+  content.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
+  content.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
+  content.querySelector<HTMLButtonElement>("#reset-progress")?.addEventListener("click", resetProgress);
+}
+
+function openInformationPanel(): void {
+  const dialog = requireElement<HTMLDialogElement>("#information-dialog");
+  if (dialog.open) return;
+  renderInformationPanel();
+  dialog.showModal();
+  requireElement<HTMLButtonElement>(".dialog-close").focus({ preventScroll: true });
+}
+
 function persistProgress(): void {
   try {
     saveLocalProductProgress(localStorage, product.progress);
@@ -442,6 +562,7 @@ function persistProgress(): void {
   } catch {
     storageWarning = "無法寫入 localStorage；請勿關閉頁面，否則本輪進度可能遺失。";
   }
+  renderNotices();
 }
 
 function downloadJson(filename: string, source: string): void {
@@ -471,114 +592,12 @@ function downloadPilotExport(): void {
   );
 }
 
-function renderNotices(): string {
-  return [
-    recoveredFromInvalidState
-      ? '<div class="notice">舊版或無效的本機進度已刪除，已從新的進度世代重新開始。</div>'
-      : "",
-    recoveredPilotHistory
-      ? '<div class="notice">舊版或無效的 Pilot 歷史已刪除；目前世代可由有效完成摘要補齊。</div>'
-      : "",
-    storageWarning
-      ? `<div class="notice warning">${escapeHtml(storageWarning)}</div>`
-      : "",
-  ].join("");
-}
-
-function render(): void {
-  const progressPercent = currentProgressPercent();
-  root.innerHTML = `
-    <main class="shell">
-      <header class="app-bar">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">ㄅ</span>
-          <div>
-            <h1>注音鍵位練習</h1>
-            <p>看完整語句與讀音，建立實體鍵位記憶。</p>
-          </div>
-        </div>
-        <div class="app-progress" aria-label="本機進度">
-          <span>已完成練習</span>
-          <strong>${product.progress.practiceRoundsCompleted}</strong>
-          <small>句</small>
-        </div>
-      </header>
-
-      ${renderNotices()}
-
-      <section class="session-header" aria-label="本句資訊">
-        <div class="round-identity">
-          <span>Round ${String(currentRoundNumber()).padStart(2, "0")}</span>
-          <h2>${roundKindLabel()}</h2>
-        </div>
-        <dl class="session-facts">
-          <div><dt>策略</dt><dd>${phaseLabel()}</dd></div>
-          <div><dt>選題</dt><dd>${escapeHtml(focusDescription())}</dd></div>
-          <div><dt>句型</dt><dd>${escapeHtml(templateDescription())}</dd></div>
-          <div><dt>輸入</dt><dd>英文鍵盤 · Space 一聲</dd></div>
-        </dl>
-        <button id="toggle-hint" class="hint-toggle" type="button" aria-pressed="${showPhysicalHint}">${showPhysicalHint ? "隱藏" : "顯示"}鍵位提示</button>
-      </section>
-
-      <section class="practice-surface" aria-label="注音語句練習區">
-        <div class="practice-progress">
-          <span>${product.session.position} / ${product.session.targets.length} 個注音</span>
-          <strong>${progressPercent}%</strong>
-        </div>
-        <div class="progress-track" aria-hidden="true"><span style="width:${progressPercent}%"></span></div>
-        ${feedbackMarkup()}
-        ${renderExercise()}
-      </section>
-
-      ${renderSummary()}
-      ${renderPilotHistory()}
-
-      <footer class="utility-footer">
-        <details class="developer-tools">
-          <summary>開發與量測診斷</summary>
-          <div class="developer-tools-body">
-            <div class="developer-tools-copy">
-              <strong>Raw trace</strong>
-              <p>原始事件只用於檢查量測與出題權重，不代表學習分數。</p>
-              <button id="download-round" type="button">下載本句診斷</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>#</th><th>context</th><th>expected</th><th>actual</th><th>code</th><th>outcome</th><th>ms</th></tr></thead>
-                <tbody>${traceRows()}</tbody>
-              </table>
-            </div>
-          </div>
-        </details>
-        <button id="reset-progress" class="danger ghost" type="button">清除所有本機進度</button>
-      </footer>
-    </main>`;
-
-  document.querySelector<HTMLButtonElement>("#next-round")?.addEventListener("click", () => {
-    product = startNextProductRound(environment, product, performance.now());
-    imeWarning = false;
-    capture.value = "";
-    render();
-  });
-  document.querySelector<HTMLButtonElement>("#toggle-hint")?.addEventListener("click", () => {
-    showPhysicalHint = !showPhysicalHint;
-    render();
-  });
-  document.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
-  document.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
-  document.querySelector<HTMLButtonElement>("#clear-warning")?.addEventListener("click", () => {
-    imeWarning = false;
-    render();
-  });
-  document.querySelector<HTMLButtonElement>("#reset-progress")?.addEventListener("click", resetProgress);
-  focusCapture();
-}
-
 function resetProgress(): void {
   const confirmed = window.confirm(
     "這會清除這台瀏覽器中的所有練習、評估與 Pilot 歷史，確定繼續嗎？",
   );
   if (!confirmed) return;
+
   let canPersist = true;
   try {
     clearLocalProductProgress(localStorage);
@@ -588,6 +607,7 @@ function resetProgress(): void {
     canPersist = false;
     storageWarning = "瀏覽器無法清除舊進度，但本頁已重新開始。";
   }
+
   const progress = createFreshProgressForEnvironment(
     environment,
     newSeed(),
@@ -598,16 +618,40 @@ function resetProgress(): void {
   pilotHistory = migratePilotHistory(progress);
   recoveredFromInvalidState = false;
   recoveredPilotHistory = false;
+  clearPreviousResult();
   if (canPersist) persistProgress();
   imeWarning = false;
   capture.value = "";
-  render();
+  requireElement<HTMLDialogElement>("#information-dialog").close();
+  renderNotices();
+  mountPracticeRound(true);
+  updateTopbar();
+}
+
+function completeRoundAndAdvance(): void {
+  const summary = product.summary;
+  if (summary === null) return;
+  const roundNumber = completedRoundCount();
+  const record = createPilotRoundRecord(
+    roundNumber,
+    product.round,
+    summary,
+    product.session.traces,
+    environment.measurementPolicy,
+  );
+  pilotHistory = appendPilotRoundRecord(pilotHistory, record);
+  persistProgress();
+  product = startNextProductRound(environment, product, performance.now());
+  imeWarning = false;
+  capture.value = "";
+  mountPracticeRound(true);
+  showPreviousResult(record);
 }
 
 capture.addEventListener("compositionstart", () => {
   compositionActive = true;
   imeWarning = true;
-  render();
+  updatePracticeState();
 });
 
 capture.addEventListener("compositionend", () => {
@@ -620,42 +664,67 @@ capture.addEventListener("input", (event) => {
 });
 
 capture.addEventListener("keydown", (event) => {
-  if (product.summary !== null) return;
+  if (imeWarning || requireElement<HTMLDialogElement>("#information-dialog").open) {
+    event.preventDefault();
+    return;
+  }
   const input = keyboardEventToInput(
     event,
     STANDARD_BOPOMOFO_LAYOUT,
     performance.now(),
     compositionActive,
   );
-  if (input.composing) imeWarning = true;
-  if ((event.code === "Space" || event.code === "Tab") && !input.composing) {
-    event.preventDefault();
+  if (input.composing) {
+    imeWarning = true;
+    updatePracticeState();
+    return;
   }
-  const before = product.summary;
+  if (event.code === "Space" || event.code === "Tab") event.preventDefault();
+  const beforeSummary = product.summary;
+  const beforeTraceCount = product.session.traces.length;
   product = applyProductInput(
     environment,
     product,
     input,
     new Date().toISOString(),
   );
-  if (before === null && product.summary !== null) {
-    const roundNumber = completedRoundCount();
-    pilotHistory = appendPilotRoundRecord(
-      pilotHistory,
-      createPilotRoundRecord(
-        roundNumber,
-        product.round,
-        product.summary,
-        product.session.traces,
-        environment.measurementPolicy,
-      ),
-    );
-    persistProgress();
+  const latest = product.session.traces.at(-1);
+  if (
+    previousResult !== null
+    && product.session.traces.length > beforeTraceCount
+    && latest?.outcome === "correct"
+  ) {
+    clearPreviousResult();
   }
-  render();
+  if (beforeSummary === null && product.summary !== null) {
+    completeRoundAndAdvance();
+    return;
+  }
+  updatePracticeState();
+  updateTopbar();
 });
 
-document.addEventListener("click", focusCapture);
+document.addEventListener("keydown", (event) => {
+  if (event.code !== "Escape") return;
+  const dialog = requireElement<HTMLDialogElement>("#information-dialog");
+  if (dialog.open) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if (imeWarning) {
+    imeWarning = false;
+    capture.value = "";
+    updatePracticeState();
+    focusCapture();
+    return;
+  }
+  openInformationPanel();
+}, { capture: true });
+
 window.addEventListener("focus", focusCapture);
+
+mountShell();
+renderNotices();
+mountPracticeRound();
+updateTopbar();
 if (loadedProgress === null) persistProgress();
-render();
+focusCapture();

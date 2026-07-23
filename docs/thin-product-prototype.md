@@ -19,9 +19,10 @@ It remains a single-page Vanilla TypeScript + Vite product with no account, back
 9. Append eligible practice observations once; evaluation remains isolated.
 10. Update frequency-stage counters and recent utterance/template history once.
 11. Save progress, Pilot history, and a compact summary.
-12. Reproduce the same next utterance after reload.
+12. Immediately create the deterministic next utterance after a completed final token.
+13. Reproduce that same next utterance after reload.
 
-The browser never independently selects several words and concatenates them. One exercise is the ordered entry sequence of one grammar candidate.
+The browser never independently selects several words and concatenates them. One exercise is the ordered entry sequence of one grammar candidate. The display joins those entries into one continuous utterance and does not expose internal word boundaries as interaction units.
 
 ## Selection boundary
 
@@ -49,6 +50,8 @@ All active product entries require reviewed grammar annotations. Candidate compo
 - fallback reasons.
 
 Fallback order is complete template, standalone utterance, standalone lexical prompt, then explicit failure. There is no random-word fallback.
+
+The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain indivisible line-break units and add no visible word spacing or interaction states. At runtime, the browser measures those units at the actual rendered font and available width, then a deterministic dynamic-programming planner assigns contiguous entry ranges to explicit lines. The cost minimizes ragged unused width and strongly penalizes a short single-entry final orphan whenever another legal distribution exists.
 
 ## Persistence boundary
 
@@ -90,30 +93,43 @@ After every five practice utterances, evaluation:
 - records attempts, errors, and clean timing for the round summary;
 - does not update cumulative measurements, frequency stage, recent utterances, recent templates, or curriculum diagnostics.
 
-This is an observation adapter, not a validated learning assessment.
+This is an observation adapter, not a validated learning assessment. Evaluation identity is available in the information drawer and local history without interrupting the continuous keyboard flow.
 
 ## Browser behavior
 
-The page keeps the hidden textarea capture target so real IME composition events remain observable. Space and Tab are prevented from moving the page while active input is expected.
+The page keeps the hidden textarea capture target so real IME composition events remain observable. Space and Tab are prevented from moving the page while active practice input is expected.
 
 The primary UI shows:
 
-- the complete utterance before its individual words;
+- one continuous complete utterance with no visible word or catalog-entry separation;
+- one fixed visual step per Chinese character, independent of reading length;
+- one centered Bopomofo slot beneath each character with room for four separate symbols including the tone, rather than compressed token spacing;
+- measured long-sentence distribution only between invisible entry groups, with explicit stable-left-edge line wrappers and orphan-line avoidance;
+- completed, current, upcoming, and wrong-token states;
+- optional next physical-key guidance;
+- compact current-round accuracy and overall utterance progress;
+- a blocking, keyboard-dismissable IME warning that overlays the unchanged practice geometry;
+- immediate save-and-advance after the final correct token.
+
+`Escape` opens a native information surface that appears as a right-side drawer on desktop and a bottom sheet on narrow screens. It contains:
+
 - current frequency stage and selection boundary;
 - sentence-template or standalone type;
-- active word and complete Bopomofo reading;
-- current token and optional physical-key hint;
-- overall utterance progress;
-- completion accuracy, mapped attempts, and clean timing count;
-- local history and Pilot export;
-- raw diagnostics under a collapsed disclosure.
+- optional physical-key hint control;
+- local Pilot history and deterministic Pilot export;
+- raw diagnostics under a collapsed disclosure;
+- destructive local reset.
+
+There is no completion card or next-round button. Key repeat remains an ignored interaction outcome, so holding the final key cannot become accepted input in the next round. The previous round's compact result disappears after 1.4 seconds or the first correct input of the next sentence, whichever happens first.
+
+Within a round, the browser mounts the sentence once and updates existing glyph/token classes, feedback, and progress in place. Initial mount, container resize, and final font availability may reparent those same entry nodes into newly planned line wrappers; the glyph and token nodes, input progress, and sentence identity are preserved.
 
 No UI element labels error/timing evidence as confidence, mastery, or learning effectiveness.
 
 ## Known limitations
 
-- The current catalog and grammar review are small and provisional.
-- Grammar templates ensure declared structure, not semantic naturalness.
-- Coarse frequency bands remain until reviewed NAER commonness evidence is imported.
+- The current catalog and grammar review are provisional.
+- Grammar structure does not establish semantic naturalness.
 - Reload resets unfinished-round timing traces, although completed current-generation progress and deterministic next selection persist.
 - There is no fatigue model, timing-outlier policy, recall mode, alternate layout, account, or cross-device synchronization.
+- Character-to-syllable presentation requires exact reviewed surface alignment. A mismatch fails closed with its entry identity instead of silently joining several characters to one syllable.
