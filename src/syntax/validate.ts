@@ -218,6 +218,14 @@ function validateRule(rule: ProductionRule, errors: GrammarValidationError[]): v
     }
     orderIds.add(order.id);
   }
+  if (rule.constraints.length > 0) {
+    errors.push(error(
+      "invalid-constraint",
+      "non-empty production constraints are not executable in mandarin-formal-grammar-v1",
+      rule.id,
+      `rules.${rule.id}.constraints`,
+    ));
+  }
   for (const [index, constraint] of rule.constraints.entries()) {
     let constraintKeys: readonly string[];
     switch (constraint.kind) {
