@@ -1,0 +1,238 @@
+name: balanced-line-layout-gate
+
+on:
+  push:
+    branches:
+      - agent/ultra-minimal-practice-ui
+
+permissions:
+  contents: write
+
+concurrency:
+  group: balanced-line-layout-gate
+  cancel-in-progress: false
+
+jobs:
+  implement-and-validate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: agent/ultra-minimal-practice-ui
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Integrate main and implement balanced layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git merge --no-edit origin/main
+
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              file = Path(path)
+              source = file.read_text(encoding="utf-8")
+              count = source.count(old)
+              if count != 1:
+                  raise SystemExit(f"{path}: expected one match, found {count}: {old[:80]!r}")
+              file.write_text(source.replace(old, new), encoding="utf-8", newline="\n")
+
+          replace_once(
+              "src/app/main.ts",
+              '''import {
+            buildPracticeEntries,
+            continuousExerciseText,
+          } from "./presentation-model.js";''',
+              '''import {
+            buildPracticeEntries,
+            continuousExerciseText,
+            planBalancedPracticeLines,
+          } from "./presentation-model.js";''',
+          )
+
+          replace_once(
+              "src/app/main.ts",
+              '''let previousResult: PilotRoundRecord | null = null;
+          let previousResultTimer: number | null = null;''',
+              '''let previousResult: PilotRoundRecord | null = null;
+          let previousResultTimer: number | null = null;
+          let practiceLayoutObserver: ResizeObserver | null = null;
+          let practiceLayoutFrame: number | null = null;''',
+          )
+
+          layout_functions = r'''
+          function layoutPracticeRunway(): void {
+            const runway = document.querySelector<HTMLElement>(".utterance-runway");
+            const center = runway?.closest<HTMLElement>(".practice-center");
+            if (runway === null || center === null) return;
+
+            const entries = [...runway.querySelectorAll<HTMLElement>(".practice-entry")]
+              .sort((left, right) =>
+                Number(left.dataset.entryIndex) - Number(right.dataset.entryIndex)
+              );
+            if (entries.length === 0) return;
+
+            runway.style.removeProperty("width");
+            runway.replaceChildren(...entries);
+            const maxLineWidth = center.clientWidth;
+            const entryWidths = entries.map((entry) => entry.getBoundingClientRect().width);
+            const lines = planBalancedPracticeLines(entryWidths, maxLineWidth);
+            const plannedWidth = Math.min(
+              maxLineWidth,
+              Math.max(...lines.map((line) => line.width)),
+            );
+            runway.style.width = `${Math.ceil(plannedWidth)}px`;
+            runway.dataset.lineCount = String(lines.length);
+
+            const fragment = document.createDocumentFragment();
+            for (const line of lines) {
+              const lineElement = document.createElement("div");
+              lineElement.className = "practice-line";
+              lineElement.setAttribute("role", "presentation");
+              lineElement.append(
+                ...entries.slice(line.startEntryIndex, line.endEntryIndex),
+              );
+              fragment.append(lineElement);
+            }
+            runway.replaceChildren(fragment);
+          }
+
+          function schedulePracticeLayout(): void {
+            if (practiceLayoutFrame !== null) {
+              window.cancelAnimationFrame(practiceLayoutFrame);
+            }
+            practiceLayoutFrame = window.requestAnimationFrame(() => {
+              practiceLayoutFrame = null;
+              layoutPracticeRunway();
+            });
+          }
+
+          function observePracticeLayout(): void {
+            practiceLayoutObserver?.disconnect();
+            practiceLayoutObserver = null;
+            if (practiceLayoutFrame !== null) {
+              window.cancelAnimationFrame(practiceLayoutFrame);
+              practiceLayoutFrame = null;
+            }
+            layoutPracticeRunway();
+
+            const center = document.querySelector<HTMLElement>(".practice-center");
+            if (center === null || typeof ResizeObserver === "undefined") return;
+            practiceLayoutObserver = new ResizeObserver(schedulePracticeLayout);
+            practiceLayoutObserver.observe(center);
+          }
+
+          '''
+          replace_once(
+              "src/app/main.ts",
+              "function mountPracticeRound(animateRound = false): void {",
+              layout_functions + "function mountPracticeRound(animateRound = false): void {",
+          )
+
+          replace_once(
+              "src/app/main.ts",
+              '''  updatePracticeState();
+
+            if (!animateRound) return;''',
+              '''  updatePracticeState();
+            observePracticeLayout();
+
+            if (!animateRound) return;''',
+          )
+
+          replace_once(
+              "src/app/utterance.css",
+              '''  display: block;
+            width: max-content;
+            max-width: 100%;
+            margin-inline: auto;
+            margin-bottom: -26px;
+            color: var(--ink-upcoming);
+            font-variant-numeric: tabular-nums;
+            text-align: left;
+            text-wrap: balance;
+            word-break: keep-all;''',
+              '''  display: grid;
+            width: max-content;
+            max-width: 100%;
+            margin-inline: auto;
+            gap: 26px;
+            color: var(--ink-upcoming);
+            font-variant-numeric: tabular-nums;
+            text-align: left;
+            word-break: keep-all;''',
+          )
+
+          replace_once(
+              "src/app/utterance.css",
+              '''.practice-entry {
+            display: inline-flex;
+            margin-bottom: 26px;
+            align-items: flex-start;
+            vertical-align: top;
+            white-space: nowrap;
+          }''',
+              '''.practice-line {
+            display: flex;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: flex-start;
+          }
+
+          .practice-entry {
+            display: inline-flex;
+            align-items: flex-start;
+            vertical-align: top;
+            white-space: nowrap;
+          }''',
+          )
+
+          replace_once(
+              "src/app/utterance.css",
+              '''    --reading-size: clamp(14.5px, 4vw, 16px);
+              margin-bottom: -20px;
+            }
+            .practice-entry { margin-bottom: 20px; }''',
+              '''    --reading-size: clamp(14.5px, 4vw, 16px);
+              gap: 20px;
+            }''',
+          )
+
+          replace_once(
+              "docs/pilot-validation.md",
+              "Invisible entry wrappers define legal line-break opportunities so a word is not split across desktop lines.",
+              "Invisible entry wrappers define indivisible line-break units. The browser measures those units and distributes them across explicit lines to minimize raggedness and avoid a short final orphan whenever another legal split exists.",
+          )
+
+          replace_once(
+              "docs/pilot-validation.md",
+              "including a long sentence that wraps only between invisible entry groups and keeps every wrapped line on one stable left edge.",
+              "including a long sentence whose measured entry-level planner avoids a short final orphan, wraps only between invisible entry groups, and keeps every wrapped line on one stable left edge.",
+          )
+
+          replace_once(
+              "docs/thin-product-prototype.md",
+              "Invisible entry wrappers remain only as legal line-break units; they do not add visual spacing or interaction states.",
+              "Invisible entry wrappers remain indivisible line-break units. A measured dynamic-programming planner assigns them to explicit lines, minimizing raggedness and penalizing a short single-entry final line without adding visible word spacing or interaction states.",
+          )
+          PY
+
+          git diff --check
+          npm ci --include=dev --ignore-scripts
+          npm run typecheck
+          npx vitest run tests/app/presentation-model.test.ts tests/app/keyboard-adapter.test.ts --reporter=verbose
+          npm run catalog:validate
+          npm run build
+          git add src/app/main.ts src/app/utterance.css docs/pilot-validation.md docs/thin-product-prototype.md tests/relations/partition/policy.test.ts
+          git commit -m "Distribute practice entries across balanced lines"
+          git push origin HEAD:agent/ultra-minimal-practice-ui
