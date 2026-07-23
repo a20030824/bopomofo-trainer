@@ -48,6 +48,19 @@ jobs:
         with:
           name: typecheck-failure-log
           path: typecheck.log
+      - name: Capture regenerated active-catalog lock
+        shell: bash
+        run: |
+          sha256sum data/commonness/naer-1141208-active-catalog-rows.json | tee active-catalog.sha256
+          git diff -- data/commonness/naer-1141208-active-catalog-rows.json > active-catalog.diff
+      - name: Upload regenerated active-catalog lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-active-catalog-lock
+          path: |
+            data/commonness/naer-1141208-active-catalog-rows.json
+            active-catalog.sha256
+            active-catalog.diff
       - name: Fast tests
         id: tests
         shell: bash
