@@ -1,5 +1,6 @@
 import "./style.css";
 import type { TokenId } from "../core/model.js";
+import { createProductBackup, parseProductBackup } from "./backup.js";
 import { createPilotExport } from "../product/pilot-export.js";
 import {
   appendPilotRoundRecord,
@@ -40,6 +41,13 @@ import {
   buildPracticeEntries,
   continuousExerciseText,
 } from "./presentation-model.js";
+import {
+  DEFAULT_SELECTION_TUNING,
+  loadSelectionTuning,
+  policyForSelectionTuning,
+  saveSelectionTuning,
+  type SelectionTuning,
+} from "./selection-tuning.js";
 
 type VisualState = "done" | "current" | "upcoming";
 
@@ -51,11 +59,23 @@ function requireElement<T extends Element>(selector: string): T {
 
 const root = requireElement<HTMLDivElement>("#app");
 const capture = requireElement<HTMLTextAreaElement>("#keyboard-capture");
-const environment = createProductEnvironment({
+const catalogs = {
   practice: PRACTICE_CATALOG,
   evaluation: EVALUATION_CATALOG,
   syntaxProfiles: SYNTAX_PROFILES,
-});
+} as const;
+let selectionTuning: SelectionTuning = DEFAULT_SELECTION_TUNING;
+try {
+  selectionTuning = loadSelectionTuning(localStorage);
+} catch {
+  // Storage may be blocked; defaults still provide a complete local session.
+}
+let environment = createProductEnvironment(
+  catalogs,
+  undefined,
+  undefined,
+  policyForSelectionTuning(selectionTuning),
+);
 
 function newSeed(): string {
   return globalThis.crypto?.randomUUID?.() ?? `local-${Date.now().toString(36)}`;
@@ -104,6 +124,7 @@ let showPhysicalHint = false;
 let previousResult: PilotRoundRecord | null = null;
 let previousResultTimer: number | null = null;
 let inspectionAdvanceCount = 0;
+let panelNotice = "";
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -154,33 +175,6 @@ function currentProgressPercent(): number {
   );
 }
 
-function roundKindLabel(): string {
-  return product.round.kind === "evaluation" ? "保留語句評估" : "常用語句練習";
-}
-
-function phaseLabel(): string {
-  if (product.round.kind === "evaluation") return "只觀察，不回灌";
-  return `常用度階段 ${product.round.selection.stage}`;
-}
-
-function focusDescription(): string {
-  if (product.round.kind === "evaluation") return "保留詞庫 · 不影響出題";
-  return "常用度為主 · 錯誤與慢速有限加權";
-}
-
-function templateDescription(): string {
-  if (product.round.selection.utterance.kind === "formal-syntax") {
-    return "正式句法生成";
-  }
-  const templateId = product.round.selection.utterance.templateId;
-  if (templateId === null) {
-    return product.round.selection.utterance.kind === "standalone-utterance"
-      ? "完整慣用語"
-      : "單詞提示";
-  }
-  return templateId.replaceAll("-", " · ");
-}
-
 function utteranceText(): string {
   const punctuation = product.round.selection.utterance.punctuation ?? "";
   return `${continuousExerciseText(product.round.exercise)}${punctuation}`;
@@ -223,12 +217,9 @@ function mountShell(): void {
       <dialog id="information-dialog" class="information-dialog" aria-labelledby="information-title">
         <div class="dialog-shell">
           <header class="dialog-header">
-            <div>
-              <span>Practice details</span>
-              <h2 id="information-title">練習資訊</h2>
-            </div>
+            <div><h2 id="information-title">設定與資料</h2></div>
             <form method="dialog">
-              <button class="dialog-close" type="submit" aria-label="關閉資訊面板">Esc</button>
+              <button class="dialog-close" type="submit" aria-label="關閉設定面板">Esc</button>
             </form>
           </header>
           <div id="information-content" class="information-content"></div>
@@ -339,7 +330,7 @@ function updatePracticeFeedback(): void {
     feedback.innerHTML = `<div class="ime-blocker" role="alert">
       <span>輸入暫停</span>
       <strong>偵測到中文輸入法</strong>
-      <p>切換到英文鍵盤後按 Esc，繼續目前這一句。</p>
+      <p>切換到英文鍵盤後直接繼續輸入。</p>
     </div>`;
     return;
   }
@@ -428,30 +419,6 @@ function showPreviousResult(record: PilotRoundRecord): void {
   }, 1400);
 }
 
-function historyPhaseLabel(record: PilotRoundRecord): string {
-  if (record.phase === "evaluation") return "保留語句";
-  return record.phase === "coverage" ? "高頻階段" : "擴充詞庫";
-}
-
-function historyFocusLabel(record: PilotRoundRecord): string {
-  if (record.focusTokenId === null) return "文法語句";
-  const evidence = record.focusEvidence === "timed" ? "時間＋正確" : "正確率";
-  return `${tokenLabel(record.focusTokenId)} · ${evidence}`;
-}
-
-function historyCompletedAt(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : date.toLocaleString("zh-TW", {
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-}
-
 function traceRows(): string {
   return product.session.traces.slice(-60).reverse().map((trace) => `<tr>
     <td>${trace.sequence}</td>
@@ -473,21 +440,13 @@ function renderHistoryRows(): string {
     const latency = record.cleanLatencyMedianMs === null
       ? "—"
       : `${Math.round(record.cleanLatencyMedianMs)} ms`;
-    return `<details class="history-record ${record.kind}">
-      <summary>
+    return `<div class="history-record ${record.kind}">
+      <div class="history-summary">
         <span class="history-round">${String(record.roundNumber).padStart(2, "0")}</span>
-        <span class="history-main"><strong>${accuracyLabel(record.attempts, record.errors)}</strong><small>${historyPhaseLabel(record)} · ${escapeHtml(historyFocusLabel(record))}</small></span>
+        <span class="history-main"><strong>${accuracyLabel(record.attempts, record.errors)}</strong></span>
         <span class="history-latency">${latency}</span>
-        <span class="history-date">${escapeHtml(historyCompletedAt(record.completedAt))}</span>
-        <span class="history-plus" aria-hidden="true">＋</span>
-      </summary>
-      <div class="history-detail">
-        <span><small>類型</small><strong>${record.kind === "evaluation" ? "評估" : "練習"}</strong></span>
-        <span><small>錯誤 / 嘗試</small><strong>${record.errors} / ${record.attempts}</strong></span>
-        <span><small>乾淨樣本</small><strong>${record.timingSamples}</strong></span>
-        <span><small>句內詞 ID</small><strong>${escapeHtml(record.entryIds.join(" · "))}</strong></span>
       </div>
-    </details>`;
+    </div>`;
   }).join("");
 }
 
@@ -495,42 +454,58 @@ function renderInformationPanel(): void {
   const { attempts, errors } = mappedRoundCounts();
   const content = requireElement<HTMLElement>("#information-content");
   content.innerHTML = `
-    <section class="panel-section current-round-section">
-      <div class="panel-heading"><span>Current round</span><h3>${escapeHtml(roundKindLabel())}</h3></div>
-      <dl class="fact-grid">
-        <div><dt>輪次</dt><dd>${currentRoundNumber()}</dd></div>
-        <div><dt>目前正確率</dt><dd>${accuracyLabel(attempts, errors)}</dd></div>
-        <div><dt>策略</dt><dd>${escapeHtml(phaseLabel())}</dd></div>
-        <div><dt>選題</dt><dd>${escapeHtml(focusDescription())}</dd></div>
-        <div><dt>句型</dt><dd>${escapeHtml(templateDescription())}</dd></div>
-        <div><dt>輸入</dt><dd>英文鍵盤 · Space 一聲</dd></div>
-      </dl>
+    <section class="panel-section round-overview-section">
+      <div class="round-overview">
+        <span>第 ${currentRoundNumber()} 句</span>
+        <span class="round-accuracy">${accuracyLabel(attempts, errors)}</span>
+      </div>
     </section>
 
     <section class="panel-section">
-      <div class="panel-heading"><span>Display</span><h3>顯示</h3></div>
+      <div class="panel-heading"><h3>顯示</h3></div>
       <label class="setting-row" for="toggle-physical-hint">
-        <span><strong>實體鍵提示</strong><small>只顯示目前注音對應的下一個實體鍵。</small></span>
+        <span><strong>實體鍵提示</strong><small>只顯示下一個按鍵。</small></span>
         <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
       </label>
     </section>
 
     <section class="panel-section">
-      <div class="panel-heading history-heading">
-        <div><span>Local history</span><h3>練習紀錄</h3></div>
-        <button id="download-pilot" class="text-button" type="button">下載 Pilot JSON</button>
+      <div class="panel-heading"><h3>選題權重</h3></div>
+      <div class="tuning-controls">
+        <label class="tuning-row" for="error-influence">
+          <span>錯誤</span><output id="error-influence-value">${Math.round(selectionTuning.errorInfluence * 100)}%</output>
+          <input id="error-influence" type="range" min="0" max="300" step="25" value="${Math.round(selectionTuning.errorInfluence * 100)}" />
+        </label>
+        <label class="tuning-row" for="timing-influence">
+          <span>慢速</span><output id="timing-influence-value">${Math.round(selectionTuning.timingInfluence * 100)}%</output>
+          <input id="timing-influence" type="range" min="0" max="300" step="25" value="${Math.round(selectionTuning.timingInfluence * 100)}" />
+        </label>
       </div>
+    </section>
+
+    <section class="panel-section data-section">
+      <div class="panel-heading"><h3>本機資料</h3></div>
+      ${panelNotice ? `<p class="panel-notice" role="status">${escapeHtml(panelNotice)}</p>` : ""}
+      <div class="data-actions">
+        <button id="download-backup" class="text-button" type="button">匯出存檔</button>
+        <button id="choose-backup" class="text-button" type="button">匯入存檔</button>
+        <input id="import-backup" class="visually-hidden" type="file" accept="application/json,.json" />
+        <a href="https://github.com/a20030824/bopomofo-trainer" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="panel-section history-section">
+      <div class="panel-heading history-heading"><h3>最近紀錄</h3></div>
       <div class="history-list">${renderHistoryRows()}</div>
     </section>
 
     <section class="panel-section developer-section">
       <details class="developer-tools">
-        <summary>開發與量測診斷</summary>
+        <summary>進階</summary>
         <div class="developer-tools-body">
           <div class="developer-copy">
-            <strong>Raw trace</strong>
-            <p>原始事件只用於檢查量測與出題權重，不代表學習分數。</p>
-            <button id="download-round" class="text-button" type="button">下載本句診斷</button>
+            <p>量測診斷與重設。</p>
+            <div class="inline-actions"><button id="download-round" class="text-button" type="button">本句 trace</button><button id="download-pilot" class="text-button" type="button">Pilot JSON</button></div>
           </div>
           <div class="table-wrap">
             <table>
@@ -548,8 +523,14 @@ function renderInformationPanel(): void {
     showPhysicalHint = event.currentTarget.checked;
     updatePracticeState();
   });
+  bindInfluenceControl(content, "error-influence", "error-influence-value", "errorInfluence");
+  bindInfluenceControl(content, "timing-influence", "timing-influence-value", "timingInfluence");
   content.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
   content.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
+  content.querySelector<HTMLButtonElement>("#download-backup")?.addEventListener("click", downloadProductBackup);
+  const backupInput = content.querySelector<HTMLInputElement>("#import-backup");
+  content.querySelector<HTMLButtonElement>("#choose-backup")?.addEventListener("click", () => backupInput?.click());
+  backupInput?.addEventListener("change", () => void importProductBackup(backupInput));
   content.querySelector<HTMLButtonElement>("#reset-progress")?.addEventListener("click", resetProgress);
 }
 
@@ -597,6 +578,88 @@ function downloadPilotExport(): void {
     "bopomofo-pilot.json",
     createPilotExport(environment, product.progress, pilotHistory),
   );
+}
+
+function bindInfluenceControl(
+  content: HTMLElement,
+  inputId: string,
+  outputId: string,
+  key: keyof SelectionTuning,
+): void {
+  const input = content.querySelector<HTMLInputElement>(`#${inputId}`);
+  const output = content.querySelector<HTMLOutputElement>(`#${outputId}`);
+  input?.addEventListener("input", () => {
+    if (output !== null) output.value = `${input.value}%`;
+  });
+  input?.addEventListener("change", () => {
+    selectionTuning = { ...selectionTuning, [key]: Number(input.value) / 100 };
+    environment = createProductEnvironment(
+      catalogs,
+      undefined,
+      undefined,
+      policyForSelectionTuning(selectionTuning),
+    );
+    try {
+      saveSelectionTuning(localStorage, selectionTuning);
+      panelNotice = "權重已更新，下一題生效。";
+    } catch {
+      panelNotice = "權重已套用，但無法保存。";
+    }
+    renderInformationPanel();
+  });
+}
+
+function downloadProductBackup(): void {
+  downloadJson(
+    `bopomofo-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    createProductBackup(product.progress, pilotHistory, selectionTuning),
+  );
+  panelNotice = "存檔已匯出。";
+  renderInformationPanel();
+}
+
+async function importProductBackup(input: HTMLInputElement): Promise<void> {
+  const file = input.files?.[0];
+  if (file === undefined) return;
+  const backup = parseProductBackup(
+    await file.text(),
+    environment,
+    "guided",
+    STANDARD_BOPOMOFO_LAYOUT.id,
+  );
+  if (backup === null) {
+    panelNotice = "無法讀取這份存檔。";
+    renderInformationPanel();
+    return;
+  }
+  if (!window.confirm("匯入會取代目前進度，確定繼續嗎？")) {
+    input.value = "";
+    return;
+  }
+  selectionTuning = backup.selectionTuning;
+  environment = createProductEnvironment(
+    catalogs,
+    undefined,
+    undefined,
+    policyForSelectionTuning(selectionTuning),
+  );
+  product = createProductState(environment, backup.progress, performance.now());
+  pilotHistory = backup.pilotHistory;
+  recoveredFromInvalidState = false;
+  recoveredPilotHistory = false;
+  inspectionAdvanceCount = 0;
+  clearPreviousResult();
+  try {
+    saveSelectionTuning(localStorage, selectionTuning);
+  } catch {
+    // Progress persistence below provides the visible storage warning.
+  }
+  persistProgress();
+  panelNotice = "存檔已匯入。";
+  capture.value = "";
+  mountPracticeRound(true);
+  updateTopbar();
+  renderInformationPanel();
 }
 
 function resetProgress(): void {
@@ -694,7 +757,10 @@ capture.addEventListener("compositionstart", () => {
 
 capture.addEventListener("compositionend", () => {
   compositionActive = false;
+  imeWarning = false;
   capture.value = "";
+  updatePracticeState();
+  focusCapture();
 });
 
 capture.addEventListener("input", (event) => {
@@ -702,7 +768,7 @@ capture.addEventListener("input", (event) => {
 });
 
 capture.addEventListener("keydown", (event) => {
-  if (imeWarning || requireElement<HTMLDialogElement>("#information-dialog").open) {
+  if (requireElement<HTMLDialogElement>("#information-dialog").open) {
     event.preventDefault();
     return;
   }
@@ -716,6 +782,10 @@ capture.addEventListener("keydown", (event) => {
     imeWarning = true;
     updatePracticeState();
     return;
+  }
+  if (imeWarning) {
+    imeWarning = false;
+    capture.value = "";
   }
   if (event.code === "Space" || event.code === "Tab") event.preventDefault();
   const beforeSummary = product.summary;
