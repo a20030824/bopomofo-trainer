@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Summarize deterministic reading-source coverage for a ranked candidate CSV.
+"""Summarize deterministic reading-source coverage for a ranked candidate generation.
 
 This consumes only committed candidate-scoped projections. It verifies authority
-boundaries and emits a rank-ordered review queue without choosing among ambiguous
-readings or inferring grammar from dictionary glosses.
+boundaries and emits a source-rank-ordered review queue without choosing among
+ambiguous readings or inferring grammar from dictionary glosses.
 """
 
 from __future__ import annotations
@@ -12,11 +12,19 @@ import argparse
 import csv
 import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from lexicon_candidate_set import CandidateSet, load_candidate_set, rank_intervals
+
 ADAPTER_VERSION = "naer-reading-coverage-summary-v1"
 DEFAULT_CANDIDATES = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
+DEFAULT_CANDIDATE_MANIFEST = Path("data/lexicon/naer-1141208-top-1000-manifest.json")
 DEFAULT_CONCISED = Path("data/readings/moe-concised-2014_20260626-naer-top-1000.json")
 DEFAULT_REVISED = Path("data/readings/moe-revised-2015_20260625-naer-top-1000-fallback.json")
 DEFAULT_CEDICT = Path("data/identity/cedict-2026-07-21-naer-top-1000-hints.json")
@@ -50,36 +58,11 @@ def canonical_digest(value: Any) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def load_candidates(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    seen_texts: set[str] = set()
-    seen_ranks: set[int] = set()
-    with path.open("r", encoding="utf-8-sig", newline="") as source:
-        reader = csv.DictReader(source)
-        required = {"text", "status", "naer_general_rank"}
-        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
-            raise ValueError(f"candidate CSV must contain {sorted(required)!r}")
-        for row_number, source_row in enumerate(reader, start=2):
-            text = (source_row.get("text") or "").strip()
-            if not text:
-                raise ValueError(f"candidate row {row_number} is missing text")
-            if text in seen_texts:
-                raise ValueError(f"duplicate candidate text: {text}")
-            rank_source = source_row.get("naer_general_rank") or ""
-            if not rank_source.isdigit() or int(rank_source) <= 0:
-                raise ValueError(f"candidate row {row_number} has invalid rank")
-            rank = int(rank_source)
-            if rank in seen_ranks:
-                raise ValueError(f"duplicate candidate rank: {rank}")
-            seen_texts.add(text)
-            seen_ranks.add(rank)
-            rows.append({"text": text, "generalRank": rank})
-    rows.sort(key=lambda row: row["generalRank"])
-    expected = list(range(1, len(rows) + 1))
-    observed = [row["generalRank"] for row in rows]
-    if observed != expected:
-        raise ValueError("candidate ranks must form a continuous 1..N prefix")
-    return rows
+def load_candidates(
+    path: Path,
+    manifest_path: Path | None = None,
+) -> CandidateSet:
+    return load_candidate_set(path, manifest_path)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -121,8 +104,13 @@ def summarize_coverage(
     concised_path: Path,
     revised_path: Path,
     cedict_path: Path,
+    candidate_manifest_path: Path | None = None,
 ) -> dict[str, Any]:
-    candidates = load_candidates(candidate_path)
+    candidate_generation = load_candidates(candidate_path, candidate_manifest_path)
+    candidates = [
+        {"text": record.text, "generalRank": record.general_rank}
+        for record in candidate_generation.records
+    ]
     candidate_rank = {row["text"]: row["generalRank"] for row in candidates}
     candidate_set = set(candidate_rank)
 
@@ -215,7 +203,6 @@ def summarize_coverage(
         for text in sorted(cedict_unique, key=lambda value: candidate_rank[value])
     ]
 
-    buckets = [(1, 100), (101, 250), (251, 500), (501, len(candidates))]
     rank_buckets: list[dict[str, Any]] = []
     sources = {
         "moeConcised": concised_set,
@@ -224,10 +211,7 @@ def summarize_coverage(
         "reviewAmbiguous": cedict_ambiguous,
         "reviewUnmatched": unmatched,
     }
-    for start, end in buckets:
-        if start > len(candidates):
-            continue
-        end = min(end, len(candidates))
+    for start, end in rank_intervals(candidate_generation.source_rank_limit):
         rank_buckets.append(
             {
                 "startRank": start,
@@ -257,6 +241,32 @@ def summarize_coverage(
         "cedictUniqueRows": cedict_unique_rows,
         "reviewQueue": review_queue,
     }
+    inputs: dict[str, Any] = {
+        "candidates": {
+            "path": display_path(candidate_path),
+            "checksumSha256": sha256_file(candidate_path),
+        },
+        "moeConcised": {
+            "path": display_path(concised_path),
+            "checksumSha256": sha256_file(concised_path),
+        },
+        "moeRevised": {
+            "path": display_path(revised_path),
+            "checksumSha256": sha256_file(revised_path),
+        },
+        "cedict": {
+            "path": display_path(cedict_path),
+            "checksumSha256": sha256_file(cedict_path),
+        },
+    }
+    policy = {
+        "ambiguousReadingSelection": "forbidden",
+        "grammarInferenceFromGlosses": "forbidden",
+        "productCatalogMutation": "out-of-scope",
+    }
+    if candidate_manifest_path is not None:
+        inputs["candidateManifest"] = candidate_generation.lineage()
+        policy["sourceRankPreservation"] = "required; excluded source ranks are never reindexed"
     return {
         "adapterVersion": ADAPTER_VERSION,
         "authorityOrder": [
@@ -265,37 +275,17 @@ def summarize_coverage(
             "cedict-unique-record-fallback",
             "explicit-reviewed-manual-resolution",
         ],
-        "inputs": {
-            "candidates": {
-                "path": display_path(candidate_path),
-                "checksumSha256": sha256_file(candidate_path),
-            },
-            "moeConcised": {
-                "path": display_path(concised_path),
-                "checksumSha256": sha256_file(concised_path),
-            },
-            "moeRevised": {
-                "path": display_path(revised_path),
-                "checksumSha256": sha256_file(revised_path),
-            },
-            "cedict": {
-                "path": display_path(cedict_path),
-                "checksumSha256": sha256_file(cedict_path),
-            },
-        },
+        "inputs": inputs,
         **core,
         "determinismDigest": canonical_digest(core),
-        "policy": {
-            "ambiguousReadingSelection": "forbidden",
-            "grammarInferenceFromGlosses": "forbidden",
-            "productCatalogMutation": "out-of-scope",
-        },
+        "policy": policy,
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES)
+    parser.add_argument("--candidate-manifest", type=Path)
     parser.add_argument("--concised-projection", type=Path, default=DEFAULT_CONCISED)
     parser.add_argument("--revised-projection", type=Path, default=DEFAULT_REVISED)
     parser.add_argument("--cedict-projection", type=Path, default=DEFAULT_CEDICT)
@@ -307,6 +297,7 @@ def main() -> None:
         arguments.concised_projection,
         arguments.revised_projection,
         arguments.cedict_projection,
+        arguments.candidate_manifest,
     )
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

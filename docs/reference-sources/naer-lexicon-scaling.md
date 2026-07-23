@@ -1,183 +1,211 @@
-# NAER lexicon scaling and eligibility reporting
+# NAER lexicon scaling and generation pipeline
 
 ## Scope
 
 The pinned NAER `通用詞頻表` contains 163,701 data rows. The historical committed projection intentionally selected the continuous general-rank prefix `1..1000` and rejected the entire batch if any selected lexical text was not pure Han or normalized to a duplicate.
 
-That strict behavior remains the default because it protects the reproducibility of the existing top-1,000 artifacts. A separate report mode now supports larger audits without treating candidate-content anomalies as source corruption.
+That strict behavior remains available because it protects replay of the existing top-1,000 artifacts. New vocabulary expansion uses manifest-linked generations instead of fixed counts, fixed checksums, dense accepted ranks, or top-1,000 filenames.
 
 ## Source integrity versus candidate eligibility
 
-The pipeline must keep these boundaries separate.
+The pipeline keeps these boundaries separate.
 
 ### Fail fast: source integrity
 
-The projection still stops when any of the following changes:
+Candidate projection still stops when any of the following changes:
 
 - workbook checksum;
 - workbook sheet name;
 - workbook dimension;
 - header schema;
 - numeric rank or frequency cell shape;
-- requested source rank prefix continuity.
+- requested source rank-prefix continuity.
 
-These failures mean the pinned source contract or adapter assumptions changed. They must not be downgraded to ordinary exclusions.
+These failures mean the pinned source contract or adapter assumptions changed. They are not ordinary candidate exclusions.
 
 ### Report and continue: candidate eligibility
 
-With `--invalid-row-policy report`, the projection excludes an individual candidate and records it when:
+With `--invalid-row-policy report`, projection excludes and reports an individual candidate when:
 
 - lexical text is missing or not a string;
 - normalization produces an empty string;
 - normalized text contains non-Han characters;
 - normalized text duplicates an earlier eligible rank.
 
-The earliest eligible normalized identity wins. Later duplicates retain their original rank and point to `duplicateOfGeneralRank` in the report.
+The earliest eligible normalized identity wins. Later duplicates retain their original rank and point to `duplicateOfGeneralRank`.
 
-Excluded source ranks are not renumbered. The accepted candidate CSV therefore preserves NAER general rank and may contain gaps.
+Excluded ranks are not renumbered. Every downstream generation therefore treats `naer_general_rank` as an external source rank, not as a dense array index.
 
-## Outputs
+## Candidate generation contract
 
-A report-mode run writes three artifacts:
+`scripts/lexicon_candidate_set.py` is the shared loader for future lexical generations. It validates:
 
-1. accepted candidate CSV;
-2. candidate manifest;
-3. eligibility report.
+- unique non-empty candidate text;
+- unique positive source rank;
+- finite optional frequency values;
+- candidate CSV and manifest selected-count agreement;
+- exact candidate-row identity and order;
+- source-rank limit;
+- deterministic selection digest;
+- candidate and manifest checksums used for lineage.
 
-The eligibility report records:
+The loader supports both the historical v1 manifest and report-mode v2 manifest. New generation entrypoints require the manifest explicitly.
 
-- requested rank limit;
-- source prefix count;
-- eligible count;
-- excluded count;
-- counts by exclusion reason;
-- every excluded rank, source physical row, raw lexical value, normalized value when available, and duplicate origin when relevant;
-- a deterministic digest over the summary and exclusions.
+Dynamic rank buckets are derived from the source-rank limit. Sparse accepted rows such as ranks `1`, `6`, and `10000` remain in the correct source buckets and are never collapsed to `1..3`.
 
-The repository command for the first large audit is:
+## Generic forward pipeline
+
+### 1. Candidate eligibility
 
 ```bash
 npm run lexicon:naer-top-10000-audit
 ```
 
-The official workbook remains local. This command is not part of ordinary CI and does not make the generated top-10,000 artifacts authoritative by itself.
+This writes:
 
-## Remaining blockers after candidate projection
+1. accepted candidate CSV;
+2. candidate manifest;
+3. eligibility report.
 
-The eligibility report removes only the first scaling blocker. The rest of the pipeline still contains historical top-1,000 assumptions.
+The official workbook remains local. Generated large artifacts become authoritative only after review and an explicit repository decision.
 
-### 1. Candidate rank consumers assume a dense prefix
+### 2. Reading generation
 
-`summarize-naer-reading-coverage.py` currently requires accepted candidate ranks to equal `1..N`. Report-mode candidates preserve source ranks and can contain gaps, so the reading coverage loader must be changed to accept unique positive source ranks without reindexing them.
+```bash
+npm run lexicon:reading-generation -- \
+  --candidates <candidates.csv> \
+  --candidate-manifest <manifest.json> \
+  --concised-archive <concised.zip> \
+  --concised-output <concised.json> \
+  --revised-archive <revised.zip> \
+  --revised-output <revised.json> \
+  --cedict-dictionary <cedict-file-or-zip> \
+  --cedict-expected-sha256 <sha256> \
+  --cedict-source-version <version> \
+  --cedict-output <cedict.json> \
+  --coverage-output <reading-coverage.json>
+```
 
-Rank bucket generation must also use the maximum source rank rather than accepted candidate count. Otherwise a top-10,000 audit with exclusions near the front can silently omit high-rank accepted candidates from its final bucket.
+The orchestrator uses the existing source-locked MOE Concised, MOE Revised, and CC-CEDICT adapters, but the candidate set, outputs, count, ranks, and lineage are generation inputs. It preserves the authority order:
 
-### 2. Reading projections are top-1,000-scoped
+1. MOE Concised exact unique reading;
+2. MOE Revised exact unique fallback;
+3. unique CC-CEDICT fallback;
+4. explicit review for ambiguity or no match.
 
-The MOE Concised, MOE Revised, and CEDICT projection defaults, filenames, candidate counts, and lineage currently target the committed top-1,000 set.
+It never chooses automatically among heteronyms or ambiguous CC-CEDICT records.
 
-Before activation can scale, these adapters need:
+`summarize-naer-reading-coverage.py` also accepts `--candidate-manifest` directly. Reading coverage partitions the complete eligible candidate set and produces source-rank-aware buckets.
 
-- parameterized candidate inputs and output paths;
-- explicit candidate-manifest lineage;
-- exact partition checks against the eligible candidate set;
-- deterministic handling of a much larger ambiguous or unmatched reading queue;
-- no automatic choice among heteronyms or ambiguous CEDICT records.
+### 3. UD syntax evidence
 
-Reading ambiguity is expected to become the largest human-review queue.
+```bash
+npm run grammar:ud-evidence-generation -- \
+  --candidates <candidates.csv> \
+  --candidate-manifest <manifest.json> \
+  --source-dir <ud-directory> \
+  --evidence-output <syntax-evidence.json> \
+  --coverage-output <syntax-coverage.json>
+```
 
-### 3. UD syntax evidence is checksum-locked to exactly 1,000 candidates
+The generation entrypoint derives candidate count, candidate checksum, source ranks, and rank buckets from the manifest. It retains the source-locked UD Chinese GSD file checks and the syntax-only evidence boundary.
 
-The v2 UD adapter currently hardcodes:
+The historical top-1,000 projector remains available to replay its committed v1/v2 artifacts. It is not the forward scaling API.
 
-- candidate count `1000`;
-- canonical candidate CSV checksum;
-- top-1,000 input and output paths.
+### 4. Activation generation
 
-It must be generalized to validate a candidate manifest and candidate digest rather than one historical count and checksum. The syntax evidence projection itself can remain candidate-scoped and deterministic.
+```bash
+npm run lexicon:activation-generation -- \
+  --candidates <candidates.csv> \
+  --candidate-manifest <manifest.json> \
+  --reading-coverage <reading-coverage.json> \
+  --concised-projection <concised.json> \
+  --revised-projection <revised.json> \
+  --cedict-projection <cedict.json> \
+  --active-catalog <words.csv> \
+  --ud-evidence <syntax-evidence.json> \
+  --ud-coverage <syntax-coverage.json> \
+  --output <activation-report.json> \
+  --csv-output <activation-report.csv>
+```
 
-Larger candidate sets will also increase evidence artifact size. Artifact size, Git diff reviewability, and GitHub storage must be measured before committing a full top-10,000 evidence file.
+The activation generation report classifies every candidate as:
 
-### 4. Activation review is tied to historical batch constants
+- `reading-review-required`;
+- `already-active-exact-identity`;
+- `resolved-reading-variant`;
+- `resolved-new-identity`.
 
-The activation batch pipeline currently hardcodes:
+It records reading authority, active-catalog identity state, and optional UD coverage. It does not mutate the catalog, guess an ambiguous reading, or require current runtime grammar admission.
 
-- candidate count;
-- active catalog row count;
-- reading coverage digest and review count;
-- UD evidence and coverage digests;
-- old top-1,000 paths;
-- a small set of review lanes;
-- exclusions based on legacy template support.
+This preserves three separate decisions:
 
-This is incompatible with mass activation and the formal syntax architecture.
-
-The replacement must separate:
-
-- **candidate eligibility**: source-ranked text can enter the candidate set;
+- **candidate eligibility**: the source-ranked text can enter the candidate set;
 - **catalog activation**: exact text and reading identity is authoritative;
-- **runtime admission**: at least one formal syntax profile can participate in a supported construction.
+- **runtime admission**: a syntax profile participates in a supported construction.
 
-A word must not be rejected from the catalog merely because the current runtime grammar cannot yet realize one of its profiles.
+A word is not rejected from the catalog merely because one current grammar profile is unrealizable.
 
-### 5. Historical activation scripts are batch-specific
+### 5. Formal syntax generation
 
-The current activation scripts encode exact batch sizes, expected checksums, and immutable historical report contracts. They should remain replayable historical tools rather than being edited into a generic mass importer.
+`build-formal-syntax-coverage.ts` no longer requires exactly 322 entries or one fixed evidence path. It accepts explicit paths for:
 
-A new manifest-driven activation tool should create a new generation and report:
+- words/catalog source;
+- MOE Concised projection;
+- MOE Revised projection;
+- CC-CEDICT projection;
+- manual overrides;
+- provenance registry;
+- UD syntax evidence;
+- profile output;
+- coverage output;
+- optional expected catalog count;
+- explicit provenance IDs.
 
-- newly activated identities;
-- already active identities;
-- unresolved readings;
-- conflicting or duplicate identities;
-- active entries without UD evidence;
-- syntax profiles not admitted to runtime;
-- catalog and generation digests.
+The no-argument commands still reproduce and verify the current committed artifacts:
 
-### 6. Formal syntax coverage is generated from the active catalog
+```bash
+npm run grammar:formal-syntax-coverage
+npm run grammar:formal-syntax-verify
+```
 
-Formal syntax projection currently starts from active catalog entries. Increasing only the candidate set will not change NUM or other UPOS coverage until reading-resolved identities are actually activated.
+A new catalog generation can use separate inputs and outputs without editing source constants.
 
-After each activation generation, regenerate:
+## Historical replay boundary
 
-- syntax profiles;
-- UPOS and function distributions;
-- unrealizable-profile report;
-- deterministic coverage artifacts.
+The following remain deliberately snapshot-specific:
 
-Grammar changes should be based on repeated profile clusters, not one exceptional token.
+- committed top-1,000 artifact verification;
+- historical activation review batches and their exact decision digests;
+- historical catalog mutation reports;
+- exact old checksums used to prove replay.
 
-### 7. Product and CI scale are still unmeasured
+These are records of past decisions, not APIs for new vocabulary generations. Removing their constants would weaken historical reproducibility rather than improve scalability.
 
-Before enabling thousands of active entries in the browser runtime, measure:
+Future expansion must use the generic candidate, reading, UD, activation-generation, and formal-syntax entrypoints. New batch scripts must not copy old expected counts or digests.
 
-- compiled catalog size;
-- initial JavaScript and generated data size;
-- app catalog compile time;
-- source-adapter CI duration;
-- formal profile projection and coverage time;
-- candidate selection latency and memory;
-- review artifact size and usability.
+## Remaining operational blockers
 
-Do not infer that successful source projection means the product can load the full set efficiently.
+The code path is now parameterized, but the repository still does not contain the local official sources needed to execute a real top-10,000 generation. The next run must measure rather than assume:
 
-## Recommended implementation order
+- eligible and excluded Top-10,000 counts;
+- MOE/CEDICT automatic reading coverage;
+- ambiguity and unmatched review volume;
+- UD observed/unseen coverage and profile distribution;
+- generated artifact sizes and Git reviewability;
+- source-adapter and formal-coverage runtime;
+- compiled catalog and browser bundle size;
+- candidate sampling latency and memory.
 
-1. Run the top-10,000 eligibility audit locally and commit only the report after reviewing redistribution and artifact-size boundaries.
-2. Make reading coverage and its source adapters accept sparse source ranks and manifest-linked candidate sets.
-3. Generalize UD v2 evidence from fixed top-1,000 constants to candidate-manifest lineage.
-4. Build a new generation-based catalog activation tool; preserve historical activation scripts unchanged.
-5. Activate reading-resolved candidates in bounded rank bands and regenerate formal syntax coverage after every generation.
-6. Use the resulting profile clusters to decide missing constructions such as bare quantity noun phrases.
-7. Measure browser and CI costs before making the expanded catalog the product default.
+A separate reviewed apply step is still required before resolved identities mutate `data/source/words.sample.csv`. The activation-generation report is intentionally non-mutating so a large source run cannot silently activate thousands of entries.
 
-## Non-goals of the current change
+## Recommended continuation
 
-This change does not:
+1. Run the Top-10,000 candidate audit against the pinned local workbook.
+2. Run the manifest-linked reading and UD generations.
+3. Review the activation-generation report and reading ambiguity queue.
+4. Approve a bounded source-rank band for catalog mutation.
+5. Regenerate formal syntax profiles and inspect repeated unrealizable profile clusters.
+6. Measure product and CI scale before changing the browser default catalog.
 
-- generate or commit the actual top-10,000 artifacts;
-- relax source checksum or schema validation;
-- resolve readings;
-- activate catalog entries;
-- modify formal grammar;
-- enable expanded vocabulary in the browser runtime.
+Grammar changes should follow repeated profile evidence, not one exceptional token such as `不少/NUM/object`.

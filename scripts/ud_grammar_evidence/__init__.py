@@ -13,6 +13,7 @@ from .common import (
     canonical_text_sha256,
     write_json,
 )
+from .generation import project_generation
 from .projector import project
 
 __all__ = [
@@ -29,5 +30,6 @@ __all__ = [
     "canonical_digest",
     "canonical_text_sha256",
     "project",
+    "project_generation",
     "write_json",
 ]
