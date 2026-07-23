@@ -101,6 +101,21 @@ const punctuatedRules: readonly ProductionRule[] = [{
   negativeFixtureIds: ["sentence.test-punctuated:negative"],
 }];
 
+const twoSlotRules: readonly ProductionRule[] = [{
+  ...rules[0]!,
+  id: "sentence.test-two-slots",
+  constituents: [
+    { ...rules[0]!.constituents[0]!, key: "first" },
+    { ...rules[0]!.constituents[0]!, key: "second" },
+  ],
+  surfaceOrders: [{
+    id: "canonical",
+    constituentKeys: ["first", "second"],
+  }],
+  positiveFixtureIds: ["sentence.test-two-slots:positive"],
+  negativeFixtureIds: ["sentence.test-two-slots:negative"],
+}];
+
 describe("frequency-first formal syntax compatibility composer", () => {
   it("uses only stage-eligible entries and returns a formal candidate", () => {
     const eligible = entry("entry:eligible", "甲", 1);
@@ -154,6 +169,41 @@ describe("frequency-first formal syntax compatibility composer", () => {
       rules,
     });
     expect(result.candidates[0]?.entries.map((item) => item.id)).toEqual([second.id]);
+  });
+
+  it("does not multiply entry weight by compatible profile count", () => {
+    const first = entry("entry:first", "甲", 1);
+    const second = entry("entry:second", "乙", 1);
+    const result = composeFormalSyntaxUtterances({
+      eligibleEntries: [first, second],
+      profiles: [
+        profile("profile:first-a", first.id),
+        profile("profile:first-b", first.id),
+        profile("profile:second", second.id),
+      ],
+      random: new SequenceRandom([0, 0, 0.6]),
+      maximumCandidates: 1,
+      maximumAttempts: 1,
+      rules,
+    });
+    expect(result.candidates[0]?.entries.map((item) => item.id)).toEqual([second.id]);
+  });
+
+  it("does not reuse one entry in multiple lexical slots", () => {
+    const first = entry("entry:first", "甲", 1);
+    const second = entry("entry:second", "乙", 1);
+    const result = composeFormalSyntaxUtterances({
+      eligibleEntries: [first, second],
+      profiles: [profile("profile:first", first.id), profile("profile:second", second.id)],
+      random: new SequenceRandom([0]),
+      maximumCandidates: 1,
+      maximumAttempts: 1,
+      rules: twoSlotRules,
+    });
+    expect(result.candidates[0]?.entries.map((item) => item.id)).toEqual([
+      first.id,
+      second.id,
+    ]);
   });
 
   it("fails closed without silently assigning a missing profile", () => {
