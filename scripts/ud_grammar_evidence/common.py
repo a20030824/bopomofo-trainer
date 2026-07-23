@@ -125,7 +125,7 @@ def canonical_json(value: Any) -> str:
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as destination:
-        json.dump(payload, destination, ensure_ascii=False, indent=2)
+        json.dump(payload, destination, ensure_ascii=False, separators=(",", ":"))
         destination.write("\n")
 
 
