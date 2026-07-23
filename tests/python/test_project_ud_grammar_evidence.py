@@ -108,9 +108,11 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
             expected_files=self.expected_files,
         )
 
-    def test_projects_aggregate_evidence_without_source_sentences(self) -> None:
+    def test_projects_anonymous_full_syntax_evidence(self) -> None:
         evidence, coverage = self.project()
         rows = {row["text"]: row for row in evidence["rows"]}
+        self.assertEqual(evidence["schemaVersion"], adapter.EVIDENCE_SCHEMA_VERSION)
+        self.assertEqual(coverage["schemaVersion"], adapter.EVIDENCE_SCHEMA_VERSION)
         self.assertEqual(coverage["observedCandidateCount"], 2)
         self.assertEqual(coverage["unseenCandidateCount"], 1)
         self.assertEqual(coverage["matchedOccurrenceCount"], 8)
@@ -120,7 +122,27 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
         )
         self.assertEqual(rows["甲"]["verbEvidence"]["withObjectDependentCount"], 2)
         self.assertEqual(rows["甲"]["verbEvidence"]["withoutObjectDependentCount"], 2)
+        self.assertEqual(rows["甲"]["parentUposCounts"], {"ROOT": 4})
+        self.assertEqual(rows["甲"]["headDirectionCounts"], {"root": 4})
+        self.assertEqual(rows["甲"]["surfacePositionCounts"], {"initial": 3, "medial": 1})
+        self.assertEqual(
+            rows["甲"]["childRelationCounts"],
+            {"advmod": 2, "nsubj": 1, "obj": 2},
+        )
+        self.assertEqual(
+            rows["甲"]["valencySignatureCounts"],
+            {"none": 2, "nsubj=1|obj=1": 1, "obj=1": 1},
+        )
         self.assertEqual(rows["乙"]["uposCounts"], {"ADJ": 2, "NOUN": 2})
+        profiles = {
+            row["upos"]: row for row in rows["乙"]["syntaxProfileEvidence"]
+        }
+        self.assertEqual(profiles["ADJ"]["occurrenceCount"], 2)
+        self.assertEqual(profiles["ADJ"]["dependencyRelationCounts"], {"advmod": 2})
+        self.assertEqual(profiles["NOUN"]["occurrenceCount"], 2)
+        self.assertEqual(profiles["NOUN"]["dependencyRelationCounts"], {"obj": 2})
+        self.assertEqual(rows["乙"]["parentUposCounts"], {"VERB": 4})
+        self.assertEqual(rows["乙"]["headDirectionCounts"], {"head-left": 4})
         self.assertEqual(rows["乙"]["lemmaDiagnostics"]["mismatchCount"], 2)
         self.assertFalse(rows["丙"]["observed"])
         review = {row["text"]: row["reasons"] for row in coverage["reviewQueue"]}
@@ -131,10 +153,33 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
         self.assertNotIn("# sent_id", serialized)
         self.assertNotIn("我", serialized)
         self.assertNotIn("別", serialized)
+        self.assertIn('"anonymousDependencySkeletons"', serialized)
+        self.assertIn('"syntaxProfileEvidence"', serialized)
+        self.assertIn('"upos": "VERB"', serialized)
 
     def test_rejects_candidate_checksum_drift(self) -> None:
         with self.assertRaisesRegex(ValueError, "candidate CSV canonical checksum mismatch"):
             self.project("0" * 64)
+
+    def test_rejects_unknown_upos(self) -> None:
+        path = self.source_dir / "zh_gsd-ud-train.conllu"
+        content = sentence([token(1, "甲", "甲", "UNKNOWN", "XX", 0, "root")], "bad")
+        path.write_text(content, encoding="utf-8", newline="\n")
+        data = path.read_bytes()
+        expected = dict(self.expected_files)
+        expected[path.name] = {
+            "split": "train",
+            "byteSize": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(),
+        }
+        with self.assertRaisesRegex(ValueError, "unsupported UPOS"):
+            adapter.project(
+                self.candidates,
+                self.source_dir,
+                expected_candidate_count=3,
+                expected_candidate_checksum=self.candidate_checksum,
+                expected_files=expected,
+            )
 
     def test_write_json_is_lf_stable(self) -> None:
         path = self.root / "output.json"
@@ -151,7 +196,15 @@ class ProjectUdGrammarEvidenceTest(unittest.TestCase):
             self.skipTest("UD top-1,000 grammar evidence artifacts are not committed yet")
         evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
-        evidence_core = {"candidateCount": evidence["candidateCount"], "rows": evidence["rows"]}
+        evidence_core = {
+            "candidateCount": evidence["candidateCount"],
+            "rows": evidence["rows"],
+        }
+        if "schemaVersion" in evidence:
+            evidence_core = {
+                "schemaVersion": evidence["schemaVersion"],
+                **evidence_core,
+            }
         coverage_core = {
             key: value for key, value in coverage.items()
             if key not in {

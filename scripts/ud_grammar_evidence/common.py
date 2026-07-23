@@ -8,7 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator, Mapping
 
-ADAPTER_VERSION = "ud-chinese-gsd-grammar-evidence-adapter-v1"
+ADAPTER_VERSION = "ud-chinese-gsd-grammar-evidence-adapter-v2"
+EVIDENCE_SCHEMA_VERSION = "ud-syntax-evidence-v2"
 SOURCE_ID = "ud:chinese-gsd-r2.18"
 SOURCE_RELEASE = "r2.18"
 SOURCE_REPOSITORY = "https://github.com/UniversalDependencies/UD_Chinese-GSD"
@@ -17,10 +18,10 @@ SOURCE_LICENSE = "CC BY-SA 4.0"
 DEFAULT_CANDIDATES = Path("data/lexicon/naer-1141208-top-1000-candidates.csv")
 DEFAULT_SOURCE_DIR = Path("data/external/ud/chinese-gsd/r2.18")
 DEFAULT_EVIDENCE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json"
+    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json"
 )
 DEFAULT_COVERAGE_OUTPUT = Path(
-    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json"
+    "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json"
 )
 EXPECTED_CANDIDATE_COUNT = 1_000
 EXPECTED_CANDIDATE_CANONICAL_SHA256 = (
@@ -44,12 +45,43 @@ EXPECTED_FILES: Mapping[str, Mapping[str, Any]] = {
     },
 }
 
+SUPPORTED_UPOS = (
+    "ADJ",
+    "ADP",
+    "ADV",
+    "AUX",
+    "CCONJ",
+    "DET",
+    "INTJ",
+    "NOUN",
+    "NUM",
+    "PART",
+    "PRON",
+    "PROPN",
+    "PUNCT",
+    "SCONJ",
+    "SYM",
+    "VERB",
+    "X",
+)
 SIGNIFICANT_UPOS_MIN_COUNT = 2
 SIGNIFICANT_UPOS_MIN_SHARE = 0.10
 MIXED_VALENCY_MIN_COUNT = 2
 MIXED_VALENCY_MIN_SHARE = 0.10
 SUBJECT_RELATIONS = {"nsubj", "csubj"}
 OBJECT_RELATIONS = {"obj", "iobj"}
+VALENCY_RELATIONS = {
+    "nsubj",
+    "csubj",
+    "obj",
+    "iobj",
+    "ccomp",
+    "xcomp",
+    "obl",
+    "advcl",
+    "acl",
+}
+STRUCTURAL_RELATIONS = {"cop", "aux", "mark", "case", "cc", "conj"}
 SCHEMA_GAP_UPOS = ("ADP", "CCONJ", "DET", "NUM", "PART", "SCONJ")
 
 
@@ -81,10 +113,19 @@ def canonical_digest(value: Any) -> str:
     return sha256_bytes(encoded)
 
 
+def canonical_json(value: Any) -> str:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as destination:
-        json.dump(payload, destination, ensure_ascii=False, indent=2)
+        json.dump(payload, destination, ensure_ascii=False, separators=(",", ":"))
         destination.write("\n")
 
 
@@ -111,14 +152,29 @@ class Token:
 
 
 @dataclass
-class Observation:
+class SyntaxProfileObservation:
     occurrence_count: int = 0
+    deprel: Counter[str] = field(default_factory=Counter)
+    features: Counter[str] = field(default_factory=Counter)
+    parent_upos: Counter[str] = field(default_factory=Counter)
+    head_directions: Counter[str] = field(default_factory=Counter)
+    surface_positions: Counter[str] = field(default_factory=Counter)
+    child_relations: Counter[str] = field(default_factory=Counter)
+    child_direction_relations: Counter[str] = field(default_factory=Counter)
+    child_relation_multisets: Counter[str] = field(default_factory=Counter)
+    valency_relations: Counter[str] = field(default_factory=Counter)
+    valency_signatures: Counter[str] = field(default_factory=Counter)
+    construction_relations: Counter[str] = field(default_factory=Counter)
+    anonymous_skeletons: Counter[str] = field(default_factory=Counter)
+    root_count: int = 0
+
+
+@dataclass
+class Observation(SyntaxProfileObservation):
     source_occurrences: Counter[str] = field(default_factory=Counter)
     upos: Counter[str] = field(default_factory=Counter)
     xpos: Counter[str] = field(default_factory=Counter)
-    deprel: Counter[str] = field(default_factory=Counter)
-    features: Counter[str] = field(default_factory=Counter)
-    root_count: int = 0
+    profile_observations: dict[str, SyntaxProfileObservation] = field(default_factory=dict)
     lemma_agreement_count: int = 0
     lemma_mismatch_count: int = 0
     lemma_missing_count: int = 0
@@ -247,6 +303,8 @@ def iter_sentences(path: Path, stats: SourceStats) -> Iterator[list[Token]]:
             elif kind == "empty-node":
                 stats.empty_node_line_count += 1
             elif token is not None:
+                if token.upos not in SUPPORTED_UPOS:
+                    raise ValueError(f"unsupported UPOS {token.upos!r} in {path}:{line_number}")
                 stats.syntactic_token_count += 1
                 sentence.append(token)
     if sentence:
