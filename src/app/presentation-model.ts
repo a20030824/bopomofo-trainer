@@ -10,41 +10,64 @@ export interface PracticeGlyph {
   readonly tokenEnd: number;
 }
 
-function alignCharacters(text: string, syllableCount: number): readonly string[] {
-  if (syllableCount === 0) return [];
-  if (syllableCount === 1) return [text];
-
-  const characters = Array.from(text);
-  if (characters.length === syllableCount) return characters;
-
-  return Array.from({ length: syllableCount }, (_, index) => {
-    if (index === syllableCount - 1) return characters.slice(index).join("");
-    return characters[index] ?? "";
-  });
+export interface PracticeEntry {
+  readonly entryId: string;
+  readonly entryIndex: number;
+  readonly glyphs: readonly PracticeGlyph[];
+  readonly tokenStart: number;
+  readonly tokenEnd: number;
 }
 
-export function buildPracticeGlyphs(exercise: Exercise): readonly PracticeGlyph[] {
-  const glyphs: PracticeGlyph[] = [];
+function alignedCharacters(
+  entryId: string,
+  text: string,
+  syllableCount: number,
+): readonly string[] {
+  const characters = Array.from(text);
+  if (characters.length !== syllableCount) {
+    throw new RangeError(
+      `Cannot align practice entry ${entryId}: ${characters.length} characters for ${syllableCount} syllables`,
+    );
+  }
+  return characters;
+}
+
+export function buildPracticeEntries(exercise: Exercise): readonly PracticeEntry[] {
   let tokenPosition = 0;
 
-  exercise.entries.forEach((entry, entryIndex) => {
-    const characters = alignCharacters(entry.prompt.text, entry.syllables.length);
-    entry.syllables.forEach((syllable, syllableIndex) => {
+  return exercise.entries.map((entry, entryIndex) => {
+    const characters = alignedCharacters(
+      entry.id,
+      entry.prompt.text,
+      entry.syllables.length,
+    );
+    const entryTokenStart = tokenPosition;
+    const glyphs = entry.syllables.map((syllable, syllableIndex) => {
       const tokenStart = tokenPosition;
       tokenPosition += syllable.tokens.length;
-      glyphs.push({
-        character: characters[syllableIndex] ?? "",
+      return {
+        character: characters[syllableIndex]!,
         entryId: entry.id,
         entryIndex,
         syllableIndex,
         tokens: syllable.tokens,
         tokenStart,
         tokenEnd: tokenPosition,
-      });
+      } satisfies PracticeGlyph;
     });
-  });
 
-  return glyphs;
+    return {
+      entryId: entry.id,
+      entryIndex,
+      glyphs,
+      tokenStart: entryTokenStart,
+      tokenEnd: tokenPosition,
+    } satisfies PracticeEntry;
+  });
+}
+
+export function buildPracticeGlyphs(exercise: Exercise): readonly PracticeGlyph[] {
+  return buildPracticeEntries(exercise).flatMap((entry) => entry.glyphs);
 }
 
 export function continuousExerciseText(exercise: Exercise): string {
