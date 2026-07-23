@@ -8,6 +8,7 @@ import {
   buildPracticeEntries,
   buildPracticeGlyphs,
   continuousExerciseText,
+  planBalancedPracticeLines,
 } from "../../src/app/presentation-model.js";
 
 const exercise: Exercise = {
@@ -76,6 +77,26 @@ describe("continuous practice presentation", () => {
           expect.objectContaining({ character: "天" }),
         ],
       }),
+    ]);
+  });
+
+  it("keeps a short utterance on one line", () => {
+    expect(planBalancedPracticeLines([200, 300], 600)).toEqual([
+      { startEntryIndex: 0, endEntryIndex: 2, width: 500 },
+    ]);
+  });
+
+  it("redistributes entries instead of leaving a short final orphan", () => {
+    expect(planBalancedPracticeLines([500, 150, 100], 700)).toEqual([
+      { startEntryIndex: 0, endEntryIndex: 1, width: 500 },
+      { startEntryIndex: 1, endEntryIndex: 3, width: 250 },
+    ]);
+  });
+
+  it("keeps entry order and prefers the fuller first line on equal-cost breaks", () => {
+    expect(planBalancedPracticeLines([350, 350, 350], 700)).toEqual([
+      { startEntryIndex: 0, endEntryIndex: 2, width: 700 },
+      { startEntryIndex: 2, endEntryIndex: 3, width: 350 },
     ]);
   });
 
