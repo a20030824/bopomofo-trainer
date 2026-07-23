@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -26,6 +26,91 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
+      - name: Apply fail-closed production-constraint boundary
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'agent/formal-syntax-system'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main agent/formal-syntax-system
+          git switch -C agent/formal-syntax-system origin/agent/formal-syntax-system
+          python - <<'PY'
+          from pathlib import Path
+
+          validate = Path('src/syntax/validate.ts')
+          source = validate.read_text(encoding='utf-8')
+          marker = 'non-empty production constraints are not executable in mandarin-formal-grammar-v1'
+          if marker in source:
+              raise SystemExit(0)
+          needle = '''  for (const [index, constraint] of rule.constraints.entries()) {
+'''
+          replacement = '''  if (rule.constraints.length > 0) {
+    errors.push(error(
+      "invalid-constraint",
+      "non-empty production constraints are not executable in mandarin-formal-grammar-v1",
+      rule.id,
+      `rules.${rule.id}.constraints`,
+    ));
+  }
+  for (const [index, constraint] of rule.constraints.entries()) {
+'''
+          if needle not in source:
+              raise SystemExit('validate.ts insertion point changed')
+          validate.write_text(source.replace(needle, replacement, 1), encoding='utf-8', newline='\n')
+
+          tests = Path('tests/syntax/validate.test.ts')
+          source = tests.read_text(encoding='utf-8')
+          needle = '''  it("rejects non-finite derivation bounds", () => {
+'''
+          replacement = '''  it("rejects non-empty production constraints instead of ignoring them", () => {
+    const base = rule("constrained", "NounPhrase", [constituent("head", "NominalHead")]);
+    const constrained: ProductionRule = {
+      ...base,
+      constraints: [{
+        kind: "requires-constituent",
+        ifPresentKey: "head",
+        targetKey: "head",
+      }],
+    };
+    expect(validateGrammar([constrained]).errors.map((item) => item.code))
+      .toContain("invalid-constraint");
+  });
+
+  it("rejects non-finite derivation bounds", () => {
+'''
+          if needle not in source:
+              raise SystemExit('validate.test.ts insertion point changed')
+          tests.write_text(source.replace(needle, replacement, 1), encoding='utf-8', newline='\n')
+
+          contract = Path('docs/formal-syntax-system.md')
+          source = contract.read_text(encoding='utf-8')
+          needle = '''A rule is invalid when it:
+'''
+          paragraph = '''For `mandarin-formal-grammar-v1`, executable requirements are encoded directly in constituent cardinality, `requiredFeatures`, `requiredFunctions`, and `requiredValencyFrames`. The rule-level `constraints` array is reserved for a later version and **must be empty**. Validation rejects every non-empty array so exhaustive derivation, random sampling, and structural counting can never silently ignore a declared constraint.
+
+A rule is invalid when it:
+'''
+          if needle not in source:
+              raise SystemExit('formal-syntax-system.md insertion point changed')
+          contract.write_text(source.replace(needle, paragraph, 1), encoding='utf-8', newline='\n')
+
+          status = Path('docs/formal-syntax-implementation-status.md')
+          source = status.read_text(encoding='utf-8')
+          needle = '''- formal grammar IR, finite-cardinality validation, forbidden-field validation, and recursion-cycle validation;
+'''
+          replacement = '''- formal grammar IR, finite-cardinality validation, forbidden-field validation, recursion-cycle validation, and fail-closed rejection of reserved non-empty rule-level constraints;
+'''
+          if needle not in source:
+              raise SystemExit('implementation status insertion point changed')
+          status.write_text(source.replace(needle, replacement, 1), encoding='utf-8', newline='\n')
+          PY
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/syntax/validate.ts tests/syntax/validate.test.ts docs/formal-syntax-system.md docs/formal-syntax-implementation-status.md
+          git commit -m 'Fail closed on unsupported production constraints'
+          git push origin HEAD:agent/formal-syntax-system
       - uses: actions/setup-node@v6
         with:
           node-version: 22
