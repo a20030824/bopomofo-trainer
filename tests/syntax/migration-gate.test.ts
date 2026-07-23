@@ -51,19 +51,20 @@ const completeCoverage: SyntaxCoverageReport = {
 };
 
 describe("fixed-template removal gate", () => {
-  it("blocks removal while the committed evidence and product migration are incomplete", () => {
+  it("blocks removal while committed evidence and product cutover are incomplete", () => {
     const result = evaluateFixedTemplateRemovalGate({
       coverage: completeCoverage,
       syntaxEvidenceSchemaVersion: "ud-grammar-evidence-v1",
       legacyCandidateParityPassed: false,
       browserSessionMigrationPassed: false,
-      progressMigrationPassed: false,
+      progressGenerationResetPassed: false,
       heldOutIsolationPassed: false,
       formalRuntimeDefaultEnabled: false,
     });
     expect(result.removalAllowed).toBe(false);
     expect(result.blockingReasons).toContain("syntax-evidence-v2-not-active");
     expect(result.blockingReasons).toContain("legacy-candidate-parity-not-passed");
+    expect(result.blockingReasons).toContain("progress-generation-reset-not-passed");
     expect(result.blockingReasons).toContain("formal-runtime-not-default");
   });
 
@@ -73,7 +74,7 @@ describe("fixed-template removal gate", () => {
       syntaxEvidenceSchemaVersion: "ud-syntax-evidence-v2",
       legacyCandidateParityPassed: true,
       browserSessionMigrationPassed: true,
-      progressMigrationPassed: true,
+      progressGenerationResetPassed: true,
       heldOutIsolationPassed: true,
       formalRuntimeDefaultEnabled: true,
     })).toEqual({ removalAllowed: true, blockingReasons: [] });
