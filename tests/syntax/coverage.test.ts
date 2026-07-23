@@ -59,14 +59,14 @@ describe("formal syntax coverage report", () => {
       profiles,
       rules: FORMAL_SYNTAX_RULES,
       fixtures: FORMAL_SYNTAX_FIXTURES,
-      derivationShapeCountByBound: [{ bounds: DEFAULT_DERIVATION_BOUNDS, count: 10, complete: true }],
+      derivationShapeCountByBound: [{ bounds: DEFAULT_DERIVATION_BOUNDS, count: "10", complete: true }],
     });
     const second = buildSyntaxCoverageReport({
       entries: [...entries, heteronymA, heteronymB],
       profiles,
       rules: FORMAL_SYNTAX_RULES,
       fixtures: FORMAL_SYNTAX_FIXTURES,
-      derivationShapeCountByBound: [{ bounds: DEFAULT_DERIVATION_BOUNDS, count: 10, complete: true }],
+      derivationShapeCountByBound: [{ bounds: DEFAULT_DERIVATION_BOUNDS, count: "10", complete: true }],
     });
     expect(first.uposCoverage.missingLexicalPositions).toEqual([]);
     expect(first.productionRuleCoverage.missingPositiveFixtureRuleIds).toEqual([]);

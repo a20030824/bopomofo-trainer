@@ -24,6 +24,7 @@
     "catalog:activate-reviewed-20": "python scripts/activate_reviewed_catalog_entries_26_50.py",
     "catalog:activate-reviewed-34": "python scripts/activate_reviewed_catalog_entries_51_100.py",
     "grammar:ud-evidence": "python scripts/project-ud-grammar-evidence.py",
+    "grammar:formal-syntax-coverage": "tsx scripts/build-formal-syntax-coverage.ts",
     "readings:moe-concised": "python scripts/project-moe-concised-readings.py",
     "readings:moe-revised": "python scripts/project-moe-revised-readings.py",
     "identity:cedict": "python scripts/project-cedict-identity-hints.py",

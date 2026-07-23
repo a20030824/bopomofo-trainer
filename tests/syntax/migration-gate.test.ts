@@ -44,7 +44,7 @@ const completeCoverage: SyntaxCoverageReport = {
       maximumComplementsPerPredicate: 2,
       maximumLexicalEntriesPerUtterance: 12,
     },
-    count: 1,
+    count: "1",
     complete: true,
   }],
   determinismDigest: "test",

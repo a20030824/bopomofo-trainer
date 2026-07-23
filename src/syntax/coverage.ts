@@ -12,7 +12,7 @@ import type {
 
 export interface DerivationShapeCountRecord {
   readonly bounds: DerivationBounds;
-  readonly count: number;
+  readonly count: string;
   readonly complete: boolean;
 }
 
@@ -84,8 +84,8 @@ function validateShapeCounts(
   records: readonly DerivationShapeCountRecord[],
 ): readonly DerivationShapeCountRecord[] {
   return records.map((record) => {
-    if (!Number.isInteger(record.count) || record.count < 0) {
-      throw new Error("derivation shape counts must be non-negative integers");
+    if (!/^(0|[1-9]\d*)$/u.test(record.count)) {
+      throw new Error("derivation shape counts must be non-negative decimal strings");
     }
     for (const [key, value] of Object.entries(record.bounds)) {
       if (!Number.isInteger(value) || value <= 0) {
