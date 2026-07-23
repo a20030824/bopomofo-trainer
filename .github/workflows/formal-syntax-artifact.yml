@@ -1,0 +1,66 @@
+name: formal-syntax-artifact
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/formal-syntax-artifact.yml
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Download pinned UD Chinese GSD r2.18 files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/external/ud/chinese-gsd/r2.18
+          base=https://raw.githubusercontent.com/UniversalDependencies/UD_Chinese-GSD/r2.18
+          curl --fail --location --retry 3 --output data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-train.conllu "$base/zh_gsd-ud-train.conllu"
+          curl --fail --location --retry 3 --output data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-dev.conllu "$base/zh_gsd-ud-dev.conllu"
+          curl --fail --location --retry 3 --output data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-test.conllu "$base/zh_gsd-ud-test.conllu"
+          cat <<'CHECKSUMS' | sha256sum --check --strict
+          de36e605a4786edb00097165cfc0ee425ab668a2dfc1da7ce4652ba4d2585b1e  data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-train.conllu
+          09374c8361400861a536ae94a1d7710e1cdd72285c32b9764d94d2d956b4ae02  data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-dev.conllu
+          ff01a3d01d62b623756396085e78bdaeefb7c2b7935a890dde5b18e92712d54f  data/external/ud/chinese-gsd/r2.18/zh_gsd-ud-test.conllu
+          CHECKSUMS
+      - name: Regenerate v2 syntax evidence
+        run: python scripts/project-ud-grammar-evidence.py
+      - name: Verify locked aggregate counts and schema
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          evidence = json.loads(Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json").read_text(encoding="utf-8"))
+          coverage = json.loads(Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json").read_text(encoding="utf-8"))
+          assert evidence["schemaVersion"] == "ud-syntax-evidence-v2"
+          assert coverage["schemaVersion"] == "ud-syntax-evidence-v2"
+          assert coverage["observedCandidateCount"] == 942
+          assert coverage["unseenCandidateCount"] == 58
+          assert coverage["matchedOccurrenceCount"] == 52938
+          assert coverage["reviewCandidateCount"] == 403
+          assert all(
+              (not row["observed"]) or row.get("syntaxProfileEvidence")
+              for row in evidence["rows"]
+          )
+          print(evidence["determinismDigest"])
+          print(coverage["determinismDigest"])
+          PY
+      - name: Upload regenerated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: formal-syntax-v2-artifacts
+          path: |
+            data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json
+            data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json
+          if-no-files-found: error
+          retention-days: 1
