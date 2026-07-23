@@ -46,7 +46,8 @@ For each observed candidate it aggregates:
 - root usage;
 - lemma agreement, mismatch, and missing counts without emitting lemma text;
 - for `VERB` observations, subject and direct/indirect-object dependent counts;
-- anonymous dependency skeletons containing only UPOS, dependency relation, direction, and at most three descendant levels.
+- anonymous dependency skeletons containing only UPOS, dependency relation, direction, and at most three descendant levels;
+- one `syntaxProfileEvidence` partition for every observed UPOS.
 
 The adapter rejects any UPOS outside the complete UD vocabulary:
 
@@ -77,9 +78,9 @@ anonymous child nodes
 
 The complete source sentence cannot be reconstructed from the artifact.
 
-## Current committed v1 result
+## Current committed v2 result
 
-The currently committed top-1,000 artifact was produced by adapter v1 before the formal-syntax expansion:
+The committed top-1,000 artifacts were replayed from the three pinned r2.18 files and verified before commit:
 
 | Measure | Count |
 |---|---:|
@@ -91,14 +92,14 @@ The currently committed top-1,000 artifact was produced by adapter v1 before the
 | Source syntactic tokens | 123,289 |
 | Candidates queued for syntax review | 403 |
 
-Current v1 determinism digests:
+Current v2 determinism digests:
 
 ```text
-evidence  4e8449e14ef62ef683a8edc3da8085c47a391a29540c72e30419e51f8ad76459
-coverage  53f2259bf725732f652c237955350a1365029ef0a6ec48321fee2bc5bcb8e391
+evidence  16c7daaf4c45714c560ad01558ba276ac39d65e4e326382fe841710975448db4
+coverage  f61a88fdc5a2db894f467f09f7ca4081bb7d056f5b31b9c1c6f4e17f0f9b48fb
 ```
 
-The v2 adapter and fixture tests are committed independently of the large source replay. Replacing the committed JSON requires the three pinned ignored CoNLL-U files and must produce the same candidate, occurrence, unseen, and review counts before the new v2 digests are accepted.
+The replay also verifies that every observed row has at least one per-UPOS `syntaxProfileEvidence` partition. The compact evidence JSON is 18,699,294 bytes and the compact coverage JSON is 71,209 bytes. Compact formatting changes storage size only; the determinism digests cover the same structured payload.
 
 ## Review boundary
 
@@ -134,7 +135,7 @@ data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json
 
 The evidence artifact contains one sparse row per ranked candidate. The coverage artifact contains aggregate counts, rank buckets, complete UPOS coverage, dependency and valency relation totals, review policy, review queue, and legacy/formal schema audits.
 
-Generated JSON is written with LF line endings on every platform. Candidate input checksumming normalizes line endings before hashing.
+Generated JSON is deterministic compact UTF-8 with LF line endings on every platform. Candidate input checksumming normalizes line endings before hashing.
 
 ## Reproduction
 
