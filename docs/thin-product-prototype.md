@@ -51,7 +51,7 @@ All active product entries require reviewed grammar annotations. Candidate compo
 
 Fallback order is complete template, standalone utterance, standalone lexical prompt, then explicit failure. There is no random-word fallback.
 
-The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain only as legal line-break units; they do not add visual spacing or interaction states. CSS balanced wrapping chooses among those legal breaks while keeping all wrapped lines on one stable left edge.
+The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain indivisible line-break units and add no visible word spacing or interaction states. At runtime, the browser measures those units at the actual rendered font and available width, then a deterministic dynamic-programming planner assigns contiguous entry ranges to explicit lines. The cost minimizes ragged unused width and strongly penalizes a short single-entry final orphan whenever another legal distribution exists.
 
 ## Persistence boundary
 
@@ -104,7 +104,7 @@ The primary UI shows:
 - one continuous complete utterance with no visible word or catalog-entry separation;
 - one fixed visual step per Chinese character, independent of reading length;
 - one centered Bopomofo slot beneath each character with room for four separate symbols including the tone, rather than compressed token spacing;
-- balanced long-sentence wrapping only between invisible entry groups;
+- measured long-sentence distribution only between invisible entry groups, with explicit stable-left-edge line wrappers and orphan-line avoidance;
 - completed, current, upcoming, and wrong-token states;
 - optional next physical-key guidance;
 - compact current-round accuracy and overall utterance progress;
@@ -122,7 +122,7 @@ The primary UI shows:
 
 There is no completion card or next-round button. Key repeat remains an ignored interaction outcome, so holding the final key cannot become accepted input in the next round. The previous round's compact result disappears after 1.4 seconds or the first correct input of the next sentence, whichever happens first.
 
-Within a round, the browser mounts the sentence once and updates existing glyph/token classes, feedback, and progress in place. A new DOM subtree is mounted only when a new round starts, so the restrained state transitions express actual continuity rather than repeated full rendering.
+Within a round, the browser mounts the sentence once and updates existing glyph/token classes, feedback, and progress in place. Initial mount, container resize, and final font availability may reparent those same entry nodes into newly planned line wrappers; the glyph and token nodes, input progress, and sentence identity are preserved.
 
 No UI element labels error/timing evidence as confidence, mastery, or learning effectiveness.
 
