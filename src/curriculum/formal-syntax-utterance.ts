@@ -129,7 +129,11 @@ export function composeFormalSyntaxUtterances(
       if (entry === undefined) throw new Error(`formal syntax selected missing entry ${entryId}`);
       return entry;
     });
-    const text = realization.tokens.map((token) => token.value).join("");
+    const text = realization.tokens
+      .filter((token) => token.kind === "lexical-entry")
+      .map((token) => token.value)
+      .join("");
+    const hasPunctuation = realization.tokens.some((token) => token.kind === "punctuation");
     candidates.set(realization.id, {
       id: realization.id,
       kind: "formal-syntax",
@@ -137,9 +141,7 @@ export function composeFormalSyntaxUtterances(
       entries,
       assignments: [],
       text,
-      punctuation: realization.tokens.some((token) => token.kind === "punctuation")
-        ? punctuation
-        : null,
+      punctuation: hasPunctuation ? punctuation : null,
       syntaxDerivationId: realization.derivationId,
       syntaxProfileIds: realization.syntaxProfileIds,
     });
