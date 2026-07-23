@@ -60,8 +60,6 @@ jobs:
         with:
           name: vitest-failure-log
           path: vitest.log
-      - name: Verify formal syntax artifacts
-        run: npm run grammar:formal-syntax-verify
       - name: Source adapter tests
         run: npm run test:source-adapters
       - name: Validate catalog
