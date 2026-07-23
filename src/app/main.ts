@@ -1,5 +1,6 @@
 import "./style.css";
 import type { TokenId } from "../core/model.js";
+import { createProductBackup, parseProductBackup } from "./backup.js";
 import { createPilotExport } from "../product/pilot-export.js";
 import {
   appendPilotRoundRecord,
@@ -40,6 +41,13 @@ import {
   buildPracticeEntries,
   continuousExerciseText,
 } from "./presentation-model.js";
+import {
+  DEFAULT_SELECTION_TUNING,
+  loadSelectionTuning,
+  policyForSelectionTuning,
+  saveSelectionTuning,
+  type SelectionTuning,
+} from "./selection-tuning.js";
 
 type VisualState = "done" | "current" | "upcoming";
 
@@ -51,11 +59,23 @@ function requireElement<T extends Element>(selector: string): T {
 
 const root = requireElement<HTMLDivElement>("#app");
 const capture = requireElement<HTMLTextAreaElement>("#keyboard-capture");
-const environment = createProductEnvironment({
+const catalogs = {
   practice: PRACTICE_CATALOG,
   evaluation: EVALUATION_CATALOG,
   syntaxProfiles: SYNTAX_PROFILES,
-});
+} as const;
+let selectionTuning: SelectionTuning = DEFAULT_SELECTION_TUNING;
+try {
+  selectionTuning = loadSelectionTuning(localStorage);
+} catch {
+  // Storage may be blocked; defaults still provide a complete local session.
+}
+let environment = createProductEnvironment(
+  catalogs,
+  undefined,
+  undefined,
+  policyForSelectionTuning(selectionTuning),
+);
 
 function newSeed(): string {
   return globalThis.crypto?.randomUUID?.() ?? `local-${Date.now().toString(36)}`;
@@ -104,6 +124,7 @@ let showPhysicalHint = false;
 let previousResult: PilotRoundRecord | null = null;
 let previousResultTimer: number | null = null;
 let inspectionAdvanceCount = 0;
+let panelNotice = "";
 
 const reverseBindings = new Map<TokenId, string>();
 for (const [code, tokenId] of Object.entries(STANDARD_BOPOMOFO_LAYOUT.bindings)) {
@@ -163,24 +184,6 @@ function phaseLabel(): string {
   return `常用度階段 ${product.round.selection.stage}`;
 }
 
-function focusDescription(): string {
-  if (product.round.kind === "evaluation") return "保留詞庫 · 不影響出題";
-  return "常用度為主 · 錯誤與慢速有限加權";
-}
-
-function templateDescription(): string {
-  if (product.round.selection.utterance.kind === "formal-syntax") {
-    return "正式句法生成";
-  }
-  const templateId = product.round.selection.utterance.templateId;
-  if (templateId === null) {
-    return product.round.selection.utterance.kind === "standalone-utterance"
-      ? "完整慣用語"
-      : "單詞提示";
-  }
-  return templateId.replaceAll("-", " · ");
-}
-
 function utteranceText(): string {
   const punctuation = product.round.selection.utterance.punctuation ?? "";
   return `${continuousExerciseText(product.round.exercise)}${punctuation}`;
@@ -224,11 +227,11 @@ function mountShell(): void {
         <div class="dialog-shell">
           <header class="dialog-header">
             <div>
-              <span>Practice details</span>
-              <h2 id="information-title">練習資訊</h2>
+              <span>專注練習</span>
+              <h2 id="information-title">設定與資料</h2>
             </div>
             <form method="dialog">
-              <button class="dialog-close" type="submit" aria-label="關閉資訊面板">Esc</button>
+              <button class="dialog-close" type="submit" aria-label="關閉設定面板"><span>關閉</span><kbd>Esc</kbd></button>
             </form>
           </header>
           <div id="information-content" class="information-content"></div>
@@ -338,8 +341,8 @@ function updatePracticeFeedback(): void {
     feedback.setAttribute("aria-live", "assertive");
     feedback.innerHTML = `<div class="ime-blocker" role="alert">
       <span>輸入暫停</span>
-      <strong>偵測到中文輸入法</strong>
-      <p>切換到英文鍵盤後按 Esc，繼續目前這一句。</p>
+      <strong>請切換到英文鍵盤</strong>
+      <p>切換完成後直接繼續輸入，提示會自動消失。</p>
     </div>`;
     return;
   }
@@ -495,42 +498,64 @@ function renderInformationPanel(): void {
   const { attempts, errors } = mappedRoundCounts();
   const content = requireElement<HTMLElement>("#information-content");
   content.innerHTML = `
-    <section class="panel-section current-round-section">
-      <div class="panel-heading"><span>Current round</span><h3>${escapeHtml(roundKindLabel())}</h3></div>
-      <dl class="fact-grid">
-        <div><dt>輪次</dt><dd>${currentRoundNumber()}</dd></div>
-        <div><dt>目前正確率</dt><dd>${accuracyLabel(attempts, errors)}</dd></div>
-        <div><dt>策略</dt><dd>${escapeHtml(phaseLabel())}</dd></div>
-        <div><dt>選題</dt><dd>${escapeHtml(focusDescription())}</dd></div>
-        <div><dt>句型</dt><dd>${escapeHtml(templateDescription())}</dd></div>
-        <div><dt>輸入</dt><dd>英文鍵盤 · Space 一聲</dd></div>
-      </dl>
+    <section class="panel-section round-overview-section">
+      <div class="round-overview">
+        <div><span>第 ${currentRoundNumber()} 句</span><strong>${escapeHtml(roundKindLabel())}</strong></div>
+        <div class="round-accuracy"><span>目前正確率</span><strong>${accuracyLabel(attempts, errors)}</strong></div>
+      </div>
+      <div class="round-meta"><span>${escapeHtml(phaseLabel())}</span><span>英文鍵盤 · Space 一聲</span></div>
     </section>
 
     <section class="panel-section">
-      <div class="panel-heading"><span>Display</span><h3>顯示</h3></div>
+      <div class="panel-heading"><span>練習偏好</span><h3>保持畫面安靜</h3></div>
       <label class="setting-row" for="toggle-physical-hint">
-        <span><strong>實體鍵提示</strong><small>只顯示目前注音對應的下一個實體鍵。</small></span>
+        <span><strong>顯示實體鍵提示</strong><small>只提示目前注音所對應的下一個按鍵。</small></span>
         <input id="toggle-physical-hint" type="checkbox"${showPhysicalHint ? " checked" : ""} />
       </label>
     </section>
 
     <section class="panel-section">
-      <div class="panel-heading history-heading">
-        <div><span>Local history</span><h3>練習紀錄</h3></div>
-        <button id="download-pilot" class="text-button" type="button">下載 Pilot JSON</button>
+      <div class="panel-heading"><span>自適應強度</span><h3>決定弱點影響多少</h3></div>
+      <p class="panel-intro">調整只影響下一題；常用度仍是選詞基礎，總加權最高維持 1.5×。</p>
+      <div class="tuning-controls">
+        <label class="tuning-row" for="error-influence">
+          <span><strong>錯誤影響</strong><small>更常帶回容易按錯的注音。</small></span>
+          <output id="error-influence-value">${Math.round(selectionTuning.errorInfluence * 100)}%</output>
+          <input id="error-influence" type="range" min="0" max="200" step="25" value="${Math.round(selectionTuning.errorInfluence * 100)}" />
+        </label>
+        <label class="tuning-row" for="timing-influence">
+          <span><strong>慢速影響</strong><small>更常帶回輸入較慢的 token 與音節內轉換。</small></span>
+          <output id="timing-influence-value">${Math.round(selectionTuning.timingInfluence * 100)}%</output>
+          <input id="timing-influence" type="range" min="0" max="200" step="25" value="${Math.round(selectionTuning.timingInfluence * 100)}" />
+        </label>
       </div>
+    </section>
+
+    <section class="panel-section data-section">
+      <div class="panel-heading"><span>資料</span><h3>帶走你的練習進度</h3></div>
+      <p class="panel-intro">進度只存在這台裝置。備份檔包含 seed、量測、階段與最近紀錄。</p>
+      ${panelNotice ? `<div class="panel-notice" role="status">${escapeHtml(panelNotice)}</div>` : ""}
+      <div class="data-actions">
+        <button id="download-backup" class="action-button primary" type="button"><strong>匯出備份</strong><small>下載完整 JSON 存檔</small></button>
+        <button id="choose-backup" class="action-button" type="button"><strong>匯入備份</strong><small>從 JSON 還原這台裝置</small></button>
+        <input id="import-backup" class="visually-hidden" type="file" accept="application/json,.json" />
+      </div>
+      <a class="github-link" href="https://github.com/a20030824/bopomofo-trainer" target="_blank" rel="noreferrer"><span>查看原始碼與問題回報</span><strong>GitHub ↗</strong></a>
+    </section>
+
+    <section class="panel-section history-section">
+      <div class="panel-heading"><span>最近紀錄</span><h3>留意趨勢，不盯著數字</h3></div>
       <div class="history-list">${renderHistoryRows()}</div>
     </section>
 
     <section class="panel-section developer-section">
       <details class="developer-tools">
-        <summary>開發與量測診斷</summary>
+        <summary>進階資料與重設</summary>
         <div class="developer-tools-body">
           <div class="developer-copy">
-            <strong>Raw trace</strong>
-            <p>原始事件只用於檢查量測與出題權重，不代表學習分數。</p>
-            <button id="download-round" class="text-button" type="button">下載本句診斷</button>
+            <strong>開發診斷</strong>
+            <p>原始事件與 Pilot export 用於檢查量測，不代表學習分數。</p>
+            <div class="inline-actions"><button id="download-round" class="text-button" type="button">本句 trace</button><button id="download-pilot" class="text-button" type="button">Pilot JSON</button></div>
           </div>
           <div class="table-wrap">
             <table>
@@ -548,8 +573,14 @@ function renderInformationPanel(): void {
     showPhysicalHint = event.currentTarget.checked;
     updatePracticeState();
   });
+  bindInfluenceControl(content, "error-influence", "error-influence-value", "errorInfluence");
+  bindInfluenceControl(content, "timing-influence", "timing-influence-value", "timingInfluence");
   content.querySelector<HTMLButtonElement>("#download-round")?.addEventListener("click", downloadRoundDiagnostics);
   content.querySelector<HTMLButtonElement>("#download-pilot")?.addEventListener("click", downloadPilotExport);
+  content.querySelector<HTMLButtonElement>("#download-backup")?.addEventListener("click", downloadProductBackup);
+  const backupInput = content.querySelector<HTMLInputElement>("#import-backup");
+  content.querySelector<HTMLButtonElement>("#choose-backup")?.addEventListener("click", () => backupInput?.click());
+  backupInput?.addEventListener("change", () => void importProductBackup(backupInput));
   content.querySelector<HTMLButtonElement>("#reset-progress")?.addEventListener("click", resetProgress);
 }
 
@@ -597,6 +628,95 @@ function downloadPilotExport(): void {
     "bopomofo-pilot.json",
     createPilotExport(environment, product.progress, pilotHistory),
   );
+}
+
+function bindInfluenceControl(
+  content: HTMLElement,
+  inputId: string,
+  outputId: string,
+  key: keyof SelectionTuning,
+): void {
+  const input = content.querySelector<HTMLInputElement>(`#${inputId}`);
+  const output = content.querySelector<HTMLOutputElement>(`#${outputId}`);
+  input?.addEventListener("input", () => {
+    if (output !== null) output.value = `${input.value}%`;
+  });
+  input?.addEventListener("change", () => {
+    const influence = Number(input.value) / 100;
+    selectionTuning = { ...selectionTuning, [key]: influence };
+    environment = createProductEnvironment(
+      catalogs,
+      undefined,
+      undefined,
+      policyForSelectionTuning(selectionTuning),
+    );
+    try {
+      saveSelectionTuning(localStorage, selectionTuning);
+      panelNotice = "自適應強度已更新，下一題起生效。";
+    } catch {
+      panelNotice = "設定已套用，但瀏覽器拒絕保存；關閉頁面後會回復預設值。";
+    }
+    renderInformationPanel();
+  });
+}
+
+function downloadProductBackup(): void {
+  downloadJson(
+    `bopomofo-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    createProductBackup(product.progress, pilotHistory, selectionTuning),
+  );
+  panelNotice = "完整備份已下載。";
+  renderInformationPanel();
+}
+
+async function importProductBackup(input: HTMLInputElement): Promise<void> {
+  const file = input.files?.[0];
+  if (file === undefined) return;
+  let backup;
+  try {
+    backup = parseProductBackup(
+      await file.text(),
+      environment,
+      "guided",
+      STANDARD_BOPOMOFO_LAYOUT.id,
+    );
+  } catch {
+    backup = null;
+  }
+  if (backup === null) {
+    panelNotice = "無法讀取這份備份；檔案格式或 catalog 版本不相容。";
+    renderInformationPanel();
+    return;
+  }
+  if (!window.confirm("匯入會取代這台裝置目前的練習進度，確定繼續嗎？")) {
+    input.value = "";
+    return;
+  }
+
+  selectionTuning = backup.selectionTuning;
+  environment = createProductEnvironment(
+    catalogs,
+    undefined,
+    undefined,
+    policyForSelectionTuning(selectionTuning),
+  );
+  product = createProductState(environment, backup.progress, performance.now());
+  pilotHistory = backup.pilotHistory;
+  recoveredFromInvalidState = false;
+  recoveredPilotHistory = false;
+  inspectionAdvanceCount = 0;
+  clearPreviousResult();
+  try {
+    saveSelectionTuning(localStorage, selectionTuning);
+  } catch {
+    // The progress persistence warning below remains the user-visible failure.
+  }
+  persistProgress();
+  panelNotice = "備份已匯入，練習進度與自適應設定已還原。";
+  capture.value = "";
+  mountPracticeRound(true);
+  updateTopbar();
+  renderInformationPanel();
 }
 
 function resetProgress(): void {
@@ -694,7 +814,10 @@ capture.addEventListener("compositionstart", () => {
 
 capture.addEventListener("compositionend", () => {
   compositionActive = false;
+  imeWarning = false;
   capture.value = "";
+  updatePracticeState();
+  focusCapture();
 });
 
 capture.addEventListener("input", (event) => {
@@ -702,7 +825,7 @@ capture.addEventListener("input", (event) => {
 });
 
 capture.addEventListener("keydown", (event) => {
-  if (imeWarning || requireElement<HTMLDialogElement>("#information-dialog").open) {
+  if (requireElement<HTMLDialogElement>("#information-dialog").open) {
     event.preventDefault();
     return;
   }
@@ -716,6 +839,10 @@ capture.addEventListener("keydown", (event) => {
     imeWarning = true;
     updatePracticeState();
     return;
+  }
+  if (imeWarning) {
+    imeWarning = false;
+    capture.value = "";
   }
   if (event.code === "Space" || event.code === "Tab") event.preventDefault();
   const beforeSummary = product.summary;
