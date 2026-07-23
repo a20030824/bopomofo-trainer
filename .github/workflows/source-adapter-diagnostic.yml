@@ -1,4 +1,4 @@
-name: source-adapter-diagnostic
+name: ui-pr-diagnostic
 
 on:
   pull_request:
@@ -7,23 +7,23 @@ permissions:
   contents: read
 
 jobs:
-  source-adapters:
+  ui-gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v6
         with:
-          python-version: "3.12"
-      - name: Source adapter tests
-        id: source_adapters
-        shell: bash
-        run: |
-          set -o pipefail
-          python -m unittest discover -s tests/python -p "test_*.py" 2>&1 | tee source-adapter.log
-      - name: Upload source adapter log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-adapter-diagnostic-log
-          path: source-adapter.log
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm ci --include=dev --ignore-scripts
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused app tests
+        run: npx vitest run tests/app/presentation-model.test.ts tests/app/keyboard-adapter.test.ts --reporter=verbose
+      - name: Validate catalog
+        run: npm run catalog:validate
+      - name: Production build
+        run: npm run build
