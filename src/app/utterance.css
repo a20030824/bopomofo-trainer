@@ -49,6 +49,7 @@
   white-space: nowrap;
 }
 
+/* Four readable positions cover initial, medial, final, and tone without compression. */
 .syllable-reading {
   position: absolute;
   top: calc(var(--han-size) + 10px);
