@@ -4,15 +4,17 @@ Phase 6 prepares one coherent local-first product for a 10–20 round human pilo
 
 ## Storage boundary
 
-Phase 5 progress remains the source of truth for cumulative measurement and curriculum state. Pilot history uses a separate schema-versioned localStorage key:
+Current-generation product progress remains the source of truth for cumulative measurement and curriculum state. Pilot history uses a separate schema-versioned localStorage key:
 
 ```text
-bopomofo-trainer.pilot-history.v1
+bopomofo-trainer.pilot-history.v2
 ```
 
-When that key is absent, available Phase 5 round summaries are migrated into pilot history. Older summaries did not preserve per-round latency, so their `cleanLatencyMedianMs` is explicitly `null`.
+The obsolete `bopomofo-trainer.pilot-history.v1` key is deleted before loading. Its payload is never parsed or migrated.
 
-The two local records are reconciled by round number. Records beyond completed progress are discarded, product summaries can fill a history write that is one round behind, and malformed history falls back to valid summaries.
+When the current key is absent, current-generation progress summaries can derive a bounded Pilot history fallback. Summaries do not preserve per-round latency, so their `cleanLatencyMedianMs` is explicitly `null`.
+
+The two current-generation local records are reconciled by round number. Records beyond completed progress are discarded, product summaries can fill a history write that is one round behind, and malformed current history falls back to valid current summaries.
 
 ## Per-round evidence
 
@@ -85,7 +87,7 @@ The export omits the random product seed, export time, account data, and any con
 5. Toggle the physical-key hint and confirm only the next expected key is exposed.
 6. Trigger wrong-key, unmapped-key, and IME states without causing sentence or progress layout shifts.
 7. Confirm evaluation appears after every five practice rounds and remains distinct in history without changing adaptive measurements.
-8. Reload at least twice and verify completed history remains ordered and the deterministic next utterance is reproduced.
+8. Reload at least twice and verify completed current-generation history remains ordered and the deterministic next utterance is reproduced.
 9. Check one 320 px viewport and one normal desktop viewport, including a long sentence whose entry-level lines are balanced and share a stable left edge.
 10. Confirm a four-symbol syllable including its tone remains visibly separated, and that shorter syllables do not change Chinese character spacing.
 11. Confirm punctuation remains attached to the final entry and no short orphan line appears when a balanced legal break exists.
