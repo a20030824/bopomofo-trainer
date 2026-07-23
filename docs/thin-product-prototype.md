@@ -51,7 +51,7 @@ All active product entries require reviewed grammar annotations. Candidate compo
 
 Fallback order is complete template, standalone utterance, standalone lexical prompt, then explicit failure. There is no random-word fallback.
 
-The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface.
+The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain only as legal line-break units; they do not add visual spacing or interaction states.
 
 ## Persistence boundary
 
@@ -93,7 +93,7 @@ After every five practice utterances, evaluation:
 - records attempts, errors, and clean timing for the round summary;
 - does not update cumulative measurements, frequency stage, recent utterances, recent templates, or legacy curriculum diagnostics.
 
-This is an observation adapter, not a validated learning assessment. Evaluation identity is available in the information dialog and local history without interrupting the continuous keyboard flow.
+This is an observation adapter, not a validated learning assessment. Evaluation identity is available in the information drawer and local history without interrupting the continuous keyboard flow.
 
 ## Browser behavior
 
@@ -102,14 +102,14 @@ The page keeps the hidden textarea capture target so real IME composition events
 The primary UI shows:
 
 - one continuous complete utterance with no visible word or catalog-entry separation;
-- one reviewed Bopomofo syllable beneath each displayed character;
+- one fixed-width character column for each reviewed Bopomofo syllable, so reading length cannot distort Chinese spacing;
 - completed, current, upcoming, and wrong-token states;
 - optional next physical-key guidance;
 - compact current-round accuracy and overall utterance progress;
 - a blocking, keyboard-dismissable IME warning;
 - immediate save-and-advance after the final correct token.
 
-`Escape` opens a native information dialog containing:
+`Escape` opens a native information surface that appears as a right-side drawer on desktop and a bottom sheet on narrow screens. It contains:
 
 - current frequency stage and selection boundary;
 - sentence-template or standalone type;
@@ -118,7 +118,9 @@ The primary UI shows:
 - raw diagnostics under a collapsed disclosure;
 - destructive local reset.
 
-There is no completion card or next-round button. Key repeat remains an ignored interaction outcome, so holding the final key cannot become accepted input in the next round. The previous round's compact result may remain briefly visible after the next sentence is already active.
+There is no completion card or next-round button. Key repeat remains an ignored interaction outcome, so holding the final key cannot become accepted input in the next round. The previous round's compact result disappears after 1.4 seconds or the first correct input of the next sentence, whichever happens first.
+
+Within a round, the browser mounts the sentence once and updates existing glyph/token classes, feedback, and progress in place. A new DOM subtree is mounted only when a new round starts, so the restrained state transitions express actual continuity rather than repeated full rendering.
 
 No UI element labels error/timing evidence as confidence, mastery, or learning effectiveness.
 
@@ -128,4 +130,4 @@ No UI element labels error/timing evidence as confidence, mastery, or learning e
 - Grammar structure does not establish semantic naturalness.
 - Reload resets unfinished-round timing traces, although completed progress and deterministic next selection persist.
 - There is no fatigue model, timing-outlier policy, recall mode, alternate layout, account, or cross-device synchronization.
-- Character-to-syllable display assumes reviewed catalog entries preserve their declared surface order; a malformed mismatch is rendered fail-soft rather than changing product identity.
+- Character-to-syllable presentation requires exact reviewed surface alignment. A mismatch fails closed with its entry identity instead of silently joining several characters to one syllable.
