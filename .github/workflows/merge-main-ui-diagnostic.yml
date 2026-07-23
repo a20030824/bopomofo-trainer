@@ -1,0 +1,90 @@
+name: merge-main-ui-diagnostic
+
+on:
+  push:
+    branches:
+      - agent/ultra-minimal-practice-ui
+
+permissions:
+  contents: write
+
+concurrency:
+  group: merge-main-ui-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  merge-and-validate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: agent/ultra-minimal-practice-ui
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Merge current main and validate UI scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "Current main is already integrated."
+            exit 0
+          fi
+
+          set +e
+          git merge --no-commit --no-ff origin/main
+          merge_status=$?
+          set -e
+
+          if [ "$merge_status" -ne 0 ]; then
+            conflicts="$(git diff --name-only --diff-filter=U)"
+            printf 'Conflicts:\n%s\n' "$conflicts"
+            unexpected="$(printf '%s\n' "$conflicts" | grep -Ev '^(docs/pilot-validation\.md|docs/thin-product-prototype\.md|src/app/main\.ts)$' || true)"
+            if [ -n "$unexpected" ]; then
+              echo "Unexpected merge conflicts:"
+              printf '%s\n' "$unexpected"
+              exit 1
+            fi
+            for path in docs/pilot-validation.md docs/thin-product-prototype.md src/app/main.ts; do
+              if printf '%s\n' "$conflicts" | grep -Fxq "$path"; then
+                git checkout --ours -- "$path"
+              fi
+            done
+          fi
+
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/app/main.ts")
+          source = path.read_text(encoding="utf-8")
+          replacements = {
+              "舊的本機進度已保留可驗證量測，新的語句選題從高頻階段開始。":
+                  "舊版或無效的本機進度已刪除，已從新的進度世代重新開始。",
+              "練習歷史格式無法讀取，已從有效完成摘要重建；舊輪次時間會顯示為未知。":
+                  "舊版或無效的 Pilot 歷史已刪除；目前世代可由有效完成摘要補齊。",
+          }
+          for old, new in replacements.items():
+              if old not in source and new not in source:
+                  raise SystemExit(f"missing expected notice text: {old}")
+              source = source.replace(old, new)
+          path.write_text(source, encoding="utf-8", newline="\n")
+          PY
+
+          git add -A
+          git diff --cached --check
+          npm ci --include=dev --ignore-scripts
+          npm run typecheck
+          npx vitest run tests/app/presentation-model.test.ts tests/app/keyboard-adapter.test.ts --reporter=verbose
+          npm run catalog:validate
+          npm run build
+          git commit -m "Merge latest main into UI runway"
+          git push origin HEAD:agent/ultra-minimal-practice-ui
