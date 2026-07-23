@@ -31,7 +31,6 @@ import {
   type ProductRoundSummary,
 } from "./types.js";
 
-const LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION = 1;
 const RECENT_SUMMARY_LIMIT = 12;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -401,8 +400,7 @@ export function parseProductProgress(
   }
   if (
     !isRecord(parsed)
-    || (parsed.schemaVersion !== PRODUCT_PROGRESS_SCHEMA_VERSION
-      && parsed.schemaVersion !== LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION)
+    || parsed.schemaVersion !== PRODUCT_PROGRESS_SCHEMA_VERSION
     || typeof parsed.seed !== "string"
     || parsed.seed.length === 0
     || parsed.mode !== expectedMode
@@ -467,9 +465,7 @@ export function parseProductProgress(
     recentEntryIds: recentEntryIds as string[],
     recentTokenIds: recentTokenIds as string[],
   };
-  const selection = parsed.schemaVersion === LEGACY_PRODUCT_PROGRESS_SCHEMA_VERSION
-    ? createFrequencyFirstSelectionState(utterancePolicy)
-    : parseSelectionState(parsed.selection, utterancePolicy);
+  const selection = parseSelectionState(parsed.selection, utterancePolicy);
   if (selection === null) return null;
 
   return {
