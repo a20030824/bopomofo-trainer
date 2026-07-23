@@ -51,7 +51,7 @@ All active product entries require reviewed grammar annotations. Candidate compo
 
 Fallback order is complete template, standalone utterance, standalone lexical prompt, then explicit failure. There is no random-word fallback.
 
-The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain only as legal line-break units; they do not add visual spacing or interaction states.
+The browser presentation consumes only the ordered exercise entries, their syllables, and the composed punctuation. It does not depend on the fixed number of entries or expose template slots, so the formal syntax migration can produce longer structures without redesigning the practice surface. Invisible entry wrappers remain only as legal line-break units; they do not add visual spacing or interaction states. CSS balanced wrapping chooses among those legal breaks while keeping all wrapped lines on one stable left edge.
 
 ## Persistence boundary
 
@@ -102,11 +102,13 @@ The page keeps the hidden textarea capture target so real IME composition events
 The primary UI shows:
 
 - one continuous complete utterance with no visible word or catalog-entry separation;
-- one fixed-width character column for each reviewed Bopomofo syllable, so reading length cannot distort Chinese spacing;
+- one fixed visual step per Chinese character, independent of reading length;
+- one centered Bopomofo slot beneath each character with room for four separate symbols including the tone, rather than compressed token spacing;
+- balanced long-sentence wrapping only between invisible entry groups;
 - completed, current, upcoming, and wrong-token states;
 - optional next physical-key guidance;
 - compact current-round accuracy and overall utterance progress;
-- a blocking, keyboard-dismissable IME warning;
+- a blocking, keyboard-dismissable IME warning that overlays the unchanged practice geometry;
 - immediate save-and-advance after the final correct token.
 
 `Escape` opens a native information surface that appears as a right-side drawer on desktop and a bottom sheet on narrow screens. It contains:
