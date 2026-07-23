@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
 import catalog_activation
+
+SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
 def validate_historical_activation_report(
@@ -44,7 +47,7 @@ def validate_historical_activation_report(
     if any(
         not isinstance(path, str)
         or not isinstance(digest, str)
-        or len(digest) != 64
+        or SHA256_PATTERN.fullmatch(digest) is None
         for path, digest in checksums.items()
     ):
         raise ValueError("activation report output checksums are malformed")
