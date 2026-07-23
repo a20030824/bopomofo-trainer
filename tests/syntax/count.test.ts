@@ -63,6 +63,7 @@ describe("exact structural derivation shape counting", () => {
         category: "NounPhrase",
         recursive: true,
       }],
+      surfaceOrders: [{ id: "canonical", constituentKeys: ["noun"] }],
       positiveFixtureIds: ["noun.recursive:positive"],
       negativeFixtureIds: ["noun.recursive:negative"],
     };
