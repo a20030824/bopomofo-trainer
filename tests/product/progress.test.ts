@@ -47,21 +47,13 @@ describe("product progress codec", () => {
     });
   });
 
-  it("migrates legacy schema-v1 state without discarding measurements or rounds", () => {
+  it("rejects every pre-generation progress schema without migration", () => {
     const progress = createProgress();
-    const legacy = JSON.parse(serializeProductProgress(progress)) as Record<string, unknown>;
-    legacy.schemaVersion = 1;
-    delete legacy.selection;
-    const parsed = parse(JSON.stringify(legacy));
-    expect(parsed).not.toBeNull();
-    expect(parsed).toMatchObject({
-      schemaVersion: 2,
-      seed: progress.seed,
-      practiceRoundsCompleted: 0,
-      evaluationRoundsCompleted: 0,
-    });
-    expect(parsed!.measurements).toEqual(progress.measurements);
-    expect(parsed!.selection.stage).toBe(1);
+    for (const schemaVersion of [1, 2]) {
+      const obsolete = JSON.parse(serializeProductProgress(progress)) as Record<string, unknown>;
+      obsolete.schemaVersion = schemaVersion;
+      expect(parse(JSON.stringify(obsolete))).toBeNull();
+    }
   });
 
   it("rejects malformed, stale, and wrong-scope state", () => {
