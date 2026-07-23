@@ -16,7 +16,7 @@ The branch provides:
 - per-UPOS evidence partitioning without `dominantUpos` reduction;
 - multiple `SyntaxProfile` records per exact `(text, reading)` entry;
 - written-form evidence sharing across all active readings without semantic disambiguation;
-- formal grammar IR, finite-cardinality validation, forbidden-field validation, and recursion-cycle validation;
+- formal grammar IR, finite-cardinality validation, forbidden-field validation, recursion-cycle validation, and fail-closed rejection of reserved non-empty rule-level constraints;
 - phrase, clause, question, complement, embedded-clause, and recursive complex-clause production inventories;
 - lazy exhaustive structural enumeration within versioned bounds;
 - bounded random structural sampling for product use;
@@ -25,6 +25,8 @@ The branch provides:
 - machine-readable syntax coverage and a fixed-template removal gate.
 
 The grammar inventory contains 83 production rules, 109 positive fixtures, and 83 negative fixtures.
+
+For `mandarin-formal-grammar-v1`, executable requirements are represented by constituent cardinality, `requiredFeatures`, `requiredFunctions`, and `requiredValencyFrames`. The rule-level `constraints` array is reserved for a later grammar version and must remain empty. Validation rejects every non-empty array so enumeration, random sampling, and structural counting cannot silently ignore a declared constraint.
 
 The committed v2 evidence replay preserves:
 
