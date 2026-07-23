@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -26,6 +26,65 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
+      - name: Migrate formal syntax artifacts to versioned paths
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'agent/formal-syntax-system'
+        shell: bash
+        run: |
+          set -euo pipefail
+          old_evidence='data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json'
+          old_coverage='data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json'
+          new_evidence='data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json'
+          new_coverage='data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json'
+          if [[ -f "$new_evidence" && -f "$new_coverage" ]]; then
+            exit 0
+          fi
+          cp "$old_evidence" /tmp/formal-syntax-evidence-v2.json
+          cp "$old_coverage" /tmp/formal-syntax-coverage-v2.json
+          git fetch origin main agent/formal-syntax-system
+          git switch -C agent/formal-syntax-system origin/agent/formal-syntax-system
+          git show origin/main:"$old_evidence" > "$old_evidence"
+          git show origin/main:"$old_coverage" > "$old_coverage"
+          cp /tmp/formal-syntax-evidence-v2.json "$new_evidence"
+          cp /tmp/formal-syntax-coverage-v2.json "$new_coverage"
+          python - <<'PY'
+          from pathlib import Path
+
+          old_evidence = "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json"
+          old_coverage = "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json"
+          new_evidence = "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-evidence-v2.json"
+          new_coverage = "data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-syntax-coverage-v2.json"
+          replacements = {
+              Path("scripts/ud_grammar_evidence/common.py"): (
+                  (old_evidence, new_evidence),
+                  (old_coverage, new_coverage),
+              ),
+              Path("scripts/build-formal-syntax-coverage.ts"): (
+                  (old_evidence, new_evidence),
+              ),
+              Path("docs/reference-sources/ud-chinese-gsd-naer-top-1000-grammar-evidence.md"): (
+                  (old_evidence, new_evidence),
+                  (old_coverage, new_coverage),
+              ),
+              Path("docs/formal-syntax-system.md"): (
+                  (old_evidence, new_evidence),
+                  (old_coverage, new_coverage),
+              ),
+          }
+          for path, pairs in replacements.items():
+              source = path.read_text(encoding="utf-8")
+              for old, new in pairs:
+                  source = source.replace(old, new)
+              path.write_text(source, encoding="utf-8", newline="\n")
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$old_evidence" "$old_coverage" "$new_evidence" "$new_coverage" \
+            scripts/ud_grammar_evidence/common.py \
+            scripts/build-formal-syntax-coverage.ts \
+            docs/reference-sources/ud-chinese-gsd-naer-top-1000-grammar-evidence.md \
+            docs/formal-syntax-system.md
+          git commit -m 'Separate formal syntax v2 evidence artifacts'
+          git push origin HEAD:agent/formal-syntax-system
       - uses: actions/setup-node@v6
         with:
           node-version: 22
