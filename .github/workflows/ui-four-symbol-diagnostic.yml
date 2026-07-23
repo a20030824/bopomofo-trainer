@@ -1,6 +1,9 @@
 name: ui-four-symbol-diagnostic
 
 on:
+  push:
+    branches:
+      - agent/ultra-minimal-practice-ui
   pull_request:
 
 permissions:
