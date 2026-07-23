@@ -1,30 +1,33 @@
 .utterance-runway {
-  --glyph-size: clamp(48px, 4.2vw, 56px);
+  --glyph-step: clamp(64px, 5vw, 68px);
+  --han-size: clamp(48px, 4.2vw, 56px);
   --reading-size: clamp(17px, 1.55vw, 20px);
-  display: flex;
+  display: block;
   width: max-content;
   max-width: 100%;
   margin-inline: auto;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  row-gap: 26px;
+  margin-bottom: -26px;
+  color: var(--ink-upcoming);
   font-variant-numeric: tabular-nums;
+  text-align: left;
+  text-wrap: balance;
+  word-break: keep-all;
 }
 
 .practice-entry {
   display: inline-flex;
-  flex: 0 0 auto;
+  margin-bottom: 26px;
   align-items: flex-start;
+  vertical-align: top;
   white-space: nowrap;
 }
 
 .practice-glyph {
   position: relative;
   display: inline-grid;
-  width: var(--glyph-size);
-  height: calc(var(--glyph-size) + 44px);
-  flex: 0 0 var(--glyph-size);
+  width: var(--glyph-step);
+  height: calc(var(--han-size) + 46px);
+  flex: 0 0 var(--glyph-step);
   place-items: start center;
   color: var(--ink-upcoming);
   transition: color 90ms ease;
@@ -34,37 +37,33 @@
 .practice-glyph.upcoming { color: var(--ink-upcoming); }
 
 .han-character {
-  position: relative;
   display: grid;
-  width: var(--glyph-size);
-  height: calc(var(--glyph-size) * 1.06);
+  width: var(--glyph-step);
+  height: calc(var(--han-size) * 1.06);
   place-items: start center;
   padding: 0;
-  font-size: var(--glyph-size);
+  font-size: var(--han-size);
   font-weight: 540;
   letter-spacing: -.025em;
   line-height: 1.06;
   white-space: nowrap;
 }
-.practice-glyph.current .han-character::after {
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 3px;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--accent);
-  content: "";
-  transform: translateX(-50%);
-}
 
 .syllable-reading {
   position: absolute;
-  top: calc(var(--glyph-size) + 10px);
+  top: calc(var(--han-size) + 10px);
   left: 50%;
   display: inline-flex;
+  width: 3.25em;
   min-height: 1.5em;
   justify-content: center;
+  gap: .06em;
+  color: var(--ink-upcoming);
+  font-family: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  font-size: var(--reading-size);
+  font-kerning: none;
+  letter-spacing: 0;
+  line-height: 1.15;
   white-space: nowrap;
   transform: translateX(-50%);
 }
@@ -72,10 +71,10 @@
 .reading-token {
   position: relative;
   display: inline-grid;
-  min-width: .65em;
+  min-width: .74em;
   place-items: start center;
   color: var(--ink-upcoming);
-  font-size: var(--reading-size);
+  font-size: 1em;
   font-weight: 470;
   line-height: 1.15;
   transition: color 80ms ease, transform 80ms ease;
@@ -104,12 +103,55 @@
 
 .utterance-punctuation {
   display: inline-block;
-  width: calc(var(--glyph-size) * .58);
-  flex: 0 0 calc(var(--glyph-size) * .58);
+  width: calc(var(--glyph-step) * .58);
+  flex: 0 0 calc(var(--glyph-step) * .58);
   color: var(--ink-upcoming);
-  font-size: var(--glyph-size);
+  font-size: var(--han-size);
   font-weight: 500;
   line-height: 1.06;
+  vertical-align: top;
+}
+
+.practice-center {
+  position: relative;
+}
+
+.practice-center .progress-line,
+.practice-center .progress-caption {
+  width: min(720px, 100%);
+  margin-inline: auto;
+}
+
+.practice-center .progress-line {
+  margin-top: 34px;
+}
+
+.practice-center .practice-feedback.ime {
+  min-height: 28px;
+  margin-top: 26px;
+}
+
+.practice-center .ime-blocker {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100% - 32px));
+  transform: translate(-50%, -50%);
+  box-shadow: 0 18px 54px rgba(36, 35, 33, .16);
+}
+
+.practice-center:has(.practice-feedback.ime) .utterance-runway,
+.practice-center:has(.practice-feedback.ime) .progress-line,
+.practice-center:has(.practice-feedback.ime) .progress-caption {
+  opacity: .18;
+  transition: opacity 100ms ease;
+}
+
+.round-status span::after {
+  margin-left: 8px;
+  color: var(--ink-faint);
+  content: "·";
 }
 
 @keyframes current-token-in {
@@ -123,17 +165,14 @@
 
 @media (max-width: 720px) {
   .utterance-runway {
-    --glyph-size: clamp(38px, 10.8vw, 46px);
-    --reading-size: clamp(15px, 4.2vw, 18px);
-    row-gap: 20px;
+    --glyph-step: clamp(50px, 13vw, 54px);
+    --han-size: clamp(38px, 10.8vw, 46px);
+    --reading-size: clamp(14.5px, 4vw, 16px);
+    margin-bottom: -20px;
   }
-  .practice-glyph { height: calc(var(--glyph-size) + 39px); }
-  .syllable-reading { top: calc(var(--glyph-size) + 8px); }
-}
-
-@media (max-width: 400px) {
-  .utterance-runway {
-    --glyph-size: clamp(36px, 10.5vw, 41px);
-    --reading-size: clamp(14px, 4vw, 16px);
-  }
+  .practice-entry { margin-bottom: 20px; }
+  .practice-glyph { height: calc(var(--han-size) + 41px); }
+  .syllable-reading { top: calc(var(--han-size) + 8px); }
+  .practice-center .progress-line,
+  .practice-center .progress-caption { width: min(620px, 100%); }
 }
