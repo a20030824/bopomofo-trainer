@@ -112,6 +112,7 @@ class ProjectNaerLexiconCandidatesTest(unittest.TestCase):
             adapter=self.source_adapter(),
         )
 
+        self.assertEqual(payload["adapterVersion"], "naer-lexicon-candidates-adapter-v1")
         self.assertEqual(payload["selection"]["selectedCount"], 2)
         self.assertEqual(payload["selection"]["lengthDistribution"], {"1": 1, "2": 1})
         self.assertEqual(
@@ -151,7 +152,7 @@ class ProjectNaerLexiconCandidatesTest(unittest.TestCase):
                 adapter=self.source_adapter(),
             )
 
-    def test_rejects_non_han_candidate(self) -> None:
+    def test_strict_mode_rejects_non_han_candidate(self) -> None:
         source = self.adapter.load_naer_adapter()
         fixture_workbook(
             self.workbook,
@@ -164,6 +165,83 @@ class ProjectNaerLexiconCandidatesTest(unittest.TestCase):
                 1,
                 adapter=self.source_adapter(),
             )
+
+    def test_report_mode_excludes_non_han_without_reindexing_source_rank(self) -> None:
+        source = self.adapter.load_naer_adapter()
+        fixture_workbook(
+            self.workbook,
+            list(source.EXPECTED_HEADERS),
+            [
+                {"rank": 1, "text": "的", "written": 10, "spoken": 20},
+                {"rank": 2, "text": "AI", "written": 1, "spoken": 1},
+                {"rank": 3, "text": "我們", "written": 5, "spoken": 6},
+            ],
+        )
+        payload = self.adapter.project_top_candidates(
+            self.workbook,
+            3,
+            adapter=self.source_adapter(),
+            invalid_row_policy="report",
+        )
+
+        self.assertEqual(payload["adapterVersion"], "naer-lexicon-candidates-adapter-v2")
+        self.assertEqual(
+            [row["generalRank"] for row in payload["rows"]],
+            [1, 3],
+        )
+        self.assertEqual(payload["selection"]["sourcePrefixCount"], 3)
+        self.assertEqual(payload["selection"]["selectedCount"], 2)
+        self.assertEqual(payload["selection"]["excludedCount"], 1)
+        self.assertEqual(
+            payload["selection"]["exclusionReasonCounts"],
+            {"non-han-text": 1},
+        )
+        self.assertEqual(
+            payload["eligibilityReport"]["exclusions"],
+            [{
+                "reason": "non-han-text",
+                "generalRank": 2,
+                "sourcePhysicalRow": 3,
+                "rawLexicalText": "AI",
+                "normalizedLexicalText": "AI",
+            }],
+        )
+
+    def test_report_mode_keeps_first_normalized_duplicate(self) -> None:
+        source = self.adapter.load_naer_adapter()
+        fixture_workbook(
+            self.workbook,
+            list(source.EXPECTED_HEADERS),
+            [
+                {"rank": 1, "text": "的", "written": 10, "spoken": 20},
+                {"rank": 2, "text": "的", "written": 9, "spoken": 19},
+            ],
+        )
+        payload = self.adapter.project_top_candidates(
+            self.workbook,
+            2,
+            adapter=self.source_adapter(),
+            invalid_row_policy="report",
+        )
+
+        self.assertEqual([row["generalRank"] for row in payload["rows"]], [1])
+        self.assertEqual(
+            payload["eligibilityReport"]["exclusions"][0],
+            {
+                "reason": "duplicate-normalized-text",
+                "generalRank": 2,
+                "sourcePhysicalRow": 3,
+                "rawLexicalText": "的",
+                "normalizedLexicalText": "的",
+                "duplicateOfGeneralRank": 1,
+            },
+        )
+
+    def test_default_report_path_replaces_manifest_suffix(self) -> None:
+        self.assertEqual(
+            self.adapter.default_report_path(Path("data/top-10000-manifest.json")),
+            Path("data/top-10000-eligibility-report.json"),
+        )
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@
     "app:catalog": "tsx scripts/compile-app-catalog.ts",
     "commonness:naer": "python scripts/project-naer-commonness.py",
     "lexicon:naer-top": "python scripts/project-naer-lexicon-candidates.py",
+    "lexicon:naer-top-10000-audit": "python scripts/project-naer-lexicon-candidates.py --limit 10000 --invalid-row-policy report --output data/lexicon/naer-1141208-top-10000-candidates.csv --manifest-output data/lexicon/naer-1141208-top-10000-manifest.json --report-output data/lexicon/naer-1141208-top-10000-eligibility-report.json",
     "lexicon:reading-coverage": "python scripts/summarize-naer-reading-coverage.py",
     "lexicon:naer-top-1000": "python scripts/project-naer-top-1000.py",
     "lexicon:activation-review-batch": "python scripts/project-activation-review-batch.py",
