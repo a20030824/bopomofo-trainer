@@ -8,7 +8,7 @@ It remains a single-page Vanilla TypeScript + Vite product with no account, back
 
 ## Product loop
 
-1. Load schema-versioned local progress or migrate a valid schema-1 profile.
+1. Delete obsolete local progress generations, then load only the current schema.
 2. Determine the current frequency stage.
 3. Filter practice entries to unlocked frequency bands.
 4. Enumerate only grammar-valid utterance candidates.
@@ -55,19 +55,19 @@ The browser presentation consumes only the ordered exercise entries, their sylla
 
 ## Persistence boundary
 
-`localStorage` continues to use the key `bopomofo-trainer.progress.v1`, while the payload is schema version 2.
+Product progress uses `bopomofo-trainer.progress.v3` with payload schema version 3. Pilot history uses `bopomofo-trainer.pilot-history.v2` with payload schema version 2.
 
 Persisted state includes:
 
 - product seed, mode, and layout;
-- measurement, legacy curriculum-diagnostic, and utterance-policy versions;
+- measurement, curriculum-diagnostic, and utterance-policy versions;
 - cumulative binding, confusion, and transition aggregates;
 - current frequency stage and stage attempts/errors/rounds;
 - recent utterance and template IDs;
 - completed practice and evaluation counts;
 - up to twelve recent summaries with utterance, template, and stage identity.
 
-A valid schema-1 payload migrates without losing measurements, completed-round counters, curriculum diagnostics, or summaries. New frequency-first state starts at Stage 1.
+Older progress and Pilot history generations are deliberately incompatible. Their storage keys are deleted before current-generation loading, and their payloads are never parsed, migrated, merged, or partially trusted.
 
 Malformed JSON, invalid aggregate scopes, stale policy versions, impossible counters, or unknown catalog references reject the stored value rather than partially trusting it.
 
@@ -91,7 +91,7 @@ After every five practice utterances, evaluation:
 - composes a grammar-valid utterance;
 - uses no learner-specific selection boost or recent history;
 - records attempts, errors, and clean timing for the round summary;
-- does not update cumulative measurements, frequency stage, recent utterances, recent templates, or legacy curriculum diagnostics.
+- does not update cumulative measurements, frequency stage, recent utterances, recent templates, or curriculum diagnostics.
 
 This is an observation adapter, not a validated learning assessment. Evaluation identity is available in the information drawer and local history without interrupting the continuous keyboard flow.
 
@@ -130,6 +130,6 @@ No UI element labels error/timing evidence as confidence, mastery, or learning e
 
 - The current catalog and grammar review are provisional.
 - Grammar structure does not establish semantic naturalness.
-- Reload resets unfinished-round timing traces, although completed progress and deterministic next selection persist.
+- Reload resets unfinished-round timing traces, although completed current-generation progress and deterministic next selection persist.
 - There is no fatigue model, timing-outlier policy, recall mode, alternate layout, account, or cross-device synchronization.
 - Character-to-syllable presentation requires exact reviewed surface alignment. A mismatch fails closed with its entry identity instead of silently joining several characters to one syllable.
