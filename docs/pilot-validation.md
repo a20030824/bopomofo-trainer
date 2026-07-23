@@ -36,15 +36,17 @@ Median clean latency is calculated only from non-null binding-observation timing
 The primary product is a continuous sentence runway rather than a dashboard of product and research state.
 
 1. One complete Traditional Chinese utterance is the visual unit. Catalog-entry and word boundaries remain in the domain model but are not rendered as cards, gaps, queue rows, or numbered states. Invisible entry wrappers define legal line-break opportunities so a word is not split across desktop lines.
-2. Each displayed character occupies one fixed-width visual column aligned with its reviewed Bopomofo syllable. Reading length cannot widen Chinese spacing. Completed, current, and upcoming tokens use restrained ink contrast; the current character receives a minimal locator and the current token receives the persistent accent.
-3. Wrong-key feedback appears at the current token and in one fixed-height feedback line. Unmapped input remains quiet and does not move layout.
-4. The primary view retains only the utterance, Bopomofo path, compact round status, a two-pixel progress line, and one numeric position count.
-5. Completing the final token persists product progress and Pilot history once, then immediately creates the next round through the existing product transition. There is no completion card, next-round button, mouse action, or timed result gate.
-6. The previous round's compact accuracy and clean median remain for at most 1.4 seconds and disappear earlier on the first correct input of the next sentence.
-7. Pressing `Escape` opens a keyboard-operable information surface: a right-side drawer on desktop and a bottom sheet on narrow screens. The same key closes the native dialog and restores the hidden keyboard-capture target.
-8. Current policy facts, optional physical-key hint, local history, Pilot export, raw traces, diagnostics export, and destructive reset live inside that surface.
-9. IME composition remains a blocking input warning because it invalidates physical-key practice. Switching back to an English keyboard and pressing `Escape` resumes the unchanged round.
-10. Desktop and narrow layouts preserve the same hierarchy without visible entry spacing or horizontal scrolling.
+2. Each displayed character uses a fixed visual step that is independent of reading length. The syllable row reserves four readable symbol positions — initial, medial, final, and tone where present — without compressing token spacing. Shorter syllables remain centered in that same slot.
+3. Constrained long utterances use balanced entry-level wrapping. Lines share one stable left edge, punctuation stays with the final entry, and the layout avoids leaving one short entry alone when an earlier legal break can produce more even lines.
+4. Completed, current, and upcoming tokens use restrained ink contrast. The current Bopomofo token receives the persistent accent; the Chinese row does not add a second decorative locator.
+5. Wrong-key feedback appears at the current token and in one fixed-height feedback line. Unmapped input remains quiet and does not move layout.
+6. IME composition remains blocking, but its warning overlays and dims the stable practice surface instead of increasing feedback height or shifting the sentence and progress line.
+7. The primary view retains only the utterance, Bopomofo path, compact round status, a restrained two-pixel progress line, and one numeric position count.
+8. Completing the final token persists product progress and Pilot history once, then immediately creates the next round through the existing product transition. There is no completion card, next-round button, mouse action, or timed result gate.
+9. The previous round's compact accuracy and clean median remain for at most 1.4 seconds and disappear earlier on the first correct input of the next sentence.
+10. Pressing `Escape` opens a keyboard-operable information surface: a right-side drawer on desktop and a bottom sheet on narrow screens. The same key closes the native dialog and restores the hidden keyboard-capture target.
+11. Current policy facts, optional physical-key hint, local history, Pilot export, raw traces, diagnostics export, and destructive reset live inside that surface.
+12. Desktop and narrow layouts preserve the same hierarchy without visible entry spacing or horizontal scrolling.
 
 The implementation keeps the hidden textarea so real composition events remain observable. Space and Tab are prevented from moving the page only while the practice capture target owns input; controls inside the information surface retain normal keyboard navigation.
 
@@ -84,8 +86,9 @@ The export omits the random product seed, export time, account data, and any con
 6. Trigger wrong-key, unmapped-key, and IME states without causing sentence or progress layout shifts.
 7. Confirm evaluation appears after every five practice rounds and remains distinct in history without changing adaptive measurements.
 8. Reload at least twice and verify completed history remains ordered and the deterministic next utterance is reproduced.
-9. Check one 320 px viewport and one normal desktop viewport, including a long sentence that wraps only between invisible entry groups and keeps every wrapped line on one stable left edge.
-10. Confirm different syllable lengths do not change the visual spacing between Chinese characters.
-11. Download the Pilot JSON and one raw round diagnostic; keep qualitative notes on repetition, feedback, and visual friction separately.
+9. Check one 320 px viewport and one normal desktop viewport, including a long sentence whose entry-level lines are balanced and share a stable left edge.
+10. Confirm a four-symbol syllable including its tone remains visibly separated, and that shorter syllables do not change Chinese character spacing.
+11. Confirm punctuation remains attached to the final entry and no short orphan line appears when a balanced legal break exists.
+12. Download the Pilot JSON and one raw round diagnostic; keep qualitative notes on repetition, feedback, and visual friction separately.
 
 Curriculum thresholds should change only after a repeatable failure mode appears in this pilot. UI changes should likewise respond to observed task friction rather than decoration alone.
