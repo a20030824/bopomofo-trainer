@@ -4,15 +4,15 @@
 
 This status applies to `agent/formal-syntax-system` and Draft PR #84.
 
-The branch implements the formal syntax foundation and keeps the existing 11-template composer as the production compatibility path. The template path is intentionally not removed in this branch state because the formal removal gate is still blocked.
+The branch implements the formal syntax foundation while keeping the existing 11-template composer as the production compatibility path. Foundation merge and fixed-template removal are separate decisions: this PR may enter `main` with the removal gate still blocked, provided the legacy runtime remains unchanged and all foundation checks pass.
 
 ## Completed foundation
 
-The branch currently provides:
+The branch provides:
 
 - the versioned `mandarin-formal-grammar-v1` contract;
-- complete representation of all 17 UD UPOS values;
-- committed syntax-only UD evidence v2 artifacts replayed from pinned r2.18 sources;
+- representation of all 17 UD UPOS values;
+- committed syntax-only UD evidence v2 replayed from pinned r2.18 sources;
 - per-UPOS evidence partitioning without `dominantUpos` reduction;
 - multiple `SyntaxProfile` records per exact `(text, reading)` entry;
 - written-form evidence sharing across all active readings without semantic disambiguation;
@@ -24,67 +24,84 @@ The branch currently provides:
 - a frequency-stage-compatible formal composer that accepts only already eligible entries;
 - machine-readable syntax coverage and a fixed-template removal gate.
 
-The complete grammar inventory currently contains 83 production rules and 192 positive/negative fixtures.
+The grammar inventory contains 83 production rules, 109 positive fixtures, and 83 negative fixtures.
 
-The committed v2 replay preserves the locked aggregate results:
+The committed v2 evidence replay preserves:
 
 ```text
-observed candidates  942
-unseen candidates     58
-matching occurrences  52,938
-review candidates     403
+observed candidates   942
+unseen candidates      58
+matching occurrences   52,938
+review candidates      403
 ```
+
+## Current catalog coverage
+
+The committed current-catalog artifacts report:
+
+```text
+catalog entries                         322
+entries with at least one profile       305
+entries without UD evidence              17
+syntax profiles                          390
+written forms with multiple readings      13
+reading-variant entries                   30
+fully profiled multi-reading forms        13
+missing UPOS lexical positions             0
+unrealizable profiles                      1
+bounded structural shape count 393809961105380
+```
+
+The sole unrealizable profile is the minority `NUM` profile of `不少`. Its observed product function is `object`, while the current numeral lexical positions require `numeral`. The same entry remains usable through its realizable `ADJ` profile. This is a fixed-template-removal blocker, not evidence that the complete entry or foundation is invalid.
+
+The 17 entries without UD evidence remain explicitly listed in the coverage artifact. They receive no guessed profile.
+
+## Artifact verification
+
+`npm run grammar:formal-syntax-coverage` deterministically regenerates the committed profile and coverage artifacts.
+
+`npm run grammar:formal-syntax-verify` rebuilds both artifacts in memory and compares them byte-for-byte with the committed files. It is part of the ordinary PR check. The former workflow that granted `contents: write` and pushed generated commits back to the PR branch has been removed.
 
 ## Fixed-template removal gate
 
 `evaluateFixedTemplateRemovalGate()` permits removal only when all of the following are true:
 
-1. the active committed syntax evidence artifact is `ud-syntax-evidence-v2`;
+1. the active syntax evidence artifact is `ud-syntax-evidence-v2`;
 2. all 17 UPOS values have at least one formal lexical position;
-3. every admitted syntax profile is realizable;
+3. every profile admitted to the product derivation index is realizable;
 4. every production rule has valid positive and negative fixtures;
-5. exhaustive structural shape counting is complete for the accepted derivation bounds;
-6. the new path passes legacy candidate parity;
-7. browser session migration passes;
-8. progress migration passes;
+5. exhaustive structural shape counting is complete for the accepted bounds;
+6. the formal path passes legacy candidate parity;
+7. browser session cutover passes;
+8. a new progress generation is activated for the formal-runtime cutover;
 9. held-out isolation passes;
 10. the formal runtime path is enabled as the product default.
 
 The old composer must not be removed when any condition is false.
 
-## Current blockers
+## Progress boundary after PR #86
 
-The following blockers remain on this branch.
+`main` no longer migrates historical progress payloads. Product progress is generation-scoped, obsolete storage keys are deleted, and incompatible payloads start fresh.
 
-### Full-catalog profile and reachability report
+The formal-runtime cutover must follow the same policy: rotate or explicitly validate the current progress generation so legacy template, utterance, and session identities cannot survive into the formal runtime. The removal gate therefore requires `progressGenerationResetPassed`; it does not require or permit legacy progress migration.
 
-The coverage generator is implemented and the v2 top-1,000 evidence artifacts are committed. The final current-catalog report still requires:
+## Remaining runtime blockers
 
-- projection against the current 322 exact `(text, reading)` entries;
-- complete bounded structural shape counts for the accepted grammar bounds;
-- confirmation that `unrealizableProfileCount` is zero for the admitted product index.
+The foundation is implemented, but the production cutover is not claimed complete. Remaining blockers are:
 
-Entries without evidence must remain listed under `noUdEvidenceEntryIds`; they must not receive guessed profiles.
+- resolve or explicitly exclude the single unrealizable `不少`/`NUM` profile from the admitted product index without weakening all numeral function gates;
+- prove output parity against the current 11-template candidate baseline where parity is contractually required;
+- complete browser session cutover tests;
+- complete the formal-runtime progress generation reset;
+- prove held-out evaluation isolation under the formal composer;
+- enable the formal composer as the default runtime;
+- remove the fixed-template composer only in a later change after `removalAllowed: true`.
 
-### Product parity and migration
+## Safe continuation
 
-The formal composer is available as an explicit compatibility module, but it is not the default runtime path. The following product gates are not yet claimed as passing:
-
-- output parity against the current 11-template candidate baseline;
-- browser session migration;
-- progress migration;
-- held-out isolation;
-- default-runtime cutover.
-
-## Required next sequence
-
-The safe continuation is:
-
-1. project the current 322-entry catalog from the committed v2 evidence artifact;
-2. emit the full machine-readable current-catalog coverage report;
-3. count structural derivation shapes for the accepted bounds;
-4. complete legacy parity and product migration tests;
-5. enable the formal path as the default only after those tests pass;
-6. remove the fixed-template production path in a separate commit only when the gate returns `removalAllowed: true`.
-
-Until then, retaining the old composer is required by the migration contract, not an incomplete deletion.
+1. merge this foundation only after ordinary repository CI and deterministic artifact verification pass;
+2. keep the 11-template runtime unchanged in that merge;
+3. inspect the original UD occurrence behind `不少`/`NUM` before changing grammar reachability;
+4. implement runtime parity, session cutover, progress generation reset, and held-out isolation in a separate PR;
+5. enable the formal runtime only after those gates pass;
+6. remove the old composer in a final separate PR only when the removal gate allows it.
