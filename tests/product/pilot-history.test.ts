@@ -12,6 +12,7 @@ import {
   migratePilotHistory,
   parsePilotHistory,
   PILOT_HISTORY_LIMIT,
+  PILOT_HISTORY_SCHEMA_VERSION,
   serializePilotHistory,
   type PilotRoundRecord,
 } from "../../src/product/pilot-history.js";
@@ -96,15 +97,15 @@ describe("pilot history", () => {
     expect(history.records.at(-1)?.roundNumber).toBe(30);
   });
 
-  it("migrates existing summaries with explicit unknown latency", () => {
+  it("derives current-generation summaries with explicit unknown latency", () => {
     const completed = completeRound();
-    const legacyProgress: ProductProgress = {
+    const currentProgress: ProductProgress = {
       ...completed.progress,
       practiceRoundsCompleted: 3,
       evaluationRoundsCompleted: 1,
       recentSummaries: [completed.summary!],
     };
-    const migrated = migratePilotHistory(legacyProgress);
+    const migrated = migratePilotHistory(currentProgress);
     expect(migrated.records).toHaveLength(1);
     expect(migrated.records[0]?.roundNumber).toBe(4);
     expect(migrated.records[0]?.cleanLatencyMedianMs).toBeNull();
@@ -120,13 +121,23 @@ describe("pilot history", () => {
       environment.measurementPolicy,
     );
     const invalid = {
-      schemaVersion: 1,
+      schemaVersion: PILOT_HISTORY_SCHEMA_VERSION,
       records: [{ ...record, kind: "evaluation", phase: "evaluation" }],
     };
     expect(parsePilotHistory(JSON.stringify(invalid), environment)).toBeNull();
     expect(parsePilotHistory(
-      serializePilotHistory({ schemaVersion: 1, records: [record] }),
+      serializePilotHistory({
+        schemaVersion: PILOT_HISTORY_SCHEMA_VERSION,
+        records: [record],
+      }),
       environment,
     )).not.toBeNull();
+  });
+
+  it("rejects the obsolete pilot history schema", () => {
+    expect(parsePilotHistory(
+      JSON.stringify({ schemaVersion: 1, records: [] }),
+      environment,
+    )).toBeNull();
   });
 });

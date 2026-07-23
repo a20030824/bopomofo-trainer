@@ -84,7 +84,7 @@ Deliverables:
 - versioned policy and complete score traces;
 - deterministic seeded selection;
 - persisted stage counters and recent utterance/template history;
-- schema-1 to schema-2 local progress migration;
+- generation-scoped local progress with explicit obsolete-state deletion;
 - browser presentation of one complete utterance;
 - Pilot export of selection policy and stage state;
 - regressions for locked stages, bounded boosts, confusion independence, exact transitions, replay, and held-out isolation.
