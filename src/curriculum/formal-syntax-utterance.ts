@@ -52,6 +52,37 @@ function weightedIndex(
   return weights.length - 1;
 }
 
+function selectCompatibleProfile(
+  compatible: readonly SyntaxProfile[],
+  usedEntryIds: ReadonlySet<string>,
+  entriesById: ReadonlyMap<string, CatalogEntry>,
+  entryWeightsById: Readonly<Record<string, number>> | undefined,
+  random: RandomSource,
+): SyntaxProfile | null {
+  const profilesByEntryId = new Map<string, SyntaxProfile[]>();
+  for (const profile of compatible) {
+    if (usedEntryIds.has(profile.entryId)) continue;
+    const profiles = profilesByEntryId.get(profile.entryId) ?? [];
+    profiles.push(profile);
+    profilesByEntryId.set(profile.entryId, profiles);
+  }
+  const entryIds = [...profilesByEntryId.keys()];
+  const selectedEntryIndex = weightedIndex(entryIds.map((entryId) => {
+    const entry = entriesById.get(entryId);
+    if (entry === undefined) throw new Error(`formal syntax profile references missing entry ${entryId}`);
+    return entryWeightsById?.[entry.id] ?? defaultEntryWeight(entry);
+  }), random);
+  if (selectedEntryIndex === null) return null;
+  const selectedEntryId = entryIds[selectedEntryIndex];
+  if (selectedEntryId === undefined) throw new Error("formal syntax entry selection failed");
+  const entryProfiles = profilesByEntryId.get(selectedEntryId) ?? [];
+  if (entryProfiles.length === 0) throw new Error("formal syntax profile group is empty");
+  const selectedProfileIndex = entryProfiles.length === 1
+    ? 0
+    : Math.floor(nextUnit(random) * entryProfiles.length);
+  return entryProfiles[selectedProfileIndex] ?? null;
+}
+
 function punctuationForPath(path: readonly string[]): "。" | "！" | "？" {
   if (path.some((id) => id.includes("question"))) return "？";
   if (path.some((id) => id === "sentence.exclamative")) return "！";
@@ -90,24 +121,26 @@ export function composeFormalSyntaxUtterances(
       continue;
     }
     const offsets: Record<string, number> = {};
+    const usedEntryIds = new Set<string>();
     let unrealizable = false;
     for (const slot of shape.lexicalSlots) {
       if (slot.allowedUpos.length === 1 && slot.allowedUpos[0] === "PUNCT") continue;
       const compatible = compatibleProfilesForSlot(slot, index);
-      if (compatible.length === 0) {
+      const selectedProfile = selectCompatibleProfile(
+        compatible,
+        usedEntryIds,
+        entriesById,
+        input.entryWeightsById,
+        input.random,
+      );
+      if (selectedProfile === null) {
         unrealizable = true;
         break;
       }
-      const selectedIndex = weightedIndex(compatible.map((profile) => {
-        const entry = entriesById.get(profile.entryId);
-        if (entry === undefined) return 0;
-        return input.entryWeightsById?.[entry.id] ?? defaultEntryWeight(entry);
-      }), input.random);
-      if (selectedIndex === null) {
-        unrealizable = true;
-        break;
-      }
+      const selectedIndex = compatible.findIndex((profile) => profile.id === selectedProfile.id);
+      if (selectedIndex < 0) throw new Error("formal syntax compatible profile selection failed");
       offsets[slot.id] = selectedIndex;
+      usedEntryIds.add(selectedProfile.entryId);
     }
     if (unrealizable) {
       fallbackReasons.add("formal-syntax-unrealizable-shape");
