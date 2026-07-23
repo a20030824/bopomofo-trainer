@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import ModuleType
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
@@ -147,6 +148,50 @@ class LexiconActivationGenerationTest(unittest.TestCase):
         self.assertFalse(report["policy"]["catalogActivationRequiresRuntimeAdmission"])
         self.assertEqual(report["rows"][1]["generalRank"], 10_000)
         self.assertNotIn("syntaxEvidence", report["rows"][1])
+
+    def test_converts_cedict_pinyin_before_catalog_identity_comparison(self) -> None:
+        write_json(self.reading_coverage, {
+            "adapterVersion": "naer-reading-coverage-summary-v1",
+            "candidateCount": 2,
+            "reviewQueue": [],
+            "determinismDigest": "reading-digest",
+        })
+        write_json(self.cedict, {
+            "adapterVersion": "cedict-identity-hints-adapter-v1",
+            "rows": [{
+                "lookupText": "乙",
+                "status": "unique-record",
+                "records": [{"pinyin": "yi3"}],
+            }],
+        })
+        with self.catalog.open("a", encoding="utf-8", newline="") as destination:
+            writer = csv.DictWriter(destination, fieldnames=["text", "reading"])
+            writer.writerow({"text": "乙", "reading": "ㄧ3"})
+
+        with mock.patch.object(
+            self.adapter,
+            "convert_numbered_pinyin",
+            return_value=["ㄧ3"],
+        ) as converter:
+            report = self.adapter.project_activation_generation(
+                candidates=self.candidates,
+                candidate_manifest=self.manifest,
+                reading_coverage_path=self.reading_coverage,
+                concised_path=self.concised,
+                revised_path=self.revised,
+                cedict_path=self.cedict,
+                active_catalog_path=self.catalog,
+            )
+
+        converter.assert_called_once_with(["yi3"])
+        self.assertEqual(
+            report["statusCounts"],
+            {"already-active-exact-identity": 2},
+        )
+        reading = report["rows"][1]["reading"]
+        self.assertEqual(reading["evidenceType"], "trainer-bopomofo")
+        self.assertEqual(reading["evidence"], "ㄧ3")
+        self.assertEqual(reading["sourceEvidence"], "yi3")
 
 
 if __name__ == "__main__":
