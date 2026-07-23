@@ -6,7 +6,7 @@ on:
       - .github/workflows/formal-syntax-artifact.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   regenerate:
@@ -14,9 +14,25 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - name: Use deterministic compact JSON output
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/ud_grammar_evidence/common.py")
+          text = path.read_text(encoding="utf-8")
+          source = 'json.dump(payload, destination, ensure_ascii=False, indent=2)'
+          replacement = 'json.dump(payload, destination, ensure_ascii=False, separators=(",", ":"))'
+          if source not in text:
+              raise SystemExit("expected pretty JSON writer was not found")
+          path.write_text(text.replace(source, replacement), encoding="utf-8", newline="\n")
+          PY
       - name: Download pinned UD Chinese GSD r2.18 files
         shell: bash
         run: |
@@ -40,21 +56,32 @@ jobs:
           import json
           from pathlib import Path
 
-          evidence = json.loads(Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json").read_text(encoding="utf-8"))
-          coverage = json.loads(Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json").read_text(encoding="utf-8"))
+          evidence_path = Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json")
+          coverage_path = Path("data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json")
+          evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+          coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
           assert evidence["schemaVersion"] == "ud-syntax-evidence-v2"
           assert coverage["schemaVersion"] == "ud-syntax-evidence-v2"
           assert coverage["observedCandidateCount"] == 942
           assert coverage["unseenCandidateCount"] == 58
           assert coverage["matchedOccurrenceCount"] == 52938
           assert coverage["reviewCandidateCount"] == 403
-          assert all(
-              (not row["observed"]) or row.get("syntaxProfileEvidence")
-              for row in evidence["rows"]
-          )
+          assert all((not row["observed"]) or row.get("syntaxProfileEvidence") for row in evidence["rows"])
+          assert evidence_path.stat().st_size < 20_000_000
           print(evidence["determinismDigest"])
           print(coverage["determinismDigest"])
           PY
+      - name: Commit regenerated artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/ud_grammar_evidence/common.py \
+            data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-evidence.json \
+            data/grammar/ud-chinese-gsd-r2.18-naer-top-1000-coverage.json
+          git commit -m "Regenerate UD syntax evidence v2"
+          git push origin "HEAD:${{ github.head_ref }}"
       - name: Upload regenerated artifacts
         uses: actions/upload-artifact@v4
         with:
