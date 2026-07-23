@@ -121,6 +121,7 @@ let product: ProductState = createProductState(
 let compositionActive = false;
 let imeWarning = false;
 let showPhysicalHint = false;
+let showKeyboardSketch = true;
 let previousResult: PilotRoundRecord | null = null;
 let previousResultTimer: number | null = null;
 let inspectionAdvanceCount = 0;
@@ -147,6 +148,51 @@ function physicalKeyLabel(code: string): string {
   if (code.startsWith("Key")) return code.slice(3);
   if (code.startsWith("Digit")) return code.slice(5);
   return code;
+}
+
+interface KeyboardSketchKey {
+  readonly code: string;
+  readonly units?: number;
+}
+
+const KEYBOARD_SKETCH_ROWS: readonly (readonly KeyboardSketchKey[])[] = [
+  [
+    { code: "Backquote" }, { code: "Digit1" }, { code: "Digit2" },
+    { code: "Digit3" }, { code: "Digit4" }, { code: "Digit5" },
+    { code: "Digit6" }, { code: "Digit7" }, { code: "Digit8" },
+    { code: "Digit9" }, { code: "Digit0" }, { code: "Minus" },
+    { code: "Equal" }, { code: "Backspace", units: 2 },
+  ],
+  [
+    { code: "Tab", units: 1.5 }, { code: "KeyQ" }, { code: "KeyW" },
+    { code: "KeyE" }, { code: "KeyR" }, { code: "KeyT" }, { code: "KeyY" },
+    { code: "KeyU" }, { code: "KeyI" }, { code: "KeyO" }, { code: "KeyP" },
+    { code: "BracketLeft" }, { code: "BracketRight" }, { code: "Backslash", units: 1.5 },
+  ],
+  [
+    { code: "CapsLock", units: 1.75 }, { code: "KeyA" }, { code: "KeyS" },
+    { code: "KeyD" }, { code: "KeyF" }, { code: "KeyG" }, { code: "KeyH" },
+    { code: "KeyJ" }, { code: "KeyK" }, { code: "KeyL" },
+    { code: "Semicolon" }, { code: "Quote" }, { code: "Enter", units: 2.25 },
+  ],
+  [
+    { code: "ShiftLeft", units: 2.25 }, { code: "KeyZ" }, { code: "KeyX" },
+    { code: "KeyC" }, { code: "KeyV" }, { code: "KeyB" }, { code: "KeyN" },
+    { code: "KeyM" }, { code: "Comma" }, { code: "Period" }, { code: "Slash" },
+    { code: "ShiftRight", units: 2.75 },
+  ],
+  [
+    { code: "ControlLeft", units: 1.5 }, { code: "MetaLeft", units: 1.25 },
+    { code: "AltLeft", units: 1.25 }, { code: "Space", units: 7 },
+    { code: "AltRight", units: 1.25 }, { code: "MetaRight", units: 1.25 },
+    { code: "ControlRight", units: 1.5 },
+  ],
+];
+
+function keyboardSketchMarkup(): string {
+  return KEYBOARD_SKETCH_ROWS.map((row) => `<div class="keyboard-sketch-row">
+    ${row.map((key) => `<span class="keyboard-sketch-key${key.units === undefined ? "" : " wide"}" data-code="${key.code}" style="--key-columns:${Math.round((key.units ?? 1) * 4)}"></span>`).join("")}
+  </div>`).join("");
 }
 
 function escapeHtml(value: string): string {
@@ -288,6 +334,9 @@ function mountPracticeRound(animateRound = false): void {
       <div id="practice-feedback" class="practice-feedback" aria-live="polite"></div>
       <div class="progress-line" aria-hidden="true"><span id="progress-fill"></span></div>
       <div class="progress-caption"><span id="progress-count"></span></div>
+      <div id="keyboard-sketch" class="keyboard-sketch" aria-hidden="true">
+        <div class="keyboard-sketch-board">${keyboardSketchMarkup()}</div>
+      </div>
     </div>`;
   updatePracticeState();
 
@@ -383,7 +432,26 @@ function updatePracticeState(): void {
   requireElement<HTMLElement>("#progress-fill").style.width = `${currentProgressPercent()}%`;
   requireElement<HTMLElement>("#progress-count").textContent =
     `${product.session.position} / ${product.session.targets.length}`;
+  updateKeyboardSketch();
   updatePracticeFeedback();
+}
+
+function updateKeyboardSketch(): void {
+  const keyboard = requireElement<HTMLElement>("#keyboard-sketch");
+  keyboard.hidden = !showKeyboardSketch;
+  for (const key of keyboard.querySelectorAll<HTMLElement>(".keyboard-sketch-key")) {
+    key.classList.remove("current");
+  }
+  if (!showKeyboardSketch) return;
+  const target = product.session.targets[product.session.position];
+  if (target === undefined) return;
+  const physicalCode = reverseBindings.get(target.tokenId);
+  if (physicalCode === undefined) return;
+  const key = keyboard.querySelector<HTMLElement>(
+    `.keyboard-sketch-key[data-code="${physicalCode}"]`,
+  );
+  if (key === null) return;
+  key.classList.add("current");
 }
 
 function updateTopbar(): void {

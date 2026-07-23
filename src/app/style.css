@@ -136,6 +136,7 @@ button { touch-action: manipulation; }
   outline: none;
 }
 .practice-center {
+  position: relative;
   width: min(1080px, 100%);
   padding: 4vh 0 10vh;
 }
@@ -158,6 +159,84 @@ button { touch-action: manipulation; }
   color: var(--ink-muted);
   font-size: 10px;
   font-variant-numeric: tabular-nums;
+}
+.keyboard-sketch[hidden] { display: none !important; }
+.keyboard-sketch {
+  position: absolute;
+  top: calc(100% - 10vh + clamp(24px, 5vh, 64px));
+  left: 50%;
+  width: min(760px, 92%);
+  margin: 0;
+  padding: 2px 8px 8px;
+  color: var(--ink-muted);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.keyboard-sketch-board {
+  display: grid;
+  gap: clamp(3px, .55vw, 6px);
+  transform: perspective(520px) rotateX(19deg);
+  transform-origin: 50% 100%;
+}
+.keyboard-sketch-row {
+  display: grid;
+  grid-template-columns: repeat(60, minmax(0, 1fr));
+  gap: clamp(3px, .55vw, 6px);
+}
+.keyboard-sketch-key {
+  position: relative;
+  display: grid;
+  height: clamp(23px, 3.7vw, 35px);
+  min-width: 0;
+  grid-column: span var(--key-columns);
+  place-items: center;
+  border: 1px solid rgba(75, 74, 71, .25);
+  border-radius: 38% 44% 40% 46% / 42% 38% 46% 40%;
+  box-shadow:
+    inset 0 -1px 0 rgba(75, 74, 71, .08),
+    0 1px 0 rgba(255, 255, 255, .34);
+}
+.keyboard-sketch-key:nth-child(3n) {
+  border-radius: 44% 38% 46% 40% / 38% 45% 39% 46%;
+  transform: translateY(.4px);
+}
+.keyboard-sketch-key.wide {
+  border-radius: 999px;
+}
+.keyboard-sketch-key[data-code="KeyF"]::after,
+.keyboard-sketch-key[data-code="KeyJ"]::after {
+  position: absolute;
+  bottom: 28%;
+  left: 35%;
+  width: 30%;
+  height: 1px;
+  background: rgba(75, 74, 71, .18);
+  border-radius: 999px;
+  content: "";
+}
+.keyboard-sketch-key.current {
+  border-color: rgba(166, 61, 50, .72);
+  background: rgba(166, 61, 50, .08);
+  box-shadow:
+    inset 0 -2px 0 rgba(166, 61, 50, .12),
+    0 0 0 1px rgba(166, 61, 50, .05);
+  animation: keyboard-current-in 240ms ease-out 1s both;
+}
+@keyframes keyboard-current-in {
+  from {
+    border-color: rgba(75, 74, 71, .25);
+    background: transparent;
+    box-shadow:
+      inset 0 -1px 0 rgba(75, 74, 71, .08),
+      0 1px 0 rgba(255, 255, 255, .34);
+  }
+  to {
+    border-color: rgba(166, 61, 50, .72);
+    background: rgba(166, 61, 50, .08);
+    box-shadow:
+      inset 0 -2px 0 rgba(166, 61, 50, .12),
+      0 0 0 1px rgba(166, 61, 50, .05);
+  }
 }
 .practice-feedback {
   display: flex;
@@ -537,6 +616,11 @@ th {
   }
   .practice-stage { min-height: calc(100vh - 78px); }
   .practice-center { padding: 5vh 0 10vh; }
+  .keyboard-sketch {
+    width: 100%;
+    top: calc(100% - 10vh + 34px);
+    padding-inline: 0;
+  }
   .round-status { min-width: 92px; }
   .information-dialog {
     inset: auto 8px 8px;
