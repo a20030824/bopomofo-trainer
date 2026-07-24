@@ -16,6 +16,7 @@ import {
   createDiagnosticAnalysis,
   renderDiagnosticSummary,
 } from "./diagnostic-panel.js";
+import { mountDiagnosticRelationshipEnhancement } from "./diagnostic-relationship-enhancement.js";
 import {
   DEFAULT_SELECTION_TUNING,
   loadSelectionTuning,
@@ -121,6 +122,7 @@ export function mountDiagnosticEnhancement(): () => void {
     storage: localStorage,
   });
   const releaseTopLayer = mountAnalysisTopLayer();
+  const releaseRelationships = mountDiagnosticRelationshipEnhancement();
   let scheduled = false;
 
   const enhance = (): void => {
@@ -139,6 +141,7 @@ export function mountDiagnosticEnhancement(): () => void {
   schedule();
   return () => {
     observer.disconnect();
+    releaseRelationships();
     releaseTopLayer();
     analysis.destroy();
   };
