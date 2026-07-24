@@ -34,7 +34,12 @@ function key(
     timingDataState: timingMs === null ? null : "sufficient",
     excludedSamples: { syllableStart: 0, incorrect: 0, recovery: 0, interactionNoise: 0 },
     overallDataState: "sufficient",
-    reinforcement: { state: "eligible", label: "可安排加強", reason: "已達門檻" },
+    reinforcement: {
+      state: "neutral",
+      label: "目前無額外加權",
+      reason: "目前觀察未產生額外加權",
+      expectedTokenBoost: 1,
+    },
   };
 }
 
