@@ -1,0 +1,340 @@
+.diagnostic-section {
+  padding: 0;
+}
+
+.diagnostic-heading {
+  display: flex;
+  width: 100%;
+  padding: 20px 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--ink);
+  text-align: left;
+}
+
+.diagnostic-heading > span:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.diagnostic-heading strong {
+  font-size: 12px;
+  font-weight: 680;
+  letter-spacing: .04em;
+}
+
+.diagnostic-heading small,
+.diagnostic-selection-heading,
+.diagnostic-footnote,
+.diagnostic-empty {
+  color: var(--ink-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.diagnostic-heading:hover,
+.diagnostic-heading:focus-visible {
+  outline: none;
+  color: var(--accent);
+}
+
+.diagnostic-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0 24px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.diagnostic-tabs button {
+  position: relative;
+  min-height: 42px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.diagnostic-tabs button[aria-selected="true"] {
+  color: var(--ink);
+}
+
+.diagnostic-tabs button[aria-selected="true"]::after {
+  position: absolute;
+  right: 24%;
+  bottom: -1px;
+  left: 24%;
+  height: 2px;
+  background: var(--accent);
+  content: "";
+}
+
+.diagnostic-tabs button:focus-visible,
+.diagnostic-key:focus-visible,
+.diagnostic-segments button:focus-visible,
+.diagnostic-view-toggle button:focus-visible,
+.diagnostic-record-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.diagnostic-tab-panel {
+  padding: 18px 24px 22px;
+}
+
+.diagnostic-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.diagnostic-toolbar-wrap {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.diagnostic-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.diagnostic-toolbar select {
+  min-height: 29px;
+  padding: 3px 22px 3px 7px;
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+
+.diagnostic-view-toggle,
+.diagnostic-segments {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+}
+
+.diagnostic-view-toggle button,
+.diagnostic-segments button {
+  min-height: 28px;
+  padding: 4px 9px;
+  border-right: 1px solid var(--hairline);
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.diagnostic-view-toggle button:last-child,
+.diagnostic-segments button:last-child {
+  border-right: 0;
+}
+
+.diagnostic-view-toggle button[aria-pressed="true"],
+.diagnostic-segments button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--panel);
+}
+
+.diagnostic-record-list {
+  border-top: 1px solid var(--hairline);
+}
+
+.diagnostic-record {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.diagnostic-record-toggle {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 14px 0;
+  color: var(--ink);
+  text-align: left;
+}
+
+.diagnostic-identity {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+
+.diagnostic-identity strong,
+.diagnostic-relation-title strong {
+  font-size: 14px;
+  font-weight: 720;
+}
+
+.diagnostic-identity small,
+.diagnostic-relation-title small,
+.relation-record > small {
+  color: var(--ink-muted);
+  font-size: 9px;
+}
+
+.diagnostic-record-main {
+  display: grid;
+  gap: 5px;
+  color: var(--ink-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.diagnostic-record-main span:first-child {
+  color: var(--ink);
+}
+
+.diagnostic-state {
+  padding: 3px 5px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  color: var(--ink-muted);
+  font-size: 8px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.diagnostic-record-details {
+  padding: 0 0 15px 52px;
+}
+
+.diagnostic-record-details h5 {
+  margin: 15px 0 6px;
+  color: var(--ink-muted);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .05em;
+}
+
+.diagnostic-record-details dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.diagnostic-record-details dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.diagnostic-record-details dt,
+.diagnostic-record-details dd {
+  margin: 0;
+  font-size: 10px;
+}
+
+.diagnostic-record-details dt {
+  color: var(--ink-muted);
+}
+
+.diagnostic-record-details dd {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.diagnostic-selection-heading {
+  margin-bottom: 10px;
+}
+
+.diagnostic-selection-heading strong {
+  color: var(--ink);
+}
+
+.diagnostic-key-picker {
+  display: grid;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px 0 7px;
+}
+
+.diagnostic-key-row {
+  display: flex;
+  min-width: max-content;
+  gap: 4px;
+}
+
+.diagnostic-key-row:nth-child(2) { padding-left: 10px; }
+.diagnostic-key-row:nth-child(3) { padding-left: 18px; }
+.diagnostic-key-row:nth-child(4) { padding-left: 28px; }
+.diagnostic-key-row:nth-child(5) { padding-left: 96px; }
+
+.diagnostic-key {
+  display: grid;
+  width: 27px;
+  height: 28px;
+  place-content: center;
+  gap: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  color: var(--ink-muted);
+}
+
+.diagnostic-key strong {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.diagnostic-key small {
+  margin-top: 2px;
+  font-size: 6px;
+  line-height: 1;
+}
+
+.diagnostic-key.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.diagnostic-checkbox input {
+  accent-color: var(--accent);
+}
+
+.relation-record {
+  padding: 13px 0;
+}
+
+.diagnostic-relation-title {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.diagnostic-relation-title > span:nth-child(3) {
+  text-align: left;
+}
+
+.relation-record p {
+  margin: 7px 0 3px;
+  color: var(--ink);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.diagnostic-empty {
+  margin: 0;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.diagnostic-footnote {
+  margin: 14px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagnostic-section * {
+    scroll-behavior: auto;
+  }
+}
