@@ -1,0 +1,84 @@
+/* Diagnostic emphasis is informational, not an error state. */
+.diagnostic-summary-section .diagnostic-open-analysis:hover,
+.diagnostic-summary-section .diagnostic-open-analysis:focus-visible {
+  border-color: var(--ink-muted);
+  color: var(--ink);
+}
+
+.diagnostic-analysis .diagnostic-analysis-tabs button[aria-selected="true"]::after {
+  background: var(--ink);
+}
+
+.diagnostic-analysis .diagnostic-analysis-close:hover,
+.diagnostic-analysis .diagnostic-analysis-close:focus-visible {
+  color: var(--ink);
+  opacity: .72;
+}
+
+.diagnostic-analysis .diagnostic-legend-mark.preliminary {
+  border-color: var(--ink-muted);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.diagnostic-analysis .diagnostic-keyboard-key {
+  background: linear-gradient(
+    color-mix(in srgb, var(--ink) calc(var(--signal-strength) * 9%), transparent),
+    color-mix(in srgb, var(--ink) calc(var(--signal-strength) * 3%), transparent)
+  );
+}
+
+.diagnostic-analysis button.diagnostic-keyboard-key:hover,
+.diagnostic-analysis button.diagnostic-keyboard-key:focus-visible {
+  border-color: color-mix(in srgb, var(--ink) 48%, var(--key-border));
+}
+
+.diagnostic-analysis .diagnostic-keyboard-key.selected {
+  border-color: color-mix(in srgb, var(--ink) 58%, var(--key-border));
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow:
+    inset 0 -1px 0 color-mix(in srgb, var(--ink) 10%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+}
+
+.diagnostic-analysis .diagnostic-keyboard-key small {
+  display: none;
+}
+
+.diagnostic-analysis .diagnostic-keyboard-key em {
+  color: var(--ink);
+}
+
+.diagnostic-analysis .diagnostic-checkbox input {
+  accent-color: var(--ink);
+}
+
+.diagnostic-analysis .diagnostic-inspector-row:hover,
+.diagnostic-analysis .diagnostic-inspector-row:focus-visible,
+.diagnostic-analysis .diagnostic-inspector-row.selected {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.diagnostic-analysis .diagnostic-inspector-row.selected {
+  box-shadow: inset 2px 0 0 var(--ink-muted);
+}
+
+.diagnostic-analysis .diagnostic-state.preliminary {
+  border-color: var(--ink-muted);
+}
+
+.diagnostic-analysis .diagnostic-state.sufficient,
+.diagnostic-analysis .diagnostic-detail-state.sufficient {
+  display: none;
+}
+
+.diagnostic-analysis .diagnostic-detail-card header > strong,
+.diagnostic-analysis .diagnostic-detail-state {
+  color: var(--ink-muted);
+}
+
+.diagnostic-analysis .diagnostic-analysis-tabs button:focus-visible,
+.diagnostic-analysis .diagnostic-view-toggle button:focus-visible,
+.diagnostic-analysis .diagnostic-segments button:focus-visible {
+  outline-color: color-mix(in srgb, var(--ink) 36%, transparent);
+}
