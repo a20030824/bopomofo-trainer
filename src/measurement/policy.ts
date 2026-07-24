@@ -2,8 +2,9 @@ import type { TimingContext } from "../core/model.js";
 import type { MeasurementPolicy } from "./types.js";
 
 export const PHASE_3_MEASUREMENT_POLICY: MeasurementPolicy = {
-  version: "phase-3-v1",
+  version: "phase-3-v2",
   bindingContexts: ["syllable-start", "within-syllable", "tone"],
+  confusionContexts: ["syllable-start", "within-syllable", "tone"],
   motorTimingContexts: ["within-syllable", "tone"],
   smoothingAlpha: 0.25,
 };
@@ -27,6 +28,11 @@ export function validateMeasurementPolicy(policy: MeasurementPolicy): void {
   for (const context of policy.motorTimingContexts) {
     if (!policy.bindingContexts.includes(context)) {
       throw new Error(`motor timing context ${context} must also be a binding context`);
+    }
+  }
+  for (const context of policy.confusionContexts) {
+    if (!policy.bindingContexts.includes(context)) {
+      throw new Error(`confusion context ${context} must also be a binding context`);
     }
   }
 }
