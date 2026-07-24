@@ -5,6 +5,8 @@ import type {
 } from "../diagnostics/selectors.js";
 
 export type DiagnosticTab = "key" | "transition" | "confusion";
+export const DIAGNOSTIC_MINIMUM_SAMPLE_OPTIONS = [1, 3, 5, 8] as const;
+export type DiagnosticMinimumSamples = typeof DIAGNOSTIC_MINIMUM_SAMPLE_OPTIONS[number];
 
 export interface DiagnosticPreferences {
   readonly expanded: boolean;
@@ -12,7 +14,7 @@ export interface DiagnosticPreferences {
   readonly keySort: KeyDiagnosticSort;
   readonly transitionDirection: TransitionDirection;
   readonly confusionDirection: ConfusionDirection;
-  readonly minimumSamples: number;
+  readonly minimumSamples: DiagnosticMinimumSamples;
   readonly includeTone: boolean;
 }
 
@@ -53,6 +55,11 @@ function isConfusionDirection(value: unknown): value is ConfusionDirection {
   return value === "expected" || value === "actual" || value === "both";
 }
 
+function isMinimumSamples(value: unknown): value is DiagnosticMinimumSamples {
+  return typeof value === "number"
+    && DIAGNOSTIC_MINIMUM_SAMPLE_OPTIONS.some((option) => option === value);
+}
+
 export function parseDiagnosticPreferences(source: string): DiagnosticPreferences | null {
   let parsed: unknown;
   try {
@@ -67,9 +74,7 @@ export function parseDiagnosticPreferences(source: string): DiagnosticPreference
     || !isKeySort(parsed.keySort)
     || !isTransitionDirection(parsed.transitionDirection)
     || !isConfusionDirection(parsed.confusionDirection)
-    || !Number.isInteger(parsed.minimumSamples)
-    || (parsed.minimumSamples as number) < 1
-    || (parsed.minimumSamples as number) > 100
+    || !isMinimumSamples(parsed.minimumSamples)
     || typeof parsed.includeTone !== "boolean"
   ) return null;
   return {
@@ -78,7 +83,7 @@ export function parseDiagnosticPreferences(source: string): DiagnosticPreference
     keySort: parsed.keySort,
     transitionDirection: parsed.transitionDirection,
     confusionDirection: parsed.confusionDirection,
-    minimumSamples: parsed.minimumSamples as number,
+    minimumSamples: parsed.minimumSamples,
     includeTone: parsed.includeTone,
   };
 }
