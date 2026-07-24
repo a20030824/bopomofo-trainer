@@ -67,12 +67,9 @@ function currentDiagnosticModel() {
   return buildDiagnosticModel({
     measurements: progress.measurements,
     curriculum: progress.curriculum,
-    curriculumPolicy: environment.curriculumPolicy,
     support: environment.practiceSupport,
     layout: STANDARD_BOPOMOFO_LAYOUT,
-    // The current formal-syntax product does not persist a single focused key.
-    // Show only durable curriculum eligibility/cooldown state here.
-    focusedTokenId: null,
+    selectionPolicy: environment.utterancePolicy,
   });
 }
 
