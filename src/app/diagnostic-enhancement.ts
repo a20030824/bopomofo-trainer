@@ -83,6 +83,31 @@ function findLegacyWeakSection(content: HTMLElement): HTMLElement | null {
   return null;
 }
 
+function mountAnalysisTopLayer(): () => void {
+  const analysis = document.querySelector<HTMLElement>("#diagnostic-analysis");
+  if (analysis === null) return () => undefined;
+  const modal = document.createElement("dialog");
+  modal.className = "diagnostic-analysis-modal";
+  modal.setAttribute("aria-label", "弱點診斷分析模式");
+  analysis.before(modal);
+  modal.append(analysis);
+
+  const sync = (): void => {
+    if (!analysis.hidden && !modal.open) modal.showModal();
+    if (analysis.hidden && modal.open) modal.close();
+  };
+  const observer = new MutationObserver(sync);
+  observer.observe(analysis, { attributes: true, attributeFilter: ["hidden"] });
+  modal.addEventListener("cancel", (event) => event.preventDefault());
+  sync();
+
+  return () => {
+    observer.disconnect();
+    if (modal.open) modal.close();
+    modal.remove();
+  };
+}
+
 export function mountDiagnosticEnhancement(): () => void {
   const content = document.querySelector<HTMLElement>("#information-content");
   if (content === null) return () => undefined;
@@ -90,6 +115,7 @@ export function mountDiagnosticEnhancement(): () => void {
     getModel: currentDiagnosticModel,
     storage: localStorage,
   });
+  const releaseTopLayer = mountAnalysisTopLayer();
   let scheduled = false;
 
   const enhance = (): void => {
@@ -108,6 +134,7 @@ export function mountDiagnosticEnhancement(): () => void {
   schedule();
   return () => {
     observer.disconnect();
+    releaseTopLayer();
     analysis.destroy();
   };
 }
