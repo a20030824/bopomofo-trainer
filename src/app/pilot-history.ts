@@ -8,9 +8,10 @@ import {
 import type { ProductEnvironment, ProductProgress } from "../product/types.js";
 import type { StorageLike } from "./local-progress.js";
 
-export const LOCAL_PILOT_HISTORY_KEY = "bopomofo-trainer.pilot-history.v2";
+export const LOCAL_PILOT_HISTORY_KEY = "bopomofo-trainer.pilot-history.v3";
 export const OBSOLETE_LOCAL_PILOT_HISTORY_KEYS = [
   "bopomofo-trainer.pilot-history.v1",
+  "bopomofo-trainer.pilot-history.v2",
 ] as const;
 
 export interface LocalPilotHistoryLoadResult {

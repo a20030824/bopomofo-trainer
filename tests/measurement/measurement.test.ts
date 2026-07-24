@@ -149,6 +149,34 @@ describe("measurement decisions", () => {
     });
   });
 
+  it("records an incorrect syllable-start key as a confusion without creating a transition", () => {
+    let state = createInteractionSession(exercise, 0);
+    state = applyInteractionInput(state, input(100, "zhuyin:A"));
+    state = applyInteractionInput(state, input(180, "zhuyin:B"));
+    state = applyInteractionInput(state, input(240, "tone:1"));
+    state = applyInteractionInput(state, input(400, "zhuyin:X"));
+
+    const decision = deriveMeasurementDecisions(
+      exercise,
+      state.traces,
+      PHASE_3_MEASUREMENT_POLICY,
+    ).at(-1);
+    expect(decision?.context).toBe("syllable-start");
+    expect(decision?.confusion).toMatchObject({
+      included: true,
+      observation: {
+        scope: {
+          expectedToken: "zhuyin:C",
+          actualToken: "zhuyin:X",
+        },
+      },
+    });
+    expect(decision?.transition).toEqual({
+      included: false,
+      reason: "non-motor-context",
+    });
+  });
+
   it("keeps unmapped noise out of recovery while excluding the contaminated timing", () => {
     let state = createInteractionSession(exercise, 0);
     state = applyInteractionInput(state, input(100, "zhuyin:A"));
@@ -188,7 +216,7 @@ describe("measurement decisions", () => {
       aggregateMeasurements(decisions, PHASE_3_MEASUREMENT_POLICY),
     );
     expect(summary).toMatchObject({
-      policyVersion: "phase-3-v1",
+      policyVersion: "phase-3-v2",
       traceCount: 13,
       bindingObservationCount: 8,
       confusionObservationCount: 1,
@@ -261,5 +289,12 @@ describe("provisional smoothing", () => {
       ...PHASE_3_MEASUREMENT_POLICY,
       smoothingAlpha: 2,
     })).toThrow(RangeError);
+  });
+
+  it("requires confusion contexts to be binding contexts", () => {
+    expect(() => validateMeasurementPolicy({
+      ...PHASE_3_MEASUREMENT_POLICY,
+      bindingContexts: ["within-syllable", "tone"],
+    })).toThrow(/confusion context syllable-start/);
   });
 });

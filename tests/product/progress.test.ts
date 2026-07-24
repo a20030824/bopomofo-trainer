@@ -49,7 +49,7 @@ describe("product progress codec", () => {
 
   it("rejects every pre-generation progress schema without migration", () => {
     const progress = createProgress();
-    for (const schemaVersion of [1, 2]) {
+    for (const schemaVersion of [1, 2, 3]) {
       const obsolete = JSON.parse(serializeProductProgress(progress)) as Record<string, unknown>;
       obsolete.schemaVersion = schemaVersion;
       expect(parse(JSON.stringify(obsolete))).toBeNull();

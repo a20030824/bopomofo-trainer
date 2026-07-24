@@ -1,4 +1,5 @@
 import "./main.js";
+import { mountDiagnosticEnhancement } from "./diagnostic-enhancement.js";
 import { planBalancedPracticeLines } from "./presentation-model.js";
 
 function requirePracticeStage(): HTMLElement {
@@ -76,9 +77,11 @@ const stageObserver = new MutationObserver(connectPracticeCenter);
 stageObserver.observe(stage, { childList: true });
 connectPracticeCenter();
 void document.fonts.ready.then(schedulePracticeLayout);
+const unmountDiagnostics = mountDiagnosticEnhancement();
 
 window.addEventListener("beforeunload", () => {
   stageObserver.disconnect();
   centerResizeObserver?.disconnect();
+  unmountDiagnostics();
   if (layoutFrame !== null) window.cancelAnimationFrame(layoutFrame);
 }, { once: true });

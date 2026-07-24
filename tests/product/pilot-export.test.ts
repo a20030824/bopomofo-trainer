@@ -84,14 +84,17 @@ describe("local pilot history and export", () => {
 
   it("deletes obsolete pilot history storage instead of migrating it", () => {
     const storage = new MemoryStorage();
-    const obsoleteKey = OBSOLETE_LOCAL_PILOT_HISTORY_KEYS[0]!;
-    storage.setItem(obsoleteKey, JSON.stringify({ schemaVersion: 1, records: [] }));
+    for (const obsoleteKey of OBSOLETE_LOCAL_PILOT_HISTORY_KEYS) {
+      storage.setItem(obsoleteKey, JSON.stringify({ schemaVersion: 2, records: [] }));
+    }
     const loaded = loadLocalPilotHistory(storage, progressWithSummaries(0), environment);
     expect(loaded).toEqual({
       history: { schemaVersion: PILOT_HISTORY_SCHEMA_VERSION, records: [] },
       recoveredFromInvalidState: true,
     });
-    expect(storage.getItem(obsoleteKey)).toBeNull();
+    for (const obsoleteKey of OBSOLETE_LOCAL_PILOT_HISTORY_KEYS) {
+      expect(storage.getItem(obsoleteKey)).toBeNull();
+    }
     expect(storage.getItem(LOCAL_PILOT_HISTORY_KEY)).toBeNull();
   });
 

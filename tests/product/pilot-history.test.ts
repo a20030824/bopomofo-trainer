@@ -134,10 +134,12 @@ describe("pilot history", () => {
     )).not.toBeNull();
   });
 
-  it("rejects the obsolete pilot history schema", () => {
-    expect(parsePilotHistory(
-      JSON.stringify({ schemaVersion: 1, records: [] }),
-      environment,
-    )).toBeNull();
+  it("rejects obsolete pilot history schemas", () => {
+    for (const schemaVersion of [1, 2]) {
+      expect(parsePilotHistory(
+        JSON.stringify({ schemaVersion, records: [] }),
+        environment,
+      )).toBeNull();
+    }
   });
 });
