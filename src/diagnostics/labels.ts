@@ -19,11 +19,25 @@ export function tokenLabel(tokenId: TokenId): string {
   } as Readonly<Record<string, string>>)[tokenId] ?? tokenId;
 }
 
+const PHYSICAL_KEY_LABELS: Readonly<Record<string, string>> = {
+  Backquote: "`",
+  Minus: "-",
+  Equal: "=",
+  BracketLeft: "[",
+  BracketRight: "]",
+  Backslash: "\\",
+  Semicolon: ";",
+  Quote: "'",
+  Comma: ",",
+  Period: ".",
+  Slash: "/",
+};
+
 export function physicalKeyLabel(code: string): string {
   if (code === "Space") return "Space";
   if (code.startsWith("Key")) return code.slice(3);
   if (code.startsWith("Digit")) return code.slice(5);
-  return code;
+  return PHYSICAL_KEY_LABELS[code] ?? code;
 }
 
 export function curriculumStateLabel(state: CurriculumState): string {
