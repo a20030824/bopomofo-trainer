@@ -17,7 +17,7 @@ import type { MeasurementPolicy, MeasurementSummary } from "../measurement/types
 import type { InteractionSessionState } from "../practice/interaction-session.js";
 import type { RuntimeSyntaxProfile } from "../syntax/types.js";
 
-export const PRODUCT_PROGRESS_SCHEMA_VERSION = 3 as const;
+export const PRODUCT_PROGRESS_SCHEMA_VERSION = 4 as const;
 
 export type ProductRoundKind = "practice" | "evaluation";
 
