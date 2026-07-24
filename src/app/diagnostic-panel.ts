@@ -1,6 +1,10 @@
 import "./diagnostics.css";
 import type { TokenId } from "../core/model.js";
-import { diagnosticDataStateLabel } from "../diagnostics/labels.js";
+import {
+  diagnosticDataStateLabel,
+  physicalKeyLabel,
+  tokenLabel,
+} from "../diagnostics/labels.js";
 import {
   selectConfusionDiagnostics,
   selectKeyDiagnostics,
@@ -88,16 +92,8 @@ function keyPickerMarkup(selectedKey: TokenId | null): string {
       ${row.map((code) => {
         const tokenId = STANDARD_BOPOMOFO_LAYOUT.bindings[code];
         if (tokenId === undefined) return "";
-        const symbol = tokenId.startsWith("zhuyin:")
-          ? tokenId.slice("zhuyin:".length)
-          : ({ "tone:1": "ˉ", "tone:2": "ˊ", "tone:3": "ˇ", "tone:4": "ˋ", "tone:5": "˙" } as Record<string, string>)[tokenId] ?? tokenId;
-        const physical = code === "Space"
-          ? "Space"
-          : code.startsWith("Key")
-            ? code.slice(3)
-            : code.startsWith("Digit")
-              ? code.slice(5)
-              : code;
+        const symbol = tokenLabel(tokenId);
+        const physical = physicalKeyLabel(code);
         const selected = selectedKey === tokenId;
         return `<button type="button" class="diagnostic-key${selected ? " selected" : ""}" data-action="select-key" data-token="${escapeHtml(tokenId)}" aria-label="${escapeHtml(symbol)}，實體鍵 ${escapeHtml(physical)}" aria-pressed="${selected}">
           <strong>${escapeHtml(symbol)}</strong><small>${escapeHtml(physical)}</small>
