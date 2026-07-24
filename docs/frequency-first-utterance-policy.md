@@ -62,7 +62,7 @@ Example:
 expected ㄓ, actual ㄗ
 ```
 
-This may raise the weight of utterances containing `ㄓ`. It does not raise `ㄗ`, and it does not create a `ㄓ → ㄗ` practice target. The existing directional confusion aggregate remains available for diagnostics and export only.
+This may raise the weight of utterances containing `ㄓ`. It does not raise `ㄗ`, and it does not create a `ㄓ → ㄗ` practice target. The existing directional confusion aggregate remains available for diagnostics and export only. Confusion observations include mapped incorrect inputs at syllable starts as well as within-syllable and tone positions; this broader diagnostic scope does not change the narrower motor-timing policy.
 
 ## Binding timing
 
@@ -96,15 +96,16 @@ Evaluation observes behavior; it is not a mastery score.
 
 ## Persistence boundary
 
-Product progress schema 3 stores:
+Product progress schema 4 stores:
 
 - current frequency stage;
 - attempts, errors, and completed practice utterances accumulated toward the next stage;
 - recent utterance IDs;
 - recent template IDs;
-- utterance/template/stage fields in recent summaries.
+- utterance/template/stage fields in recent summaries;
+- binding, directional confusion, and exact transition aggregates under measurement policy `phase-3-v2`.
 
-Schemas 1 and 2 are not accepted. The browser deletes their obsolete storage key before loading the current generation, then starts with fresh measurements, counters, summaries, and selection state. No legacy payload contributes to product or Pilot state.
+Schemas 1, 2, and 3 are not accepted. The browser deletes their obsolete storage keys before loading the current generation, then starts with fresh measurements, counters, summaries, and selection state. No legacy payload contributes to product or Pilot state.
 
 ## Explainability
 
