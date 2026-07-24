@@ -106,7 +106,7 @@ function deriveConfusion(
   const base = baseExclusion(trace);
   if (base !== null) return excluded(base);
 
-  if (!includesContext(policy.motorTimingContexts, trace.context)) {
+  if (!includesContext(policy.confusionContexts, trace.context)) {
     return excluded(contextExclusion(trace.context));
   }
   if (trace.outcome !== "incorrect") return excluded("not-incorrect");
