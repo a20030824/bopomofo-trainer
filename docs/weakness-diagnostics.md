@@ -12,13 +12,13 @@ The existing 440px information drawer remains a lightweight status and settings 
 - one representative key signal;
 - one representative transition signal;
 - one representative confusion signal;
-- one `展開分析` action.
+- one `進入分析` action.
 
 The drawer does not contain diagnostic tabs, complete lists, expanded records, a miniature relationship graph, or dense filter controls. Increasing typography or row density inside the drawer is not an acceptable substitute for a proper analysis layout.
 
 ### Analysis mode
 
-`展開分析` opens a full-viewport analysis mode inside the current application. It is not a separate route and does not reload or replace the active practice session.
+`進入分析` opens a full-viewport analysis mode inside the current application. It is not a separate route and does not reload or replace the active practice session.
 
 Analysis mode contains three views:
 
@@ -26,7 +26,7 @@ Analysis mode contains three views:
 - `轉換`: exact ordered timing between adjacent tokens inside one syllable;
 - `誤按`: directional expected-token to actual-token confusions.
 
-The mode is a complete diagnostic workspace, not only a flight-line visualization. It combines spatial keyboard reading, exact lists, filters, sample-state explanations, and selected-item details.
+The mode combines spatial keyboard reading, exact lists, filters, sample warnings, selected-item details, and separate directional SVG relationships for transitions and confusions.
 
 ## Design principles
 
@@ -35,8 +35,10 @@ The mode is a complete diagnostic workspace, not only a flight-line visualizatio
 3. Give exact values and spatial relationships separate areas. The keyboard explains where; the inspector explains how much and why.
 4. Use the existing keyboard sketch as product identity. Analysis mode shares its geometry, perspective, key shape, border language, and theme tokens.
 5. Preserve metric distinctions. Correctness, binding timing, transition timing, and confusion counts are not merged into one score.
-6. Keep graph and list semantics identical. Any spatial overlay must consume the same selector output as the exact list.
+6. Keep graph and list semantics identical. Spatial overlays use the exact currently rendered selector result from the inspector.
 7. Keep practice state in place. Entering analysis pauses input but does not complete, reset, or mutate the current round.
+8. Reserve red for actual input errors. Diagnostic selection, focus, graph lines, and sample warnings use neutral ink emphasis.
+9. Treat sufficient data as the normal state. Only `資料不足` and `初步` require visible warning labels.
 
 ## Entry and transition
 
@@ -109,13 +111,13 @@ The overview rail gives context, not another list.
 
 It contains:
 
-- objective counts: keys with observations, repeated confusions, slower sufficient-sample transitions;
+- objective counts: keys with observations, repeated confusions, and slower sufficient-sample transitions;
 - one short explanation of the active metric;
-- the data-state legend: `資料不足 / 初步 / 資料足夠`;
+- warnings only for `資料不足` and `初步`;
 - the current selected-key and direction scope when applicable;
 - the limitation note for `錯誤觀察比例` on the key tab.
 
-It does not duplicate every exact row displayed in the inspector.
+`資料足夠` remains an internal display state but is not shown as a badge or legend item. Sufficient data is the unmarked normal state.
 
 ## Keyboard canvas
 
@@ -124,6 +126,14 @@ The keyboard canvas reuses the standard physical layout and the existing sketch 
 ### Shared geometry
 
 `src/app/keyboard-geometry.ts` owns the full keyboard row geometry, physical codes, and key-unit spans. Both the practice sketch and analysis keyboard must consume this module after the geometry extraction is complete.
+
+The analysis keyboard displays only Bopomofo or tone symbols. Physical English labels remain available to assistive technology and in the exact inspector, but do not compete with the central keyboard reading.
+
+The standard number row is fixed by the layout contract and test coverage:
+
+```text
+1 ㄅ · 2 ㄉ · 3 ˇ · 4 ˋ · 5 ㄓ · 6 ˊ · 7 ˙ · 8 ㄚ · 9 ㄞ · 0 ㄢ · - ㄦ
+```
 
 ### Key view
 
@@ -137,40 +147,35 @@ The key view emphasizes the exact keys returned by the active key selector.
 
 ### Transition view
 
-The transition view emphasizes endpoints from the exact currently filtered transition rows.
+The transition view displays endpoints and directional SVG paths from the exact currently filtered transition rows.
 
-Before flight lines are implemented, the first analysis-mode milestone may show:
-
-- selected key;
-- connected endpoint keys;
-- direction and sample scope;
-- exact rows in the inspector.
-
-The later SVG layer adds directional flight lines without changing selectors or list results.
+- selected key, direction, sample gate, tone setting, and list scope all affect both list and graph;
+- opposite directions remain separate paths;
+- selecting a path selects the corresponding inspector row;
+- hover and focus synchronize between path and row.
 
 ### Confusion view
 
-The confusion view follows the same rule:
+The confusion view uses a separate directional SVG overlay.
 
-- selected expected/actual key scope;
-- endpoints from exact currently filtered confusion rows;
-- later directional SVG overlays;
-- no visual merging of opposite confusion directions.
+- expected and actual direction remain explicit;
+- opposite directions remain separate records and paths;
+- transition and confusion networks are never shown simultaneously;
+- path and inspector selection remain synchronized.
 
-### Flight-line layer
+### Relationship routing
 
-Flight lines are a later milestone inside the analysis mode, not the reason for the mode to exist.
-
-Requirements:
+Relationship paths use:
 
 - SVG rather than Canvas;
-- fixed routing lanes;
-- deterministic paths;
-- stable width scale;
+- deterministic cubic paths derived from shared keyboard geometry;
+- stable sample-count width tiers;
 - explicit arrow direction;
-- tone routing separated from dense central relations;
+- separate higher, dashed routing for tone relations;
 - hover, click, keyboard focus, and list synchronization;
-- transitions and confusions never share one simultaneous network view.
+- neutral ink styling rather than error red.
+
+The current browser adapter builds the overlay from the exact visible inspector rows after selectors have applied direction, sample, tone, and Top 5/full-list filters. Direct model composition remains a cleanup milestone.
 
 ## Inspector rail
 
@@ -179,11 +184,11 @@ The inspector rail is the exact-reading surface.
 It contains, from top to bottom:
 
 1. active filters;
-2. Top 5 / complete-list scope;
+2. first-five / complete-list scope;
 3. exact rows;
 4. one persistent selected-item detail pane.
 
-Rows no longer expand into long inline blocks. Selecting a row updates the detail pane, preserving list position and comparison context.
+Rows do not expand into long inline blocks. Selecting a row updates the detail pane, preserving list position and comparison context.
 
 ### Key inspector
 
@@ -191,14 +196,14 @@ The key list supports:
 
 - sort by `錯誤觀察比例`;
 - sort by `有效鍵間時間`;
-- Top 5 / complete list;
+- first five / complete list;
 - selected-key synchronization with the keyboard.
 
 The detail pane shows:
 
 - attempts and errors;
-- error-data state;
-- accepted timing, best timing, and timing-data state;
+- visible warnings only when error or timing data is insufficient or preliminary;
+- accepted timing and best timing;
 - all four timing exclusion counters;
 - current frequency-first expected-token influence and reason.
 
@@ -207,22 +212,22 @@ The detail pane shows:
 The transition list supports:
 
 - selected key;
-- incoming / outgoing / both;
+- incoming / outgoing / all directions;
 - minimum accepted samples;
 - include tones;
-- Top 5 / complete list.
+- first five / complete list.
 
-The detail pane shows exact direction, current and best accepted timing, sample count, and data state.
+The detail pane shows exact direction, current and best accepted timing, sample count, and any non-sufficient sample warning.
 
 ### Confusion inspector
 
 The confusion list supports:
 
 - selected key;
-- expected / actual / both;
-- Top 5 / complete list.
+- expected / actual / all directions;
+- first five / complete list.
 
-The detail pane shows exact expected and actual keys, occurrences, expected-token confusion total, expected-error share, and data state.
+The detail pane shows exact expected and actual keys, occurrences, expected-token confusion total, expected-error share, and any non-sufficient sample warning.
 
 ## Drawer summary contract
 
@@ -230,17 +235,17 @@ The drawer summary uses the same model and selectors as analysis mode.
 
 It may display:
 
-- objective aggregate text such as `24 個按鍵已有資料 · 2 組重複誤按 · 8 組較慢轉換`;
+- objective aggregate text such as `24 鍵有資料 · 2 組重複誤按 · 8 組慢轉換`;
 - the first error-sorted key row with its ratio and sample count;
 - the first sufficient-sample transition row with timing;
 - the first confusion row with occurrences;
-- `展開分析`.
+- `進入分析`.
 
 It must not introduce subjective counts such as `3 個值得注意的按鍵` unless a future formal attention policy defines that set.
 
 ## Separate metrics
 
-Correctness and timing remain separate observations. The interface may show an overall conservative data state, but it never combines them into a mastery or weakness score.
+Correctness and timing remain separate observations. The interface may use an overall conservative data state to decide whether a warning is needed, but it never combines metrics into a mastery or weakness score.
 
 The key correctness label is `錯誤觀察比例`:
 
@@ -252,7 +257,7 @@ A correct recovery input after an error is another mapped observation. Therefore
 
 The key timing label is `有效鍵間時間`. It is the current exponential moving average of accepted timing observations, not a validated ability score. Syllable starts, incorrect input, recovery input, and interaction-noise-contaminated intervals remain excluded.
 
-A binding with no catalog position that can produce accepted motor timing is marked `目前不適用`, rather than being shown permanently as if more samples alone would make timing available.
+A binding with no catalog position that can produce accepted motor timing is marked `不適用`, rather than being shown permanently as if more samples alone would make timing available.
 
 ## Data-state policy
 
@@ -264,9 +269,9 @@ Display thresholds are centralized in `src/diagnostics/policy.ts`:
 | Binding timing | 3 accepted samples | 5 accepted samples |
 | Transition/confusion relation | 3 observations | 5 observations |
 
-Below the preliminary threshold, the state is `資料不足`. These are product display gates, not statistical confidence intervals.
+Below the preliminary threshold, the state is `資料不足`. Between thresholds it is `初步`. Both receive visible warnings. Sufficient rows are unmarked.
 
-When an overall key state is required, the interface uses the more conservative of error and timing states. The selected-key detail exposes the two states separately.
+These are product display gates, not statistical confidence intervals.
 
 ## Selection influence
 
@@ -321,7 +326,7 @@ Browser UI code does not read measurement aggregates directly. `src/diagnostics/
 - catalog support used to distinguish available and non-applicable timing;
 - the current frequency-first selection policy, including user-selected influence scales.
 
-`src/diagnostics/selectors.ts` owns deterministic sorting, Top 5 limits, selected-key direction filters, sample gates, and tone inclusion. Drawer signals, inspector lists, keyboard emphasis, and future flight lines consume these same selectors.
+`src/diagnostics/selectors.ts` owns deterministic sorting, first-five limits, selected-key direction filters, sample gates, and tone inclusion. Drawer signals, inspector lists, and keyboard emphasis consume these selectors. The temporary relationship enhancement consumes the exact rendered inspector result so graph and list cannot diverge in visible scope.
 
 ## Persistence
 
@@ -337,95 +342,28 @@ The browser may retain active tab, ordering, direction filters, minimum samples,
 
 The previously implemented drawer-expansion preference is retained only until the analysis-mode preference cleanup; the final drawer summary is not collapsible.
 
-## Engineering plan
+## Engineering status
 
-### Milestone 1 — analysis shell and drawer summary
+### Completed in this Draft PR
 
-Owned paths:
+- compact drawer summary;
+- full-viewport analysis shell;
+- overview, keyboard canvas, inspector, and persistent detail pane;
+- neutral diagnostic emphasis with red reserved for input errors;
+- warning-only sample labels;
+- Bopomofo-only keyboard display with exact number-row tests;
+- deterministic transition and confusion SVG routing;
+- graph/list hover, focus, click, and selection synchronization;
+- tone-specific relationship routing;
+- reduced-motion and keyboard tab navigation;
+- measurement-generation rotation for expanded confusion contexts.
 
-```text
-src/app/diagnostic-enhancement.ts
-src/app/diagnostic-panel.ts
-src/app/diagnostics.css
-src/app/keyboard-geometry.ts
-src/app/browser.ts
-```
+### Remaining cleanup
 
-Deliverables:
-
-- replace the full drawer diagnostic with the compact summary contract;
-- create a full-viewport in-app analysis shell;
-- add overview, keyboard canvas, and inspector regions;
-- move existing list controls and details into the inspector;
-- use one persistent detail pane rather than expanding rows;
-- pause background interaction through `inert` and focus containment;
-- implement entry/exit and reduced-motion behavior;
-- keep selectors and diagnostic model unchanged.
-
-Acceptance:
-
-- the drawer remains readable at 440px without dense analytical controls;
-- analysis opens without route navigation or practice reset;
-- closing returns directly to the same practice round;
-- exact list/filter behavior matches the current selector tests;
-- keyboard emphasis and list rows use the same selected output.
-
-### Milestone 2 — shared practice keyboard renderer
-
-Owned paths:
-
-```text
-src/app/main.ts
-src/app/keyboard-geometry.ts
-src/app/style.css
-src/app/diagnostics.css
-```
-
-Deliverables:
-
-- remove the private keyboard geometry from `main.ts`;
-- render both practice and analysis keyboards from shared geometry;
-- preserve the existing practice-keyboard appearance and behavior;
-- add analysis-only labels, selection, and metric overlays without altering practice markup semantics.
-
-Acceptance:
-
-- one geometry source defines every physical row and key width;
-- practice screenshot remains visually equivalent;
-- analysis keyboard follows the same perspective and key-shape language.
-
-### Milestone 3 — analysis layout visual review
-
-Deliverables:
-
-- generate desktop light and dark screenshots with deterministic fixture data;
-- review hierarchy, list/detail balance, keyboard size, empty states, and scroll ownership;
-- adjust layout only within the established typography and spacing language;
-- do not enlarge the global design system to solve local density.
-
-Acceptance:
-
-- the keyboard remains the central visual anchor;
-- exact values remain readable without turning the interface into a conventional dashboard;
-- no long inline row expansion remains;
-- drawer summary and full analysis have clearly different information depth.
-
-### Milestone 4 — transition SVG relationships
-
-Deliverables:
-
-- add deterministic transition routing;
-- support selected-key and complete-network modes;
-- synchronize hover/focus/selection with the inspector;
-- preserve current transition selector output exactly.
-
-### Milestone 5 — confusion SVG relationships
-
-Deliverables:
-
-- add a separate directional confusion overlay;
-- preserve expected and actual direction;
-- synchronize with the same confusion selector and inspector.
+- remove the private keyboard geometry copy from `main.ts` and render practice from `src/app/keyboard-geometry.ts`;
+- replace temporary localStorage/model reconstruction with direct live-state composition;
+- replace the DOM relationship adapter with direct selector-result input when the analysis shell is integrated into `main.ts`;
+- add browser-level interaction screenshots or tests when the repository adopts a browser test harness.
 
 ## Validation
 
@@ -439,14 +377,14 @@ npm run catalog:validate
 npm run build
 ```
 
-Additional UI-focused coverage should lock:
+Additional coverage locks:
 
-- drawer summary signal selection;
-- analysis open/close state;
-- persisted tab and filters;
-- session-only selected key and relationship;
-- keyboard/list selector identity;
-- Escape and reduced-motion behavior where testable without browser automation.
+- measurement semantics and generation rejection;
+- diagnostic model and deterministic selectors;
+- preference validation;
+- shared keyboard row geometry and number-row labels;
+- exact keyboard relationship coordinates;
+- deterministic directional routing, reverse-direction separation, selection, and tone marking.
 
 ## Non-goals
 
