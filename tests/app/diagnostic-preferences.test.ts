@@ -35,7 +35,7 @@ describe("diagnostic preferences", () => {
     expect(storage.getItem(DIAGNOSTIC_PREFERENCES_KEY)).not.toBeNull();
   });
 
-  it("falls back when stored fields are malformed or non-finite", () => {
+  it("falls back when stored fields are malformed, non-finite, or unsupported", () => {
     expect(parseDiagnosticPreferences(JSON.stringify({
       ...DEFAULT_DIAGNOSTIC_PREFERENCES,
       minimumSamples: -1,
@@ -43,6 +43,10 @@ describe("diagnostic preferences", () => {
     expect(parseDiagnosticPreferences(JSON.stringify({
       ...DEFAULT_DIAGNOSTIC_PREFERENCES,
       minimumSamples: Number.NaN,
+    }))).toBeNull();
+    expect(parseDiagnosticPreferences(JSON.stringify({
+      ...DEFAULT_DIAGNOSTIC_PREFERENCES,
+      minimumSamples: 7,
     }))).toBeNull();
     expect(parseDiagnosticPreferences(JSON.stringify({
       ...DEFAULT_DIAGNOSTIC_PREFERENCES,
