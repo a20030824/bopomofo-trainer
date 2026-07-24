@@ -1,8 +1,8 @@
+import { selectCurriculumFocus } from "../curriculum/focus.js";
 import { buildDiagnosticModel } from "../diagnostics/build-model.js";
 import {
   createFreshProgressForEnvironment,
   createProductEnvironment,
-  createProductState,
 } from "../product/session.js";
 import type { ProductEnvironment } from "../product/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
@@ -65,14 +65,18 @@ function currentDiagnosticModel() {
     "guided",
     STANDARD_BOPOMOFO_LAYOUT.id,
   );
-  const product = createProductState(environment, progress, performance.now());
+  const focus = selectCurriculumFocus(
+    progress.curriculum,
+    environment.practiceSupport,
+    environment.curriculumPolicy,
+  );
   return buildDiagnosticModel({
     measurements: progress.measurements,
     curriculum: progress.curriculum,
     curriculumPolicy: environment.curriculumPolicy,
     support: environment.practiceSupport,
     layout: STANDARD_BOPOMOFO_LAYOUT,
-    focusedTokenId: product.round.focus?.tokenId ?? null,
+    focusedTokenId: focus.tokenId,
   });
 }
 
