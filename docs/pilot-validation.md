@@ -7,10 +7,10 @@ Phase 6 prepares one coherent local-first product for a 10–20 round human pilo
 Current-generation product progress remains the source of truth for cumulative measurement and curriculum state. Pilot history uses a separate schema-versioned localStorage key:
 
 ```text
-bopomofo-trainer.pilot-history.v2
+bopomofo-trainer.pilot-history.v3
 ```
 
-The obsolete `bopomofo-trainer.pilot-history.v1` key is deleted before loading. Its payload is never parsed or migrated.
+The obsolete `bopomofo-trainer.pilot-history.v1` and `bopomofo-trainer.pilot-history.v2` keys are deleted before loading. Their payloads are never parsed or migrated. Pilot-history schema 3 accompanies product-progress schema 4 and measurement policy `phase-3-v2`.
 
 When the current key is absent, current-generation progress summaries can derive a bounded Pilot history fallback. Summaries do not preserve per-round latency, so their `cleanLatencyMedianMs` is explicitly `null`.
 

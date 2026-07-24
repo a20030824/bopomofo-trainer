@@ -1,9 +1,10 @@
 import { parseProductProgress, serializeProductProgress } from "../product/progress.js";
 import type { ProductEnvironment, ProductProgress } from "../product/types.js";
 
-export const LOCAL_PROGRESS_KEY = "bopomofo-trainer.progress.v3";
+export const LOCAL_PROGRESS_KEY = "bopomofo-trainer.progress.v4";
 export const OBSOLETE_LOCAL_PROGRESS_KEYS = [
   "bopomofo-trainer.progress.v1",
+  "bopomofo-trainer.progress.v3",
 ] as const;
 
 export interface StorageLike {

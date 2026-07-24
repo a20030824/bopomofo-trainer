@@ -16,11 +16,12 @@ src/
   practice/      Existing sessions, boundaries, and normalized traces.
   measurement/   Binding, transition, confusion, boundary estimators.
   curriculum/    Objective policies and historical binding-only baseline.
+  diagnostics/   Pure user-facing projections, data states, and selectors.
   composition/   Retrieval, candidate costs, ordering, variable sequences.
   simulation/    Synthetic learners, trace generation, experiment contracts.
   integration/   Cross-module replay proof; no strategy selection logic.
   product/       Existing persistence and browser-product coordination.
-  app/           Existing browser observation adapter.
+  app/           Existing browser observation adapter and UI.
 ```
 
 Directories may be introduced incrementally. Dependency boundaries matter more than exact names.
@@ -55,7 +56,8 @@ Rules:
 8. synthetic learners emit normal traces and never expose hidden truth to estimators or curricula;
 9. experiment reports may read hidden truth only after a run for evaluation;
 10. integration code orchestrates public module APIs and does not reimplement importer, partition, composition, learner, or measurement rules;
-11. product and app modules contain no research selection algorithm.
+11. product and app modules contain no research selection algorithm;
+12. diagnostics project existing measurements and current product policy into display data, but never mutate learner state or recompute practice selection.
 
 ## Evidence flow
 
@@ -162,7 +164,7 @@ Only explicit experimental seams are preserved:
 
 ## Current artifacts
 
-The browser product now composes complete grammar-valid utterances, selects them with reviewed commonness plus bounded learner evidence, persists schema-versioned local progress, keeps held-out evaluation isolated, and exports pilot diagnostics. The archived relational importer, partition policies, variable-length composer, synthetic learner, strategy matrix, cohort experiment, and confirmation harness remain reproducible research evidence rather than the production selection path.
+The browser product now composes complete grammar-valid utterances from the complete syntax-legal practice catalog, selects them with reviewed commonness plus bounded learner evidence, persists schema-versioned local progress, exports pilot diagnostics, and presents a full-page weakness analysis over binding, transition, and confusion aggregates. The browser does not reserve held-out vocabulary or schedule automatic evaluation rounds. Archived relational importers, partition policies, variable-length composers, synthetic learners, strategy matrices, cohort experiments, and confirmation harnesses remain reproducible research evidence rather than the production selection path.
 
 The data pipeline pins the active-catalog commonness and reading projections.
 Lexicon expansion runs in a disposable, manifest-linked generation workspace;
