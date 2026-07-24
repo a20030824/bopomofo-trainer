@@ -55,7 +55,8 @@
 
 .diagnostic-analysis .diagnostic-inspector-row:hover,
 .diagnostic-analysis .diagnostic-inspector-row:focus-visible,
-.diagnostic-analysis .diagnostic-inspector-row.selected {
+.diagnostic-analysis .diagnostic-inspector-row.selected,
+.diagnostic-analysis .diagnostic-inspector-row.graph-hover {
   background: color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
@@ -81,4 +82,54 @@
 .diagnostic-analysis .diagnostic-view-toggle button:focus-visible,
 .diagnostic-analysis .diagnostic-segments button:focus-visible {
   outline-color: color-mix(in srgb, var(--ink) 36%, transparent);
+}
+
+.diagnostic-analysis .diagnostic-keyboard-board {
+  position: relative;
+}
+
+.diagnostic-analysis .diagnostic-keyboard-row {
+  position: relative;
+  z-index: 1;
+}
+
+.diagnostic-analysis .diagnostic-relationship-svg {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.diagnostic-analysis .diagnostic-relationship-path {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--relation-width);
+  opacity: var(--relation-opacity);
+  cursor: pointer;
+  pointer-events: stroke;
+  transition: opacity 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
+  vector-effect: non-scaling-stroke;
+}
+
+.diagnostic-analysis .diagnostic-relationship-path.tone {
+  stroke-dasharray: 3 2;
+}
+
+.diagnostic-analysis .diagnostic-relationship-path:hover,
+.diagnostic-analysis .diagnostic-relationship-path:focus-visible,
+.diagnostic-analysis .diagnostic-relationship-path.selected,
+.diagnostic-analysis .diagnostic-relationship-path.list-hover {
+  stroke: var(--ink);
+  stroke-width: calc(var(--relation-width) + .65px);
+  opacity: 1;
+  outline: none;
+}
+
+.diagnostic-analysis .diagnostic-relationship-arrow {
+  fill: context-stroke;
 }
