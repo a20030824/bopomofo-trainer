@@ -156,16 +156,27 @@ export function mountDiagnosticRelationshipEnhancement(): () => void {
   const host = document.querySelector<HTMLElement>("#diagnostic-analysis");
   if (host === null) return () => undefined;
   let scheduled = false;
+  let observer: MutationObserver;
+  const observe = (): void => {
+    observer.observe(host, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["hidden"],
+    });
+  };
   const schedule = (): void => {
     if (scheduled) return;
     scheduled = true;
     queueMicrotask(() => {
       scheduled = false;
+      observer.disconnect();
       renderRelationshipOverlay(host);
+      observe();
     });
   };
-  const observer = new MutationObserver(schedule);
-  observer.observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+  observer = new MutationObserver(schedule);
+  observe();
   schedule();
   return () => observer.disconnect();
 }
