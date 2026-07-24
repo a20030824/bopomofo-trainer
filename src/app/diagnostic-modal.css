@@ -16,3 +16,27 @@
 .diagnostic-analysis-modal::backdrop {
   background: var(--backdrop-tint);
 }
+
+#app .practice-stage,
+#app .topbar {
+  transition: opacity 160ms ease, transform 180ms ease;
+  transform-origin: 50% 50%;
+}
+
+body.diagnostic-analysis-open #app .practice-stage {
+  opacity: .26;
+  transform: translateY(-12px) scale(.986);
+}
+
+body.diagnostic-analysis-open #app .topbar {
+  opacity: .38;
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app .practice-stage,
+  #app .topbar {
+    transition: none;
+    transform: none;
+  }
+}
