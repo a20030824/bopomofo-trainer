@@ -45,7 +45,7 @@ function complete(state: ReturnType<typeof createProductState>) {
 }
 
 describe("frequency-first grammatical product session loop", () => {
-  it("requires unique disjoint syntax-profiled practice and evaluation catalogs", () => {
+  it("requires unique disjoint syntax-profiled catalogs and allows no evaluation entries", () => {
     expect(() => createProductEnvironment({
       ...PRODUCT_CATALOGS,
       practice: PRACTICE,
@@ -61,6 +61,14 @@ describe("frequency-first grammatical product session loop", () => {
       evaluation: EVALUATION,
       syntaxProfiles: [],
     })).toThrow(/missing syntax profiles/);
+
+    const practiceIds = new Set(PRACTICE.map((entry) => entry.id));
+    const practiceOnly = createProductEnvironment({
+      practice: PRACTICE,
+      evaluation: [],
+      syntaxProfiles: SYNTAX_PROFILES.filter((profile) => practiceIds.has(profile.entryId)),
+    });
+    expect(practiceOnly.catalogs.evaluation).toEqual([]);
   });
 
   it("builds one complete grammar-valid utterance instead of six unrelated entries", () => {
@@ -172,7 +180,7 @@ describe("frequency-first grammatical product session loop", () => {
     );
   });
 
-  it("keeps held-out evaluation separate from measurements and stage state", () => {
+  it("continues normal practice after the former five-round evaluation boundary", () => {
     const fresh = createFreshProgressForEnvironment(environment, "seed", "guided", "standard");
     const progress = {
       ...fresh,
@@ -180,14 +188,15 @@ describe("frequency-first grammatical product session loop", () => {
       curriculum: { ...fresh.curriculum, round: 5 },
     };
     const state = createProductState(environment, progress, 0);
-    expect(state.round.kind).toBe("evaluation");
-    const beforeMeasurements = JSON.stringify(state.progress.measurements);
-    const beforeCurriculum = JSON.stringify(state.progress.curriculum);
-    const beforeSelection = JSON.stringify(state.progress.selection);
+    expect(state.round.kind).toBe("practice");
+    expect(state.round.exercise.id).toBe("practice-6");
+
+    const beforeMeasurements = state.progress.measurements.bindingObservationCount;
     const completed = complete(state);
-    expect(completed.progress.evaluationRoundsCompleted).toBe(1);
-    expect(JSON.stringify(completed.progress.measurements)).toBe(beforeMeasurements);
-    expect(JSON.stringify(completed.progress.curriculum)).toBe(beforeCurriculum);
-    expect(JSON.stringify(completed.progress.selection)).toBe(beforeSelection);
+    expect(completed.progress.practiceRoundsCompleted).toBe(6);
+    expect(completed.progress.evaluationRoundsCompleted).toBe(0);
+    expect(completed.progress.curriculum.round).toBe(6);
+    expect(completed.progress.measurements.bindingObservationCount)
+      .toBeGreaterThan(beforeMeasurements);
   });
 });
