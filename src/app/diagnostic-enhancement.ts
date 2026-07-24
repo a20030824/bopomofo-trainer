@@ -1,3 +1,4 @@
+import "./diagnostic-modal.css";
 import { buildDiagnosticModel } from "../diagnostics/build-model.js";
 import {
   createFreshProgressForEnvironment,
