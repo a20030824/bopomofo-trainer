@@ -4,6 +4,7 @@ import {
   createProductEnvironment,
   createProductState,
 } from "../product/session.js";
+import type { ProductEnvironment } from "../product/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
 import {
   EVALUATION_CATALOG,
@@ -16,16 +17,17 @@ import {
   DEFAULT_SELECTION_TUNING,
   loadSelectionTuning,
   policyForSelectionTuning,
+  type SelectionTuning,
 } from "./selection-tuning.js";
 
-function currentDiagnosticModel() {
-  let tuning = DEFAULT_SELECTION_TUNING;
-  try {
-    tuning = loadSelectionTuning(localStorage);
-  } catch {
-    // The default policy still yields a complete read-only diagnostic model.
-  }
-  const environment = createProductEnvironment(
+let cachedTuningKey = "";
+let cachedEnvironment: ProductEnvironment | null = null;
+
+function environmentForTuning(tuning: SelectionTuning): ProductEnvironment {
+  const key = `${tuning.errorInfluence}:${tuning.timingInfluence}`;
+  if (cachedEnvironment !== null && cachedTuningKey === key) return cachedEnvironment;
+  cachedTuningKey = key;
+  cachedEnvironment = createProductEnvironment(
     {
       practice: PRACTICE_CATALOG,
       evaluation: EVALUATION_CATALOG,
@@ -35,6 +37,17 @@ function currentDiagnosticModel() {
     undefined,
     policyForSelectionTuning(tuning),
   );
+  return cachedEnvironment;
+}
+
+function currentDiagnosticModel() {
+  let tuning = DEFAULT_SELECTION_TUNING;
+  try {
+    tuning = loadSelectionTuning(localStorage);
+  } catch {
+    // The default policy still yields a complete read-only diagnostic model.
+  }
+  const environment = environmentForTuning(tuning);
   let progress = null;
   try {
     progress = loadLocalProductProgress(
