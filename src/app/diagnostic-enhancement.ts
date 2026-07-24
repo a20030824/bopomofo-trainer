@@ -11,7 +11,10 @@ import {
   SYNTAX_PROFILES,
 } from "./generated/catalog.js";
 import { loadLocalProductProgress } from "./local-progress.js";
-import { renderDiagnosticPanel } from "./diagnostic-panel.js";
+import {
+  createDiagnosticAnalysis,
+  renderDiagnosticSummary,
+} from "./diagnostic-panel.js";
 import {
   DEFAULT_SELECTION_TUNING,
   loadSelectionTuning,
@@ -83,13 +86,17 @@ function findLegacyWeakSection(content: HTMLElement): HTMLElement | null {
 export function mountDiagnosticEnhancement(): () => void {
   const content = document.querySelector<HTMLElement>("#information-content");
   if (content === null) return () => undefined;
+  const analysis = createDiagnosticAnalysis({
+    getModel: currentDiagnosticModel,
+    storage: localStorage,
+  });
   let scheduled = false;
 
   const enhance = (): void => {
     scheduled = false;
     const section = findLegacyWeakSection(content);
     if (section === null) return;
-    renderDiagnosticPanel(section, currentDiagnosticModel(), localStorage);
+    renderDiagnosticSummary(section, currentDiagnosticModel(), () => analysis.open());
   };
   const schedule = (): void => {
     if (scheduled) return;
@@ -99,5 +106,8 @@ export function mountDiagnosticEnhancement(): () => void {
   const observer = new MutationObserver(schedule);
   observer.observe(content, { childList: true, subtree: true });
   schedule();
-  return () => observer.disconnect();
+  return () => {
+    observer.disconnect();
+    analysis.destroy();
+  };
 }
