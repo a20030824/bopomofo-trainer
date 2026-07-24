@@ -25,7 +25,6 @@ import type {
 } from "../curriculum/types.js";
 import {
   appendRecentSummary,
-  createEmptyMeasurementSummary,
   createFreshProductProgress,
 } from "./progress.js";
 import type {
@@ -74,8 +73,8 @@ export function createProductEnvironment(
   if (!Number.isInteger(evaluationEntryCount) || evaluationEntryCount <= 0) {
     throw new RangeError("evaluationEntryCount must be a positive integer");
   }
-  if (catalogs.practice.length === 0 || catalogs.evaluation.length === 0) {
-    throw new Error("product requires both practice and evaluation catalog entries");
+  if (catalogs.practice.length === 0) {
+    throw new Error("product requires practice catalog entries");
   }
   const practiceIds = new Set(catalogs.practice.map((entry) => entry.id));
   const evaluationIds = new Set(catalogs.evaluation.map((entry) => entry.id));
@@ -119,58 +118,31 @@ export function createFreshProgressForEnvironment(
   );
 }
 
-function evaluationDue(
-  progress: ProductProgress,
-  environment: ProductEnvironment,
-): boolean {
-  const scheduled = Math.floor(
-    progress.practiceRoundsCompleted / environment.evaluationInterval,
-  );
-  return scheduled > progress.evaluationRoundsCompleted;
-}
-
 function selectRound(
   environment: ProductEnvironment,
   progress: ProductProgress,
 ): ProductRound {
-  const evaluation = evaluationDue(progress, environment);
   const selection = selectFormalSyntaxUtterance({
-    entries: evaluation
-      ? environment.catalogs.evaluation
-      : environment.catalogs.practice,
-    measurement: evaluation
-      ? createEmptyMeasurementSummary(environment.measurementPolicy)
-      : progress.measurements,
+    entries: environment.catalogs.practice,
+    measurement: progress.measurements,
     mode: progress.mode,
     layoutId: progress.layoutId,
     stage: progress.selection.stage,
-    history: evaluation
-      ? {
-        recentEntryIds: [],
-        recentUtteranceIds: [],
-        recentTemplateIds: [],
-      }
-      : {
-        recentEntryIds: progress.curriculum.recentEntryIds,
-        recentUtteranceIds: progress.selection.recentUtteranceIds,
-        recentTemplateIds: progress.selection.recentTemplateIds,
-      },
+    history: {
+      recentEntryIds: progress.curriculum.recentEntryIds,
+      recentUtteranceIds: progress.selection.recentUtteranceIds,
+      recentTemplateIds: progress.selection.recentTemplateIds,
+    },
     policy: environment.utterancePolicy,
     profiles: environment.catalogs.syntaxProfiles,
     random: createSeededRandom(
-      evaluation
-        ? `${progress.seed}:evaluation:${progress.evaluationRoundsCompleted}`
-        : `${progress.seed}:practice:${progress.practiceRoundsCompleted}`,
+      `${progress.seed}:practice:${progress.practiceRoundsCompleted}`,
     ),
   });
-  const kind = evaluation ? "evaluation" : "practice";
-  const number = evaluation
-    ? progress.evaluationRoundsCompleted + 1
-    : progress.practiceRoundsCompleted + 1;
   return {
-    kind,
+    kind: "practice",
     exercise: {
-      id: `${kind}-${number}`,
+      id: `practice-${progress.practiceRoundsCompleted + 1}`,
       mode: progress.mode,
       layoutId: progress.layoutId,
       entries: selection.utterance.entries,
@@ -267,31 +239,18 @@ function finalizeRound(
   );
   const metrics = sumSessionMetrics(state.session.traces, sessionMeasurements);
   const summary: ProductRoundSummary = {
-    kind: state.round.kind,
+    kind: "practice",
     exerciseId: state.round.exercise.id,
     completedAt,
     entryIds: state.round.exercise.entries.map((entry) => entry.id),
     utteranceId: state.round.selection.utterance.id,
     templateId: state.round.selection.utterance.templateId,
     frequencyStage: state.round.selection.stage,
-    phase: state.round.kind === "evaluation"
-      ? "evaluation"
-      : state.round.selection.stage === 1
-        ? "coverage"
-        : "adaptive",
+    phase: state.round.selection.stage === 1 ? "coverage" : "adaptive",
     focusTokenId: null,
     focusEvidence: null,
     ...metrics,
   };
-
-  if (state.round.kind === "evaluation") {
-    const progress: ProductProgress = {
-      ...state.progress,
-      evaluationRoundsCompleted: state.progress.evaluationRoundsCompleted + 1,
-      recentSummaries: appendRecentSummary(state.progress, summary),
-    };
-    return { ...state, progress, summary };
-  }
 
   const measurements = aggregateMeasurements(
     decisions,

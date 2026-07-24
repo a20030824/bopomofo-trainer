@@ -88,11 +88,9 @@ Caller-supplied template and standalone behavior remains isolated in legacy
 compatibility APIs and tests; `product/session.ts` calls only the formal syntax
 selector.
 
-## Evaluation boundary
+## Product catalog boundary
 
-Held-out evaluation uses only the held-out catalog partition and grammar-valid candidates. It uses no learner-specific boost and never updates cumulative measurements, frequency stage, or recent selection history.
-
-Evaluation observes behavior; it is not a mastery score.
+Every syntax-legal runtime entry belongs to the ordinary practice catalog. The browser does not reserve a held-out vocabulary pool or insert automatic evaluation rounds. Research partitions and simulation evaluation remain archived experiment infrastructure and are not part of the browser selection loop.
 
 ## Persistence boundary
 

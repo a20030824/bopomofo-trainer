@@ -1,47 +1,24 @@
-import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { compileCatalog } from "../../src/catalog/compile-catalog.js";
-import { parseCsv } from "../../src/catalog/csv.js";
-import { createProvenanceRegistry } from "../../src/catalog/provenance.js";
-import { createCatalogSupportIndex } from "../../src/curriculum/support.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../../src/scheme/standard-layout.js";
-import { partitionCatalogForProduct } from "../../src/product/catalog-partition.js";
 import {
   createFreshProgressForEnvironment,
   createProductEnvironment,
   createProductState,
 } from "../../src/product/session.js";
-import { SYNTAX_PROFILES } from "../../src/app/generated/catalog.js";
+import {
+  EVALUATION_CATALOG,
+  PRACTICE_CATALOG,
+  SYNTAX_PROFILES,
+} from "../../src/app/generated/catalog.js";
 
 describe("frequency-first product real catalog integration", () => {
-  it("reserves held-out entries and emits one grammar-valid stage-1 utterance", async () => {
-    const [source, provenanceSource] = await Promise.all([
-      readFile(new URL("../../data/source/words.sample.csv", import.meta.url), "utf8"),
-      readFile(new URL("../../data/provenance.csv", import.meta.url), "utf8"),
-    ]);
-    const provenance = createProvenanceRegistry(parseCsv(provenanceSource).records);
-    expect(provenance.errors).toEqual([]);
-    const compiled = compileCatalog(parseCsv(source).records, provenance.ids);
-    expect(compiled.errors).toEqual([]);
-    const partition = partitionCatalogForProduct(compiled.entries, 10, 3);
-    expect(partition.practice).toHaveLength(compiled.entries.length - 10);
-    expect(partition.evaluation).toHaveLength(10);
-
-    const originalSupport = createCatalogSupportIndex(compiled.entries);
-    const practiceSupport = createCatalogSupportIndex(partition.practice);
-    for (const original of Object.values(originalSupport.byToken)) {
-      const current = practiceSupport.byToken[original.tokenId]!;
-      expect(current.entryCount).toBeGreaterThanOrEqual(Math.min(original.entryCount, 3));
-      expect(current.bindingEntryCount).toBeGreaterThanOrEqual(
-        Math.min(original.bindingEntryCount, 3),
-      );
-      expect(current.motorEntryCount).toBeGreaterThanOrEqual(
-        Math.min(original.motorEntryCount, 3),
-      );
-    }
+  it("packages the complete runtime catalog as practice and never schedules evaluation", () => {
+    expect(PRACTICE_CATALOG.length).toBeGreaterThan(0);
+    expect(EVALUATION_CATALOG).toEqual([]);
 
     const environment = createProductEnvironment({
-      ...partition,
+      practice: PRACTICE_CATALOG,
+      evaluation: EVALUATION_CATALOG,
       syntaxProfiles: SYNTAX_PROFILES,
     });
     const progress = createFreshProgressForEnvironment(
@@ -59,14 +36,15 @@ describe("frequency-first product real catalog integration", () => {
     expect(state.round.selection.utterance.kind).toBe("formal-syntax");
     expect(state.round.selection.utterance.syntaxDerivationId).toBeTruthy();
 
-    const evaluationProgress = {
+    const formerBoundaryProgress = {
       ...progress,
       practiceRoundsCompleted: 5,
       curriculum: { ...progress.curriculum, round: 5 },
     };
-    const evaluationState = createProductState(environment, evaluationProgress, 1);
-    expect(evaluationState.round.kind).toBe("evaluation");
-    expect(evaluationState.round.selection.utterance.kind).toBe("formal-syntax");
-    expect(evaluationState.round.exercise.entries.length).toBeGreaterThan(0);
+    const nextState = createProductState(environment, formerBoundaryProgress, 1);
+    expect(nextState.round.kind).toBe("practice");
+    expect(nextState.round.exercise.id).toBe("practice-6");
+    expect(nextState.round.selection.utterance.kind).toBe("formal-syntax");
+    expect(nextState.round.exercise.entries.length).toBeGreaterThan(0);
   });
 });
