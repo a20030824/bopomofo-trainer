@@ -24,7 +24,7 @@ A correct recovery input after an error is another mapped observation. Therefore
 
 The key timing label is `有效鍵間時間`. It is the current exponential moving average of Phase 3 accepted timing observations, not a validated ability score. Syllable starts, incorrect input, recovery input, and interaction-noise-contaminated intervals remain excluded.
 
-A binding without enough catalog positions that can produce accepted motor timing is marked `目前不適用`, rather than being shown permanently as if more samples alone would make timing available.
+A binding with no catalog position that can produce accepted motor timing is marked `目前不適用`, rather than being shown permanently as if more samples alone would make timing available.
 
 ## Data-state policy
 
@@ -39,6 +39,26 @@ Display thresholds are centralized in `src/diagnostics/policy.ts`:
 Below the preliminary threshold, the state is `資料不足`. These are product display gates, not statistical confidence intervals.
 
 When an overall key state is required, the interface uses the more conservative of error and timing states. Expanded key details expose the two states separately.
+
+## Selection influence
+
+The expanded key row explains the browser's actual frequency-first selection influence, not the older single-focus curriculum state.
+
+For one expected token, the diagnostic applies the same public policy inputs used by production selection:
+
+- `minimumBindingAttempts` gates the error contribution;
+- `minimumBindingTimingSamples` gates the timing contribution;
+- current timing is compared with that token's own best accepted timing;
+- current error and timing influence settings scale their respective contributions;
+- the result is capped by `maximumExpectedTokenBoost`.
+
+The user-facing states are:
+
+- `尚未達選題門檻`: neither applicable observation route has reached its selection gate;
+- `目前無額外加權`: a route is eligible, but current observations or a zero influence setting produce a `1.00×` expected-token boost;
+- `選題加權中`: current expected-token evidence produces a boost above `1.00×` for compatible candidate utterances.
+
+This is an explainable selection modifier, not a claim that the key is being trained at a guaranteed rate. Candidate frequency, grammar compatibility, other learner evidence, recent-use penalties, and the combined learner cap still affect final utterance selection.
 
 ## Directional relationships
 
@@ -70,8 +90,8 @@ Browser UI code does not read measurement aggregates directly. `src/diagnostics/
 
 - cumulative measurement aggregates;
 - the standard physical-key layout;
-- catalog support;
-- curriculum state used only to explain practice scheduling.
+- catalog support used to distinguish available and non-applicable timing;
+- the current frequency-first selection policy, including user-selected influence scales.
 
 `src/diagnostics/selectors.ts` owns deterministic sorting, Top 5 limits, selected-key direction filters, sample gates, and tone inclusion. The list implementation and a future relationship graph must consume the same selectors.
 
