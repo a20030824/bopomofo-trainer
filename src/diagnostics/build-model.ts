@@ -1,16 +1,17 @@
 import type { InputLayout, TokenId } from "../core/model.js";
-import { classifyBindingStates } from "../curriculum/state.js";
+import type { FrequencyFirstUtterancePolicy } from "../curriculum/frequency-first-utterance.js";
 import type {
   CatalogSupportIndex,
-  CurriculumPolicy,
   CurriculumProfile,
 } from "../curriculum/types.js";
 import { bindingScopeKey } from "../measurement/aggregate.js";
-import type { MeasurementSummary } from "../measurement/types.js";
+import type {
+  BindingAggregate,
+  MeasurementSummary,
+} from "../measurement/types.js";
 import {
-  curriculumReasonLabel,
-  curriculumStateLabel,
   physicalKeyLabel,
+  reinforcementStateLabel,
   tokenLabel,
 } from "./labels.js";
 import {
@@ -21,6 +22,7 @@ import {
 import type {
   ConfusionDiagnostic,
   DiagnosticModel,
+  DiagnosticReinforcementState,
   KeyDiagnostic,
   TransitionDiagnostic,
 } from "./types.js";
@@ -28,14 +30,24 @@ import type {
 export interface BuildDiagnosticModelInput {
   readonly measurements: MeasurementSummary;
   readonly curriculum: CurriculumProfile;
-  readonly curriculumPolicy: CurriculumPolicy;
   readonly support: CatalogSupportIndex;
   readonly layout: InputLayout;
-  readonly focusedTokenId: TokenId | null;
+  readonly selectionPolicy: FrequencyFirstUtterancePolicy;
+}
+
+interface SelectionInfluence {
+  readonly state: DiagnosticReinforcementState;
+  readonly label: string;
+  readonly reason: string;
+  readonly expectedTokenBoost: number;
 }
 
 function codeUnitCompare(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(maximum, Math.max(minimum, value));
 }
 
 function reverseLayout(layout: InputLayout): ReadonlyMap<TokenId, string> {
@@ -46,18 +58,77 @@ function reverseLayout(layout: InputLayout): ReadonlyMap<TokenId, string> {
   return result;
 }
 
+function selectionInfluence(
+  aggregate: BindingAggregate | undefined,
+  timingAvailable: boolean,
+  policy: FrequencyFirstUtterancePolicy,
+): SelectionInfluence {
+  const attempts = aggregate?.attempts ?? 0;
+  const errors = aggregate?.errors ?? 0;
+  const timingSamples = aggregate?.timingSamples ?? 0;
+  const errorEligible = attempts >= policy.minimumBindingAttempts;
+  const timingEligible = timingAvailable
+    && timingSamples >= policy.minimumBindingTimingSamples
+    && aggregate?.currentTimeToTypeMs !== null
+    && aggregate?.currentTimeToTypeMs !== undefined
+    && aggregate.bestTimeToTypeMs !== null
+    && aggregate.bestTimeToTypeMs > 0;
+  const errorRate = errorEligible ? errors / attempts : null;
+  const timingRatio = timingEligible
+    ? aggregate.currentTimeToTypeMs / aggregate.bestTimeToTypeMs
+    : null;
+  const errorSignal = errorRate !== null && errorRate > 0;
+  const timingSignal = timingRatio !== null && timingRatio > 1;
+  const errorContribution = errorRate === null ? 0 : errorRate * policy.errorBoostScale;
+  const timingContribution = timingRatio === null
+    ? 0
+    : Math.max(0, timingRatio - 1) * policy.timingBoostScale;
+  const expectedTokenBoost = clamp(
+    1 + errorContribution + timingContribution,
+    1,
+    policy.maximumExpectedTokenBoost,
+  );
+
+  let state: DiagnosticReinforcementState;
+  let reason: string;
+  if (expectedTokenBoost > 1) {
+    state = "reinforced";
+    reason = errorContribution > 0 && timingContribution > 0
+      ? "錯誤觀察與有效鍵間時間"
+      : errorContribution > 0
+        ? "錯誤觀察較多"
+        : "有效鍵間時間較長";
+  } else if (!errorEligible && !timingEligible) {
+    state = "sampling";
+    if (!timingAvailable) {
+      reason = "錯誤觀察樣本仍不足";
+    } else if (attempts < policy.minimumBindingAttempts
+      && timingSamples < policy.minimumBindingTimingSamples) {
+      reason = "錯誤與時間樣本仍不足";
+    } else if (attempts < policy.minimumBindingAttempts) {
+      reason = "錯誤觀察樣本仍不足";
+    } else {
+      reason = "有效鍵間時間樣本仍不足";
+    }
+  } else {
+    state = "neutral";
+    reason = (errorSignal || timingSignal)
+      ? "已有弱點觀察，但相關選題權重目前為 0%"
+      : "目前觀察未產生額外加權";
+  }
+
+  return {
+    state,
+    label: reinforcementStateLabel(state),
+    reason,
+    expectedTokenBoost,
+  };
+}
+
 export function buildDiagnosticModel(
   input: BuildDiagnosticModelInput,
 ): DiagnosticModel {
   const codeByToken = reverseLayout(input.layout);
-  const bindingStates = classifyBindingStates(
-    input.curriculum,
-    input.support,
-    input.curriculumPolicy,
-    input.focusedTokenId,
-  );
-  const stateByToken = new Map(bindingStates.map((decision) => [decision.tokenId, decision]));
-
   const tokenIds = [...codeByToken.keys()]
     .filter((tokenId) => input.support.byToken[tokenId] !== undefined)
     .sort(codeUnitCompare);
@@ -73,18 +144,14 @@ export function buildDiagnosticModel(
     const errors = aggregate?.errors ?? 0;
     const timingSamples = aggregate?.timingSamples ?? 0;
     const errorDataState = dataStateForSamples(attempts, DIAGNOSTIC_POLICY.errorSamples);
-    const stateDecision = stateByToken.get(tokenId);
-    const timingAvailability = stateDecision?.evidence === "timed"
-      ? "available"
-      : "not-applicable";
-    const timingDataState = timingAvailability === "available"
+    const timingAvailable = (input.support.byToken[tokenId]?.motorEntryCount ?? 0) > 0;
+    const timingAvailability = timingAvailable ? "available" : "not-applicable";
+    const timingDataState = timingAvailable
       ? dataStateForSamples(timingSamples, DIAGNOSTIC_POLICY.timingSamples)
       : null;
     const overallDataState = timingDataState === null
       ? errorDataState
       : conservativeDataState(errorDataState, timingDataState);
-    const reinforcementState = stateDecision?.state ?? "unobserved";
-    const reinforcementReason = stateDecision?.reason ?? "no-binding-observations";
 
     return {
       tokenId,
@@ -108,11 +175,11 @@ export function buildDiagnosticModel(
         interactionNoise: 0,
       },
       overallDataState,
-      reinforcement: {
-        state: reinforcementState,
-        label: curriculumStateLabel(reinforcementState),
-        reason: curriculumReasonLabel(reinforcementReason),
-      },
+      reinforcement: selectionInfluence(
+        aggregate,
+        timingAvailable,
+        input.selectionPolicy,
+      ),
     };
   });
 
