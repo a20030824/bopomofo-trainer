@@ -42,7 +42,7 @@ describe("diagnostic relationship layout", () => {
     const points = diagnosticKeyboardPoints();
     expect(points.get("zhuyin:ㄅ")).toEqual({ x: 6, y: 0.5 });
     expect(points.get("zhuyin:ㄢ")).toEqual({ x: 42, y: 0.5 });
-    expect(points.get("zhuyin:ㄨ")).toEqual({ x: 30, y: 2.5 });
+    expect(points.get("zhuyin:ㄨ")).toEqual({ x: 33, y: 2.5 });
     expect(points.get("tone:1")).toEqual({ x: 30, y: 4.5 });
   });
 
