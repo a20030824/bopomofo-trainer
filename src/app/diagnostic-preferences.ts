@@ -14,7 +14,7 @@ export interface DiagnosticPreferences {
   readonly keySort: KeyDiagnosticSort;
   readonly transitionDirection: TransitionDirection;
   readonly confusionDirection: ConfusionDirection;
-  readonly minimumSamples: DiagnosticMinimumSamples;
+  readonly minimumSamples: number;
   readonly includeTone: boolean;
 }
 
