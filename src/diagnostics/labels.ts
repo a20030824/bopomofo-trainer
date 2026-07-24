@@ -1,6 +1,8 @@
-import type { CurriculumState } from "../curriculum/types.js";
 import type { TokenId } from "../core/model.js";
-import type { DiagnosticDataState } from "./types.js";
+import type {
+  DiagnosticDataState,
+  DiagnosticReinforcementState,
+} from "./types.js";
 
 export function diagnosticDataStateLabel(state: DiagnosticDataState): string {
   if (state === "sufficient") return "資料足夠";
@@ -40,31 +42,8 @@ export function physicalKeyLabel(code: string): string {
   return PHYSICAL_KEY_LABELS[code] ?? code;
 }
 
-export function curriculumStateLabel(state: CurriculumState): string {
-  switch (state) {
-    case "focused":
-      return "加強中";
-    case "cooldown":
-      return "最近已加強";
-    case "eligible":
-      return "可安排加強";
-    case "sampling":
-      return "持續蒐集資料";
-    case "unobserved":
-      return "尚未觀察";
-  }
-}
-
-export function curriculumReasonLabel(reason: string): string {
-  return ({
-    "selected-for-current-round": "本輪已安排",
-    "recently-focused": "最近已安排過",
-    "no-binding-observations": "尚未有按鍵觀察",
-    "insufficient-attempts": "嘗試次數仍不足",
-    "insufficient-binding-catalog-support": "可用練習內容仍不足",
-    "insufficient-clean-timing": "有效鍵間時間樣本仍不足",
-    "missing-valid-current-timing": "尚未形成有效鍵間時間",
-    "timed-measurement-and-catalog-thresholds-met": "量測與練習內容已達門檻",
-    "correctness-measurement-and-catalog-thresholds-met": "錯誤觀察與練習內容已達門檻",
-  } as Readonly<Record<string, string>>)[reason] ?? reason;
+export function reinforcementStateLabel(state: DiagnosticReinforcementState): string {
+  if (state === "reinforced") return "選題加權中";
+  if (state === "neutral") return "目前無額外加權";
+  return "尚未達選題門檻";
 }
