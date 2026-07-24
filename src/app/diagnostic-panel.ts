@@ -14,6 +14,7 @@ import type {
 } from "../diagnostics/types.js";
 import { STANDARD_BOPOMOFO_LAYOUT } from "../scheme/standard-layout.js";
 import {
+  DEFAULT_DIAGNOSTIC_PREFERENCES,
   loadDiagnosticPreferences,
   saveDiagnosticPreferences,
   type DiagnosticPreferenceStorage,
@@ -28,6 +29,9 @@ const KEYBOARD_ROWS = [
   ["KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM", "Comma", "Period", "Slash"],
   ["Space"],
 ] as const;
+
+const DIAGNOSTIC_TABS = ["key", "transition", "confusion"] as const;
+const MINIMUM_SAMPLE_OPTIONS = [1, 3, 5, 8] as const;
 
 interface EphemeralDiagnosticState {
   selectedKey: TokenId | null;
@@ -63,10 +67,18 @@ function tabLabel(tab: DiagnosticTab): string {
   return "按鍵";
 }
 
+function tabButtonId(tab: DiagnosticTab): string {
+  return `diagnostic-tab-${tab}`;
+}
+
+function tabPanelId(tab: DiagnosticTab): string {
+  return `diagnostic-panel-${tab}`;
+}
+
 function topToggleMarkup(tab: DiagnosticTab, complete: boolean): string {
   return `<div class="diagnostic-view-toggle" aria-label="顯示範圍">
-    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="false"${complete ? "" : " aria-pressed=\"true\""}>Top 5</button>
-    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="true"${complete ? " aria-pressed=\"true\"" : ""}>完整列表</button>
+    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="false" aria-pressed="${!complete}">Top 5</button>
+    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="true" aria-pressed="${complete}">完整列表</button>
   </div>`;
 }
 
@@ -86,12 +98,19 @@ function keyPickerMarkup(selectedKey: TokenId | null): string {
             : code.startsWith("Digit")
               ? code.slice(5)
               : code;
-        return `<button type="button" class="diagnostic-key${selectedKey === tokenId ? " selected" : ""}" data-action="select-key" data-token="${escapeHtml(tokenId)}" aria-pressed="${selectedKey === tokenId}">
+        const selected = selectedKey === tokenId;
+        return `<button type="button" class="diagnostic-key${selected ? " selected" : ""}" data-action="select-key" data-token="${escapeHtml(tokenId)}" aria-label="${escapeHtml(symbol)}，實體鍵 ${escapeHtml(physical)}" aria-pressed="${selected}">
           <strong>${escapeHtml(symbol)}</strong><small>${escapeHtml(physical)}</small>
         </button>`;
       }).join("")}
     </div>`).join("")}
   </div>`;
+}
+
+function metricStateLabel(row: KeyDiagnostic): string {
+  if (row.timingAvailability === "not-applicable") return "目前不適用";
+  if (row.timingDataState === null) return "資料不足";
+  return diagnosticDataStateLabel(row.timingDataState);
 }
 
 function keyRowMarkup(row: KeyDiagnostic, expanded: boolean): string {
@@ -101,8 +120,9 @@ function keyRowMarkup(row: KeyDiagnostic, expanded: boolean): string {
       ? `有效鍵間時間 — · ${row.timingSamples} 個有效樣本`
       : `有效鍵間時間 ${milliseconds(row.timingMs)} · ${row.timingSamples} 個有效樣本`;
   const ratio = row.displayedErrorRatio === null ? "—" : percent(row.displayedErrorRatio);
+  const detailsId = `diagnostic-key-details-${encodeURIComponent(row.tokenId)}`;
   return `<article class="diagnostic-record key-record">
-    <button type="button" class="diagnostic-record-toggle" data-action="toggle-key-details" data-token="${escapeHtml(row.tokenId)}" aria-expanded="${expanded}">
+    <button type="button" class="diagnostic-record-toggle" data-action="toggle-key-details" data-token="${escapeHtml(row.tokenId)}" aria-expanded="${expanded}" aria-controls="${detailsId}">
       <span class="diagnostic-identity"><strong>${escapeHtml(row.symbol)}</strong><small>${escapeHtml(row.physicalKey)}</small></span>
       <span class="diagnostic-record-main">
         <span>${escapeHtml(row.errorMetricLabel)} ${ratio} · ${row.attempts} 次嘗試</span>
@@ -110,7 +130,13 @@ function keyRowMarkup(row: KeyDiagnostic, expanded: boolean): string {
       </span>
       <span class="diagnostic-state">${escapeHtml(diagnosticDataStateLabel(row.overallDataState))}</span>
     </button>
-    ${expanded ? `<div class="diagnostic-record-details">
+    ${expanded ? `<div id="${detailsId}" class="diagnostic-record-details">
+      <h5>個別資料狀態</h5>
+      <dl>
+        <div><dt>錯誤觀察</dt><dd>${escapeHtml(diagnosticDataStateLabel(row.errorDataState))}</dd></div>
+        <div><dt>有效鍵間時間</dt><dd>${escapeHtml(metricStateLabel(row))}</dd></div>
+      </dl>
+      <h5>按鍵資料</h5>
       <dl>
         <div><dt>錯誤輸入</dt><dd>${row.errors} 次</dd></div>
         <div><dt>最佳有效鍵間時間</dt><dd>${row.bestTimingMs === null ? "—" : milliseconds(row.bestTimingMs)}</dd></div>
@@ -205,7 +231,7 @@ function transitionTabMarkup(
       </div>
       <label>最低樣本
         <select data-action="minimum-samples">
-          ${[1, 3, 5, 8].map((value) => `<option value="${value}"${preferences.minimumSamples === value ? " selected" : ""}>${value}</option>`).join("")}
+          ${MINIMUM_SAMPLE_OPTIONS.map((value) => `<option value="${value}"${preferences.minimumSamples === value ? " selected" : ""}>${value}</option>`).join("")}
         </select>
       </label>
       <label class="diagnostic-checkbox"><input type="checkbox" data-action="include-tone"${preferences.includeTone ? " checked" : ""} /> 包含聲調</label>
@@ -245,6 +271,10 @@ function confusionTabMarkup(
     </div>`;
 }
 
+function isDiagnosticTab(value: string | undefined): value is DiagnosticTab {
+  return value === "key" || value === "transition" || value === "confusion";
+}
+
 export function renderDiagnosticPanel(
   section: HTMLElement,
   model: DiagnosticModel,
@@ -254,15 +284,7 @@ export function renderDiagnosticPanel(
   try {
     preferences = loadDiagnosticPreferences(storage);
   } catch {
-    preferences = {
-      expanded: true,
-      activeTab: "key",
-      keySort: "error-ratio",
-      transitionDirection: "both",
-      confusionDirection: "both",
-      minimumSamples: 5,
-      includeTone: true,
-    };
+    preferences = DEFAULT_DIAGNOSTIC_PREFERENCES;
   }
   let state: EphemeralDiagnosticState = {
     selectedKey: null,
@@ -291,9 +313,9 @@ export function renderDiagnosticPanel(
       </button>
       ${preferences.expanded ? `<div id="diagnostic-panel-content">
         <div class="diagnostic-tabs" role="tablist" aria-label="弱點診斷類型">
-          ${(["key", "transition", "confusion"] as const).map((tab) => `<button type="button" role="tab" data-action="select-tab" data-tab="${tab}" aria-selected="${preferences.activeTab === tab}">${tabLabel(tab)}</button>`).join("")}
+          ${DIAGNOSTIC_TABS.map((tab) => `<button id="${tabButtonId(tab)}" type="button" role="tab" data-action="select-tab" data-tab="${tab}" aria-selected="${preferences.activeTab === tab}" aria-controls="${tabPanelId(tab)}" tabindex="${preferences.activeTab === tab ? 0 : -1}">${tabLabel(tab)}</button>`).join("")}
         </div>
-        <div class="diagnostic-tab-panel" role="tabpanel">${tabContent}</div>
+        <div id="${tabPanelId(preferences.activeTab)}" class="diagnostic-tab-panel" role="tabpanel" aria-labelledby="${tabButtonId(preferences.activeTab)}">${tabContent}</div>
       </div>` : ""}`;
 
     section.onclick = (event) => {
@@ -310,16 +332,16 @@ export function renderDiagnosticPanel(
       }
       if (action === "select-tab") {
         const tab = target.dataset.tab;
-        if (tab !== "key" && tab !== "transition" && tab !== "confusion") return;
+        if (!isDiagnosticTab(tab)) return;
         preferences = { ...preferences, activeTab: tab };
-        state = { ...state, selectedKey: null, expandedKey: null };
+        state = { ...state, expandedKey: null };
         persist();
         render();
         return;
       }
       if (action === "set-complete") {
         const tab = target.dataset.tab;
-        if (tab !== "key" && tab !== "transition" && tab !== "confusion") return;
+        if (!isDiagnosticTab(tab)) return;
         state = {
           ...state,
           complete: { ...state.complete, [tab]: target.dataset.value === "true" },
@@ -364,7 +386,7 @@ export function renderDiagnosticPanel(
         preferences = { ...preferences, keySort: event.target.value };
       } else if (action === "minimum-samples" && event.target instanceof HTMLSelectElement) {
         const value = Number(event.target.value);
-        if (!Number.isInteger(value) || value < 1) return;
+        if (!Number.isInteger(value) || !MINIMUM_SAMPLE_OPTIONS.includes(value as typeof MINIMUM_SAMPLE_OPTIONS[number])) return;
         preferences = { ...preferences, minimumSamples: value };
       } else if (action === "include-tone" && event.target instanceof HTMLInputElement) {
         preferences = { ...preferences, includeTone: event.target.checked };
@@ -373,6 +395,26 @@ export function renderDiagnosticPanel(
       }
       persist();
       render();
+    };
+
+    section.onkeydown = (event) => {
+      if (!(event.target instanceof HTMLButtonElement) || event.target.getAttribute("role") !== "tab") return;
+      const tab = event.target.dataset.tab;
+      if (!isDiagnosticTab(tab)) return;
+      const currentIndex = DIAGNOSTIC_TABS.indexOf(tab);
+      let nextIndex: number | null = null;
+      if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % DIAGNOSTIC_TABS.length;
+      if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + DIAGNOSTIC_TABS.length) % DIAGNOSTIC_TABS.length;
+      if (event.key === "Home") nextIndex = 0;
+      if (event.key === "End") nextIndex = DIAGNOSTIC_TABS.length - 1;
+      if (nextIndex === null) return;
+      event.preventDefault();
+      const nextTab = DIAGNOSTIC_TABS[nextIndex]!;
+      preferences = { ...preferences, activeTab: nextTab };
+      state = { ...state, expandedKey: null };
+      persist();
+      render();
+      section.querySelector<HTMLButtonElement>(`#${tabButtonId(nextTab)}`)?.focus();
     };
   };
 
