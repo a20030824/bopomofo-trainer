@@ -28,6 +28,7 @@ export type ObservationDecision<T> =
 export interface MeasurementPolicy {
   readonly version: string;
   readonly bindingContexts: readonly TimingContext[];
+  readonly confusionContexts: readonly TimingContext[];
   readonly motorTimingContexts: readonly TimingContext[];
   readonly smoothingAlpha: number;
 }
