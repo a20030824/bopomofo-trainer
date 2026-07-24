@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { diagnosticKeyboardTokenLabel } from "../../src/app/diagnostic-panel.js";
 import {
   KEYBOARD_GEOMETRY_ROWS,
   keyboardColumnSpan,
@@ -43,5 +44,14 @@ describe("shared keyboard geometry", () => {
     expect(keyboardColumnSpan({ code: "Space", units: 7 })).toBe(28);
     expect(KEYBOARD_GEOMETRY_ROWS.flat().every((key) => keyboardColumnSpan(key) > 0))
       .toBe(true);
+  });
+
+  it("shows every standard number-row Bopomofo and tone label", () => {
+    expect([
+      "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6",
+      "Digit7", "Digit8", "Digit9", "Digit0", "Minus",
+    ].map(diagnosticKeyboardTokenLabel)).toEqual([
+      "ㄅ", "ㄉ", "ˇ", "ˋ", "ㄓ", "ˊ", "˙", "ㄚ", "ㄞ", "ㄢ", "ㄦ",
+    ]);
   });
 });
