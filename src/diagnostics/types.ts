@@ -1,8 +1,8 @@
-import type { CurriculumState } from "../curriculum/types.js";
 import type { TokenId } from "../core/model.js";
 
 export type DiagnosticDataState = "insufficient" | "preliminary" | "sufficient";
 export type DiagnosticMetricAvailability = "available" | "not-applicable";
+export type DiagnosticReinforcementState = "sampling" | "neutral" | "reinforced";
 
 export interface DiagnosticSummary {
   readonly keysWithData: number;
@@ -33,9 +33,10 @@ export interface KeyDiagnostic {
   };
   readonly overallDataState: DiagnosticDataState;
   readonly reinforcement: {
-    readonly state: CurriculumState;
+    readonly state: DiagnosticReinforcementState;
     readonly label: string;
     readonly reason: string;
+    readonly expectedTokenBoost: number;
   };
 }
 
