@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { InputLayout } from "../../src/core/model.js";
-import { PHASE_4_CURRICULUM_POLICY } from "../../src/curriculum/policy.js";
+import { FREQUENCY_FIRST_UTTERANCE_POLICY } from "../../src/curriculum/frequency-first-utterance.js";
 import type { CatalogSupportIndex, CurriculumProfile } from "../../src/curriculum/types.js";
 import { buildDiagnosticModel } from "../../src/diagnostics/build-model.js";
 import {
@@ -172,16 +172,19 @@ const curriculum: CurriculumProfile = {
   recentTokenIds: [],
 };
 
+function build(selectionPolicy = FREQUENCY_FIRST_UTTERANCE_POLICY) {
+  return buildDiagnosticModel({
+    measurements,
+    curriculum,
+    support,
+    layout,
+    selectionPolicy,
+  });
+}
+
 describe("diagnostic model", () => {
   it("keeps error, timing, transition, and confusion semantics separate", () => {
-    const model = buildDiagnosticModel({
-      measurements,
-      curriculum,
-      curriculumPolicy: PHASE_4_CURRICULUM_POLICY,
-      support,
-      layout,
-      focusedTokenId: "zhuyin:A",
-    });
+    const model = build();
 
     const keyA = model.keys.find((row) => row.tokenId === "zhuyin:A");
     expect(keyA).toMatchObject({
@@ -193,7 +196,12 @@ describe("diagnostic model", () => {
       timingAvailability: "available",
       timingDataState: "sufficient",
       overallDataState: "sufficient",
-      reinforcement: { state: "focused", label: "加強中" },
+      reinforcement: {
+        state: "reinforced",
+        label: "選題加權中",
+        reason: "錯誤觀察與有效鍵間時間",
+        expectedTokenBoost: 1.45,
+      },
     });
     expect(keyA?.excludedSamples).toEqual(timedAggregate.timingExclusions);
 
@@ -202,7 +210,20 @@ describe("diagnostic model", () => {
       timingAvailability: "not-applicable",
       timingDataState: null,
       overallDataState: "sufficient",
-      reinforcement: { state: "cooldown", label: "最近已加強" },
+      reinforcement: {
+        state: "reinforced",
+        label: "選題加權中",
+        reason: "錯誤觀察較多",
+        expectedTokenBoost: 1.1875,
+      },
+    });
+
+    const keyC = model.keys.find((row) => row.tokenId === "zhuyin:C");
+    expect(keyC?.reinforcement).toMatchObject({
+      state: "sampling",
+      label: "尚未達選題門檻",
+      reason: "錯誤與時間樣本仍不足",
+      expectedTokenBoost: 1,
     });
 
     expect(model.transitions).toEqual([
@@ -222,6 +243,20 @@ describe("diagnostic model", () => {
       keysWithData: 2,
       repeatedConfusions: 2,
       slowerTransitions: 1,
+    });
+  });
+
+  it("reports observed weakness neutrally when selection influence is disabled", () => {
+    const model = build({
+      ...FREQUENCY_FIRST_UTTERANCE_POLICY,
+      errorBoostScale: 0,
+      timingBoostScale: 0,
+    });
+    expect(model.keys.find((row) => row.tokenId === "zhuyin:A")?.reinforcement).toEqual({
+      state: "neutral",
+      label: "目前無額外加權",
+      reason: "已有弱點觀察，但相關選題權重目前為 0%",
+      expectedTokenBoost: 1,
     });
   });
 });
