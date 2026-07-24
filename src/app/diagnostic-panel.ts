@@ -1,4 +1,5 @@
 import "./diagnostics.css";
+import "./diagnostic-polish.css";
 import type { TokenId } from "../core/model.js";
 import {
   diagnosticDataStateLabel,
@@ -12,6 +13,7 @@ import {
 } from "../diagnostics/selectors.js";
 import type {
   ConfusionDiagnostic,
+  DiagnosticDataState,
   DiagnosticModel,
   KeyDiagnostic,
   TransitionDiagnostic,
@@ -81,7 +83,7 @@ function boost(value: number): string {
 }
 
 function summaryText(model: DiagnosticModel): string {
-  return `${model.summary.keysWithData} 個按鍵已有資料 · ${model.summary.repeatedConfusions} 組重複誤按 · ${model.summary.slowerTransitions} 組較慢轉換`;
+  return `${model.summary.keysWithData} 鍵有資料 · ${model.summary.repeatedConfusions} 組重複誤按 · ${model.summary.slowerTransitions} 組慢轉換`;
 }
 
 function tabLabel(tab: DiagnosticTab): string {
@@ -100,6 +102,16 @@ function tabPanelId(tab: DiagnosticTab): string {
 
 function isDiagnosticTab(value: string | undefined): value is DiagnosticTab {
   return value === "key" || value === "transition" || value === "confusion";
+}
+
+function stateBadgeMarkup(state: DiagnosticDataState): string {
+  if (state === "sufficient") return "";
+  return `<span class="diagnostic-state ${state}">${escapeHtml(diagnosticDataStateLabel(state))}</span>`;
+}
+
+function detailStateMarkup(state: DiagnosticDataState): string {
+  if (state === "sufficient") return "";
+  return `<strong class="diagnostic-detail-state ${state}">${escapeHtml(diagnosticDataStateLabel(state))}</strong>`;
 }
 
 function keyRows(
@@ -175,21 +187,17 @@ export function renderDiagnosticSummary(
   const keyValue = signals.key === null
     ? "—"
     : `${signals.key.symbol} ${signals.key.displayedErrorRatio === null ? "—" : percent(signals.key.displayedErrorRatio)}`;
-  const keyMeta = signals.key === null
-    ? "尚未有按鍵觀察"
-    : `${signals.key.attempts} 次嘗試`;
+  const keyMeta = signals.key === null ? "尚無按鍵資料" : `${signals.key.attempts} 次`;
   const transitionValue = signals.transition === null
     ? "—"
     : `${signals.transition.fromSymbol} → ${signals.transition.toSymbol}`;
   const transitionMeta = signals.transition === null
-    ? "尚未有足夠轉換樣本"
-    : `${milliseconds(signals.transition.timingMs)} · ${signals.transition.timingSamples} 個樣本`;
+    ? "轉換樣本不足"
+    : `${milliseconds(signals.transition.timingMs)} · ${signals.transition.timingSamples} 樣本`;
   const confusionValue = signals.confusion === null
     ? "—"
     : `${signals.confusion.expectedSymbol} → ${signals.confusion.actualSymbol}`;
-  const confusionMeta = signals.confusion === null
-    ? "尚未觀察到誤按"
-    : `${signals.confusion.occurrences} 次`;
+  const confusionMeta = signals.confusion === null ? "尚無誤按" : `${signals.confusion.occurrences} 次`;
 
   section.className = "panel-section diagnostic-summary-section";
   section.innerHTML = `<div class="diagnostic-summary-heading">
@@ -197,7 +205,7 @@ export function renderDiagnosticSummary(
         <h3>弱點診斷</h3>
         <p>${escapeHtml(summaryText(model))}</p>
       </div>
-      <button type="button" class="diagnostic-open-analysis">展開分析</button>
+      <button type="button" class="diagnostic-open-analysis">進入分析</button>
     </div>
     <div class="diagnostic-summary-signals" aria-label="弱點診斷摘要">
       <div><span>按鍵</span><strong>${escapeHtml(keyValue)}</strong><small>${escapeHtml(keyMeta)}</small></div>
@@ -209,10 +217,9 @@ export function renderDiagnosticSummary(
 }
 
 function dataLegendMarkup(): string {
-  return `<div class="diagnostic-analysis-legend" aria-label="資料狀態說明">
-    <div><span class="diagnostic-legend-mark insufficient"></span><strong>資料不足</strong><small>尚未達初步顯示門檻</small></div>
-    <div><span class="diagnostic-legend-mark preliminary"></span><strong>初步</strong><small>可閱讀，但樣本仍有限</small></div>
-    <div><span class="diagnostic-legend-mark sufficient"></span><strong>資料足夠</strong><small>已達產品顯示門檻</small></div>
+  return `<div class="diagnostic-analysis-legend" aria-label="樣本提示">
+    <div><span class="diagnostic-legend-mark insufficient"></span><strong>資料不足</strong><small>尚未達初步門檻</small></div>
+    <div><span class="diagnostic-legend-mark preliminary"></span><strong>初步</strong><small>可讀，但樣本仍少</small></div>
   </div>`;
 }
 
@@ -222,27 +229,25 @@ function activeScopeText(
   state: EphemeralDiagnosticState,
 ): string {
   const selected = state.selectedKey === null
-    ? "全部按鍵"
+    ? "全部"
     : model.keys.find((row) => row.tokenId === state.selectedKey)?.symbol ?? state.selectedKey;
   if (preferences.activeTab === "transition") {
     const direction = preferences.transitionDirection === "incoming"
-      ? "進入此鍵"
+      ? "進入"
       : preferences.transitionDirection === "outgoing"
-        ? "離開此鍵"
-        : "雙向";
-    return `${selected} · ${direction} · 至少 ${preferences.minimumSamples} 個樣本${preferences.includeTone ? " · 包含聲調" : ""}`;
+        ? "離開"
+        : "全部方向";
+    return `${selected} · ${direction} · ≥${preferences.minimumSamples} 樣本${preferences.includeTone ? " · 聲調" : ""}`;
   }
   if (preferences.activeTab === "confusion") {
     const direction = preferences.confusionDirection === "expected"
-      ? "應按此鍵"
+      ? "應按"
       : preferences.confusionDirection === "actual"
-        ? "誤按成此鍵"
-        : "雙向";
+        ? "按成"
+        : "全部方向";
     return `${selected} · ${direction}`;
   }
-  return preferences.keySort === "timing"
-    ? "依有效鍵間時間排序"
-    : "依錯誤觀察比例排序";
+  return preferences.keySort === "timing" ? "依鍵間時間" : "依錯誤比例";
 }
 
 function overviewMarkup(
@@ -252,27 +257,27 @@ function overviewMarkup(
 ): string {
   const explanation = preferences.activeTab === "key"
     ? preferences.keySort === "timing"
-      ? "比較到達各按鍵的有效鍵間時間；音節起始、錯誤、修正與輸入干擾不計入。"
-      : "比較已映射正確與錯誤觀察中的錯誤比例；它不等同第一次作答錯誤率。"
+      ? "到達各鍵的有效鍵間時間；起始、錯誤、修正與干擾不計。"
+      : "已映射觀察中的錯誤比例，不是首次作答錯誤率。"
     : preferences.activeTab === "transition"
-      ? "比較同一音節內相鄰按鍵的方向性有效時間。相反方向是不同資料。"
-      : "比較應按按鍵與實際誤按按鍵的方向性關係。比例分母固定在同一應按按鍵。";
+      ? "同音節相鄰鍵的方向性時間；反向另計。"
+      : "應按與實際按鍵的方向性關係；反向另計。";
   return `<aside class="diagnostic-analysis-overview" aria-label="診斷摘要與說明">
     <div class="diagnostic-overview-counts">
-      <div><strong>${model.summary.keysWithData}</strong><span>按鍵已有資料</span></div>
+      <div><strong>${model.summary.keysWithData}</strong><span>有資料</span></div>
       <div><strong>${model.summary.repeatedConfusions}</strong><span>重複誤按</span></div>
-      <div><strong>${model.summary.slowerTransitions}</strong><span>較慢轉換</span></div>
+      <div><strong>${model.summary.slowerTransitions}</strong><span>慢轉換</span></div>
     </div>
     <section>
-      <span class="diagnostic-overview-label">目前範圍</span>
+      <span class="diagnostic-overview-label">範圍</span>
       <p>${escapeHtml(activeScopeText(model, preferences, state))}</p>
     </section>
     <section>
-      <span class="diagnostic-overview-label">如何閱讀</span>
+      <span class="diagnostic-overview-label">指標</span>
       <p>${escapeHtml(explanation)}</p>
     </section>
     <section>
-      <span class="diagnostic-overview-label">資料狀態</span>
+      <span class="diagnostic-overview-label">樣本提示</span>
       ${dataLegendMarkup()}
     </section>
   </aside>`;
@@ -342,6 +347,11 @@ function keyboardSignals(
   return result;
 }
 
+export function diagnosticKeyboardTokenLabel(code: string): string | null {
+  const tokenId = STANDARD_BOPOMOFO_LAYOUT.bindings[code];
+  return tokenId === undefined ? null : tokenLabel(tokenId);
+}
+
 function keyboardMarkup(
   model: DiagnosticModel,
   preferences: DiagnosticPreferences,
@@ -350,13 +360,13 @@ function keyboardMarkup(
   const signals = keyboardSignals(model, preferences, state);
   const visibleCount = visibleRowsForTab(model, preferences, state).length;
   const caption = preferences.activeTab === "key"
-    ? "選取按鍵後，右側會保留列表位置並顯示完整量測細節。"
+    ? "選鍵查看量測。"
     : state.selectedKey === null
-      ? "先閱讀目前篩選結果，或選一個按鍵縮小方向性關係。"
-      : "鍵盤與右側列表使用同一組篩選結果；數字是目前可見關係數。";
+      ? "選鍵篩選關係。"
+      : "鍵盤與列表同步。";
   return `<section class="diagnostic-analysis-canvas" aria-label="鍵盤診斷視圖">
     <div class="diagnostic-canvas-heading">
-      <div><span>${escapeHtml(tabLabel(preferences.activeTab))}</span><strong>${visibleCount} 筆目前結果</strong></div>
+      <div><span>${escapeHtml(tabLabel(preferences.activeTab))}</span><strong>${visibleCount} 筆</strong></div>
       <p>${escapeHtml(caption)}</p>
     </div>
     <div class="diagnostic-keyboard-stage">
@@ -376,7 +386,7 @@ function keyboardMarkup(
             ].filter(Boolean).join(" ");
             const style = `--key-columns:${columns};--signal-strength:${signal?.strength ?? 0}`;
             return `<button type="button" class="${classes}" style="${style}" data-action="select-key" data-token="${escapeHtml(tokenId)}" aria-pressed="${signal?.selected ?? false}" aria-label="${escapeHtml(tokenLabel(tokenId))}，實體鍵 ${escapeHtml(physicalKeyLabel(key.code))}">
-              <span><strong>${escapeHtml(tokenLabel(tokenId))}</strong><small>${escapeHtml(physicalKeyLabel(key.code))}</small></span>
+              <strong>${escapeHtml(tokenLabel(tokenId))}</strong>
               ${signal?.badge === null || signal?.badge === undefined ? "" : `<em>${escapeHtml(signal.badge)}</em>`}
             </button>`;
           }).join("")}
@@ -388,8 +398,8 @@ function keyboardMarkup(
 
 function topToggleMarkup(tab: DiagnosticTab, complete: boolean): string {
   return `<div class="diagnostic-view-toggle" aria-label="顯示範圍">
-    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="false" aria-pressed="${!complete}">Top 5</button>
-    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="true" aria-pressed="${complete}">完整列表</button>
+    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="false" aria-pressed="${!complete}">前 5</button>
+    <button type="button" data-action="set-complete" data-tab="${tab}" data-value="true" aria-pressed="${complete}">全部</button>
   </div>`;
 }
 
@@ -411,23 +421,23 @@ function inspectorToolbarMarkup(
   if (preferences.activeTab === "transition") {
     return `<div class="diagnostic-inspector-toolbar stacked">
       <div class="diagnostic-segments" aria-label="轉換方向">
-        ${([["incoming", "進入"], ["outgoing", "離開"], ["both", "雙向"]] as const)
+        ${([["incoming", "進入"], ["outgoing", "離開"], ["both", "全部"]] as const)
           .map(([value, label]) => `<button type="button" data-action="transition-direction" data-value="${value}" aria-pressed="${preferences.transitionDirection === value}">${label}</button>`).join("")}
       </div>
       <div class="diagnostic-inspector-options">
-        <label>最低樣本
+        <label>至少
           <select data-action="minimum-samples">
             ${MINIMUM_SAMPLE_OPTIONS.map((value) => `<option value="${value}"${preferences.minimumSamples === value ? " selected" : ""}>${value}</option>`).join("")}
           </select>
         </label>
-        <label class="diagnostic-checkbox"><input type="checkbox" data-action="include-tone"${preferences.includeTone ? " checked" : ""} /> 包含聲調</label>
+        <label class="diagnostic-checkbox"><input type="checkbox" data-action="include-tone"${preferences.includeTone ? " checked" : ""} /> 聲調</label>
         ${topToggleMarkup("transition", state.complete.transition)}
       </div>
     </div>`;
   }
   return `<div class="diagnostic-inspector-toolbar stacked">
     <div class="diagnostic-segments" aria-label="誤按方向">
-      ${([["expected", "應按"], ["actual", "按成"], ["both", "雙向"]] as const)
+      ${([["expected", "應按"], ["actual", "按成"], ["both", "全部"]] as const)
         .map(([value, label]) => `<button type="button" data-action="confusion-direction" data-value="${value}" aria-pressed="${preferences.confusionDirection === value}">${label}</button>`).join("")}
     </div>
     <div class="diagnostic-inspector-options">${topToggleMarkup("confusion", state.complete.confusion)}</div>
@@ -439,83 +449,98 @@ function keyListRowMarkup(row: KeyDiagnostic, selected: boolean): string {
   const timing = row.timingAvailability === "not-applicable"
     ? "時間不適用"
     : row.timingMs === null
-      ? `${row.timingSamples} 個時間樣本`
-      : `${milliseconds(row.timingMs)} · ${row.timingSamples} 個樣本`;
+      ? `${row.timingSamples} 時間樣本`
+      : `${milliseconds(row.timingMs)} · ${row.timingSamples} 樣本`;
   return `<button type="button" class="diagnostic-inspector-row${selected ? " selected" : ""}" data-action="select-key" data-token="${escapeHtml(row.tokenId)}" aria-pressed="${selected}">
     <span class="diagnostic-inspector-identity"><strong>${escapeHtml(row.symbol)}</strong><small>${escapeHtml(row.physicalKey)}</small></span>
     <span class="diagnostic-inspector-main"><strong>${escapeHtml(primary)}</strong><small>${escapeHtml(timing)}</small></span>
-    <span class="diagnostic-state ${row.overallDataState}">${escapeHtml(diagnosticDataStateLabel(row.overallDataState))}</span>
+    ${stateBadgeMarkup(row.overallDataState)}
   </button>`;
 }
 
 function transitionListRowMarkup(row: TransitionDiagnostic, selected: boolean): string {
   return `<button type="button" class="diagnostic-inspector-row relation${selected ? " selected" : ""}" data-action="select-relation" data-id="${escapeHtml(row.id)}" aria-pressed="${selected}">
     <span class="diagnostic-relation-pair"><strong>${escapeHtml(row.fromSymbol)}</strong><small>${escapeHtml(row.fromPhysicalKey)}</small><i>→</i><strong>${escapeHtml(row.toSymbol)}</strong><small>${escapeHtml(row.toPhysicalKey)}</small></span>
-    <span class="diagnostic-inspector-main"><strong>${milliseconds(row.timingMs)}</strong><small>${row.timingSamples} 個有效樣本</small></span>
-    <span class="diagnostic-state ${row.dataState}">${escapeHtml(diagnosticDataStateLabel(row.dataState))}</span>
+    <span class="diagnostic-inspector-main"><strong>${milliseconds(row.timingMs)}</strong><small>${row.timingSamples} 樣本</small></span>
+    ${stateBadgeMarkup(row.dataState)}
   </button>`;
 }
 
 function confusionListRowMarkup(row: ConfusionDiagnostic, selected: boolean): string {
   return `<button type="button" class="diagnostic-inspector-row relation${selected ? " selected" : ""}" data-action="select-relation" data-id="${escapeHtml(row.id)}" aria-pressed="${selected}">
     <span class="diagnostic-relation-pair"><strong>${escapeHtml(row.expectedSymbol)}</strong><small>${escapeHtml(row.expectedPhysicalKey)}</small><i>→</i><strong>${escapeHtml(row.actualSymbol)}</strong><small>${escapeHtml(row.actualPhysicalKey)}</small></span>
-    <span class="diagnostic-inspector-main"><strong>${row.occurrences} 次</strong><small>${percent(row.expectedErrorShare)} 的同目標誤按</small></span>
-    <span class="diagnostic-state ${row.dataState}">${escapeHtml(diagnosticDataStateLabel(row.dataState))}</span>
+    <span class="diagnostic-inspector-main"><strong>${row.occurrences} 次</strong><small>同目標占 ${percent(row.expectedErrorShare)}</small></span>
+    ${stateBadgeMarkup(row.dataState)}
   </button>`;
 }
 
+function keySampleNotices(row: KeyDiagnostic): string {
+  const notices: string[] = [];
+  if (row.errorDataState !== "sufficient") {
+    notices.push(`<div><dt>錯誤觀察</dt><dd>${escapeHtml(diagnosticDataStateLabel(row.errorDataState))}</dd></div>`);
+  }
+  if (row.timingAvailability === "not-applicable") {
+    notices.push("<div><dt>鍵間時間</dt><dd>不適用</dd></div>");
+  } else if (row.timingDataState !== null && row.timingDataState !== "sufficient") {
+    notices.push(`<div><dt>鍵間時間</dt><dd>${escapeHtml(diagnosticDataStateLabel(row.timingDataState))}</dd></div>`);
+  } else if (row.timingDataState === null) {
+    notices.push("<div><dt>鍵間時間</dt><dd>資料不足</dd></div>");
+  }
+  if (notices.length === 0) return "";
+  return `<section><h4>樣本提示</h4><dl class="diagnostic-detail-lines">${notices.join("")}</dl></section>`;
+}
+
+function keyTimingCaption(row: KeyDiagnostic): string {
+  if (row.timingAvailability === "not-applicable") return "不適用";
+  if (row.timingDataState === "insufficient" || row.timingDataState === null) return "資料不足";
+  if (row.timingDataState === "preliminary") return "初步";
+  return `${row.timingSamples} 樣本`;
+}
+
 function keyDetailMarkup(row: KeyDiagnostic | null): string {
-  if (row === null) return '<div class="diagnostic-detail-empty">選取一個按鍵查看完整量測。</div>';
-  const timingState = row.timingAvailability === "not-applicable"
-    ? "目前不適用"
-    : row.timingDataState === null
-      ? "資料不足"
-      : diagnosticDataStateLabel(row.timingDataState);
+  if (row === null) return '<div class="diagnostic-detail-empty">選一個按鍵查看量測。</div>';
   return `<article class="diagnostic-detail-card">
-    <header><div><span>按鍵細節</span><h3>${escapeHtml(row.symbol)} <small>${escapeHtml(row.physicalKey)}</small></h3></div><strong>${escapeHtml(diagnosticDataStateLabel(row.overallDataState))}</strong></header>
+    <header><div><span>按鍵</span><h3>${escapeHtml(row.symbol)} <small>${escapeHtml(row.physicalKey)}</small></h3></div>${detailStateMarkup(row.overallDataState)}</header>
     <dl class="diagnostic-detail-metrics">
-      <div><dt>錯誤觀察比例</dt><dd>${row.displayedErrorRatio === null ? "—" : percent(row.displayedErrorRatio)}</dd><small>${row.errors} / ${row.attempts} 次觀察</small></div>
-      <div><dt>有效鍵間時間</dt><dd>${row.timingMs === null ? "—" : milliseconds(row.timingMs)}</dd><small>${escapeHtml(timingState)}</small></div>
-      <div><dt>最佳時間</dt><dd>${row.bestTimingMs === null ? "—" : milliseconds(row.bestTimingMs)}</dd><small>${row.timingSamples} 個有效樣本</small></div>
-      <div><dt>選題影響</dt><dd>${boost(row.reinforcement.expectedTokenBoost)}</dd><small>${escapeHtml(row.reinforcement.label)}</small></div>
+      <div><dt>錯誤觀察比例</dt><dd>${row.displayedErrorRatio === null ? "—" : percent(row.displayedErrorRatio)}</dd><small>${row.errors} / ${row.attempts}</small></div>
+      <div><dt>有效鍵間時間</dt><dd>${row.timingMs === null ? "—" : milliseconds(row.timingMs)}</dd><small>${escapeHtml(keyTimingCaption(row))}</small></div>
+      <div><dt>最佳時間</dt><dd>${row.bestTimingMs === null ? "—" : milliseconds(row.bestTimingMs)}</dd><small>${row.timingSamples} 樣本</small></div>
+      <div><dt>選題倍率</dt><dd>${boost(row.reinforcement.expectedTokenBoost)}</dd><small>${escapeHtml(row.reinforcement.label)}</small></div>
     </dl>
-    <section><h4>個別資料狀態</h4><dl class="diagnostic-detail-lines">
-      <div><dt>錯誤觀察</dt><dd>${escapeHtml(diagnosticDataStateLabel(row.errorDataState))}</dd></div>
-      <div><dt>有效鍵間時間</dt><dd>${escapeHtml(timingState)}</dd></div>
-    </dl></section>
-    <section><h4>排除的時間樣本</h4><dl class="diagnostic-detail-lines four">
+    ${keySampleNotices(row)}
+    <section><h4>未計入時間</h4><dl class="diagnostic-detail-lines four">
       <div><dt>音節起始</dt><dd>${row.excludedSamples.syllableStart}</dd></div>
       <div><dt>錯誤輸入</dt><dd>${row.excludedSamples.incorrect}</dd></div>
       <div><dt>修正輸入</dt><dd>${row.excludedSamples.recovery}</dd></div>
       <div><dt>輸入干擾</dt><dd>${row.excludedSamples.interactionNoise}</dd></div>
     </dl></section>
-    <section><h4>選題影響原因</h4><p>${escapeHtml(row.reinforcement.reason)}</p></section>
+    <section><h4>選題原因</h4><p>${escapeHtml(row.reinforcement.reason)}</p></section>
   </article>`;
 }
 
 function transitionDetailMarkup(row: TransitionDiagnostic | null): string {
-  if (row === null) return '<div class="diagnostic-detail-empty">選取一筆轉換查看完整數值。</div>';
+  if (row === null) return '<div class="diagnostic-detail-empty">選一筆轉換查看數值。</div>';
   return `<article class="diagnostic-detail-card relation-detail">
-    <header><div><span>轉換細節</span><h3>${escapeHtml(row.fromSymbol)} <small>${escapeHtml(row.fromPhysicalKey)}</small> → ${escapeHtml(row.toSymbol)} <small>${escapeHtml(row.toPhysicalKey)}</small></h3></div><strong>${escapeHtml(diagnosticDataStateLabel(row.dataState))}</strong></header>
+    <header><div><span>轉換</span><h3>${escapeHtml(row.fromSymbol)} <small>${escapeHtml(row.fromPhysicalKey)}</small> → ${escapeHtml(row.toSymbol)} <small>${escapeHtml(row.toPhysicalKey)}</small></h3></div>${detailStateMarkup(row.dataState)}</header>
     <dl class="diagnostic-detail-metrics three">
-      <div><dt>目前時間</dt><dd>${milliseconds(row.timingMs)}</dd></div>
-      <div><dt>最佳時間</dt><dd>${milliseconds(row.bestTimingMs)}</dd></div>
-      <div><dt>有效樣本</dt><dd>${row.timingSamples}</dd></div>
+      <div><dt>目前</dt><dd>${milliseconds(row.timingMs)}</dd></div>
+      <div><dt>最佳</dt><dd>${milliseconds(row.bestTimingMs)}</dd></div>
+      <div><dt>樣本</dt><dd>${row.timingSamples}</dd></div>
     </dl>
-    <section><h4>量測邊界</h4><p>只包含同一音節內、相鄰、正確、無修正且未受輸入干擾的方向性時間。</p></section>
+    <section><h4>計算方式</h4><p>同音節、相鄰且正確的乾淨輸入；反向另計。</p></section>
   </article>`;
 }
 
 function confusionDetailMarkup(row: ConfusionDiagnostic | null): string {
-  if (row === null) return '<div class="diagnostic-detail-empty">選取一筆誤按查看完整數值。</div>';
+  if (row === null) return '<div class="diagnostic-detail-empty">選一筆誤按查看數值。</div>';
   return `<article class="diagnostic-detail-card relation-detail">
-    <header><div><span>誤按細節</span><h3>${escapeHtml(row.expectedSymbol)} <small>${escapeHtml(row.expectedPhysicalKey)}</small> → ${escapeHtml(row.actualSymbol)} <small>${escapeHtml(row.actualPhysicalKey)}</small></h3></div><strong>${escapeHtml(diagnosticDataStateLabel(row.dataState))}</strong></header>
+    <header><div><span>誤按</span><h3>${escapeHtml(row.expectedSymbol)} <small>${escapeHtml(row.expectedPhysicalKey)}</small> → ${escapeHtml(row.actualSymbol)} <small>${escapeHtml(row.actualPhysicalKey)}</small></h3></div>${detailStateMarkup(row.dataState)}</header>
     <dl class="diagnostic-detail-metrics three">
-      <div><dt>此組誤按</dt><dd>${row.occurrences}</dd></div>
-      <div><dt>同目標誤按</dt><dd>${row.expectedConfusionTotal}</dd></div>
-      <div><dt>所佔比例</dt><dd>${percent(row.expectedErrorShare)}</dd></div>
+      <div><dt>此組</dt><dd>${row.occurrences}</dd></div>
+      <div><dt>同目標總數</dt><dd>${row.expectedConfusionTotal}</dd></div>
+      <div><dt>占比</dt><dd>${percent(row.expectedErrorShare)}</dd></div>
     </dl>
-    <section><h4>比例分母</h4><p>同一應按按鍵的所有已觀察誤按。相反方向保留為另一筆資料。</p></section>
+    <section><h4>計算方式</h4><p>分母是同一應按鍵的所有誤按；反向另計。</p></section>
   </article>`;
 }
 
@@ -530,7 +555,7 @@ function inspectorMarkup(
     return `<aside class="diagnostic-analysis-inspector" aria-label="按鍵診斷列表與細節">
       ${inspectorToolbarMarkup(preferences, state)}
       <div class="diagnostic-inspector-list">
-        ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">尚未有按鍵觀察。</p>' : rows.map((row) => keyListRowMarkup(row, selected?.tokenId === row.tokenId)).join("")}
+        ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">尚無按鍵資料。</p>' : rows.map((row) => keyListRowMarkup(row, selected?.tokenId === row.tokenId)).join("")}
       </div>
       <div class="diagnostic-inspector-detail">${keyDetailMarkup(selected)}</div>
     </aside>`;
@@ -541,7 +566,7 @@ function inspectorMarkup(
     return `<aside class="diagnostic-analysis-inspector" aria-label="轉換診斷列表與細節">
       ${inspectorToolbarMarkup(preferences, state)}
       <div class="diagnostic-inspector-list">
-        ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">目前篩選條件下沒有轉換資料。</p>' : rows.map((row) => transitionListRowMarkup(row, selected?.id === row.id)).join("")}
+        ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">此範圍沒有轉換資料。</p>' : rows.map((row) => transitionListRowMarkup(row, selected?.id === row.id)).join("")}
       </div>
       <div class="diagnostic-inspector-detail">${transitionDetailMarkup(selected)}</div>
     </aside>`;
@@ -551,7 +576,7 @@ function inspectorMarkup(
   return `<aside class="diagnostic-analysis-inspector" aria-label="誤按診斷列表與細節">
     ${inspectorToolbarMarkup(preferences, state)}
     <div class="diagnostic-inspector-list">
-      ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">目前篩選條件下沒有誤按資料。</p>' : rows.map((row) => confusionListRowMarkup(row, selected?.id === row.id)).join("")}
+      ${rows.length === 0 ? '<p class="diagnostic-inspector-empty">此範圍沒有誤按資料。</p>' : rows.map((row) => confusionListRowMarkup(row, selected?.id === row.id)).join("")}
     </div>
     <div class="diagnostic-inspector-detail">${confusionDetailMarkup(selected)}</div>
   </aside>`;
@@ -598,7 +623,7 @@ export function createDiagnosticAnalysis(
     host.innerHTML = `<div class="diagnostic-analysis-shell">
       <header class="diagnostic-analysis-header">
         <div class="diagnostic-analysis-title-block">
-          <span>Analysis</span>
+          <span>練習分析</span>
           <h2 id="diagnostic-analysis-title">弱點診斷</h2>
           <p>${escapeHtml(summaryText(model))}</p>
         </div>
