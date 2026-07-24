@@ -1,4 +1,3 @@
-import { selectCurriculumFocus } from "../curriculum/focus.js";
 import { buildDiagnosticModel } from "../diagnostics/build-model.js";
 import {
   createFreshProgressForEnvironment,
@@ -65,18 +64,15 @@ function currentDiagnosticModel() {
     "guided",
     STANDARD_BOPOMOFO_LAYOUT.id,
   );
-  const focus = selectCurriculumFocus(
-    progress.curriculum,
-    environment.practiceSupport,
-    environment.curriculumPolicy,
-  );
   return buildDiagnosticModel({
     measurements: progress.measurements,
     curriculum: progress.curriculum,
     curriculumPolicy: environment.curriculumPolicy,
     support: environment.practiceSupport,
     layout: STANDARD_BOPOMOFO_LAYOUT,
-    focusedTokenId: focus.tokenId,
+    // The current formal-syntax product does not persist a single focused key.
+    // Show only durable curriculum eligibility/cooldown state here.
+    focusedTokenId: null,
   });
 }
 
