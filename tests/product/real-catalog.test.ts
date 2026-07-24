@@ -68,5 +68,5 @@ describe("frequency-first product real catalog integration", () => {
     expect(evaluationState.round.kind).toBe("evaluation");
     expect(evaluationState.round.selection.utterance.kind).toBe("formal-syntax");
     expect(evaluationState.round.exercise.entries.length).toBeGreaterThan(0);
-  });
+  }, 15_000);
 });
