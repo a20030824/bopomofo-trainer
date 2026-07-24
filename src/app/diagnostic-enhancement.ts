@@ -100,6 +100,10 @@ function mountAnalysisTopLayer(): () => void {
   const observer = new MutationObserver(sync);
   observer.observe(analysis, { attributes: true, attributeFilter: ["hidden"] });
   modal.addEventListener("cancel", (event) => event.preventDefault());
+  modal.addEventListener("close", () => {
+    document.querySelector<HTMLTextAreaElement>("#keyboard-capture")
+      ?.focus({ preventScroll: true });
+  });
   sync();
 
   return () => {
