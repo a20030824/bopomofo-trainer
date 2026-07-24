@@ -175,7 +175,7 @@ Relationship paths use:
 - hover, click, keyboard focus, and list synchronization;
 - neutral ink styling rather than error red.
 
-The current browser adapter builds the overlay from the exact visible inspector rows after selectors have applied direction, sample, tone, and Top 5/full-list filters. Direct model composition remains a cleanup milestone.
+The current browser adapter builds the overlay from the exact visible inspector rows after selectors have applied direction, sample, tone, and first-five/full-list filters. Direct model composition remains a cleanup milestone.
 
 ## Inspector rail
 
